@@ -1,10 +1,13 @@
 import { defineConfig } from 'vite'
 import {VitePWA} from "vite-plugin-pwa";
 import react from '@vitejs/plugin-react-swc'
+import {qrcode} from "vite-plugin-qrcode";
+import{fileURLToPath} from "url";
 
 export default defineConfig({
     publicDir: './public',
     plugins: [
+        qrcode(),
         react(),
         VitePWA({
             mode: 'development',
@@ -54,7 +57,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': Bun.fileURLToPath(new URL('./src', import.meta.url))
+            '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     }
 })

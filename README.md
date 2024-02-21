@@ -7,7 +7,7 @@
 
 ### <u>**An all-in-one document editing platform for your dream project**</u>
 _NoteSpace_ is a **collaborative document editing platform** designed to facilitate seamless creation, editing, and sharing
-of documents in real-time. With _NoteSpace_, you can ** organize your projects in a multitude of ways and collaborate with others in real time**,
+of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others in real time**,
 ensuring efficient teamwork and project management.
 
 ### <u>**Platform support**</u>
@@ -24,12 +24,12 @@ Because **every idea matters**, _NoteSpace_ supports **offline mode**. This way,
 ## Tech Stack
 ## <p style="text-align: center"> Frontend </p>
 <p style="text-align: center">
-    <img src="https://skillicons.dev/icons?i=typescript,react" alt="Frontend-icons">
+    <img src="https://skillicons.dev/icons?i=typescript,vite,react,nodejs" alt="Frontend-icons">
 </p>
 
 ## <p style="text-align: center">Backend</p>
 <p style="text-align: center">
-    <img src="https://skillicons.dev/icons?i=typescript,bun,vite,express,firebase,postgresql" alt="Backend-icons">
+    <img src="https://skillicons.dev/icons?i=typescript,bun,express,firebase,postgresql" alt="Backend-icons">
 </p>
 
 ## Developers
