@@ -10,27 +10,24 @@ _NoteSpace_ is a **collaborative document editing platform** designed to facilit
 of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others in real time**,
 ensuring efficient teamwork and project management.
 
-### <u>**Platform support**</u>
-_NoteSpace_ is **available across multiple platforms**, including Desktop, Web, and Mobile, and with its easy and convenient interface, it allows you to work on your dream projects,  even on the go.
+### **Platform support**
+_NoteSpace_ is **available across multiple platforms**, including Desktop, Web, and Mobile, allowing you to work on your dream projects, even on the go, thanks to its easy and convenient interface.
 
-### <u>**Offline mode**</u>
+### **Offline mode**
 Because **every idea matters**, _NoteSpace_ supports **offline mode**. This way, even with no connection you can still be productive.
 
-### <u>**Control, everytime**</u>
-**Because mistakes happen**, in _NoteSpace_ you have control of when, how and what you publish, giving you total control of your work. Also, with our **version control system**, we ensure that users can track, restore or even fork changes made. This allows for  more custom approaches,  and to work without the fear of losing important information due to mistakes.
+### **Control, everytime**
+**Because mistakes happen**, in _NoteSpace_ you have control of when, how and what you publish, giving you total control of your work. Also, with our **version control system**, we ensure that users can track, restore or even fork changes made. This allows for more custom approaches, and to work without the fear of losing important information due to mistakes.
 
 ---
 
-## Tech Stack
-## <p style="text-align: center"> Frontend </p>
-<p style="text-align: center">
-    <img src="https://skillicons.dev/icons?i=typescript,vite,react,nodejs" alt="Frontend-icons">
-</p>
+## Technologies
+## Frontend
 
-## <p style="text-align: center">Backend</p>
-<p style="text-align: center">
-    <img src="https://skillicons.dev/icons?i=typescript,bun,express,firebase,postgresql" alt="Backend-icons">
-</p>
+![](https://skillicons.dev/icons?i=typescript,react,vite,scss)
+
+## Backend
+![](https://skillicons.dev/icons?i=typescript,nodejs,express,firebase,postgresql)
 
 ## Developers
 

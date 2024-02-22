@@ -5,9 +5,7 @@ import {config} from 'dotenv';
 
 config();
 
-const PORT = process.env.PORT || 3000;
-const HOST_IP = process.env.HOST_IP || 'localhost';
-
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 const server = http.createServer(app);
@@ -26,5 +24,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`listening on http://${HOST_IP}:${PORT}`);
+  console.log(`listening on http://localhost:${PORT}`);
 });

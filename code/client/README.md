@@ -2,7 +2,7 @@
 
 # Technologies
 
-![](https://skillicons.dev/icons?i=typescript,vite,react,nodejs,scss)
+![](https://skillicons.dev/icons?i=typescript,react,vite,scss)
 
 
 
