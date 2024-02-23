@@ -1,0 +1,13 @@
+.text-area{
+  text-align: left;
+  resize: none;
+  border: none;
+  padding-top: 1em;
+  overflow-y: hidden;
+
+  &:focus{
+    outline: none;
+    cursor: text;
+    caret-color: #535bf2;
+  }
+}

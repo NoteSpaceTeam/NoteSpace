@@ -1,0 +1,29 @@
+.editor-content-container{
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 120vh;
+  gap: 1em;
+}
+
+.editor-page-container{
+  overflow-y: clip;
+  width: 40%;
+  height: 80vh;
+  justify-content: left;
+  padding: 2em;
+  align-items: flex-start;
+  background-color: white;
+  border-radius: 25px;
+
+  border: darkgrey solid 1px;
+}
+
+.editor-text-area{
+  background-color: transparent;
+  caret-shape: block;
+  color: black;
+  width: 100vw;
+  font-size: 1.5em;
+  padding-bottom: 100%;
+}
