@@ -1,13 +1,24 @@
-.text-area{
+textarea {
   text-align: left;
   resize: none;
   border: none;
   padding-top: 1em;
   overflow-y: hidden;
+  background-color: transparent;
+  caret-shape: block;
+  color: black;
+  width: 100%;
+  font-size: 1.5em;
+  padding-bottom: 100%;
 
-  &:focus{
+  &:focus {
     outline: none;
     cursor: text;
     caret-color: #535bf2;
   }
+
+  &::selection {
+    background-color: lightgray;
+    color: black;
+}
 }

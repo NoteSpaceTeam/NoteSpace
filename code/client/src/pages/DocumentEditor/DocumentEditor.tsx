@@ -1,25 +1,55 @@
-import React from "react";
-import './DocumentEditor.scss'
-import Textarea from "../../core/components/TextArea/TextArea.tsx";
-import Container from "../../core/components/Container/Container.tsx";
+import React, {useEffect} from 'react';
+import './DocumentEditor.scss';
+import Textarea from '../../core/components/TextArea/TextArea.tsx';
+import useKeyboardInput from "../../core/hooks/useKeyboardInput.ts";
+import useSocketListeners from "../../core/hooks/useSocketListeners.ts";
+import {socket} from "../../socket/socket.ts";
 
 export default function DocumentEditor() {
-    const [text, setText] = React.useState("");
+  const [text, setText] = React.useState('');
+  const [key, setKey] = useKeyboardInput()
 
-    const handleChange = (value :string) => {
-        setText(value);
+  useEffect(() => {
+    if (key === null || key === 'Control') return
+    const cursorIndex = document.querySelector('textarea')?.selectionStart
+    switch(key) {
+      case 'Backspace':
+        socket.emit('delete', {index: cursorIndex})
+        break
+      case 'Enter':
+        socket.emit('enter', {index: cursorIndex})
+        break
+      default:
+        socket.emit('insert', { char: key, index: cursorIndex })
+    
+      setKey(null)
     }
+  }, [key, setKey]);
 
-    return (
-        <Container className = 'editor-content-container'>
-            <h1 style={{color:"black"}}>Document Editor</h1>
-            <Container className = 'editor-page-container'>
-                <Textarea
-                    className={"editor-text-area"}
-                    value={text}
-                    onChange={handleChange}
-                />
-            </Container>
-        </Container>
-    );
+  function onInsert({char, index}: onInsertData) {
+    setText(text.slice(0, index) + char + text.slice(index))
+  }
+
+  function onDelete({index}: onDeleteData) {
+    setText(text.slice(0, index - 1) + text.slice(index))
+  }
+
+  function onEnter({index}: onEnterData) {
+    setText(text.slice(0, index) + '\n' + text.slice(index))
+  }
+
+  useSocketListeners({
+    'insert': onInsert,
+    'delete': onDelete,
+    'enter': onEnter
+  })
+
+  return (
+    <div className="editor">
+      <h1>NoteSpace</h1>
+      <div className="container">
+        <Textarea value={text} onChange={setText} />
+      </div>
+    </div>
+  );
 }

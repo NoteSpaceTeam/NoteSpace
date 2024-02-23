@@ -7,7 +7,8 @@
     "start": "vite --host",
     "build": "tsc &&  vite build",
     "generate": "pwa-assets-generator",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
     "serve": "vite preview"
   },
   "dependencies": {
@@ -17,13 +18,17 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "autosize": "^6.0.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
     "framer-motion": "^11.0.5",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.22.1",
     "react-router-dom": "^6.22.1",
-    "socket.io-client": "^4.7.4",
-    "vite-plugin-qrcode": "^0.2.3"
+    "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.57",
@@ -31,7 +36,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vite-pwa/assets-generator": "^0.2.4",
-    "@vitejs/plugin-react-swc": "^3.6.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

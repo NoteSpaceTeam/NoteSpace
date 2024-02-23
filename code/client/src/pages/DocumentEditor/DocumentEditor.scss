@@ -1,29 +1,26 @@
-.editor-content-container{
+.editor {
+  display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   min-height: 120vh;
   gap: 1em;
-}
+  overflow-y: scroll;
+  
 
-.editor-page-container{
-  overflow-y: clip;
-  width: 40%;
-  height: 80vh;
-  justify-content: left;
-  padding: 2em;
-  align-items: flex-start;
-  background-color: white;
-  border-radius: 25px;
+  .container {
+    
+    min-height: 80vh;
+    width: 60%;
+    justify-content: left;
+    padding: 2em;
+    align-items: flex-start;
+    background-color: white;
+    border-radius: 25px;
+    border: lightgray solid 1px;
+  }
 
-  border: darkgrey solid 1px;
-}
-
-.editor-text-area{
-  background-color: transparent;
-  caret-shape: block;
-  color: black;
-  width: 100vw;
-  font-size: 1.5em;
-  padding-bottom: 100%;
+  h1 {
+    color: black;
+  }
 }
