@@ -4,20 +4,29 @@ function useKeyboardInput() {
   const [key, setKey] = useState<string | null>(null);
 
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      setKey(e.key);
-    };
 
-    const onKeyUp = () => {
-      setKey(null);
-    };
+    const onInput = (e : InputEvent) => {
+        console.log('input', e);
+        const textarea = e.target as HTMLTextAreaElement;
 
-    window.addEventListener('keypress', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
+        if(e.inputType === 'deleteContentBackward') {
+            setKey('Backspace');
+            return;
+        }
+        if (e.inputType === 'insertLineBreak') {
+            setKey('Enter');
+            return;
+        }
+        console.log('beforeinput', e, textarea.selectionStart, textarea.selectionEnd);
+        setKey(e.data);
+    }
+
+    window.addEventListener('input', onInput);
+    // window.addEventListener('keyup', onKeyUp);
 
     return () => {
-      window.removeEventListener('keypress', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('input', onInput);
+      //window.removeEventListener('keyup', onKeyUp);
     };
   }, []);
 

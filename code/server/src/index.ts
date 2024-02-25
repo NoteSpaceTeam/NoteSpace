@@ -2,7 +2,7 @@ import express from 'express';
 import {Server} from 'socket.io';
 import http from 'http';
 import {config} from 'dotenv';
-import events from './events'
+import events from './socket/events'
 
 config();
 

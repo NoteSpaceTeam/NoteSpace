@@ -9,8 +9,11 @@ export default function DocumentEditor() {
   const [text, setText] = React.useState('');
   const [key, setKey] = useKeyboardInput()
 
+
   useEffect(() => {
+    console.info('key: ', key)
     if (key === null || key === 'Control') return
+
     const cursorIndex = document.querySelector('textarea')?.selectionStart
     switch(key) {
       case 'Backspace':
@@ -21,9 +24,8 @@ export default function DocumentEditor() {
         break
       default:
         socket.emit('insert', { char: key, index: cursorIndex })
-    
-      setKey(null)
     }
+    setKey(null)
   }, [key, setKey]);
 
   function onInsert({char, index}: onInsertData) {
@@ -31,7 +33,7 @@ export default function DocumentEditor() {
   }
 
   function onDelete({index}: onDeleteData) {
-    setText(text.slice(0, index - 1) + text.slice(index))
+    setText(text.slice(0, index))
   }
 
   function onEnter({index}: onEnterData) {
@@ -48,7 +50,7 @@ export default function DocumentEditor() {
     <div className="editor">
       <h1>NoteSpace</h1>
       <div className="container">
-        <Textarea value={text} onChange={setText} />
+        <Textarea value={text} onChange={setText}  />
       </div>
     </div>
   );
