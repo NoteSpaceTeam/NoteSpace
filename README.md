@@ -5,7 +5,7 @@
 
 ---
 
-### <u>**An all-in-one document editing platform for your dream project**</u>
+### **An all-in-one document editing platform for your dream project**
 _NoteSpace_ is a **collaborative document editing platform** designed to facilitate seamless creation, editing, and sharing
 of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others in real time**,
 ensuring efficient teamwork and project management.

@@ -1,13 +1,5 @@
-
-type onInsertData = {
-  char: string,
-  index: number
-}
-
-type onDeleteData = {
-  index: number
-}
-
-type onEnterData = {
-  index: number
-}
+type OperationData = {
+  type: 'insert' | 'delete' | 'enter';
+  char?: string;
+  index: number;
+};
