@@ -1,5 +1,4 @@
 type OperationData = {
-  type: 'insert' | 'delete' | 'enter';
-  char?: string;
-  index: number;
+  type: 'insert' | 'delete';
+  character: string;
 };

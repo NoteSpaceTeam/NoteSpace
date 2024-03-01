@@ -1,11 +1,13 @@
 type Database = {
-  getDocument: () => string;
-  updateDocument: (content: string) => void;
+  getDocument: () => string[];
+  insertCharacter: (character: string) => void;
+  deleteCharacter: (character: string) => void;
   deleteDocument: () => void;
 };
 
 type Service = {
-  getDocument: () => string;
-  updateDocument: (content: string) => void;
+  getDocument: () => string[];
+  insertCharacter: (character: string) => void;
+  deleteCharacter: (character: string) => void;
   deleteDocument: () => void;
 };

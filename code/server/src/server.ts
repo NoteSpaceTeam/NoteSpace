@@ -16,9 +16,9 @@ const api = router(services);
 const events = eventsInit(dataMem);
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: process.env.ORIGIN } });
+const io = new Server(server, { cors: { origin: '*' } });
 
-app.use(cors({ origin: process.env.ORIGIN }));
+app.use(cors({ origin: '*' }));
 app.use('/', api);
 
 io.on('connection', socket => {
@@ -26,7 +26,7 @@ io.on('connection', socket => {
   Object.entries(events).forEach(([event, handler]) => {
     socket.on(event, data => {
       try {
-        console.log(event);
+        console.log(event, data);
         handler(socket, data);
       } catch (e) {
         socket.emit('error');

@@ -3,8 +3,12 @@ export default function Services(database: Database) {
     return database.getDocument();
   }
 
-  function updateDocument(content: string) {
-    database.updateDocument(content);
+  function insertCharacter(character: string) {
+    database.insertCharacter(character);
+  }
+
+  function deleteCharacter(character: string) {
+    database.deleteCharacter(character);
   }
 
   function deleteDocument() {
@@ -13,7 +17,8 @@ export default function Services(database: Database) {
 
   return {
     getDocument,
-    updateDocument,
+    insertCharacter,
+    deleteCharacter,
     deleteDocument,
   };
 }
