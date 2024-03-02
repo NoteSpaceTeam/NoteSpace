@@ -23,6 +23,7 @@ app.use('/', api);
 
 io.on('connection', socket => {
   console.log('a client connected');
+  socket.emit('document', dataMem.getDocument());
   Object.entries(events).forEach(([event, handler]) => {
     socket.on(event, data => {
       try {

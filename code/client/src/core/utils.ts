@@ -19,6 +19,3 @@ export function getTagValue(inputString: string): string {
   return inputString.charAt(inputString.length - 1);
 }
 
-export function sortByTagId(arr: string[]): string[] {
-  return arr.sort((a, b) => getTagId(a).localeCompare(getTagId(b)));
-}

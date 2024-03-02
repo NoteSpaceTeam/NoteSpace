@@ -3,21 +3,23 @@ import './DocumentEditor.scss';
 import Textarea from '../../core/components/TextArea/TextArea.tsx';
 import useSocketListeners from '../../core/hooks/useSocketListeners.ts';
 import { socket } from '../../socket/socket.ts';
-import useFugueCRDT from '../../core/hooks/useFugueCRDT.ts';
-import { getTagId, getTagValue, sortByTagId } from '../../core/utils.ts';
+//import useFugueSimple from '../../core/hooks/fugue/useFugueSimple.ts';
+import { getTagValue } from '../../core/utils.ts';
+import useWaypointFugue from '../../core/hooks/fugue/useWaypointFugue.ts';
 
 export default function DocumentEditor() {
-  const { characters, setCharacters, operations } = useFugueCRDT();
+  const { elements, setElements, operations, sortTree } = useWaypointFugue();
   const [text, setText] = useState('');
 
-  useEffect(() => {
-    async function getDocument() {
-      const response = await fetch('http://localhost:8080/document');
-      const data = await response.json();
-      setCharacters(data.content);
-    }
-    getDocument();
-  }, [setCharacters]);
+  // useEffect(() => {
+  //   async function getDocument() {
+  //     const response = await fetch('http://localhost:8080/document');
+  //     const data = await response.json();
+  //     setElements(data.content);
+  //   }
+  //   getDocument();
+  // }, [setElements]);
+
 
   function onKeyPressed(key: string) {
     const textarea = document.querySelector('textarea')!;
@@ -26,7 +28,7 @@ export default function DocumentEditor() {
     switch (key) {
       case 'Backspace': {
         const character = operations.deleteLocal(selectionStart);
-        setCharacters(prev => prev.filter(c => getTagId(c) !== getTagId(character)));
+        if (character === '') return;
         socket.emit('operation', { type: 'delete', character });
         break;
       }
@@ -34,7 +36,6 @@ export default function DocumentEditor() {
         if (key !== 'Enter' && key.length > 1) return;
         const char = key === 'Enter' ? '\n' : key;
         const character = operations.insertLocal(char, selectionStart);
-        setCharacters(prev => [...prev, character]);
         socket.emit('operation', { type: 'insert', character });
         break;
       }
@@ -44,13 +45,11 @@ export default function DocumentEditor() {
   function onOperation({ type, character }: OperationData) {
     switch (type) {
       case 'insert': {
-        const newChars = operations.insertRemote(character);
-        setCharacters(newChars);
+        operations.insertRemote(character);
         break;
       }
       case 'delete': {
-        const newChars = operations.deleteRemote(character);
-        setCharacters(newChars);
+        operations.deleteRemote(character);
         break;
       }
     }
@@ -58,25 +57,31 @@ export default function DocumentEditor() {
 
   useSocketListeners({
     operation: onOperation,
+    reconnect: () => console.log('reconnected'),
+    document: (data) => setElements(data),
   });
 
   function setTextFromCharacters(chars: string[]) {
-    const txt = sortByTagId(chars).map(getTagValue).join('');
+    const txt = sortTree(chars).map(getTagValue).join('');
     setText(txt);
   }
 
   useEffect(() => {
-    setTextFromCharacters(characters);
-  }, [characters]);
+    setTextFromCharacters(elements.filter((c) => !c.endsWith('⊥')));
+  }, [elements]);
 
   return (
-    <div className="editor">
-      <h1>
-        <a href="/">NoteSpace</a>
-      </h1>
-      <div className="container">
-        <Textarea value={text} onKeyDown={e => onKeyPressed(e.key)} onChange={e => setText(e.target.value)} />
+      <div className="editor">
+        <h1>
+          <a href="/">NoteSpace</a>
+        </h1>
+        <div className="container">
+          <Textarea
+              value={text}
+              onKeyDown={e => onKeyPressed(e.key)}
+              onChange={e => setText(e.target.value)}
+          />
+        </div>
       </div>
-    </div>
   );
 }
