@@ -9,31 +9,41 @@ import dataMem from './database/dataMem';
 import router from './api/router';
 
 config();
-
 const PORT = process.env.PORT || 8080;
 const services = servicesInit(dataMem);
 const api = router(services);
 const events = eventsInit(dataMem);
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
+const io = new Server(server, {
+  cors: { origin: '*' },
+  connectionStateRecovery: {},
+});
 
 app.use(cors({ origin: '*' }));
 app.use('/', api);
 
 io.on('connection', socket => {
   console.log('a client connected');
-  socket.emit('document', dataMem.getDocument());
+
+  if (socket.connected) {
+    socket.emit('document', dataMem.getDocument());
+  }
+
   Object.entries(events).forEach(([event, handler]) => {
     socket.on(event, data => {
       try {
-        console.log(event, data);
+        // console.log(event, data);
         handler(socket, data);
       } catch (e) {
         socket.emit('error');
         console.error(e);
       }
     });
+  });
+
+  socket.on('disconnect', reason => {
+    console.log('a client disconnected', reason);
   });
 });
 

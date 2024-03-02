@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { generateRandomId } from '../../utils.ts';
 import { getTagId } from '../../utils.ts';
 
-
 function useFugueSimple() {
   const [elements, setElements] = useState<string[]>([]);
   const replicaId = useMemo(() => generateRandomId(), []);
@@ -18,10 +17,10 @@ function useFugueSimple() {
     const uniqueStr = `${replicaId}${counter}`;
     setCounter(prev => prev + 1);
 
-    if (a !== undefined && b !== undefined) { // Inserting between two characters.
+    if (a !== undefined && b !== undefined) {
+      // Inserting between two characters.
       // 'a' is not ancestor of 'b' - insert as right child of 'a'.
-      if (!b.startsWith(a))
-        return a + uniqueStr + 'R';
+      if (!b.startsWith(a)) return a + uniqueStr + 'R';
       // 'a' is ancestor of 'b' - insert as left child of 'b'.
       const bWithL = b.slice(0, -1) + 'L';
       return bWithL + uniqueStr + 'R';
@@ -62,8 +61,8 @@ function useFugueSimple() {
     const char = elements[cursor - 1];
     if (!char) return '';
     // replace the character at the cursor with an '⊥' character
-    setElements(prev => prev.map((c, i) => i === cursor - 1 ? c + '⊥' : c));
-    return char
+    setElements(prev => prev.map((c, i) => (i === cursor - 1 ? c + '⊥' : c)));
+    return char;
   };
 
   /**
@@ -82,7 +81,7 @@ function useFugueSimple() {
    * @returns The new state of the document.
    */
   const deleteRemote = (character: string): string[] => {
-    return elements.map((c) => c === character ? c + '⊥' : c)
+    return elements.map(c => (c === character ? c + '⊥' : c));
   };
 
   /**
@@ -92,17 +91,16 @@ function useFugueSimple() {
    * @param right
    * @returns The index of the character in the document.
    */
-  const binarySearchIndex = (charId : string, left = 0, right = elements.length) : number => {
+  const binarySearchIndex = (charId: string, left = 0, right = elements.length): number => {
     if (left >= right) return left;
 
     const mid = Math.floor((left + right) / 2);
 
-    if (getTagId(elements[mid]) < charId){
+    if (getTagId(elements[mid]) < charId) {
       return binarySearchIndex(charId, mid + 1, right);
     }
     return binarySearchIndex(charId, left, mid);
   };
-
 
   return {
     elements,

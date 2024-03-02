@@ -18,4 +18,3 @@ export function getTagId(inputString: string): string {
 export function getTagValue(inputString: string): string {
   return inputString.charAt(inputString.length - 1);
 }
-
