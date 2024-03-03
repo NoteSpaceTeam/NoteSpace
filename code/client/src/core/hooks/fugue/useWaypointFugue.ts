@@ -51,14 +51,12 @@ function useWaypointFugue() {
     return [tree[cursor - 1], tree[cursor]];
   };
 
-  const insertLocal = (char: string, cursor: number): string => {
+  const insertLocal = (character: string, cursor: number): string => {
     const [left, right] = getNeighbors(cursor).map(c => (c ? getTagId(c) : c));
-    const character = createBetween(left, right) + char;
-
-    const sortedElements = [...elements, character].sort((a, b) => getTagId(a).localeCompare(getTagId(b)));
-
+    const char = createBetween(left, right) + character;
+    const sortedElements = [...elements, char].sort((a, b) => getTagId(a).localeCompare(getTagId(b)));
     setElements(sortedElements);
-    return character;
+    return char;
   };
 
   const deleteLocal = (cursor: number): string => {

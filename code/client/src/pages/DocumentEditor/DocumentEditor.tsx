@@ -1,41 +1,18 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './DocumentEditor.scss';
 import Textarea from '../../core/components/TextArea/TextArea.tsx';
 import useSocketListeners from '../../core/hooks/useSocketListeners.ts';
 import { socket } from '../../socket/socket.ts';
-import { getTagValue } from '../../core/utils.ts';
+import { getCursorPosition, getTagValue } from '../../core/utils.ts';
 import useWaypointFugue from '../../core/hooks/fugue/useWaypointFugue.ts';
+import Cursors from '../Cursors/Cursors.tsx';
+import useKeyHandlers from '../../core/hooks/useKeyHandlers.ts';
 
 export default function DocumentEditor() {
-  const { elements, setElements, operations, sortTree } = useWaypointFugue();
   const [text, setText] = useState('');
   const [operationBuffer, setOperationBuffer] = useState<OperationData[]>([]);
-
-  function onKeyPressed(key: string) {
-    const textarea = document.querySelector('textarea')!;
-    const selectionStart = textarea.selectionStart;
-    // const selectionEnd = textarea.selectionEnd;
-    switch (key) {
-      case 'Backspace': {
-        const character = operations.deleteLocal(selectionStart);
-        if (character === '') return;
-        socket.emit('operation', { type: 'delete', character });
-        break;
-      }
-      default: {
-        if (key !== 'Enter' && key.length > 1) return;
-        const char = key === 'Enter' ? '\n' : key;
-        const character = operations.insertLocal(char, selectionStart);
-        socket.emit('operation', { type: 'insert', character });
-        break;
-      }
-    }
-  }
-
-  function onOperation(operation: OperationData) {
-    console.log('operation', operation);
-    setOperationBuffer(prev => [...prev, operation]);
-  }
+  const { elements, setElements, operations, sortTree } = useWaypointFugue();
+  const { onKeyDown, onKeyUp } = useKeyHandlers(operations);
 
   useEffect(() => {
     function operationHandler({ type, character }: OperationData) {
@@ -54,6 +31,10 @@ export default function DocumentEditor() {
     operationHandler(operationBuffer[0]);
     setOperationBuffer(prev => prev.slice(1));
   }, [operationBuffer, operations]);
+
+  function onOperation(operation: OperationData) {
+    setOperationBuffer(prev => [...prev, operation]);
+  }
 
   function onDocument(content: string[]) {
     setElements(prev => {
@@ -75,13 +56,27 @@ export default function DocumentEditor() {
     setTextFromCharacters(elements.filter(c => !c.endsWith('⊥')));
   }, [elements, sortTree]);
 
+  const handleCursorPositionChange = (e: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+    const position = getCursorPosition(e.currentTarget);
+    socket.emit('cursorChange', position);
+  };
+
   return (
     <div className="editor">
-      <h1>
-        <a href="/">NoteSpace</a>
-      </h1>
+      <header>
+        <span className="fa fa-bars"></span>
+        <h1>NoteSpace</h1>
+      </header>
       <div className="container">
-        <Textarea value={text} onKeyDown={e => onKeyPressed(e.key)} onChange={e => setText(e.target.value)} />
+        <Textarea
+          value={text}
+          onKeyDown={e => onKeyDown(e.key)}
+          onKeyUp={e => onKeyUp(e.key)}
+          onMouseUp={handleCursorPositionChange}
+          onChange={e => setText(e.target.value)}
+          placeholder={'Start writing...'}
+        />
+        <Cursors />
       </div>
     </div>
   );

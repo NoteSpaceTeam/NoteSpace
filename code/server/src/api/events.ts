@@ -5,6 +5,13 @@ type OperationData = {
   character: string;
 };
 
+type CursorChangeData = {
+  line: number;
+  column: number;
+};
+
+const cursorColorsMap = new Map<string, string>();
+
 export default function events(database: Database) {
   function onOperation(socket: Socket, data: OperationData) {
     if (!data.character) throw new Error('Invalid character: ' + data.character);
@@ -24,7 +31,17 @@ export default function events(database: Database) {
     }
   }
 
+  function onCursorChange(socket: Socket, position: CursorChangeData) {
+    if (!cursorColorsMap.has(socket.id)) {
+      const randomColor = 'hsl(' + Math.random() * 360 + ', 100%, 75%)';
+      cursorColorsMap.set(socket.id, randomColor);
+    }
+    const color = cursorColorsMap.get(socket.id);
+    socket.broadcast.emit('cursorChange', { position, id: socket.id, color });
+  }
+
   return {
     operation: onOperation,
+    cursorChange: onCursorChange,
   };
 }

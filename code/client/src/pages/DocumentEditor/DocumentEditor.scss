@@ -9,16 +9,29 @@
 
   .container {
     min-height: 80vh;
-    width: 60%;
+    width: 40%;
     justify-content: left;
     padding: 2em;
     align-items: flex-start;
-    background-color: white;
-    border-radius: 25px;
-    border: lightgray solid 1px;
+    //background-color: white;
+    //border-radius: 25px;
+    //border: lightgray solid 1px;
   }
 
-  h1 {
+  header {
     color: black;
+    background: white;
+    width: 100%;
+    padding: 1vh 0 1vh 5vh;
+    box-shadow: black 0 0 1px;
+    display: flex;
+    align-items: center;
+
+    h1 {
+      font-size: 1.5vh;
+      padding: 1vh;
+      margin: 0 0 0 1vh;
+      font-family: "Poppins Medium", monospace
+    }
   }
 }
