@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import useSocketListeners from '../../core/hooks/useSocketListeners.ts';
-import './Cursors.scss';
+import './CursorsManager.scss';
+import useSocketListeners from '../../../collab/useSocketListeners.ts';
 
 type Cursor = {
   id: string;
@@ -11,7 +11,7 @@ type Cursor = {
   color: string;
 };
 
-function Cursors() {
+function CursorsManager() {
   const [cursors, setCursors] = useState<Cursor[]>([]);
 
   const handleCursorChange = (cursor: Cursor) => {
@@ -60,4 +60,6 @@ function Cursors() {
   return <>{renderCursors()}</>;
 }
 
-export default Cursors;
+
+
+export default CursorsManager;

@@ -1,5 +1,5 @@
-import { socket } from '../../socket/socket.ts';
-import { getCursorPosition } from '../utils.ts';
+import { socket } from '../../collab/socket/socket.ts';
+import { getCursorPosition } from '../components/CursorsManager/utils.ts';
 
 type useKeyHandlers = {
   insertLocal: (character: string, cursor: number) => string;

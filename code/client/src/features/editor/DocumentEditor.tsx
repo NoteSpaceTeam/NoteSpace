@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './DocumentEditor.scss';
-import Textarea from '../../core/components/TextArea/TextArea.tsx';
-import useSocketListeners from '../../core/hooks/useSocketListeners.ts';
-import { socket } from '../../socket/socket.ts';
-import { getCursorPosition, getTagValue } from '../../core/utils.ts';
-import useWaypointFugue from '../../core/hooks/fugue/useWaypointFugue.ts';
-import Cursors from '../Cursors/Cursors.tsx';
-import useKeyHandlers from '../../core/hooks/useKeyHandlers.ts';
+import useKeyHandlers from './hooks/useKeyHandlers.ts';
+import useWaypointFugue from '../conflict/hooks/useWaypointFugue.ts';
+import useSocketListeners from '../collab/useSocketListeners.ts';
+import { getTagValue } from '../conflict/utils.ts';
+import { getCursorPosition } from './components/CursorsManager/utils.ts';
+import CursorsManager from './components/CursorsManager/CursorsManager.tsx';
+import TextArea from '../../shared/components/TextArea/TextArea.tsx';
+
 
 export default function DocumentEditor() {
   const [text, setText] = useState('');
   const [operationBuffer, setOperationBuffer] = useState<OperationData[]>([]);
   const { elements, setElements, operations, sortTree } = useWaypointFugue();
   const { onKeyDown, onKeyUp } = useKeyHandlers(operations);
+
+  const socket = useSocketListeners({
+    operation: onOperation,
+    document: onDocument,
+  });
 
   useEffect(() => {
     function operationHandler({ type, character }: OperationData) {
@@ -43,10 +49,7 @@ export default function DocumentEditor() {
     });
   }
 
-  useSocketListeners({
-    operation: onOperation,
-    document: onDocument,
-  });
+
 
   useEffect(() => {
     function setTextFromCharacters(chars: string[]) {
@@ -68,15 +71,15 @@ export default function DocumentEditor() {
         <h1>NoteSpace</h1>
       </header>
       <div className="container">
-        <Textarea
+        <TextArea
           value={text}
-          onKeyDown={e => onKeyDown(e.key)}
-          onKeyUp={e => onKeyUp(e.key)}
+          onKeyDown={(e: { key: string; }) => onKeyDown(e.key)}
+          onKeyUp={(e: { key: string; }) => onKeyUp(e.key)}
           onMouseUp={handleCursorPositionChange}
-          onChange={e => setText(e.target.value)}
+          onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setText(e.target.value)}
           placeholder={'Start writing...'}
         />
-        <Cursors />
+        <CursorsManager/>
       </div>
     </div>
   );

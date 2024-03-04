@@ -1,5 +1,5 @@
-import { generateRandomId } from '../../utils.ts';
 import { useMemo, useState } from 'react';
+import { generateRandomId } from '../utils.ts';
 
 function useWaypointFugue() {
   const [elements, setElements] = useState<string[]>([]);

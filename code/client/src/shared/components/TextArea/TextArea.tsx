@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import useAutosize from '../../hooks/useAutosize.ts';
+import useAutosize from './useAutosize.ts';
 import './TextArea.scss';
 
 type TextAreaProps = {

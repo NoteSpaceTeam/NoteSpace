@@ -3,10 +3,10 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { config } from 'dotenv';
 import cors from 'cors';
-import eventsInit from './api/events';
+import eventsInit from './ws/events';
 import servicesInit from './services/services';
 import dataMem from './database/dataMem';
-import router from './api/router';
+import router from './http/router';
 
 config();
 const PORT = process.env.PORT || 8080;
