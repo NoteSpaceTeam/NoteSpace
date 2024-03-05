@@ -1,35 +1,36 @@
-import { socket } from '../../collab/socket/socket.ts';
 import { getCursorPosition } from '../components/CursorsManager/utils.ts';
+import { Socket } from 'socket.io-client';
 
 type useKeyHandlers = {
-  insertLocal: (character: string, cursor: number) => string;
-  deleteLocal: (cursor: number) => string;
-  insertRemote: (character: string) => void;
-  deleteRemote: (character: string) => void;
+  insertLocal: (data: string, start: number, end: number) => string[];
+  deleteLocal: (start: number, end: number) => (string | undefined)[];
+  insertRemote: (data: string[]) => void;
+  deleteRemote: (data: string[]) => void;
 };
 
-function useKeyHandlers(operations: useKeyHandlers) {
+function useKeyHandlers(socket: Socket, operations: useKeyHandlers) {
   function onKeyDown(key: string) {
     const textarea = document.querySelector('textarea')!;
-    const cursor = textarea.selectionStart;
+    const selectionStart = textarea.selectionStart;
+    const selectionEnd = textarea.selectionEnd;
     const position = getCursorPosition(textarea);
 
     function onBackspace() {
-      const character = operations.deleteLocal(cursor);
-      if (character === '') return;
-      socket.emit('operation', { type: 'delete', character });
+      const data = operations.deleteLocal(selectionStart, selectionEnd);
+      if (!data) return;
+      socket.emit('operation', { type: 'delete', data });
       socket.emit('cursorChange', { line: position.line, column: position.column - 1 });
     }
 
     function onEnter() {
-      const character = operations.insertLocal('\n', cursor);
-      socket.emit('operation', { type: 'insert', character });
+      const data = operations.insertLocal('\n', selectionStart, selectionEnd);
+      socket.emit('operation', { type: 'insert', data });
       socket.emit('cursorChange', { line: position.line + 1, column: 1 });
     }
 
     function onDefault(key: string) {
-      const character = operations.insertLocal(key, cursor);
-      socket.emit('operation', { type: 'insert', character });
+      const data = operations.insertLocal(key, selectionStart, selectionEnd);
+      socket.emit('operation', { type: 'insert', data });
       socket.emit('cursorChange', { line: position.line, column: position.column + 1 });
     }
     switch (key) {

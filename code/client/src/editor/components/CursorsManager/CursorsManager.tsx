@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './CursorsManager.scss';
-import useSocketListeners from '../../../collab/useSocketListeners.ts';
+import useSocketListeners from '../../../socket/useSocketListeners.ts';
 
 type Cursor = {
   id: string;
@@ -59,7 +59,5 @@ function CursorsManager() {
   };
   return <>{renderCursors()}</>;
 }
-
-
 
 export default CursorsManager;

@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 
 type OperationData = {
   type: 'insert' | 'delete';
-  character: string;
+  data: string[];
 };
 
 type CursorChangeData = {
@@ -14,15 +14,16 @@ const cursorColorsMap = new Map<string, string>();
 
 export default function events(database: Database) {
   function onOperation(socket: Socket, data: OperationData) {
-    if (!data.character) throw new Error('Invalid character: ' + data.character);
+    console.log('Data: ', data);
+    if (!data.data) throw new Error('Invalid character: ' + data.data); // FIX
     switch (data.type) {
       case 'insert': {
-        database.insertCharacter(data.character);
+        database.insertCharacter(data.data);
         socket.broadcast.emit('operation', data);
         break;
       }
       case 'delete': {
-        database.deleteCharacter(data.character);
+        database.deleteCharacter(data.data);
         socket.broadcast.emit('operation', data);
         break;
       }

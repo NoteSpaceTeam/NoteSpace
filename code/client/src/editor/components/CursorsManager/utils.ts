@@ -1,4 +1,3 @@
-
 export function getCursorPosition(textarea: HTMLTextAreaElement) {
   const selectionStart = textarea.selectionStart;
   const lines = textarea.value.substring(0, selectionStart).split('\n');

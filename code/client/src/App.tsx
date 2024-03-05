@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import DocumentEditor from './features/editor/DocumentEditor.tsx';
 import './App.scss';
+import DocumentEditor from './editor/DocumentEditor.tsx';
 
 function App() {
   return (

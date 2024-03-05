@@ -1,5 +1,5 @@
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-const DEFAULT_REPLICA_ID_LENGTH = 10;
+const DEFAULT_REPLICA_ID_LENGTH = 5;
 
 export function generateRandomId(length = DEFAULT_REPLICA_ID_LENGTH) {
   let id = '';
