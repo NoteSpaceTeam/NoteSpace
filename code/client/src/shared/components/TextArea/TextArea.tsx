@@ -2,16 +2,12 @@ import React, { useRef } from 'react';
 import useAutosize from './useAutosize.ts';
 import './TextArea.scss';
 
-type TextAreaProps = {
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   value: string;
-  onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement>;
-  onKeyUp: React.KeyboardEventHandler<HTMLTextAreaElement>;
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
-  onMouseUp: React.MouseEventHandler<HTMLTextAreaElement>;
-  placeholder?: string;
-};
+}
 
-function TextArea({ value, onKeyDown, onKeyUp, onMouseUp, onChange, placeholder }: TextAreaProps) {
+function TextArea(props: TextAreaProps) {
+  const { value, onKeyDown, onKeyUp, onChange, onMouseUp, placeholder, ...otherProps } = props;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useAutosize(textAreaRef.current, value);
   return (
@@ -26,6 +22,7 @@ function TextArea({ value, onKeyDown, onKeyUp, onMouseUp, onChange, placeholder 
       rows={1}
       value={value}
       autoFocus={true}
+      {...otherProps}
     />
   );
 }

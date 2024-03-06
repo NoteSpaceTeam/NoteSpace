@@ -1,5 +1,5 @@
 import { getCursorPosition } from '../components/CursorsManager/utils.ts';
-import { Socket } from 'socket.io-client';
+import {socket} from "../../socket/socket.ts";
 
 type useKeyHandlers = {
   insertLocal: (data: string, start: number, end: number) => string[];
@@ -8,7 +8,7 @@ type useKeyHandlers = {
   deleteRemote: (data: string[]) => void;
 };
 
-function useKeyHandlers(socket: Socket, operations: useKeyHandlers) {
+function useKeyHandlers(operations: useKeyHandlers) {
   function onKeyDown(key: string) {
     const textarea = document.querySelector('textarea')!;
     const selectionStart = textarea.selectionStart;

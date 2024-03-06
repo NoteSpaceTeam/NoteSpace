@@ -1,43 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import './DocumentEditor.scss';
+import { useEffect, useState } from 'react';
 import useKeyHandlers from './hooks/useKeyHandlers.ts';
 import useSocketListeners from '../socket/useSocketListeners.ts';
-
 import { getCursorPosition } from './components/CursorsManager/utils.ts';
 import CursorsManager from './components/CursorsManager/CursorsManager.tsx';
-import useOptimizedFugue from '../crdt/hooks/useOptimizedFugue.ts';
 import TextArea from '../shared/components/TextArea/TextArea.tsx';
+import {socket} from "../socket/socket.ts";
+import useOperationBuffer from "./hooks/useOperationBuffer.ts";
+import useOptimizedFugue from "./crdt/useOptimizedFugue.ts";
+import './DocumentEditor.scss';
 
 export default function DocumentEditor() {
   const [text, setText] = useState('');
-  const [operationBuffer, setOperationBuffer] = useState<OperationData[]>([]);
-  // const { elements, setElements, operations, sortTree } = useWaypointFugue();
   const { tree, setTree, getState, operations } = useOptimizedFugue();
-
-  const socket = useSocketListeners({
-    operation: onOperation,
-    document: onDocument,
-  });
-
-  const { onKeyDown, onKeyUp } = useKeyHandlers(socket, operations);
-
-  useEffect(() => {
-    function operationHandler({ type, data }: OperationData) {
-      switch (type) {
-        case 'insert': {
-          operations.insertRemote(data);
-          break;
-        }
-        case 'delete': {
-          operations.deleteRemote(data);
-          break;
-        }
-      }
-    }
-    if (operationBuffer.length === 0) return;
-    operationHandler(operationBuffer[0]);
-    setOperationBuffer(prev => prev.slice(1));
-  }, [operationBuffer, operations]);
+  const { setOperationBuffer } = useOperationBuffer(operations);
+  const { onKeyDown, onKeyUp } = useKeyHandlers(operations);
 
   function onOperation(operation: OperationData) {
     setOperationBuffer(prev => [...prev, operation]);
@@ -49,16 +25,20 @@ export default function DocumentEditor() {
     });
   }
 
-  useEffect(() => {
-    const txt = getState();
-    console.log(txt);
-    setText(txt);
-  }, [getState, tree]);
-
-  const handleCursorPositionChange = (e: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
-    const position = getCursorPosition(e.currentTarget);
+  function onCursorMove(textarea: HTMLTextAreaElement) {
+    const position = getCursorPosition(textarea);
     socket.emit('cursorChange', position);
-  };
+  }
+
+  useSocketListeners({
+    operation: onOperation,
+    document: onDocument,
+  });
+
+  useEffect(() => {
+    const state = getState();
+    setText(state);
+  }, [getState, tree]);
 
   return (
     <div className="editor">
@@ -69,10 +49,10 @@ export default function DocumentEditor() {
       <div className="container">
         <TextArea
           value={text}
-          onKeyDown={(e: { key: string }) => onKeyDown(e.key)}
-          onKeyUp={(e: { key: string }) => onKeyUp(e.key)}
-          onMouseUp={handleCursorPositionChange}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => setText(e.target.value)}
+          onKeyDown={e => onKeyDown(e.key)}
+          onKeyUp={e => onKeyUp(e.key)}
+          onMouseUp={e => onCursorMove(e.currentTarget)}
+          onChange={e => setText(e.target.value)}
           placeholder={'Start writing...'}
         />
         <CursorsManager />

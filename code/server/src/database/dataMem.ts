@@ -1,7 +1,6 @@
 let dataMem: string[] = [];
 
 function getDocument() {
-  console.log(dataMem);
   return dataMem;
 }
 

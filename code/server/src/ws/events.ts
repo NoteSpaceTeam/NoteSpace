@@ -14,7 +14,6 @@ const cursorColorsMap = new Map<string, string>();
 
 export default function events(database: Database) {
   function onOperation(socket: Socket, data: OperationData) {
-    console.log('Data: ', data);
     if (!data.data) throw new Error('Invalid character: ' + data.data); // FIX
     switch (data.type) {
       case 'insert': {

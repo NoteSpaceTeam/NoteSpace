@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react';
-import { generateRandomId } from '../utils.ts';
+import { generateRandomId } from './utils.ts';
 
 function useOptimizedFugue() {
   const [tree, setTree] = useState<string[]>([]);
   const replicaId = useMemo(() => generateRandomId(), []);
 
-  // Public methods
   const insertLocal = (data: string, start: number, end: number) => {
     const [a, b] = getNeighbours(start, end);
     const items = data.split('');
@@ -154,10 +153,8 @@ function useOptimizedFugue() {
   };
 
   const getState = (): string => {
-    console.log(tree);
     const filtered = tree.filter(c => !c.endsWith('⊥'));
     const sorted = sortTree(filtered);
-    console.log(sorted);
     return sorted.map(getTagValue).join('');
   };
 

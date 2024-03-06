@@ -4,10 +4,7 @@ import useSocketListeners from '../../../socket/useSocketListeners.ts';
 
 type Cursor = {
   id: string;
-  position: {
-    line: number;
-    column: number;
-  };
+  position: { line: number; column: number; };
   color: string;
 };
 
