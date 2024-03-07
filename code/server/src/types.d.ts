@@ -1,13 +1,34 @@
 type Database = {
-  getDocument: () => string[];
-  insertCharacter: (data: string[]) => void;
-  deleteCharacter: (data: string[]) => void;
-  deleteDocument: () => void;
+  getTree: <T>() => TreeData<T>;
+  insertCharacter: <T>(msg: InsertMessage<T>) => void;
+  deleteCharacter: (msg: DeleteMessage) => void;
 };
 
 type Service = {
-  getDocument: () => string[];
-  insertCharacter: (data: string[]) => void;
-  deleteCharacter: (data: string[]) => void;
-  deleteDocument: () => void;
+  getTree: <T>() => TreeData<T>;
+  insertCharacter: <T>(msg: InsertMessage<T>) => void;
+  deleteCharacter: (msg: DeleteMessage) => void;
+};
+
+type Id = {
+  sender: string;
+  counter: number;
+};
+
+type InsertMessage<T> = {
+  type: 'insert';
+  id: Id;
+  value: T;
+  parent: Id;
+  side: 'L' | 'R';
+};
+
+type DeleteMessage = {
+  type: 'delete';
+  id: Id;
+};
+
+type TreeData<T> = {
+  root: Node<T>;
+  nodes: Map<string, Node<T>[]>;
 };

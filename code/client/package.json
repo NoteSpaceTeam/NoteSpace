@@ -12,12 +12,21 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@blocknote/core": "^0.12.0",
+    "@blocknote/react": "^0.12.0",
+    "@liveblocks/react": "^1.10.2",
+    "@liveblocks/yjs": "^1.10.2",
     "autosize": "^6.0.1",
+    "quill": "^1.3.7",
+    "quill-cursors": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-quill": "^2.0.0",
     "react-router": "^6.22.2",
     "react-router-dom": "^6.22.2",
-    "socket.io-client": "^4.7.4"
+    "socket.io-client": "^4.7.4",
+    "y-quill": "^0.1.5",
+    "yjs": "^13.6.14"
   },
   "devDependencies": {
     "@types/autosize": "^4.0.3",

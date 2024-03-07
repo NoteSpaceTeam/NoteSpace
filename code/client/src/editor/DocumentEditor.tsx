@@ -1,28 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useKeyHandlers from './hooks/useKeyHandlers.ts';
 import useSocketListeners from '../socket/useSocketListeners.ts';
 import { getCursorPosition } from './components/CursorsManager/utils.ts';
 import CursorsManager from './components/CursorsManager/CursorsManager.tsx';
 import TextArea from '../shared/components/TextArea/TextArea.tsx';
-import {socket} from "../socket/socket.ts";
-import useOperationBuffer from "./hooks/useOperationBuffer.ts";
-import useOptimizedFugue from "./crdt/useOptimizedFugue.ts";
+import { socket } from '../socket/socket.ts';
 import './DocumentEditor.scss';
+import useFugueCRDT from './crdt/useFugueCRDT.tsx';
+import { DeleteMessage, InsertMessage } from './crdt/types.ts';
 
-export default function DocumentEditor() {
+function DocumentEditor() {
   const [text, setText] = useState('');
-  const { tree, setTree, getState, operations } = useOptimizedFugue();
-  const { setOperationBuffer } = useOperationBuffer(operations);
-  const { onKeyDown, onKeyUp } = useKeyHandlers(operations);
+  const fugue = useFugueCRDT();
+  const { onKeyDown, onKeyUp } = useKeyHandlers(fugue);
 
-  function onOperation(operation: OperationData) {
-    setOperationBuffer(prev => [...prev, operation]);
+  function onOperation<T>(operation: InsertMessage<T> | DeleteMessage) {
+    switch (operation.type) {
+      case 'insert':
+        fugue.insertRemote(operation);
+        break;
+      case 'delete':
+        fugue.deleteRemote(operation);
+        break;
+      default:
+        throw new Error('Invalid operation type');
+    }
+    setText(fugue.values().join(''));
   }
 
-  function onDocument(content: string[]) {
-    setTree(prev => {
-      return [...new Set([...prev, ...content])];
-    });
+  function onDocument<T>({ nodes, root }: TreeData<T>) {
+    fugue.setTree(root, nodes);
+    setText(fugue.values().join(''));
   }
 
   function onCursorMove(textarea: HTMLTextAreaElement) {
@@ -34,11 +42,6 @@ export default function DocumentEditor() {
     operation: onOperation,
     document: onDocument,
   });
-
-  useEffect(() => {
-    const state = getState();
-    setText(state);
-  }, [getState, tree]);
 
   return (
     <div className="editor">
@@ -60,3 +63,5 @@ export default function DocumentEditor() {
     </div>
   );
 }
+
+export default DocumentEditor;

@@ -1,14 +1,8 @@
 import { getCursorPosition } from '../components/CursorsManager/utils.ts';
-import {socket} from "../../socket/socket.ts";
+import { socket } from '../../socket/socket.ts';
+import { Fugue } from '../crdt/fugue.ts';
 
-type useKeyHandlers = {
-  insertLocal: (data: string, start: number, end: number) => string[];
-  deleteLocal: (start: number, end: number) => (string | undefined)[];
-  insertRemote: (data: string[]) => void;
-  deleteRemote: (data: string[]) => void;
-};
-
-function useKeyHandlers(operations: useKeyHandlers) {
+function useKeyHandlers(fugue: Fugue<unknown>) {
   function onKeyDown(key: string) {
     const textarea = document.querySelector('textarea')!;
     const selectionStart = textarea.selectionStart;
@@ -16,21 +10,18 @@ function useKeyHandlers(operations: useKeyHandlers) {
     const position = getCursorPosition(textarea);
 
     function onBackspace() {
-      const data = operations.deleteLocal(selectionStart, selectionEnd);
-      if (!data) return;
-      socket.emit('operation', { type: 'delete', data });
+      if (position.line === 0 && position.column === 0) return;
+      fugue.deleteLocal(selectionStart, selectionEnd);
       socket.emit('cursorChange', { line: position.line, column: position.column - 1 });
     }
 
     function onEnter() {
-      const data = operations.insertLocal('\n', selectionStart, selectionEnd);
-      socket.emit('operation', { type: 'insert', data });
+      fugue.insertLocal(selectionStart, '\n');
       socket.emit('cursorChange', { line: position.line + 1, column: 1 });
     }
 
     function onDefault(key: string) {
-      const data = operations.insertLocal(key, selectionStart, selectionEnd);
-      socket.emit('operation', { type: 'insert', data });
+      fugue.insertLocal(selectionStart, key);
       socket.emit('cursorChange', { line: position.line, column: position.column + 1 });
     }
     switch (key) {

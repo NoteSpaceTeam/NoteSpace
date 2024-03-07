@@ -1,25 +1,24 @@
-let dataMem: string[] = [];
+import { Tree } from '../domain/crdt/tree';
 
-function getDocument() {
-  return dataMem;
+const tree = new Tree();
+
+function getTree(): TreeData<unknown> {
+  return {
+    root: tree.root,
+    nodes: tree.nodes,
+  };
 }
 
-function deleteDocument() {
-  dataMem = [];
+function insertCharacter({ id, value, parent, side }: InsertMessage<unknown>): void {
+  tree.addNode(id, value, parent, side);
 }
 
-function insertCharacter(data: string[]) {
-  dataMem = dataMem.concat(data);
-  // dataMem.sort((a, b) => a[a.length - 1].localeCompare(b[b.length - 1]))
-}
-
-function deleteCharacter(data: string[]) {
-  //dataMem = dataMem.filter(char => char.substring(0, char.length - 1) !== character.substring(0, character.length - 1));
+function deleteCharacter({ id }: DeleteMessage): void {
+  tree.deleteNode(id);
 }
 
 export default {
-  getDocument,
+  getTree,
   insertCharacter,
   deleteCharacter,
-  deleteDocument,
 };

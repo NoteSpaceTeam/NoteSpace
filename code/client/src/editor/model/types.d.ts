@@ -1,4 +1,4 @@
-type OperationData = {
-  type: 'insert' | 'delete';
-  data: string[];
+type TreeData<T> = {
+  root: Node<T>;
+  nodes: Map<string, Node<T>[]>;
 };

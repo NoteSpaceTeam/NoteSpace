@@ -1,5 +1,5 @@
-import { useEffect} from 'react';
-import {socket} from "./socket.ts";
+import { useEffect } from 'react';
+import { socket } from './socket.ts';
 
 function useSocketListeners(eventHandlers: Record<string, (...args: any[]) => void>) {
   useEffect(() => {
