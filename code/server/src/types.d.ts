@@ -1,11 +1,13 @@
 type Database = {
   getTree: <T>() => TreeData<T>;
+  deleteTree: () => void;
   insertCharacter: <T>(msg: InsertMessage<T>) => void;
   deleteCharacter: (msg: DeleteMessage) => void;
 };
 
 type Service = {
   getTree: <T>() => TreeData<T>;
+  deleteTree: () => void;
   insertCharacter: <T>(msg: InsertMessage<T>) => void;
   deleteCharacter: (msg: DeleteMessage) => void;
 };
@@ -30,5 +32,5 @@ type DeleteMessage = {
 
 type TreeData<T> = {
   root: Node<T>;
-  nodes: Map<string, Node<T>[]>;
+  nodes: Record<string, Node<T>[]>;
 };

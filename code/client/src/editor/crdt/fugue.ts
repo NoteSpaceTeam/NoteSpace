@@ -1,23 +1,20 @@
 import { DeleteMessage, InsertMessage, Node } from './types.ts';
 import { Tree } from './tree.ts';
-import { generateReplicaId } from './utils.ts';
+import { generateRandomReplicaId } from './utils.ts';
 import { socket } from '../../socket/socket.ts';
 
 export class Fugue<T> {
   private readonly replicaId: string;
   private counter = 0;
-  private _tree: Tree<T> | undefined;
+  private readonly tree: Tree<T>;
 
   constructor() {
-    this.replicaId = generateReplicaId();
-  }
-
-  get tree(): Tree<T> {
-    return this._tree!;
+    this.replicaId = generateRandomReplicaId();
+    this.tree = new Tree();
   }
 
   setTree(root: Node<T>, nodes: Map<string, Node<T>[]>): void {
-    this._tree = new Tree(root, nodes);
+    this.tree.setTree(root, nodes);
   }
 
   insertLocal(index: number, ...values: T[]): InsertMessage<T>[] {

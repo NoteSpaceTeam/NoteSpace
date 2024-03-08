@@ -1,12 +1,15 @@
 import { Tree } from '../domain/crdt/tree';
 
-const tree = new Tree();
+let tree = new Tree();
 
 function getTree(): TreeData<unknown> {
-  return {
-    root: tree.root,
-    nodes: tree.nodes,
-  };
+  const root = tree.root;
+  const nodes = Object.fromEntries(Array.from(tree.nodes.entries()));
+  return { root, nodes };
+}
+
+function deleteTree(): void {
+  tree = new Tree();
 }
 
 function insertCharacter({ id, value, parent, side }: InsertMessage<unknown>): void {
@@ -19,6 +22,7 @@ function deleteCharacter({ id }: DeleteMessage): void {
 
 export default {
   getTree,
+  deleteTree,
   insertCharacter,
   deleteCharacter,
 };

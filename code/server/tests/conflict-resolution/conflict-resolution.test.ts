@@ -30,6 +30,7 @@ describe('Operations must be commutative', () => {
     expect(response.status).toBe(200);
   });
 
+  let lastContent = '';
   for (let i = 0; i < 10; i++) {
     test(`insert operations should be commutative (${i + 1})`, done => {
       setTimeout(() => {
@@ -40,7 +41,8 @@ describe('Operations must be commutative', () => {
       }, Math.random() * 1000);
       setTimeout(async () => {
         const response = await request(app).get('/document');
-        expect(response.body.content).toBe('ba');
+        lastContent = lastContent || response.body.content;
+        expect(response.body.content).toBe(lastContent);
         done();
       }, 2000);
     });

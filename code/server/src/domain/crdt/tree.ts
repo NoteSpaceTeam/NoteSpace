@@ -51,7 +51,6 @@ export class Tree<T> {
 
     // Insert into parent's siblings.
     this.insertIntoSiblings(node);
-
     this.updateSize(node, 1);
   }
 

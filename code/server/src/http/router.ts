@@ -10,6 +10,11 @@ export default function (service: Service) {
     res.send(content);
   }
 
+  function deleteDocument(req: Request, res: Response) {
+    service.deleteTree();
+    res.status(200).send();
+  }
+
   const router = express.Router();
   router.use(express.urlencoded({ extended: true }));
 
@@ -17,6 +22,7 @@ export default function (service: Service) {
     res.send('Welcome to NoteSpace');
   });
   router.get('/document', getDocument);
+  router.delete('/document', deleteDocument);
 
   return router;
 }

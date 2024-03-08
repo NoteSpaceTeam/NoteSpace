@@ -3,6 +3,10 @@ export default function Services(database: Database) {
     return database.getTree();
   }
 
+  function deleteTree() {
+    database.deleteTree();
+  }
+
   function insertCharacter(msg: InsertMessage<unknown>) {
     if (msg.type !== 'insert') throw new Error('Invalid operation type');
     database.insertCharacter(msg);
@@ -15,6 +19,7 @@ export default function Services(database: Database) {
 
   return {
     getTree,
+    deleteTree,
     insertCharacter,
     deleteCharacter,
   };

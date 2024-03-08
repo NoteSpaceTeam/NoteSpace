@@ -24,18 +24,17 @@ app.use(cors({ origin: '*' }));
 app.use('/', api);
 
 io.on('connection', socket => {
-  console.log('a client connected');
+  // console.log('a client connected');
 
   if (socket.connected) {
-    const { root, nodes } = services.getTree();
-    const nodesObj = Object.fromEntries(nodes);
-    socket.emit('document', { root, nodes: nodesObj });
+    const tree = services.getTree();
+    socket.emit('document', tree);
   }
 
   Object.entries(events).forEach(([event, handler]) => {
     socket.on(event, data => {
       try {
-        console.log(event, data);
+        // console.log(event, data);
         handler(socket, data);
       } catch (e) {
         socket.emit('error');

@@ -1,15 +1,28 @@
 import { Id, Node } from './types.ts';
 
 export class Tree<T> {
+  // nodes mapping by id
+  private nodes = new Map<string, Node<T>[]>();
   public root: Node<T>;
 
-  // nodes by id
-  private nodes = new Map<string, Node<T>[]>();
+  constructor() {
+    this.root = {
+      id: { sender: '', counter: 0 },
+      value: null,
+      isDeleted: true,
+      parent: null,
+      side: 'R',
+      leftChildren: [],
+      rightChildren: [],
+      size: 0,
+    };
+    this.nodes.set('', [this.root]);
+  }
 
-  constructor(root: Node<T>, nodes: Map<string, Node<T>[]>) {
+  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>) {
     this.root = root;
-    this.nodes = new Map<string, Node<T>[]>(Array.from(Object.entries(nodes)));
-    this.nodes.set('', [root]);
+    this.nodes = nodes;
+    this.nodes.set('', [this.root]);
   }
 
   addNode(id: Id, value: T, parent: Id, side: 'L' | 'R') {
@@ -24,7 +37,7 @@ export class Tree<T> {
       size: 0,
     };
 
-    // Add to nodesByID.
+    // Add to nodes map
     let bySender = this.nodes.get(id.sender);
     if (bySender === undefined) {
       bySender = [];
@@ -34,7 +47,6 @@ export class Tree<T> {
 
     // Insert into parent's siblings.
     this.insertIntoSiblings(node);
-
     this.updateSize(node, 1);
   }
 
