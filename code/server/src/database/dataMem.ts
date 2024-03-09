@@ -4,8 +4,8 @@ let tree = new Tree();
 
 function getTree(): TreeData<unknown> {
   const root = tree.root;
-  // const nodes = Object.fromEntries(Array.from(tree.nodes.entries()));
-  return { root };
+  const nodes = Object.fromEntries(Array.from(tree.nodes.entries()));
+  return { root, nodes };
 }
 
 function deleteTree(): void {

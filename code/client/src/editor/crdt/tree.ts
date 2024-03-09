@@ -2,7 +2,7 @@ import { Id, Node } from './types.ts';
 
 export class Tree<T> {
   // nodes mapping by id
-  private readonly nodes = new Map<string, Node<T>[]>();
+  private nodes = new Map<string, Node<T>[]>();
   public root: Node<T>;
 
   constructor() {
@@ -19,33 +19,21 @@ export class Tree<T> {
     this.nodes.set('', [this.root]);
   }
 
-  setTree(root: Node<T>) {
+  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>) {
+    this.nodes = nodes;
     this.root = root;
     this.buildNodesMap();
   }
 
   private buildNodesMap() {
-    // Clear the existing map
-    this.nodes.clear();
-
-    // Traverse the tree and populate the nodes map
-    const stack: Node<T>[] = [this.root];
-    while (stack.length > 0) {
-      const node = stack.pop();
-      if (node) {
-        // Add the current node to the map
-        let bySender = this.nodes.get(node.id.sender);
-        if (!bySender) {
-          bySender = [];
-          this.nodes.set(node.id.sender, bySender);
-        }
-        bySender.push(node);
-
-        // Push the children onto the stack for further processing
-        for (const child of node.leftChildren.concat(node.rightChildren)) {
-          stack.push(child);
-        }
+    this.nodes.set(this.root.id.sender, [this.root]);
+    for (const node of this.traverse(this.root)) {
+      let bySender = this.nodes.get(node.id.sender);
+      if (bySender === undefined) {
+        bySender = [];
+        this.nodes.set(node.id.sender, bySender);
       }
+      bySender.push(node);
     }
   }
 
@@ -82,9 +70,9 @@ export class Tree<T> {
     const siblings = node.side === 'L' ? parent.leftChildren : parent.rightChildren;
     let i = 0;
     for (; i < siblings.length; i++) {
-      if (!(node.id.sender > siblings[i].id.sender)) break;
+      if (!(node.id.sender > siblings[i].sender)) break;
     }
-    siblings.splice(i, 0, node);
+    siblings.splice(i, 0, node.id);
   }
 
   /**
@@ -118,7 +106,8 @@ export class Tree<T> {
     let remaining = index;
     // eslint-disable-next-line no-constant-condition
     recurse: while (true) {
-      for (const child of node.leftChildren) {
+      for (const childId of node.leftChildren) {
+        const child = this.getById(childId);
         if (remaining < child.size) {
           node = child;
           continue recurse;
@@ -129,7 +118,8 @@ export class Tree<T> {
         if (remaining === 0) return node;
         remaining--;
       }
-      for (const child of node.rightChildren) {
+      for (const childId of node.rightChildren) {
+        const child = this.getById(childId);
         if (remaining < child.size) {
           node = child;
           continue recurse;
@@ -144,15 +134,15 @@ export class Tree<T> {
    * Returns the leftmost left-only descendant of node, i.e., the
    * first left child of the first left child ... of node.
    */
-  leftmostDescendant(node: Node<T>): Node<T> {
-    let desc = node;
-    for (; desc.leftChildren.length !== 0; desc = desc.leftChildren[0]) {
+  leftmostDescendant(node: Id): Node<T> {
+    let desc = this.getById(node);
+    for (; desc.leftChildren.length !== 0; desc = this.getById(desc.leftChildren[0])) {
       /* empty */
     }
     return desc;
   }
 
-  *traverse(node: Node<T>): IterableIterator<T> {
+  *traverse(node: Node<T>): IterableIterator<Node<T>> {
     // A recursive approach (like in the paper) would be simpler,
     // but overflows the stack at modest
     // depths (~4000). So we do an iterative approach instead.
@@ -169,7 +159,7 @@ export class Tree<T> {
         // We are done with the children on top.side.
         if (top.side === 'L') {
           // Visit us, then move to right children.
-          if (!current.isDeleted) yield current.value!;
+          if (!current.isDeleted) yield current;
           top.side = 'R';
           top.childIndex = 0;
         } else {
@@ -179,7 +169,7 @@ export class Tree<T> {
           stack.pop();
         }
       } else {
-        const child = children[top.childIndex];
+        const child = this.getById(children[top.childIndex]);
         // Save for later that we need to visit the next child.
         top.childIndex++;
         if (child.size > 0) {

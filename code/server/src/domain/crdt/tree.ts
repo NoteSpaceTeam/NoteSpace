@@ -4,16 +4,15 @@ type Node<T> = {
   isDeleted: boolean;
   parent: Id | null;
   side: 'L' | 'R';
-  leftChildren: Node<T>[];
-  rightChildren: Node<T>[];
+  leftChildren: Id[];
+  rightChildren: Id[];
   size: number;
 };
 
 export class Tree<T> {
-  readonly root: Node<T>;
-
-  // nodes by id
-  readonly nodes = new Map<string, Node<T>[]>();
+  // nodes mapping by id
+  public readonly nodes = new Map<string, Node<T>[]>();
+  public root: Node<T>;
 
   constructor() {
     this.root = {
@@ -41,7 +40,7 @@ export class Tree<T> {
       size: 0,
     };
 
-    // add to nodes map
+    // Add to nodes map
     let bySender = this.nodes.get(id.sender);
     if (bySender === undefined) {
       bySender = [];
@@ -54,15 +53,6 @@ export class Tree<T> {
     this.updateSize(node, 1);
   }
 
-  deleteNode(id: Id) {
-    const node = this.getById(id);
-    if (!node.isDeleted) {
-      node.value = null;
-      node.isDeleted = true;
-      this.updateSize(node, -1);
-    }
-  }
-
   private insertIntoSiblings(node: Node<T>) {
     // Insert node among its same-side siblings, in lexicographic order by id.sender.
     // (The insertion logic guarantees we will never have same-side siblings
@@ -71,9 +61,9 @@ export class Tree<T> {
     const siblings = node.side === 'L' ? parent.leftChildren : parent.rightChildren;
     let i = 0;
     for (; i < siblings.length; i++) {
-      if (!(node.id.sender > siblings[i].id.sender)) break;
+      if (!(node.id.sender > siblings[i].sender)) break;
     }
-    siblings.splice(i, 0, node);
+    siblings.splice(i, 0, node.id);
   }
 
   /**
@@ -92,5 +82,14 @@ export class Tree<T> {
       if (node !== undefined) return node;
     }
     throw new Error('Unknown ID: ' + JSON.stringify(id));
+  }
+
+  deleteNode(id: Id): void {
+    const node = this.getById(id);
+    if (!node.isDeleted) {
+      node.value = null;
+      node.isDeleted = true;
+      this.updateSize(node, -1);
+    }
   }
 }

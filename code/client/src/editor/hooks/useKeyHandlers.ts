@@ -8,9 +8,12 @@ function useKeyHandlers(fugue: Fugue<unknown>) {
     const selectionStart = textarea.selectionStart;
     const selectionEnd = textarea.selectionEnd;
     const position = getCursorPosition(textarea);
-
+    console.log('key', key);
     function onBackspace() {
-      if (position.line === 0 && position.column === 0) return;
+      console.log('selectionStart', selectionStart);
+      console.log('selectionEnd', selectionEnd);
+      if (selectionStart === 0 && selectionEnd == 0) return;
+      console.log('backspace');
       fugue.deleteLocal(selectionStart, selectionEnd);
       socket.emit('cursorChange', { line: position.line, column: position.column - 1 });
     }

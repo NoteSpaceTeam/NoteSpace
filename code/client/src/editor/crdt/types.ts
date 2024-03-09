@@ -9,8 +9,8 @@ export type Node<T> = {
   isDeleted: boolean;
   parent: Id | null;
   side: 'L' | 'R';
-  leftChildren: Node<T>[];
-  rightChildren: Node<T>[];
+  leftChildren: Id[];
+  rightChildren: Id[];
   size: number;
 };
 

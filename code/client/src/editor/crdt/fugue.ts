@@ -13,8 +13,8 @@ export class Fugue<T> {
     this.tree = new Tree();
   }
 
-  setTree(root: Node<T>): void {
-    this.tree.setTree(root);
+  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>): void {
+    this.tree.setTree(root, nodes);
   }
 
   insertLocal(index: number, ...values: T[]): InsertMessage<T>[] {
@@ -53,7 +53,7 @@ export class Fugue<T> {
   }
 
   deleteLocal(startIndex: number, endIndex: number): void {
-    for (let i = startIndex - 1; i < endIndex; i++) {
+    for (let i = endIndex - 1; i >= startIndex; i--) {
       const msg = this.deleteOne(i);
       this.deleteNode(msg);
       socket.emit('operation', msg);
@@ -90,7 +90,7 @@ export class Fugue<T> {
     const iterator = this.tree.traverse(this.tree.root);
     const values: T[] = [];
     for (let node = iterator.next(); !node.done; node = iterator.next()) {
-      values.push(node.value);
+      values.push(node.value.value!);
     }
     return values.join('');
   }
