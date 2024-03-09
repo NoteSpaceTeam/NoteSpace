@@ -13,8 +13,8 @@ export class Fugue<T> {
     this.tree = new Tree();
   }
 
-  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>): void {
-    this.tree.setTree(root, nodes);
+  setTree(root: Node<T>): void {
+    this.tree.setTree(root);
   }
 
   insertLocal(index: number, ...values: T[]): InsertMessage<T>[] {
@@ -86,13 +86,13 @@ export class Fugue<T> {
     return node.value!;
   }
 
-  values(): T[] {
+  text(): string {
     const iterator = this.tree.traverse(this.tree.root);
     const values: T[] = [];
     for (let node = iterator.next(); !node.done; node = iterator.next()) {
       values.push(node.value);
     }
-    return values;
+    return values.join('');
   }
 
   get length(): number {

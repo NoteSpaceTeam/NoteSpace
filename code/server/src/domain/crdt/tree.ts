@@ -41,7 +41,7 @@ export class Tree<T> {
       size: 0,
     };
 
-    // Add to nodesByID.
+    // add to nodes map
     let bySender = this.nodes.get(id.sender);
     if (bySender === undefined) {
       bySender = [];

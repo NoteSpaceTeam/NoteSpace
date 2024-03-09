@@ -24,7 +24,7 @@ app.use(cors({ origin: '*' }));
 app.use('/', api);
 
 io.on('connection', socket => {
-  // console.log('a client connected');
+  console.log('a client connected');
 
   if (socket.connected) {
     const tree = services.getTree();

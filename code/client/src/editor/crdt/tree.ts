@@ -2,7 +2,7 @@ import { Id, Node } from './types.ts';
 
 export class Tree<T> {
   // nodes mapping by id
-  private nodes = new Map<string, Node<T>[]>();
+  private readonly nodes = new Map<string, Node<T>[]>();
   public root: Node<T>;
 
   constructor() {
@@ -19,10 +19,34 @@ export class Tree<T> {
     this.nodes.set('', [this.root]);
   }
 
-  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>) {
+  setTree(root: Node<T>) {
     this.root = root;
-    this.nodes = nodes;
-    this.nodes.set('', [this.root]);
+    this.buildNodesMap();
+  }
+
+  private buildNodesMap() {
+    // Clear the existing map
+    this.nodes.clear();
+
+    // Traverse the tree and populate the nodes map
+    const stack: Node<T>[] = [this.root];
+    while (stack.length > 0) {
+      const node = stack.pop();
+      if (node) {
+        // Add the current node to the map
+        let bySender = this.nodes.get(node.id.sender);
+        if (!bySender) {
+          bySender = [];
+          this.nodes.set(node.id.sender, bySender);
+        }
+        bySender.push(node);
+
+        // Push the children onto the stack for further processing
+        for (const child of node.leftChildren.concat(node.rightChildren)) {
+          stack.push(child);
+        }
+      }
+    }
   }
 
   addNode(id: Id, value: T, parent: Id, side: 'L' | 'R') {
@@ -92,6 +116,7 @@ export class Tree<T> {
     // A recursive approach would be simpler, but overflows the stack at modest
     // depths (~4000). So we do an iterative approach instead.
     let remaining = index;
+    // eslint-disable-next-line no-constant-condition
     recurse: while (true) {
       for (const child of node.leftChildren) {
         if (remaining < child.size) {
@@ -121,7 +146,9 @@ export class Tree<T> {
    */
   leftmostDescendant(node: Node<T>): Node<T> {
     let desc = node;
-    for (; desc.leftChildren.length !== 0; desc = desc.leftChildren[0]) {}
+    for (; desc.leftChildren.length !== 0; desc = desc.leftChildren[0]) {
+      /* empty */
+    }
     return desc;
   }
 

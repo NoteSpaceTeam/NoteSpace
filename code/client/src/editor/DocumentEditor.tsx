@@ -7,7 +7,7 @@ import TextArea from '../shared/components/TextArea/TextArea.tsx';
 import { socket } from '../socket/socket.ts';
 import './DocumentEditor.scss';
 import useFugueCRDT from './crdt/useFugueCRDT.tsx';
-import { DeleteMessage, InsertMessage, Node } from './crdt/types.ts';
+import { DeleteMessage, InsertMessage } from './crdt/types.ts';
 
 function DocumentEditor() {
   const [text, setText] = useState('');
@@ -25,13 +25,12 @@ function DocumentEditor() {
       default:
         throw new Error('Invalid operation type');
     }
-    setText(fugue.values().join(''));
+    setText(fugue.text());
   }
 
-  function onDocument<T>({ nodes, root }: TreeData<T>) {
-    const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
-    fugue.setTree(root, nodesMap);
-    setText(fugue.values().join(''));
+  function onDocument<T>({ root }: TreeData<T>) {
+    fugue.setTree(root);
+    setText(fugue.text());
   }
 
   function onCursorMove(textarea: HTMLTextAreaElement) {
