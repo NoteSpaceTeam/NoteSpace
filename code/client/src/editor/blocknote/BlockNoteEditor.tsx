@@ -8,7 +8,7 @@ import SlashMenu from './slashMenus/SlashMenu.tsx';
 import WorkspaceMenu from './slashMenus/WorkspaceMenu.tsx';
 
 interface EditorProps extends Omit<ComponentProps<typeof BlockNoteView>, 'editor'> {
-  value: string;
+  value?: string;
 }
 
 export function Editor(props: EditorProps) {

@@ -3,9 +3,8 @@ import { Tree } from '../domain/crdt/tree';
 let tree = new Tree();
 
 function getTree(): TreeData<unknown> {
-  const root = tree.root;
   const nodes = Object.fromEntries(Array.from(tree.nodes.entries()));
-  return { root, nodes };
+  return { nodes };
 }
 
 function deleteTree(): void {

@@ -19,10 +19,48 @@ export class Tree<T> {
     this.nodes.set('', [this.root]);
   }
 
-  setTree(root: Node<T>, nodes: Map<string, Node<T>[]>) {
+  setTree(nodes: Map<string, Node<T>[]>) {
     this.nodes = nodes;
-    this.root = root;
+    this.root = this.buildTree(nodes);
     this.buildNodesMap();
+  }
+
+  buildTree<T>(nodes: Map<string, Node<T>[]>): Node<T> {
+    const getChildren = (node: Node<T>, side: 'L' | 'R'): Node<T>[] => {
+      return Array.from(nodes.values()).flatMap(nodeArray =>
+        nodeArray.filter(
+          n => n.parent?.sender === node.id.sender && n.parent?.counter === node.id.counter && n.side === side
+        )
+      );
+    };
+
+    // get size of non deleted children recursively
+    const getSize = (node: Node<T>): number => {
+      return (
+        1 +
+        getChildren(node, 'L').reduce((acc, n) => acc + getSize(n), 0) +
+        getChildren(node, 'R').reduce((acc, n) => acc + getSize(n), 0)
+      );
+    };
+
+    function buildSubtree(nodeId: Id): Node<T> | null {
+      const node = nodes.get(nodeId.sender)?.[nodeId.counter];
+      if (!node) return null;
+
+      // get children
+      const leftChildren = getChildren(node, 'L').map(n => n.id);
+      const rightChildren = getChildren(node, 'R').map(n => n.id);
+
+      // return the current node
+      return {
+        ...node,
+        leftChildren,
+        rightChildren,
+        size: getSize(node) - 1,
+      };
+    }
+    const rootNode = nodes.get('')![0];
+    return buildSubtree(rootNode.id)!;
   }
 
   private buildNodesMap() {
