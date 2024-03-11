@@ -3,6 +3,18 @@ export type Id = {
   counter: number;
 };
 
+/**
+ * A node in the tree.
+ * @param T the type of the value stored in the node.
+ * @param id the id of the node.
+ * @param value the value stored in the node.
+ * @param isDeleted whether the node is deleted.
+ * @param parent the id of the parent node.
+ * @param side the side of the parent node where this node is located.
+ * @param leftChildren the ids of the left children.
+ * @param rightChildren the ids of the right children.
+ * @param depth the depth of the node in the tree.
+ */
 export type Node<T> = {
   id: Id;
   value: T | null;
@@ -11,7 +23,7 @@ export type Node<T> = {
   side: 'L' | 'R';
   leftChildren: Id[];
   rightChildren: Id[];
-  size: number;
+  depth: number;
 };
 
 export type InsertMessage<T> = {

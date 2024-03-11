@@ -1,6 +1,6 @@
 import { DeleteMessage, InsertMessage, Node } from './types.ts';
 import { Tree } from './tree.ts';
-import { generateRandomReplicaId } from './utils.ts';
+import { generateReplicaId } from './utils.ts';
 import { socket } from '../../socket/socket.ts';
 
 export class Fugue<T> {
@@ -9,100 +9,133 @@ export class Fugue<T> {
   private readonly tree: Tree<T>;
 
   constructor() {
-    this.replicaId = generateRandomReplicaId();
+    this.replicaId = generateReplicaId();
     this.tree = new Tree();
   }
 
-  setTree(nodes: Map<string, Node<T>[]>): void {
-    this.tree.setTree(nodes);
+  /**
+   * Builds the tree from the given nodes map.
+   * @param nodesMap
+   */
+  setTree(nodesMap: Map<string, Node<T>[]>): void {
+    this.tree.setTree(nodesMap);
   }
 
-  insertLocal(index: number, ...values: T[]): InsertMessage<T>[] {
+  /**
+   * Inserts the given values starting from the given index.
+   * @param start
+   * @param values
+   */
+  insertLocal(start: number, ...values: T[]): InsertMessage<T>[] {
     return values.map((value, i) => {
-      const msg = this.insertOne(index + i, value);
+      const msg = this.insertOne(start + i, value);
       this.addNode(msg);
-      socket.emit('operation', msg);
+      socket.emit('operation', msg); // FIXME: break data into data chunks - less network traffic
       return msg;
     });
   }
 
+  /**
+   * Inserts a new node in the tree based on the given message.
+   * @param message - the insert message
+   */
   insertRemote(message: InsertMessage<T>): void {
     this.addNode(message);
   }
 
-  private insertOne(index: number, value: T): InsertMessage<T> {
+  /**
+   * Inserts a new node in the tree based on the given message.
+   * @param start - the index where the new node should be inserted
+   * @param value - the value of the new node
+   * @private
+   * @returns the insert message
+   */
+  private insertOne(start: number, value: T): InsertMessage<T> {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const leftOrigin = index === 0 ? this.tree.root : this.tree.getByIndex(this.tree.root, index - 1);
+    const leftOrigin = start === 0 ? this.tree.root : this.tree.traverseBy(this.tree.root, start - 1);
 
-    if (leftOrigin.rightChildren.length === 0) {
-      // leftOrigin has no right children, so the new node becomes
-      // a right child of leftOrigin.
-      return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R' };
-    } else {
-      // Otherwise, the new node is added as a left child of rightOrigin, which
-      // is the next node after leftOrigin *including tombstones*.
-      // In this case, rightOrigin is the leftmost descendant of leftOrigin's
-      // first right child.
-      const rightOrigin = this.tree.leftmostDescendant(leftOrigin.rightChildren[0]);
-      return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L' };
-    }
+    // leftOrigin has no right children, so we add the new node as a right child
+    if (leftOrigin.rightChildren.length === 0) return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R' };
+
+    // Otherwise, the new node is added as a left child of rightOrigin, which
+    // is the next node after leftOrigin *including tombstones*.
+    // In this case, rightOrigin is the leftmost descendant of leftOrigin's
+    // first right child.
+    const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
+    return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L' };
   }
 
-  private addNode({ id, value, parent, side }: InsertMessage<T>): void {
+  /**
+   * Inserts a new node in the tree based on the given message.
+   * @param id
+   * @param value
+   * @param parent
+   * @param side
+   * @private
+   */
+  private addNode = ({ id, value, parent, side }: InsertMessage<T>) =>
     this.tree.addNode(id, value, parent, side);
-  }
 
-  deleteLocal(startIndex: number, endIndex: number): void {
+  /**
+   * Deletes the nodes from the given start index to the given end index.
+   * @param start
+   * @param end
+   */
+  deleteLocal(start: number, end: number): void {
     const deleteElement = (index: number) => {
       const msg = this.deleteOne(index);
       this.deleteNode(msg);
-      socket.emit('operation', msg);
+      socket.emit('operation', msg); // FIXME: this should be done only once after all the deletes - less network traffic
     };
-    if (startIndex === endIndex) {
-      deleteElement(endIndex);
+    if (start === end) {
+      deleteElement(end - 1);
       return;
     }
-    for (let i = endIndex - 1; i >= startIndex; i--) {
-      deleteElement(i);
-    }
+    for (let i = end - 1; i >= start; i--) deleteElement(i);
   }
 
+  /**
+   * Deletes the node based on the given message.
+   * @param message
+   */
   deleteRemote(message: DeleteMessage): void {
     this.deleteNode(message);
   }
 
+  /**
+   * Deletes the node at the given index.
+   * @param index
+   * @private
+   * @returns the delete message
+   */
   private deleteOne(index: number): DeleteMessage {
-    const node = this.tree.getByIndex(this.tree.root, index);
+    const node = this.tree.traverseBy(this.tree.root, index);
     return { type: 'delete', id: node.id };
   }
 
+  /**
+   * Deletes the node based on the given message.
+   * @param message
+   * @private
+   */
   private deleteNode(message: DeleteMessage): void {
     const node = this.tree.getById(message.id);
     if (!node.isDeleted) {
       node.value = null;
       node.isDeleted = true;
-      this.tree.updateSize(node, -1);
+      this.tree.updateDepths(node, -1);
     }
   }
 
-  get(index: number): T {
-    if (index < 0 || index >= this.length) {
-      throw new Error('index out of bounds: ' + index);
-    }
-    const node = this.tree.getByIndex(this.tree.root, index);
-    return node.value!;
-  }
-
+  /**
+   * Returns the string representation of the tree.
+   * @returns the string representation of the tree.
+   */
   toString(): string {
-    const iterator = this.tree.traverse(this.tree.root);
-    const values: T[] = [];
-    for (let node = iterator.next(); !node.done; node = iterator.next()) {
-      values.push(node.value.value!);
-    }
-    return values.join('');
+    return this.tree.toString();
   }
 
-  get length(): number {
-    return this.tree.root.size;
+  get depth(): number {
+    return this.tree.root.depth;
   }
 }

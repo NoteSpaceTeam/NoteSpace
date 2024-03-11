@@ -6,12 +6,12 @@ type Node<T> = {
   side: 'L' | 'R';
   leftChildren: Id[];
   rightChildren: Id[];
-  size: number;
+  depth: number;
 };
 
 export class Tree<T> {
   // nodes mapping by id
-  public readonly nodes = new Map<string, Node<T>[]>();
+  readonly nodesMap = new Map<string, Node<T>[]>();
   public root: Node<T>;
 
   constructor() {
@@ -23,9 +23,9 @@ export class Tree<T> {
       side: 'R',
       leftChildren: [],
       rightChildren: [],
-      size: 0,
+      depth: 0,
     };
-    this.nodes.set('', [this.root]);
+    this.nodesMap.set('', [this.root]);
   }
 
   addNode(id: Id, value: T, parent: Id, side: 'L' | 'R') {
@@ -37,46 +37,55 @@ export class Tree<T> {
       side,
       leftChildren: [],
       rightChildren: [],
-      size: 0,
+      depth: 0,
     };
 
     // Add to nodes map
-    let bySender = this.nodes.get(id.sender);
-    if (bySender === undefined) {
-      bySender = [];
-      this.nodes.set(id.sender, bySender);
-    }
-    bySender.push(node);
-
+    const senderNodes = this.nodesMap.get(id.sender) || [];
+    if (senderNodes.length === 0) this.nodesMap.set(id.sender, senderNodes);
+    senderNodes.push(node);
     // Insert into parent's siblings.
-    this.insertIntoSiblings(node);
-    this.updateSize(node, 1);
-  }
-
-  private insertIntoSiblings(node: Node<T>) {
-    // Insert node among its same-side siblings, in lexicographic order by id.sender.
-    // (The insertion logic guarantees we will never have same-side siblings
-    // with the same sender, so there is no need to sub-order by id.counter.)
-    const parent = this.getById(node.parent!);
-    const siblings = node.side === 'L' ? parent.leftChildren : parent.rightChildren;
-    let i = 0;
-    for (; i < siblings.length; i++) {
-      if (!(node.id.sender > siblings[i].sender)) break;
-    }
-    siblings.splice(i, 0, node.id);
+    this.insertChild(node);
+    // Update sizes of ancestors
+    this.updateDepths(node, 1);
   }
 
   /**
-   * Adds delta to the sizes of node and all of its ancestors.
+   * Inserts node among its same-side siblings, in lexicographic order by id.sender.
+   * @param id the id of the node.
+   * @param parent the id of the parent node.
+   * @param side the side of the parent node where this node is located.
+   * @private
    */
-  updateSize(node: Node<T>, delta: number) {
+  private insertChild({id, parent, side}: Node<T>) {
+    const parentNode = this.getById(parent!);
+    const siblings = side === 'L' ? parentNode.leftChildren : parentNode.rightChildren;
+    let i = 0;
+    for (; i < siblings.length; i++) {
+      if (!(id.sender > siblings[i].sender)) break;
+    }
+    siblings.splice(i, 0, id);
+  }
+
+  /**
+   * Updates the depth of the ancestors of the given node by delta.
+   * @param node the node whose ancestors' depths are to be updated.
+   * @param delta the amount by which to update the depths.
+   */
+  updateDepths(node: Node<T>, delta: number) {
     for (let anc: Node<T> | null = node; anc !== null; anc = anc.parent && this.getById(anc.parent)) {
-      anc.size += delta;
+      anc.depth += delta;
     }
   }
 
+  /**
+   * Returns the node with the given id.
+   * @param id the id of the node.
+   * @throws if the id is unknown.
+   * @returns the node with the given id.
+   */
   getById(id: Id): Node<T> {
-    const bySender = this.nodes.get(id.sender);
+    const bySender = this.nodesMap.get(id.sender);
     if (bySender !== undefined) {
       const node = bySender[id.counter];
       if (node !== undefined) return node;
@@ -89,7 +98,7 @@ export class Tree<T> {
     if (!node.isDeleted) {
       node.value = null;
       node.isDeleted = true;
-      this.updateSize(node, -1);
+      this.updateDepths(node, -1);
     }
   }
 }

@@ -2,7 +2,7 @@ import { Id, Node } from './types.ts';
 
 export class Tree<T> {
   // nodes mapping by id
-  private nodes = new Map<string, Node<T>[]>();
+  private nodesMap = new Map<string, Node<T>[]>();
   public root: Node<T>;
 
   constructor() {
@@ -14,67 +14,27 @@ export class Tree<T> {
       side: 'R',
       leftChildren: [],
       rightChildren: [],
-      size: 0,
+      depth: 0,
     };
-    this.nodes.set('', [this.root]);
+    this.nodesMap.set('', [this.root]);
   }
 
-  setTree(nodes: Map<string, Node<T>[]>) {
-    this.nodes = nodes;
-    this.root = this.buildTree(nodes);
-    this.buildNodesMap();
+  /**
+   * Sets the tree to the given nodes.
+   * @param nodesMap the nodes.
+   */
+  setTree(nodesMap: Map<string, Node<T>[]>) {
+    this.nodesMap = nodesMap;
+    this.root = nodesMap.get('')![0];
   }
 
-  buildTree<T>(nodes: Map<string, Node<T>[]>): Node<T> {
-    const getChildren = (node: Node<T>, side: 'L' | 'R'): Node<T>[] => {
-      return Array.from(nodes.values()).flatMap(nodeArray =>
-        nodeArray.filter(
-          n => n.parent?.sender === node.id.sender && n.parent?.counter === node.id.counter && n.side === side
-        )
-      );
-    };
-
-    // get size of non deleted children recursively
-    const getSize = (node: Node<T>): number => {
-      return (
-        1 +
-        getChildren(node, 'L').reduce((acc, n) => acc + getSize(n), 0) +
-        getChildren(node, 'R').reduce((acc, n) => acc + getSize(n), 0)
-      );
-    };
-
-    function buildSubtree(nodeId: Id): Node<T> | null {
-      const node = nodes.get(nodeId.sender)?.[nodeId.counter];
-      if (!node) return null;
-
-      // get children
-      const leftChildren = getChildren(node, 'L').map(n => n.id);
-      const rightChildren = getChildren(node, 'R').map(n => n.id);
-
-      // return the current node
-      return {
-        ...node,
-        leftChildren,
-        rightChildren,
-        size: getSize(node) - 1,
-      };
-    }
-    const rootNode = nodes.get('')![0];
-    return buildSubtree(rootNode.id)!;
-  }
-
-  private buildNodesMap() {
-    this.nodes.set(this.root.id.sender, [this.root]);
-    for (const node of this.traverse(this.root)) {
-      let bySender = this.nodes.get(node.id.sender);
-      if (bySender === undefined) {
-        bySender = [];
-        this.nodes.set(node.id.sender, bySender);
-      }
-      bySender.push(node);
-    }
-  }
-
+  /**
+   * Adds a node to the tree.
+   * @param id the id of the node.
+   * @param value the value of the node.
+   * @param parent the id of the parent node.
+   * @param side the side of the parent node where this node is located.
+   */
   addNode(id: Id, value: T, parent: Id, side: 'L' | 'R') {
     const node: Node<T> = {
       id,
@@ -84,46 +44,54 @@ export class Tree<T> {
       side,
       leftChildren: [],
       rightChildren: [],
-      size: 0,
+      depth: 0,
     };
-
     // Add to nodes map
-    let bySender = this.nodes.get(id.sender);
-    if (bySender === undefined) {
-      bySender = [];
-      this.nodes.set(id.sender, bySender);
-    }
-    bySender.push(node);
-
+    const senderNodes = this.nodesMap.get(id.sender) || [];
+    if (senderNodes.length === 0) this.nodesMap.set(id.sender, senderNodes);
+    senderNodes.push(node);
     // Insert into parent's siblings.
-    this.insertIntoSiblings(node);
-    this.updateSize(node, 1);
-  }
-
-  private insertIntoSiblings(node: Node<T>) {
-    // Insert node among its same-side siblings, in lexicographic order by id.sender.
-    // (The insertion logic guarantees we will never have same-side siblings
-    // with the same sender, so there is no need to sub-order by id.counter.)
-    const parent = this.getById(node.parent!);
-    const siblings = node.side === 'L' ? parent.leftChildren : parent.rightChildren;
-    let i = 0;
-    for (; i < siblings.length; i++) {
-      if (!(node.id.sender > siblings[i].sender)) break;
-    }
-    siblings.splice(i, 0, node.id);
+    this.insertChild(node);
+    // Update sizes of ancestors
+    this.updateDepths(node, 1);
   }
 
   /**
-   * Adds delta to the sizes of node and all of its ancestors.
+   * Inserts node among its same-side siblings, in lexicographic order by id.sender.
+   * @param id the id of the node.
+   * @param parent the id of the parent node.
+   * @param side the side of the parent node where this node is located.
+   * @private
    */
-  updateSize(node: Node<T>, delta: number) {
+  private insertChild({id, parent, side}: Node<T>) {
+    const parentNode = this.getById(parent!);
+    const siblings = side === 'L' ? parentNode.leftChildren : parentNode.rightChildren;
+    let i = 0;
+    for (; i < siblings.length; i++) {
+      if (!(id.sender > siblings[i].sender)) break;
+    }
+    siblings.splice(i, 0, id);
+  }
+
+  /**
+   * Updates the depth of the ancestors of the given node by delta.
+   * @param node the node whose ancestors' depths are to be updated.
+   * @param delta the amount by which to update the depths.
+   */
+  updateDepths(node: Node<T>, delta: number) {
     for (let anc: Node<T> | null = node; anc !== null; anc = anc.parent && this.getById(anc.parent)) {
-      anc.size += delta;
+      anc.depth += delta;
     }
   }
 
+  /**
+   * Returns the node with the given id.
+   * @param id the id of the node.
+   * @throws if the id is unknown.
+   * @returns the node with the given id.
+   */
   getById(id: Id): Node<T> {
-    const bySender = this.nodes.get(id.sender);
+    const bySender = this.nodesMap.get(id.sender);
     if (bySender !== undefined) {
       const node = bySender[id.counter];
       if (node !== undefined) return node;
@@ -132,63 +100,63 @@ export class Tree<T> {
   }
 
   /**
-   * Returns the node at the given index within node's subtree.
+   * Returns the leftmost left-only descendant of node, i.e., the
+   * first left child of the first left child ... of node.
+   *
    */
-  getByIndex(node: Node<T>, index: number): Node<T> {
-    if (index < 0 || index >= node.size) {
-      throw new Error('Index out of range: ' + index + ' (size: ' + node.size + ')');
-    }
+  getLeftmostDescendant(nodeId: Id): Node<T> {
+    let node = this.getById(nodeId);
+    for (; node.leftChildren.length !== 0; node = this.getById(node.leftChildren[0]));
+    return node;
+  }
 
-    // A recursive approach would be simpler, but overflows the stack at modest
-    // depths (~4000). So we do an iterative approach instead.
-    let remaining = index;
+  /**
+   * Traverses the tree by the given number of depth-first steps and returns the node at that position.
+   * @param node the root of the subtree.
+   * @param steps the number of depth-first steps to take.
+   * @throws if the index is out of range.
+   */
+  traverseBy(node: Node<T>, steps: number): Node<T> {
+    if (steps < 0 || steps >= node.depth) throw new Error(`Invalid number of steps: ${steps}(depth:${node.depth})`);
+    let remaining = steps;
     // eslint-disable-next-line no-constant-condition
-    recurse: while (true) {
+    recurse: while(true) {
+      // 1 - Iterate over left children first
       for (const childId of node.leftChildren) {
         const child = this.getById(childId);
-        if (remaining < child.size) {
+        if (remaining < child.depth) {
           node = child;
           continue recurse;
         }
-        remaining -= child.size;
+        remaining -= child.depth;
       }
+      // 2 - If no left children, visit the current node
       if (!node.isDeleted) {
         if (remaining === 0) return node;
         remaining--;
       }
+      // 3 - Iterate over right children
       for (const childId of node.rightChildren) {
         const child = this.getById(childId);
-        if (remaining < child.size) {
+        if (remaining < child.depth) {
           node = child;
           continue recurse;
         }
-        remaining -= child.size;
+        remaining -= child.depth;
       }
-      throw new Error('Index in range but not found');
+      throw new Error(`No node found at node: ${node.id} with steps: ${steps}`);
     }
   }
+
+
 
   /**
-   * Returns the leftmost left-only descendant of node, i.e., the
-   * first left child of the first left child ... of node.
+   * Traverses the tree in depth-first order.
+   * @param root the root of the subtree.
+   * @returns an iterator over the nodes in the subtree.
    */
-  leftmostDescendant(node: Id): Node<T> {
-    let desc = this.getById(node);
-    for (; desc.leftChildren.length !== 0; desc = this.getById(desc.leftChildren[0])) {
-      /* empty */
-    }
-    return desc;
-  }
-
-  *traverse(node: Node<T>): IterableIterator<Node<T>> {
-    // A recursive approach (like in the paper) would be simpler,
-    // but overflows the stack at modest
-    // depths (~4000). So we do an iterative approach instead.
-
-    let current = node;
-    // Stack records the next child to visit for that node.
-    // We don't need to store node because we can infer it from the
-    // current node's parent etc.
+  *traverse(root: Node<T>): IterableIterator<Node<T>> {
+    let current = root;
     const stack: { side: 'L' | 'R'; childIndex: number }[] = [{ side: 'L', childIndex: 0 }];
     while (true) {
       const top = stack[stack.length - 1];
@@ -197,25 +165,34 @@ export class Tree<T> {
         // We are done with the children on top.side.
         if (top.side === 'L') {
           // Visit us, then move to right children.
+          console.log("yielding: ", current);
           if (!current.isDeleted) yield current;
           top.side = 'R';
           top.childIndex = 0;
-        } else {
-          // Go to the parent.
-          if (current.parent === null) return;
-          current = this.getById(current.parent);
-          stack.pop();
+          continue;
         }
-      } else {
-        const child = this.getById(children[top.childIndex]);
-        // Save for later that we need to visit the next child.
-        top.childIndex++;
-        if (child.size > 0) {
-          // Traverse child.
-          current = child;
-          stack.push({ side: 'L', childIndex: 0 });
-        }
+        // Go to the parent.
+        if (current.parent === null) return;
+        current = this.getById(current.parent);
+        stack.pop();
+        continue;
+      }
+      const child = this.getById(children[top.childIndex]);
+      // Save for later that we need to visit the next child.
+      top.childIndex++;
+      if (child.depth > 0) {
+        // Traverse child.
+        current = child;
+        stack.push({ side: 'L', childIndex: 0 });
       }
     }
+  }
+
+  toString(): string {
+    const values: T[] = [];
+    for (const node of this.traverse(this.root)) {
+      values.push(node.value!);
+    }
+    return values.join('');
   }
 }

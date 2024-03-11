@@ -1,5 +1,6 @@
-import { FormEvent, SyntheticEvent, useState } from 'react';
+import React, { FormEvent, SyntheticEvent, useState } from 'react';
 import { Fugue } from '../crdt/fugue.ts';
+import { getInputType, InputType } from '../input/utils.ts';
 
 function useInputHandlers(fugue: Fugue<unknown>) {
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -11,22 +12,23 @@ function useInputHandlers(fugue: Fugue<unknown>) {
   }
 
   function onInput(e: FormEvent<HTMLTextAreaElement>) {
-    const inputType = (e.nativeEvent as InputEvent).inputType;
-    if (inputType === 'insertFromPaste') return;
+    const inputType = getInputType((e.nativeEvent as InputEvent).inputType);
+    if (inputType === InputType.insertFromPaste) return;
     const selectionStart = selection.start;
     const selectionEnd = selection.end;
 
     switch (inputType) {
-      case 'insertLineBreak':
+      case InputType.insertLineBreak:
         fugue.insertLocal(selectionStart, '\n');
         break;
-      case 'insertText': {
-        const char = e.currentTarget.value.slice(selectionStart - 1, selectionEnd);
-        console.log('insert', selectionStart - 1);
-        fugue.insertLocal(selectionStart - 1, char);
+      case InputType.insertText: {
+        const endIndex = selectionEnd === selectionStart ? selectionStart + 1 : selectionEnd + 1;
+        const char = e.currentTarget.value.slice(selectionStart, endIndex);
+        console.log('insert', selectionStart);
+        fugue.insertLocal(selectionStart, char);
         break;
       }
-      case 'deleteContentBackward': {
+      case InputType.deleteContentBackward: {
         console.log('delete', selectionStart, selectionEnd);
         if (selectionStart === 0 && selectionEnd == 0) break;
         fugue.deleteLocal(selectionStart, selectionEnd);
