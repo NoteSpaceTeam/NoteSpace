@@ -1,3 +1,4 @@
+import { Service } from '@src/types';
 import express, { Request, Response } from 'express';
 
 export default function (service: Service) {
@@ -6,8 +7,8 @@ export default function (service: Service) {
   }
 
   function getDocument(req: Request, res: Response) {
-    const content = service.getTree();
-    res.send(content);
+    const tree = service.getTree();
+    res.send(tree);
   }
 
   function deleteDocument(req: Request, res: Response) {

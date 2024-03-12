@@ -1,7 +1,7 @@
-import { DeleteMessage, InsertMessage, Node } from './types.ts';
-import { Tree } from './tree.ts';
-import { generateReplicaId } from './utils.ts';
-import { socket } from '../../socket/socket.ts';
+import { DeleteMessage, InsertMessage, Node } from '@shared/crdt/types';
+import { Tree } from '@shared/crdt/tree';
+import { generateReplicaId } from './utils';
+import { socket } from '@src/socket/socket.ts';
 
 export class Fugue<T> {
   private readonly replicaId: string;
@@ -52,7 +52,7 @@ export class Fugue<T> {
    */
   private insertOne(start: number, value: T): InsertMessage<T> {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const leftOrigin = start === 0 ? this.tree.root : this.tree.traverseBy(this.tree.root, start - 1);
+    const leftOrigin = start === 0 ? this.tree.root : this.tree.traverseByIndex(this.tree.root, start - 1);
 
     // leftOrigin has no right children, so we add the new node as a right child
     if (leftOrigin.rightChildren.length === 0) return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R' };
@@ -73,13 +73,14 @@ export class Fugue<T> {
    * @param side
    * @private
    */
-  private addNode = ({ id, value, parent, side }: InsertMessage<T>) =>
+  private addNode({ id, value, parent, side }: InsertMessage<T>) {
     this.tree.addNode(id, value, parent, side);
+  }
 
   /**
    * Deletes the nodes from the given start index to the given end index.
    * @param start
-   * @param end
+   * @param end (exclusive)
    */
   deleteLocal(start: number, end: number): void {
     const deleteElement = (index: number) => {
@@ -109,7 +110,7 @@ export class Fugue<T> {
    * @returns the delete message
    */
   private deleteOne(index: number): DeleteMessage {
-    const node = this.tree.traverseBy(this.tree.root, index);
+    const node = this.tree.traverseByIndex(this.tree.root, index);
     return { type: 'delete', id: node.id };
   }
 
@@ -119,12 +120,7 @@ export class Fugue<T> {
    * @private
    */
   private deleteNode(message: DeleteMessage): void {
-    const node = this.tree.getById(message.id);
-    if (!node.isDeleted) {
-      node.value = null;
-      node.isDeleted = true;
-      this.tree.updateDepths(node, -1);
-    }
+    this.tree.deleteNode(message.id);
   }
 
   /**
@@ -133,9 +129,5 @@ export class Fugue<T> {
    */
   toString(): string {
     return this.tree.toString();
-  }
-
-  get depth(): number {
-    return this.tree.root.depth;
   }
 }

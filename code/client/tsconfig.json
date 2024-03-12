@@ -18,8 +18,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["../shared/*"],
+      "@src/*": ["src/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "src/editor/crdt/utils.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "downlevelIteration": true,
+        "baseUrl": ".",
+        "paths": {
+            "@shared/*": ["./*"],
+        },
+        /* Language and Environment */
+        "target": "ESNext" ,
+        "module": "node16", 
+        
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+        "moduleResolution": "node16",
+        "strict": true /* Enable all strict type-checking options. */,
+        "skipLibCheck": true,
+
+    },
+    "references": [{"path": "../shared/tsconfig.json"}],
+    "files": ["src/types.d.ts"],
+    "include": ["src/**/*", "./**/*"]
+}

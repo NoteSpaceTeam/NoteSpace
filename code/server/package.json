@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "tsc && node dist/server.js",
-    "start": "nodemon src/server.ts",
+    "start": "ts-node-dev -r tsconfig-paths/register src/server.ts",
     "test": "jest --config jest.config.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
@@ -26,6 +26,8 @@
     "socket.io-client": "^4.7.4",
     "test-jest": "^1.0.1",
     "ts-jest": "^29.1.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
   },
   "dependencies": {
@@ -33,6 +35,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "nodemon": "3.1.0",
+    "shared": "file:../shared",
     "socket.io": "^4.7.4",
     "supertest": "^6.3.4"
   }

@@ -7,6 +7,7 @@ import eventsInit from './ws/events';
 import servicesInit from './services/services';
 import dataMem from './database/dataMem';
 import router from './http/router';
+import 'tsconfig-paths/register';
 
 config();
 const PORT = process.env.PORT || 8080;
@@ -16,7 +17,7 @@ const events = eventsInit(dataMem);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' },
+  cors: { origin: process.env.ORIGIN },
   connectionStateRecovery: {},
 });
 

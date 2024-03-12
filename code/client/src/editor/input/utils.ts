@@ -1,8 +1,8 @@
 enum InputType {
-  "insertText",
-  "insertLineBreak",
-  "deleteContentBackward",
-  "insertFromPaste",
+  'insertText',
+  'insertLineBreak',
+  'deleteContentBackward',
+  'insertFromPaste',
 }
 
 function getInputType(inputType: string) {

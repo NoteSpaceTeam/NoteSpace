@@ -1,12 +1,12 @@
-import { Id, Node } from './types.ts';
+import { Id, Node } from './types';
 
 export class Tree<T> {
-  // nodes mapping by id
-  private nodesMap = new Map<string, Node<T>[]>();
-  public root: Node<T>;
+
+  private _nodes = new Map<string, Node<T>[]>();
+  private _root: Node<T>;
 
   constructor() {
-    this.root = {
+    this._root = {
       id: { sender: '', counter: 0 },
       value: null,
       isDeleted: true,
@@ -16,7 +16,7 @@ export class Tree<T> {
       rightChildren: [],
       depth: 0,
     };
-    this.nodesMap.set('', [this.root]);
+    this._nodes.set('', [this.root]);
   }
 
   /**
@@ -24,8 +24,8 @@ export class Tree<T> {
    * @param nodesMap the nodes.
    */
   setTree(nodesMap: Map<string, Node<T>[]>) {
-    this.nodesMap = nodesMap;
-    this.root = nodesMap.get('')![0];
+    this._nodes = nodesMap;
+    this._root = nodesMap.get('')![0];
   }
 
   /**
@@ -47,8 +47,8 @@ export class Tree<T> {
       depth: 0,
     };
     // Add to nodes map
-    const senderNodes = this.nodesMap.get(id.sender) || [];
-    if (senderNodes.length === 0) this.nodesMap.set(id.sender, senderNodes);
+    const senderNodes = this.nodes.get(id.sender) || [];
+    if (senderNodes.length === 0) this.nodes.set(id.sender, senderNodes);
     senderNodes.push(node);
     // Insert into parent's siblings.
     this.insertChild(node);
@@ -63,7 +63,7 @@ export class Tree<T> {
    * @param side the side of the parent node where this node is located.
    * @private
    */
-  private insertChild({id, parent, side}: Node<T>) {
+  private insertChild({ id, parent, side }: Node<T>) {
     const parentNode = this.getById(parent!);
     const siblings = side === 'L' ? parentNode.leftChildren : parentNode.rightChildren;
     let i = 0;
@@ -71,6 +71,15 @@ export class Tree<T> {
       if (!(id.sender > siblings[i].sender)) break;
     }
     siblings.splice(i, 0, id);
+  }
+
+  deleteNode(id: Id) {
+    const node = this.getById(id);
+    if (!node.isDeleted) {
+      node.value = null;
+      node.isDeleted = true;
+      this.updateDepths(node, -1);
+    }
   }
 
   /**
@@ -91,7 +100,7 @@ export class Tree<T> {
    * @returns the node with the given id.
    */
   getById(id: Id): Node<T> {
-    const bySender = this.nodesMap.get(id.sender);
+    const bySender = this.nodes.get(id.sender);
     if (bySender !== undefined) {
       const node = bySender[id.counter];
       if (node !== undefined) return node;
@@ -106,30 +115,35 @@ export class Tree<T> {
    */
   getLeftmostDescendant(nodeId: Id): Node<T> {
     let node = this.getById(nodeId);
-    for (; node.leftChildren.length !== 0; node = this.getById(node.leftChildren[0]));
+    for (; node.leftChildren.length !== 0; node = this.getById(node.leftChildren[0])) {
+      /* empty */
+    }
     return node;
   }
 
   /**
    * Traverses the tree by the given number of depth-first steps and returns the node at that position.
    * @param node the root of the subtree.
-   * @param steps the number of depth-first steps to take.
+   * @param index the number of depth-first steps to take.
    * @throws if the index is out of range.
    */
-  traverseBy(node: Node<T>, steps: number): Node<T> {
-    if (steps < 0 || steps >= node.depth) throw new Error(`Invalid number of steps: ${steps}(depth:${node.depth})`);
-    let remaining = steps;
-    // eslint-disable-next-line no-constant-condition
-    recurse: while(true) {
+  traverseByIndex(node: Node<T>, index: number): Node<T> {
+    if (index < 0 || index >= node.depth) throw new Error(`Invalid index: ${index}`);
+    let remaining = index;
+    let continueLoop = true;
+    while (continueLoop) {
+      continueLoop = false;
       // 1 - Iterate over left children first
       for (const childId of node.leftChildren) {
         const child = this.getById(childId);
         if (remaining < child.depth) {
           node = child;
-          continue recurse;
+          continueLoop = true;
+          break;
         }
         remaining -= child.depth;
       }
+      if (continueLoop) continue;
       // 2 - If no left children, visit the current node
       if (!node.isDeleted) {
         if (remaining === 0) return node;
@@ -140,15 +154,14 @@ export class Tree<T> {
         const child = this.getById(childId);
         if (remaining < child.depth) {
           node = child;
-          continue recurse;
+          continueLoop = true;
+          break;
         }
         remaining -= child.depth;
       }
-      throw new Error(`No node found at node: ${node.id} with steps: ${steps}`);
     }
+    throw new Error(`No node found at node: ${node.id} with index: ${index}`);
   }
-
-
 
   /**
    * Traverses the tree in depth-first order.
@@ -164,8 +177,7 @@ export class Tree<T> {
       if (top.childIndex === children.length) {
         // We are done with the children on top.side.
         if (top.side === 'L') {
-          // Visit us, then move to right children.
-          console.log("yielding: ", current);
+          // Visit node then move to right children.
           if (!current.isDeleted) yield current;
           top.side = 'R';
           top.childIndex = 0;
@@ -194,5 +206,13 @@ export class Tree<T> {
       values.push(node.value!);
     }
     return values.join('');
+  }
+
+  get root(): Node<T> {
+    return this._root;
+  }
+
+  get nodes() {
+    return this._nodes;
   }
 }

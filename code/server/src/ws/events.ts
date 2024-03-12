@@ -1,4 +1,6 @@
 import { Socket } from 'socket.io';
+import { Database } from '@src/types';
+import { DeleteMessage, InsertMessage } from '@shared/crdt/types';
 
 type CursorChangeData = {
   line: number;

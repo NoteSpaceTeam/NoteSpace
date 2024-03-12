@@ -1,10 +1,10 @@
-import { Tree } from '../domain/crdt/tree';
+import { Tree } from 'shared/crdt/tree';
+import { DeleteMessage, InsertMessage, Node } from 'shared/crdt/types';
 
 let tree = new Tree();
 
-function getTree(): TreeData<unknown> {
-  const nodes = Object.fromEntries(Array.from(tree.nodesMap.entries()));
-  return { nodes };
+function getTree(): Record<string, Node<unknown>[]> {
+  return Object.fromEntries(Array.from(tree.nodes.entries()));
 }
 
 function deleteTree(): void {
