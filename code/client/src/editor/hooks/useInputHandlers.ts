@@ -24,12 +24,10 @@ function useInputHandlers(fugue: Fugue<unknown>) {
       case InputType.insertText: {
         const endIndex = selectionEnd === selectionStart ? selectionStart + 1 : selectionEnd + 1;
         const char = e.currentTarget.value.slice(selectionStart, endIndex);
-        console.log('insert', selectionStart);
         fugue.insertLocal(selectionStart, char);
         break;
       }
       case InputType.deleteContentBackward: {
-        console.log('delete', selectionStart, selectionEnd);
         if (selectionStart === 0 && selectionEnd == 0) break;
         fugue.deleteLocal(selectionStart, selectionEnd);
         break;
@@ -37,7 +35,6 @@ function useInputHandlers(fugue: Fugue<unknown>) {
     }
   }
   function onPaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
-    e.preventDefault();
     const selectionStart = e.currentTarget.selectionStart;
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;

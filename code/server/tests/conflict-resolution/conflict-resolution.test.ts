@@ -5,7 +5,6 @@ import { InsertMessage, DeleteMessage } from './types';
 import app from '../../src/server';
 import { Node } from 'shared/crdt/types';
 import { Tree } from 'shared/crdt/tree';
-import 'tsconfig-paths/register';
 import request = require('supertest');
 
 const baseURL = `http://localhost:${process.env.PORT}`;

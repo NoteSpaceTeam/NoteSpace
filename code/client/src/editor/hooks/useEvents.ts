@@ -1,6 +1,6 @@
-import { DeleteMessage, InsertMessage, Node } from '../crdt/types.ts';
 import useSocketListeners from '../../socket/useSocketListeners.ts';
 import { Fugue } from '../crdt/fugue.ts';
+import { DeleteMessage, InsertMessage, Node } from '@shared/crdt/types.ts';
 
 function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
   function onOperation<T>(operation: InsertMessage<T> | DeleteMessage) {
@@ -17,7 +17,7 @@ function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
     onDone();
   }
 
-  function onDocument<T>({ nodes }: TreeData<T>) {
+  function onDocument<T>(nodes: Record<string, Node<T>[]>) {
     const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
     fugue.setTree(nodesMap);
     onDone();

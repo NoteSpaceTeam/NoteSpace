@@ -1,5 +1,5 @@
 import { Fugue } from '../../../src/editor/crdt/fugue';
-import { InsertMessage, DeleteMessage } from '../../../src/editor/crdt/types';
+import { InsertMessage, DeleteMessage } from '@shared/crdt/types';
 
 describe('Fugue', () => {
   let fugue: Fugue<string>;

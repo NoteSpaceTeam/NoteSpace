@@ -5,15 +5,15 @@ import { config } from 'dotenv';
 import cors from 'cors';
 import eventsInit from './ws/events';
 import servicesInit from './services/services';
-import dataMem from './database/dataMem';
+import database from './database/firestore';
 import router from './http/router';
 import 'tsconfig-paths/register';
 
 config();
 const PORT = process.env.PORT || 8080;
-const services = servicesInit(dataMem);
+const services = servicesInit(database);
 const api = router(services);
-const events = eventsInit(dataMem);
+const events = eventsInit(database);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -24,11 +24,11 @@ const io = new Server(server, {
 app.use(cors({ origin: '*' }));
 app.use('/', api);
 
-io.on('connection', socket => {
+io.on('connection', async socket => {
   console.log('a client connected');
 
   if (socket.connected) {
-    const tree = services.getTree();
+    const tree = await services.getTree();
     socket.emit('document', tree);
   }
 

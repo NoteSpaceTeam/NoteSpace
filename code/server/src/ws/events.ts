@@ -10,7 +10,7 @@ type CursorChangeData = {
 const cursorColorsMap = new Map<string, string>();
 
 export default function events(database: Database) {
-  function onOperation(socket: Socket, data: InsertMessage<unknown> | DeleteMessage) {
+  function onOperation(socket: Socket, data: InsertMessage<string> | DeleteMessage) {
     switch (data.type) {
       case 'insert': {
         database.insertCharacter(data);

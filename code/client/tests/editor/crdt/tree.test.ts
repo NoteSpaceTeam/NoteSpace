@@ -1,5 +1,5 @@
-import { Tree } from '../../../src/editor/crdt/tree';
-import { InsertMessage, Node } from '../../../src/editor/crdt/types';
+import { Tree } from '@shared/crdt/tree';
+import { InsertMessage, Node } from '@shared/crdt/types';
 
 describe('Tree', () => {
   let tree: Tree<string>;

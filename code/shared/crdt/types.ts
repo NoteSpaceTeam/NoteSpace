@@ -38,3 +38,5 @@ export type DeleteMessage = {
   type: 'delete';
   id: Id;
 };
+
+export type Nodes<T> = Record<string, Node<T>[]>;

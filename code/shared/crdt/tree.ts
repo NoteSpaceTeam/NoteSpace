@@ -1,4 +1,4 @@
-import { Id, Node } from './types';
+import {Id, Node, Nodes} from './types';
 
 export class Tree<T> {
 
@@ -7,7 +7,7 @@ export class Tree<T> {
 
   constructor() {
     this._root = {
-      id: { sender: '', counter: 0 },
+      id: { sender: 'root', counter: 0 },
       value: null,
       isDeleted: true,
       parent: null,
@@ -16,7 +16,7 @@ export class Tree<T> {
       rightChildren: [],
       depth: 0,
     };
-    this._nodes.set('', [this.root]);
+    this._nodes.set('root', [this.root]);
   }
 
   /**
@@ -25,7 +25,7 @@ export class Tree<T> {
    */
   setTree(nodesMap: Map<string, Node<T>[]>) {
     this._nodes = nodesMap;
-    this._root = nodesMap.get('')![0];
+    this._root = nodesMap.get('root')![0];
   }
 
   /**

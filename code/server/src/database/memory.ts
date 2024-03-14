@@ -1,9 +1,9 @@
 import { Tree } from 'shared/crdt/tree';
-import { DeleteMessage, InsertMessage, Node } from 'shared/crdt/types';
+import { DeleteMessage, InsertMessage } from 'shared/crdt/types';
 
 let tree = new Tree();
 
-function getTree(): Record<string, Node<unknown>[]> {
+async function getTree() {
   return Object.fromEntries(Array.from(tree.nodes.entries()));
 }
 
