@@ -1,46 +1,60 @@
-import React, { FormEvent, SyntheticEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Fugue } from '../crdt/fugue.ts';
-import { getInputType, InputType } from '../input/utils.ts';
+import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
+import { Editor } from 'slate';
 
-function useInputHandlers(fugue: Fugue<unknown>) {
+function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
-  function onSelect(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const start = e.currentTarget.selectionStart;
-    const end = e.currentTarget.selectionEnd;
+  function onSelect() {
+    const { anchor, focus } = editor.selection!;
+    const start = anchor.offset;
+    const end = focus.offset;
     setSelection({ start, end });
   }
 
-  function onInput(e: FormEvent<HTMLTextAreaElement>) {
-    const inputType = getInputType((e.nativeEvent as InputEvent).inputType);
-    if (inputType === InputType.insertFromPaste) return;
-    const selectionStart = selection.start;
-    const selectionEnd = selection.end;
-
-    switch (inputType) {
-      case InputType.insertLineBreak:
-        fugue.insertLocal(selectionStart, '\n');
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.ctrlKey) {
+      return shortcutHandler(e);
+    }
+    switch (e.key) {
+      case 'Enter':
+        fugue.insertLocal(selection.start, '\n');
         break;
-      case InputType.insertText: {
-        const endIndex = selectionEnd === selectionStart ? selectionStart + 1 : selectionEnd + 1;
-        const char = e.currentTarget.value.slice(selectionStart, endIndex);
-        fugue.insertLocal(selectionStart, char);
+      case 'Backspace': {
+        if (selection.start === 0 && selection.end == 0) break;
+        fugue.deleteLocal(selection.start, selection.end);
         break;
       }
-      case InputType.deleteContentBackward: {
-        if (selectionStart === 0 && selectionEnd == 0) break;
-        fugue.deleteLocal(selectionStart, selectionEnd);
+      default: {
+        if (e.key.length !== 1) break;
+        fugue.insertLocal(selection.start, e.key);
         break;
       }
     }
   }
-  function onPaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
-    const selectionStart = e.currentTarget.selectionStart;
+
+  function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
-    fugue.insertLocal(selectionStart, clipboardData);
+    fugue.insertLocal(selection.start, clipboardData);
   }
-  return { onInput, onSelect, onPaste };
+
+  function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
+    switch (event.key) {
+      case 'm': {
+        event.preventDefault();
+        CustomEditor.toggleCodeBlock(editor);
+        break;
+      }
+      case 'b': {
+        event.preventDefault();
+        CustomEditor.toggleBoldMark(editor);
+        break;
+      }
+    }
+  }
+  return { onKeyDown, onPaste, onSelect };
 }
 
 export default useInputHandlers;
