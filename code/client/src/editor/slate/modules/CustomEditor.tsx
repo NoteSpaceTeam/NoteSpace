@@ -1,35 +1,18 @@
-import { Editor, Element, Transforms } from 'slate';
+import { Editor } from 'slate';
 
 const CustomEditor = {
-  isBoldMarkActive(editor: Editor) {
-    const marks = Editor.marks(editor);
-    return marks ? marks.bold === true : false;
+  isMarkActive(editor: Editor, format: string) {
+    const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
+    return marks ? marks[format] === true : false;
   },
-
-  isCodeBlockActive(editor: Editor) {
-    const [match] = Editor.nodes(editor, {
-      match: n => Element.isElement(n) && n.type === 'code',
-    });
-    return !!match;
-  },
-
-  toggleBoldMark(editor: Editor) {
-    const isActive = CustomEditor.isBoldMarkActive(editor);
+  toggleMark(editor: Editor, format: string) {
+    const isActive = CustomEditor.isMarkActive(editor, format);
     if (isActive) {
-      Editor.removeMark(editor, 'bold');
+      Editor.removeMark(editor, format);
     } else {
-      Editor.addMark(editor, 'bold', true);
+      Editor.addMark(editor, format, true);
     }
-  },
-
-  toggleCodeBlock(editor: Editor) {
-    const isActive = CustomEditor.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? null : 'code' },
-      { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
-    );
-  },
+  }
 };
 
 export default CustomEditor;

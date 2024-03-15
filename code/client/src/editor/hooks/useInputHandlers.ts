@@ -3,6 +3,13 @@ import { Fugue } from '../crdt/fugue.ts';
 import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
 import { Editor } from 'slate';
 
+const hotkeys: Record<string, string> = {
+  b: 'bold',
+  i: 'italic',
+  u: 'underline',
+  c: 'code',
+};
+
 function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
@@ -41,18 +48,20 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    switch (event.key) {
-      case 'm': {
-        event.preventDefault();
-        CustomEditor.toggleCodeBlock(editor);
-        break;
-      }
-      case 'b': {
-        event.preventDefault();
-        CustomEditor.toggleBoldMark(editor);
-        break;
-      }
-    }
+    // switch (event.key) {
+    //   case 'm': {
+    //     event.preventDefault();
+    //     CustomEditor.toggleCodeBlock(editor);
+    //     break;
+    //   }
+    //   case 'b': {
+    //     event.preventDefault();
+    //     CustomEditor.toggleBoldMark(editor);
+    //     break;
+    //   }
+    // }
+    const mark = hotkeys[event.key!];
+    CustomEditor.toggleMark(editor, mark);
   }
   return { onKeyDown, onPaste, onSelect };
 }
