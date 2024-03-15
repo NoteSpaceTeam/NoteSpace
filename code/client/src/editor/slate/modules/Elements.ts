@@ -11,7 +11,7 @@ export const Elements = {
   li: 'list-item',
   ol: 'numbered-list',
   p: 'paragraph',
-  pre: 'code',
+  code: 'code',
   ul: 'bulleted-list',
   br: 'horizontal-rule',
 } as const;

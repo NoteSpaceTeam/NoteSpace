@@ -8,17 +8,16 @@ import useRenderers from '@src/editor/slate/modules/Renderers.tsx';
 import './SlateEditor.scss';
 import { Elements } from '@src/editor/slate/modules/Elements.ts';
 import { withHistory } from 'slate-history';
-import withHtml from '@src/editor/slate/modules/plugins/withHtml.ts';
 import withShortcuts from '@src/editor/slate/modules/plugins/withShortcuts.ts';
 import Toolbar from '@src/editor/slate/modules/toolbar/Toolbar.tsx';
 
 function SlateEditor() {
-  const editor = useMemo(() => withHtml(withShortcuts(withHistory(withReact(createEditor())))), []);
+  const editor = useMemo(() => withShortcuts(withHistory(withReact(createEditor()))), []);
   const [text, setText] = useState<string | undefined>();
   const fugue = useFugue();
-  const { onKeyDown, onPaste, onSelect } = useInputHandlers(editor, fugue);
+  const { onKeyDown, onPaste } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
-  const initialValue: Descendant[] = useMemo(() => [{ type: 'paragraph', children: [{ text: text || "" }] }], [text]);
+  const initialValue: Descendant[] = useMemo(() => [{ type: 'paragraph', children: [{ text: text || '' }] }], [text]);
 
   useEvents(fugue, () => {
     const newText = fugue.toString();
@@ -36,24 +35,25 @@ function SlateEditor() {
 
   return (
     // text !== undefined && (
-      <div className="editor">
-        <header>
-          <span className="fa fa-bars"></span>
-          <h1>NoteSpace</h1>
-        </header>
-        <div className="container">
-          <Slate editor={editor} initialValue={initialValue}>
-            <Toolbar />
-            <Editable
-              renderElement={renderElement}
-              renderLeaf={renderLeaf}
-              onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              onSelect={onSelect}
-            />
-          </Slate>
-        </div>
+    <div className="editor">
+      <header>
+        <span className="fa fa-bars"></span>
+        <h1>NoteSpace</h1>
+      </header>
+      <div className="container">
+        <Slate editor={editor} initialValue={initialValue}>
+          <Toolbar />
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            spellCheck={false}
+            placeholder="Start writing..."
+            onKeyDown={onKeyDown}
+            onPaste={onPaste}
+          />
+        </Slate>
       </div>
+    </div>
     // )
   );
 }

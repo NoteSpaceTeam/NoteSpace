@@ -12,7 +12,7 @@ const CustomEditor = {
     } else {
       Editor.addMark(editor, format, true);
     }
-  }
+  },
 };
 
 export default CustomEditor;

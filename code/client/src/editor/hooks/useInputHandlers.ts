@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Fugue } from '../crdt/fugue.ts';
 import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
 import { Editor } from 'slate';
@@ -11,16 +11,15 @@ const hotkeys: Record<string, string> = {
 };
 
 function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
-
-  function onSelect() {
+  function getSelection() {
     const { anchor, focus } = editor.selection!;
     const start = anchor.offset;
     const end = focus.offset;
-    setSelection({ start, end });
+    return { start, end };
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const selection = getSelection();
     if (e.ctrlKey) {
       return shortcutHandler(e);
     }
@@ -28,42 +27,34 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
       case 'Enter':
         fugue.insertLocal(selection.start, '\n');
         break;
-      case 'Backspace': {
+      case 'Backspace':
         if (selection.start === 0 && selection.end == 0) break;
         fugue.deleteLocal(selection.start, selection.end);
         break;
-      }
-      default: {
+      case 'Tab':
+        e.preventDefault();
+        editor.insertText('\t');
+        fugue.insertLocal(selection.start, '\t');
+        break;
+      default:
         if (e.key.length !== 1) break;
         fugue.insertLocal(selection.start, e.key);
         break;
-      }
     }
   }
 
   function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
+    const selection = getSelection();
     fugue.insertLocal(selection.start, clipboardData);
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    // switch (event.key) {
-    //   case 'm': {
-    //     event.preventDefault();
-    //     CustomEditor.toggleCodeBlock(editor);
-    //     break;
-    //   }
-    //   case 'b': {
-    //     event.preventDefault();
-    //     CustomEditor.toggleBoldMark(editor);
-    //     break;
-    //   }
-    // }
     const mark = hotkeys[event.key!];
     CustomEditor.toggleMark(editor, mark);
   }
-  return { onKeyDown, onPaste, onSelect };
+  return { onKeyDown, onPaste };
 }
 
 export default useInputHandlers;

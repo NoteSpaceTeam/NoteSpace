@@ -9,7 +9,7 @@ import Heading3 from '@src/editor/slate/modules/components/Heading3.tsx';
 import Heading4 from '@src/editor/slate/modules/components/Heading4.tsx';
 import Heading5 from '@src/editor/slate/modules/components/Heading5.tsx';
 import Heading6 from '@src/editor/slate/modules/components/Heading6.tsx';
-import Paragraph from "@src/editor/slate/modules/components/Paragraph.tsx";
+import Paragraph from '@src/editor/slate/modules/components/Paragraph.tsx';
 
 function useRenderers() {
   const renderElement = useCallback((props: RenderElementProps) => {
@@ -35,7 +35,7 @@ function useRenderers() {
     }
   }, []);
 
-  const renderLeaf = useCallback(({attributes, children, leaf}: RenderLeafProps) => {
+  const renderLeaf = useCallback(({ attributes, children, leaf }: RenderLeafProps) => {
     if (leaf.bold) {
       children = <strong>{children}</strong>;
     }

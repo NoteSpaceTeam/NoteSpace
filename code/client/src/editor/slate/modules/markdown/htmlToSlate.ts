@@ -27,7 +27,7 @@ const elementTags: { [key: string]: ElementTagFunction } = {
   ol: () => ({ type: Elements.ol }),
   ul: () => ({ type: Elements.ul }),
   p: () => ({ type: Elements.p }),
-  pre: () => ({ type: Elements.pre }),
+  code: () => ({ type: Elements.code }),
 };
 
 interface TextAttributes {
@@ -59,7 +59,7 @@ function deserializeEach(el: Element | Node): Descendant[] {
   const { nodeName } = el as Element;
   let parent = el as Element;
 
-  if (nodeName === 'pre' && parent.childNodes[0] && parent.childNodes[0].nodeName === 'code') {
+  if (nodeName === 'code' && parent.childNodes[0] && parent.childNodes[0].nodeName === 'code') {
     parent = parent.childNodes[0] as Element;
   }
 
@@ -68,7 +68,7 @@ function deserializeEach(el: Element | Node): Descendant[] {
     children = Array.from(parent.childNodes).map(deserializeEach).flat();
   }
 
-  if (el.nodeName === 'BODY') {
+  if (el.nodeName === 'body') {
     return children;
   }
 

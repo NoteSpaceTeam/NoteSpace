@@ -7,8 +7,8 @@ interface ListElementProps {
 
 function ListElement({ attributes, children }: ListElementProps) {
   const styles = {
-    // paddingLeft: 20,
-  }
+    paddingLeft: 10,
+  };
   return (
     <li style={styles} {...attributes}>
       {children}

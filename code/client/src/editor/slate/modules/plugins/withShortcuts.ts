@@ -1,5 +1,5 @@
 import { Editor, Transforms, Range, Point, Element } from 'slate';
-import { Elements, ElementType } from '@src/editor/slate/modules/Elements.ts';
+import { ElementType } from '@src/editor/slate/modules/Elements.ts';
 
 const shortcuts: Record<string, string> = {
   '*': 'list-item',
@@ -42,14 +42,6 @@ function withShortcuts(editor: Editor) {
             { type: type as ElementType },
             { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
           );
-
-          if (type === 'list-item') {
-            const list = { type: Elements.li, children: [] };
-            Transforms.wrapNodes(editor, list, {
-              match: n => Element.isElement(n) && n.type === 'list-item',
-            });
-          }
-
           return;
         }
       }
