@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { InsertMessage, DeleteMessage } from './types';
 import app from '../../src/server';
 import { Node } from 'shared/crdt/types';
-import { Tree } from 'shared/crdt/tree';
+import { FugueTree } from 'shared/crdt/fugueTree';
 import request = require('supertest');
 
 const baseURL = `http://localhost:${process.env.PORT}`;
@@ -58,7 +58,7 @@ describe('Operations must be commutative', () => {
       setTimeout(async () => {
         const response = await request(app).get('/document');
         const nodes = response.body as Record<string, Node<string>[]>;
-        const tree = new Tree();
+        const tree = new FugueTree();
         tree.setTree(new Map(Object.entries(nodes)));
         expect(tree.toString()).toBe('ab');
         done();
@@ -103,7 +103,7 @@ describe('Operations must be idempotent', () => {
       setTimeout(async () => {
         const response = await request(app).get('/document');
         const nodes = response.body as Record<string, Node<string>[]>;
-        const tree = new Tree();
+        const tree = new FugueTree();
         tree.setTree(new Map(Object.entries(nodes)));
         expect(tree.toString()).toBe('a');
         done();

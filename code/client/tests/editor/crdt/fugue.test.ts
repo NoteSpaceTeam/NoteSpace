@@ -1,5 +1,6 @@
-import { Fugue } from '../../../src/editor/crdt/fugue';
+import { Fugue } from '@src/editor/crdt/fugue';
 import { InsertMessage, DeleteMessage } from '@shared/crdt/types';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Fugue', () => {
   let fugue: Fugue<string>;
@@ -24,7 +25,7 @@ describe('Fugue', () => {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
-      parent: { sender: '', counter: 0 },
+      parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
     fugue.insertRemote(message);
@@ -42,7 +43,7 @@ describe('Fugue', () => {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'x',
-      parent: { sender: '', counter: 0 },
+      parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
     fugue.insertRemote(insertMessage);

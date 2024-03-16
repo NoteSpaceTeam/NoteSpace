@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ListElementProps {
   attributes: NonNullable<unknown>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 function ListElement({ attributes, children }: ListElementProps) {

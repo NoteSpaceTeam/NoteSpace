@@ -1,14 +1,14 @@
-import { Tree } from 'shared/crdt/tree';
+import { FugueTree } from '@shared/crdt/fugueTree';
 import { DeleteMessage, InsertMessage } from 'shared/crdt/types';
 
-let tree = new Tree();
+let tree = new FugueTree();
 
 async function getTree() {
   return Object.fromEntries(Array.from(tree.nodes.entries()));
 }
 
 function deleteTree(): void {
-  tree = new Tree();
+  tree = new FugueTree();
 }
 
 function insertCharacter({ id, value, parent, side }: InsertMessage<unknown>): void {

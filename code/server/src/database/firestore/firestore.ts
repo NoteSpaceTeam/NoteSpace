@@ -2,7 +2,7 @@ import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import serviceAccount from '../../firestore-key-5cddf-472039f8dbb6.json';
 import { Nodes, Node, InsertMessage, DeleteMessage } from '@shared/crdt/types';
-import { Tree } from '@shared/crdt/tree';
+import { FugueTree } from '@shared/crdt/fugueTree';
 
 initializeApp({
   credential: cert(serviceAccount as ServiceAccount),
@@ -36,7 +36,7 @@ async function setDocument(nodes: Nodes<string>) {
 }
 
 async function getTreeInstance() {
-  const tree = new Tree<string>();
+  const tree = new FugueTree<string>();
   const nodes = await getDocument();
   const nodesMap = new Map(Object.entries(nodes));
   tree.setTree(nodesMap);

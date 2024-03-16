@@ -22,9 +22,9 @@
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["../shared/*"],
-      "@src/*": ["src/*"]
+      "@src/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/editor/crdt/utils.ts"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

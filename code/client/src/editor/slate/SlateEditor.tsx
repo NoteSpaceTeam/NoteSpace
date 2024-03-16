@@ -1,40 +1,38 @@
 import { useMemo, useState } from 'react';
-import { createEditor, Descendant } from 'slate';
+import { Descendant } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import useInputHandlers from '@src/editor/hooks/useInputHandlers.ts';
 import useFugue from '@src/editor/hooks/useFugue.ts';
 import useEvents from '@src/editor/hooks/useEvents.ts';
-import useRenderers from '@src/editor/slate/modules/Renderers.tsx';
+import useRenderers from '@src/editor/slate/modules/hooks/useRenderers.tsx';
 import './SlateEditor.scss';
 import { Elements } from '@src/editor/slate/modules/Elements.ts';
+import Toolbar from '@src/editor/slate/modules/toolbar/Toolbar.tsx';
 import { withHistory } from 'slate-history';
 import withShortcuts from '@src/editor/slate/modules/plugins/withShortcuts.ts';
-import Toolbar from '@src/editor/slate/modules/toolbar/Toolbar.tsx';
+import { descendant, descendantChildren } from '@src/editor/slate/modules/utils.ts';
+import useEditor from '@src/editor/slate/modules/hooks/useEditor.ts';
 
 function SlateEditor() {
-  const editor = useMemo(() => withShortcuts(withHistory(withReact(createEditor()))), []);
+  // Hooks
+  const editor = useEditor(withHistory, withReact, withShortcuts);
   const [text, setText] = useState<string | undefined>();
   const fugue = useFugue();
   const { onKeyDown, onPaste } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
-  const initialValue: Descendant[] = useMemo(() => [{ type: 'paragraph', children: [{ text: text || '' }] }], [text]);
+
+  const initialValue: Descendant[] = useMemo(() => [descendant(Elements.p, descendantChildren(text || ''))], [text]);
 
   useEvents(fugue, () => {
     const newText = fugue.toString();
     setText(newText);
 
     // force re-render of the editor with new text
-    editor.children = [
-      {
-        type: Elements.p,
-        children: [{ text: newText }],
-      },
-    ];
+    editor.children = [descendant(Elements.p, descendantChildren(newText))];
     editor.onChange();
   });
 
   return (
-    // text !== undefined && (
     <div className="editor">
       <header>
         <span className="fa fa-bars"></span>
@@ -54,7 +52,6 @@ function SlateEditor() {
         </Slate>
       </div>
     </div>
-    // )
   );
 }
 

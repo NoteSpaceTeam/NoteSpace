@@ -13,6 +13,7 @@ import Paragraph from '@src/editor/slate/modules/components/Paragraph.tsx';
 
 function useRenderers() {
   const renderElement = useCallback((props: RenderElementProps) => {
+    console.log(props.element.type)
     switch (props.element.type) {
       case Elements.blockquote:
         return <Blockquote {...props} />;
@@ -36,6 +37,7 @@ function useRenderers() {
   }, []);
 
   const renderLeaf = useCallback(({ attributes, children, leaf }: RenderLeafProps) => {
+    console.log(leaf);
     if (leaf.bold) {
       children = <strong>{children}</strong>;
     }
@@ -51,6 +53,7 @@ function useRenderers() {
     if (leaf.strikethrough) {
       children = <del>{children}</del>;
     }
+
     return <span {...attributes}>{children}</span>;
   }, []);
 

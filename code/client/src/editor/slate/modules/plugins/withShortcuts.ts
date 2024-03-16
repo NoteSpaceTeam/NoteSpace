@@ -1,17 +1,17 @@
 import { Editor, Transforms, Range, Point, Element } from 'slate';
-import { ElementType } from '@src/editor/slate/modules/Elements.ts';
+import { Elements, ElementType } from '@src/editor/slate/modules/Elements.ts';
 
-const shortcuts: Record<string, string> = {
-  '*': 'list-item',
-  '-': 'list-item',
-  '+': 'list-item',
-  '>': 'block-quote',
-  '#': 'heading-one',
-  '##': 'heading-two',
-  '###': 'heading-three',
-  '####': 'heading-four',
-  '#####': 'heading-five',
-  '######': 'heading-six',
+const shortcuts: Record<string, ElementType | undefined> = {
+  '*': Elements.li,
+  '-': Elements.li,
+  '+': Elements.li,
+  '>': Elements.blockquote,
+  '#': Elements.h1,
+  '##': Elements.h2,
+  '###': Elements.h3,
+  '####': Elements.h4,
+  '#####': Elements.h5,
+  '######': Elements.h6,
 } as const;
 
 function withShortcuts(editor: Editor) {
@@ -37,11 +37,7 @@ function withShortcuts(editor: Editor) {
         if (type !== undefined) {
           Transforms.select(editor, range);
           Transforms.delete(editor);
-          Transforms.setNodes(
-            editor,
-            { type: type as ElementType },
-            { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
-          );
+          Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && Editor.isBlock(editor, n) });
           return;
         }
       }

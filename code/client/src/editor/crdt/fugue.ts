@@ -1,16 +1,22 @@
 import { DeleteMessage, InsertMessage, Node } from '@shared/crdt/types';
-import { Tree } from '@shared/crdt/tree';
+import { FugueTree } from '@shared/crdt/fugueTree.ts';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket.ts';
 
+/**
+ * A local replica of a local replica of a FugueTree.
+ * @param T - the type of the values stored in the tree
+ * @class
+ * @property {string} replicaId - the id of the replica
+ */
 export class Fugue<T> {
   private readonly replicaId: string;
   private counter = 0;
-  private readonly tree: Tree<T>;
+  private readonly tree: FugueTree<T>;
 
   constructor() {
     this.replicaId = generateReplicaId();
-    this.tree = new Tree();
+    this.tree = new FugueTree();
   }
 
   /**

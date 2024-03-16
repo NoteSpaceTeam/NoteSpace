@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
-import useSelecting from '@src/editor/slate/modules/hooks/useSelecting.ts';
+import useSelection from '@src/editor/slate/modules/hooks/useSelection.ts';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 
 interface MarkOption {
@@ -20,7 +20,7 @@ const markOptions: MarkOption[] = [
 function Toolbar() {
   const editor = useSlate();
   const focused = useFocused();
-  const selected = useSelecting();
+  const selected = useSelection();
   const [selectionBounds, setSelectionBounds] = React.useState<DOMRect | null>(null);
 
   useEffect(() => {

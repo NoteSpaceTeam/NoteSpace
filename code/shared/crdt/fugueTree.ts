@@ -1,6 +1,6 @@
 import {Id, Node, Nodes} from './types';
 
-export class Tree<T> {
+export class FugueTree<T> {
 
   private _nodes = new Map<string, Node<T>[]>();
   private _root: Node<T>;

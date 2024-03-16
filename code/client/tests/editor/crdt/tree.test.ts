@@ -1,11 +1,12 @@
-import { Tree } from '@shared/crdt/tree';
+import { FugueTree } from '@shared/crdt/fugueTree';
 import { InsertMessage, Node } from '@shared/crdt/types';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Tree', () => {
-  let tree: Tree<string>;
+  let tree: FugueTree<string>;
 
   beforeEach(() => {
-    tree = new Tree();
+    tree = new FugueTree();
   });
 
   it('should add a node to the tree', () => {
@@ -14,10 +15,10 @@ describe('Tree', () => {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
-      parent: { sender: '', counter: 0 },
+      parent: { sender: 'root', counter: 0 },
       side: 'L',
     };
-    const rootId = { sender: '', counter: 0 };
+    const rootId = { sender: 'root', counter: 0 };
     const { id, value, parent, side } = insertMessage;
 
     // when
@@ -37,7 +38,7 @@ describe('Tree', () => {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
-      parent: { sender: '', counter: 0 },
+      parent: { sender: 'root', counter: 0 },
       side: 'L',
     };
     const { id, value, parent, side } = insertMessage;
@@ -60,27 +61,27 @@ describe('Tree', () => {
       id: { sender: 'A', counter: 0 },
       value: 'a',
       isDeleted: false,
-      parent: { sender: '', counter: 0 },
+      parent: { sender: 'root', counter: 0 },
       side: 'L',
       leftChildren: [],
       rightChildren: [],
       depth: 1,
     };
-    nodesMap.set('', [rootNode]);
+    nodesMap.set('root', [rootNode]);
     nodesMap.set('A', [childNode]);
 
     // when
     tree.setTree(nodesMap);
 
     // then
-    expect(tree.getById({ sender: '', counter: 0 })).toEqual(rootNode);
+    expect(tree.getById({ sender: 'root', counter: 0 })).toEqual(rootNode);
     expect(tree.getById({ sender: 'A', counter: 0 })).toEqual(childNode);
   });
 
   it('should traverse the tree by index and return the correct node', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: '', counter: 0 }, 'L');
-    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: '', counter: 0 }, 'R');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');
+    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'root', counter: 0 }, 'R');
     tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 0 }, 'L');
 
     // when
@@ -92,12 +93,12 @@ describe('Tree', () => {
 
   it('should return the leftmost descendant of a node', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: '', counter: 0 }, 'L');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');
     tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'L');
     tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'L');
 
     // when
-    const leftmostDescendant = tree.getLeftmostDescendant({ sender: '', counter: 0 });
+    const leftmostDescendant = tree.getLeftmostDescendant({ sender: 'root', counter: 0 });
 
     // then
     expect(leftmostDescendant.id.counter).toEqual(2);
@@ -105,7 +106,7 @@ describe('Tree', () => {
 
   it('should traverse the tree in depth-first order', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: '', counter: 0 }, 'R');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R');
     tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'R');
     tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'R');
     tree.addNode({ sender: 'A', counter: 3 }, 'd', { sender: 'A', counter: 2 }, 'R');

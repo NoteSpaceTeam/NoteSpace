@@ -1,26 +1,23 @@
 import { Text, Node } from 'slate';
 import escapeHtml from 'escape-html';
 import { Elements } from '@src/editor/slate/modules/Elements.ts';
-import { CustomElement } from '@src/editor/slate/modules/types.ts';
+import { CustomElement } from '@src/editor/slate/modules/types';
 
 const serializeEach = (node: Node): string => {
   if (Text.isText(node)) {
-    const { bold, italic, underline, code, strikethrough, deleted, inserted, text } = node;
-    const escape = escapeHtml(text || '');
-    if (bold) return `**${escape}**`;
-    if (italic) return `*${escape}*`;
-    if (code) return `\`${escape}\``;
-    if (strikethrough) return `~~${escape}~~`;
-    if (deleted) return `~~${escape}~~`;
-    if (inserted) return `__${escape}__`;
-    if (underline) return `__${escape}__`;
+    const escape = escapeHtml(node.text || '');
+    if (node.bold) return `**${escape}**`;
+    if (node.italic) return `*${escape}*`;
+    if (node.code) return `\`${escape}\``;
+    if (node.strikethrough) return `~~${escape}~~`;
+    if (node.deleted) return `~~${escape}~~`;
+    if (node.inserted) return `__${escape}__`;
+    if (node.underline) return `__${escape}__`;
     return escape;
   }
 
   const children = node.children.map(n => serializeEach(n)).join('');
   switch ((node as CustomElement).type) {
-    default:
-      return children;
     case Elements.p:
       return `\n${children}\n`;
     case Elements.blockquote:
@@ -43,6 +40,8 @@ const serializeEach = (node: Node): string => {
       return `###### ${children}`;
     case Elements.br:
       return `---`;
+    default:
+      return children;
   }
 };
 
