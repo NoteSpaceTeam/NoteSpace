@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface ListItemProps {
+interface NumberedListItemProps {
   attributes: NonNullable<unknown>;
   children?: React.ReactNode;
 }
 
-function ListItem({ attributes, children }: ListItemProps) {
+function NumberedListElement({ attributes, children }: NumberedListItemProps) {
   const styles = {
     paddingLeft: 10,
   };
@@ -16,4 +16,4 @@ function ListItem({ attributes, children }: ListItemProps) {
   );
 }
 
-export default ListItem;
+export default NumberedListElement;

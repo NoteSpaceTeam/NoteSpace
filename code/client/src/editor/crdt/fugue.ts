@@ -4,7 +4,7 @@ import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket.ts';
 
 /**
- * A local replica of a local replica of a FugueTree.
+ * A local replica of a FugueTree.
  * @param T - the type of the values stored in the tree
  * @class
  * @property {string} replicaId - the id of the replica

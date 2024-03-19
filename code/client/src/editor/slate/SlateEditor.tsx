@@ -6,21 +6,19 @@ import useFugue from '@src/editor/hooks/useFugue.ts';
 import useEvents from '@src/editor/hooks/useEvents.ts';
 import useRenderers from '@src/editor/slate/modules/hooks/useRenderers.tsx';
 import './SlateEditor.scss';
-import { Elements } from '@src/editor/slate/modules/Elements.ts';
+import { Elements } from '@src/editor/slate/modules/types.ts';
 import Toolbar from '@src/editor/slate/modules/toolbar/Toolbar.tsx';
 import { withHistory } from 'slate-history';
-import withShortcuts from '@src/editor/slate/modules/plugins/withShortcuts.ts';
 import { descendant, descendantChildren } from '@src/editor/slate/modules/utils.ts';
 import useEditor from '@src/editor/slate/modules/hooks/useEditor.ts';
+import {withMarkdown} from "@src/editor/slate/modules/markdown/withMarkdown.ts";
 
 function SlateEditor() {
-  // Hooks
-  const editor = useEditor(withHistory, withReact, withShortcuts);
+  const editor = useEditor(withHistory, withReact, withMarkdown);
   const [text, setText] = useState<string | undefined>();
   const fugue = useFugue();
   const { onKeyDown, onPaste } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
-
   const initialValue: Descendant[] = useMemo(() => [descendant(Elements.p, descendantChildren(text || ''))], [text]);
 
   useEvents(fugue, () => {
@@ -34,7 +32,7 @@ function SlateEditor() {
 
   return (
     <div className="editor">
-      <header>
+      <header>  
         <span className="fa fa-bars"></span>
         <h1>NoteSpace</h1>
       </header>
@@ -45,7 +43,7 @@ function SlateEditor() {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}
-            placeholder="Start writing..."
+            placeholder={"Start writing..."}
             onKeyDown={onKeyDown}
             onPaste={onPaste}
           />
