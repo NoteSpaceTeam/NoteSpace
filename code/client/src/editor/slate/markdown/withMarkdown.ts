@@ -1,12 +1,8 @@
-import {Editor, Element, Point, Range, Text, Transforms} from 'slate';
-import {CustomElement} from "@src/editor/slate/modules/types.ts";
-import {shortcuts} from "@src/editor/slate/modules/markdown/shortcuts.ts";
+import { Editor, Element, Point, Range, Text, Transforms } from 'slate';
+import { CustomElement } from '@src/editor/slate/model/types.ts';
+import { shortcuts } from '@src/editor/slate/markdown/shortcuts.ts';
 
-function before(
-  editor: Editor,
-  at: Point,
-  stringOffset: number
-): Point | undefined {
+function before(editor: Editor, at: Point, stringOffset: number): Point | undefined {
   if (at.offset >= stringOffset) {
     return { offset: at.offset - stringOffset, path: at.path };
   }
@@ -16,23 +12,20 @@ function before(
     return undefined;
   }
   const [node, path] = entry;
-  return before(
-    editor,
-    { offset: node.text.length, path },
-    stringOffset - at.offset
-  );
+  return before(editor, { offset: node.text.length, path }, stringOffset - at.offset);
 }
 
 export function withMarkdown(editor: Editor) {
   const { deleteBackward, insertText, isInline } = editor;
-  editor.insertText = (insert) => {
+
+  editor.insertText = insert => {
     const { selection } = editor;
     if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
       return insertText(insert);
     }
     const { anchor } = selection;
     const block = Editor.above(editor, {
-      match: (n) => Editor.isBlock(editor, n as CustomElement),
+      match: n => Editor.isBlock(editor, n as CustomElement),
     });
     const path = block ? block[1] : [];
     const blockRange = { anchor, focus: Editor.start(editor, path) };
@@ -46,10 +39,8 @@ export function withMarkdown(editor: Editor) {
       const [text, startText, endText] = match;
       Editor.withoutNormalizing(editor, () => {
         const matchEnd = anchor;
-        const endMatchStart =
-          endText && before(editor, matchEnd, endText.length);
-        const startMatchEnd =
-          startText && before(editor, matchEnd, text.length - startText.length);
+        const endMatchStart = endText && before(editor, matchEnd, endText.length);
+        const startMatchEnd = startText && before(editor, matchEnd, text.length - startText.length);
         const matchStart = before(editor, matchEnd, text.length);
 
         if (!matchEnd || !matchStart) {
@@ -83,7 +74,7 @@ export function withMarkdown(editor: Editor) {
     const { selection } = editor;
     if (selection) {
       const block = Editor.above(editor, {
-        match: (n) => Editor.isBlock(editor, n as CustomElement),
+        match: n => Editor.isBlock(editor, n as CustomElement),
       });
       const path = block ? block[1] : [];
       const end = Editor.end(editor, path);
@@ -92,14 +83,10 @@ export function withMarkdown(editor: Editor) {
 
       if (wasSelectionAtEnd) {
         Transforms.unwrapNodes(editor, {
-          match: (n) => Editor.isInline(editor, n as CustomElement),
+          match: n => Editor.isInline(editor, n as CustomElement),
           mode: 'all',
         });
-        Transforms.setNodes(
-          editor,
-          { type: 'paragraph' },
-          { match: (n) => Editor.isBlock(editor, n as CustomElement) }
-        );
+        Transforms.setNodes(editor, { type: 'paragraph' }, { match: n => Editor.isBlock(editor, n as CustomElement) });
         const marks = Editor.marks(editor) ?? {};
         Transforms.unsetNodes(editor, Object.keys(marks), {
           match: Text.isText,
@@ -112,7 +99,7 @@ export function withMarkdown(editor: Editor) {
     const { selection } = editor;
     if (selection && Range.isCollapsed(selection)) {
       const match = Editor.above(editor, {
-        match: (n) => Editor.isBlock(editor, n as CustomElement),
+        match: n => Editor.isBlock(editor, n as CustomElement),
       });
 
       if (match) {
@@ -135,6 +122,6 @@ export function withMarkdown(editor: Editor) {
       deleteBackward(...args);
     }
   };
-  editor.isInline = (n) => (Element.isElement(n) && n.type === 'inline-code') || isInline(n);
+  editor.isInline = n => (Element.isElement(n) && n.type === 'inline-code') || isInline(n);
   return editor;
 }

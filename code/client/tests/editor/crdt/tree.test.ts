@@ -1,10 +1,9 @@
-import { FugueTree } from '@shared/crdt/fugueTree';
-import { InsertMessage, Node } from '@shared/crdt/types';
+import { FugueTree } from '@notespace/shared/crdt/fugueTree';
+import { InsertMessage, Node } from '@notespace/shared/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Tree', () => {
   let tree: FugueTree<string>;
-
   beforeEach(() => {
     tree = new FugueTree();
   });

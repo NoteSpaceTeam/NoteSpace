@@ -4,14 +4,14 @@ import { Editable, Slate, withReact } from 'slate-react';
 import useInputHandlers from '@src/editor/hooks/useInputHandlers.ts';
 import useFugue from '@src/editor/hooks/useFugue.ts';
 import useEvents from '@src/editor/hooks/useEvents.ts';
-import useRenderers from '@src/editor/slate/modules/hooks/useRenderers.tsx';
+import useRenderers from '@src/editor/slate/hooks/useRenderers.tsx';
 import './SlateEditor.scss';
-import { Elements } from '@src/editor/slate/modules/types.ts';
-import Toolbar from '@src/editor/slate/modules/toolbar/Toolbar.tsx';
+import { Elements } from '@src/editor/slate/model/types.ts';
+import Toolbar from '@src/editor/slate/toolbar/Toolbar.tsx';
 import { withHistory } from 'slate-history';
-import { descendant, descendantChildren } from '@src/editor/slate/modules/utils.ts';
-import useEditor from '@src/editor/slate/modules/hooks/useEditor.ts';
-import {withMarkdown} from "@src/editor/slate/modules/markdown/withMarkdown.ts";
+import { descendant, descendantChildren } from '@src/editor/slate/model/utils.ts';
+import useEditor from '@src/editor/slate/hooks/useEditor.ts';
+import { withMarkdown } from '@src/editor/slate/markdown/withMarkdown.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
@@ -32,7 +32,7 @@ function SlateEditor() {
 
   return (
     <div className="editor">
-      <header>  
+      <header>
         <span className="fa fa-bars"></span>
         <h1>NoteSpace</h1>
       </header>
@@ -43,7 +43,7 @@ function SlateEditor() {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}
-            placeholder={"Start writing..."}
+            placeholder={'Start writing...'}
             onKeyDown={onKeyDown}
             onPaste={onPaste}
           />

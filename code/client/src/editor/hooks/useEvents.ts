@@ -1,6 +1,6 @@
 import useSocketListeners from '../../socket/useSocketListeners.ts';
 import { Fugue } from '../crdt/fugue.ts';
-import { DeleteMessage, InsertMessage, Node } from '@shared/crdt/types.ts';
+import { DeleteMessage, InsertMessage, Node } from '@notespace/shared/crdt/types';
 
 function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
   function onOperation<T>(operation: InsertMessage<T> | DeleteMessage) {

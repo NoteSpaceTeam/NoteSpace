@@ -1,5 +1,5 @@
-import { DeleteMessage, InsertMessage, Node } from '@shared/crdt/types';
-import { FugueTree } from '@shared/crdt/fugueTree.ts';
+import { DeleteMessage, InsertMessage, Node } from '@notespace/shared/crdt/types';
+import { FugueTree } from '@notespace/shared/crdt/fugueTree';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket.ts';
 
@@ -33,6 +33,7 @@ export class Fugue<T> {
    * @param values
    */
   insertLocal(start: number, ...values: T[]): InsertMessage<T>[] {
+    console.log('Tree: ' + this.tree);
     return values.map((value, i) => {
       const msg = this.insertOne(start + i, value);
       this.addNode(msg);

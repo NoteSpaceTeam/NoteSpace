@@ -1,4 +1,4 @@
-import { DeleteMessage, InsertMessage, Node } from 'shared/crdt/types';
+import { DeleteMessage, InsertMessage, Node } from '@shared/dist/crdt/types';
 
 type Database = {
   getTree: () => Promise<Record<string, Node[]>>;

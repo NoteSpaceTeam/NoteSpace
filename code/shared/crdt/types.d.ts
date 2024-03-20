@@ -24,6 +24,7 @@ export type Node<T> = {
   leftChildren: Id[];
   rightChildren: Id[];
   depth: number;
+  styles: Style[];
 };
 
 export type InsertMessage<T> = {
@@ -40,3 +41,11 @@ export type DeleteMessage = {
 };
 
 export type Nodes<T> = Record<string, Node<T>[]>;
+
+export enum Style {
+  BOLD = "bold",
+  ITALIC = "italic",
+  UNDERLINE = "underline",
+  STRIKETHROUGH = "strikethrough",
+  CODE = "code"
+}

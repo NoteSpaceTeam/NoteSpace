@@ -1,4 +1,4 @@
-import {Id, Node, Nodes} from './types';
+import {Id, Node} from './types';
 
 export class FugueTree<T> {
 

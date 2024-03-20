@@ -1,6 +1,6 @@
-import {BaseEditor, Descendant} from 'slate';
-import {ReactEditor} from 'slate-react';
-import {HistoryEditor} from "slate-history";
+import { BaseEditor, Descendant } from 'slate';
+import { ReactEditor } from 'slate-react';
+import { HistoryEditor } from 'slate-history';
 
 export type CustomText = {
   text: string;
@@ -14,7 +14,7 @@ export type CustomText = {
 export type CustomElement = {
   type: ElementType;
   children: Descendant[];
-}
+};
 
 declare module 'slate' {
   interface CustomTypes {

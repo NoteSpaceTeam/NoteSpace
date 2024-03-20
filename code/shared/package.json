@@ -1,7 +1,11 @@
 {
-  "name": "nodespace-shared",
+  "name": "@notespace/shared",
   "version": "1.0.0",
   "description": "shared code",
-  "author": "",
-  "license": "ISC"
+  "author": "notespace-team",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "license": "MIT"
 }

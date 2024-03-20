@@ -1,6 +1,6 @@
 import React from 'react';
 import { Fugue } from '../crdt/fugue.ts';
-import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
+import CustomEditor from '@src/editor/slate/model/CustomEditor.ts';
 import { Editor } from 'slate';
 
 const hotkeys: Record<string, string> = {

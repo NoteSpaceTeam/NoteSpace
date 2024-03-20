@@ -1,18 +1,20 @@
 import { useCallback } from 'react';
 import { RenderElementProps, RenderLeafProps } from 'slate-react';
-import { Elements } from '@src/editor/slate/modules/types.ts';
-import Heading1 from '@src/editor/slate/modules/components/Heading1.tsx';
-import Blockquote from '@src/editor/slate/modules/components/Blockquote.tsx';
-import ListItem from '@src/editor/slate/modules/components/ListItem.tsx';
-import Heading2 from '@src/editor/slate/modules/components/Heading2.tsx';
-import Heading3 from '@src/editor/slate/modules/components/Heading3.tsx';
-import Heading4 from '@src/editor/slate/modules/components/Heading4.tsx';
-import Heading5 from '@src/editor/slate/modules/components/Heading5.tsx';
-import Heading6 from '@src/editor/slate/modules/components/Heading6.tsx';
-import Paragraph from '@src/editor/slate/modules/components/Paragraph.tsx';
-import NumberedListItem from "@src/editor/slate/modules/components/NumberedListItem.tsx";
-import LineBreak from "@src/editor/slate/modules/components/LineBreak.tsx";
-import Code from "@src/editor/slate/modules/components/Code.tsx";
+import { Elements } from '@src/editor/slate/model/types.ts';
+import {
+  Blockquote,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
+  LineBreak,
+  ListItem,
+  NumberedListItem,
+  Paragraph,
+} from '@src/editor/slate/markdown/components/components.ts';
 
 function useRenderers() {
   const renderElement = useCallback((props: RenderElementProps) => {

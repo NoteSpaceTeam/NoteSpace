@@ -78,10 +78,8 @@ export default defineConfig({
       },
     }),
   ],
-
   test: {
     alias: {
-      '@shared': new URL('../shared', import.meta.url).pathname,
       '@src': new URL('./src', import.meta.url).pathname,
     },
     environment: 'jsdom',

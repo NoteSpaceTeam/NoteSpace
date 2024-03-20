@@ -3,8 +3,8 @@ import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
 import { InsertMessage, DeleteMessage } from './types';
 import app from '../../src/server';
-import { Node } from 'shared/crdt/types';
-import { FugueTree } from 'shared/crdt/fugueTree';
+import { Node } from '@notespace/shared/crdt/types';
+import { FugueTree } from '@notespace/shared/crdt/fugueTree';
 import request = require('supertest');
 
 const baseURL = `http://localhost:${process.env.PORT}`;

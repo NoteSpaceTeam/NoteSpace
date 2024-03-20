@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@src/editor/slate/modules/CustomEditor.tsx';
-import useSelection from '@src/editor/slate/modules/hooks/useSelection.ts';
+import CustomEditor from '@src/editor/slate/model/CustomEditor.ts';
+import useSelection from '@src/editor/slate/hooks/useSelection.ts';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 
 interface MarkOption {
   value: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
 }
 
 const markOptions: MarkOption[] = [

@@ -1,5 +1,5 @@
 import { FugueTree } from '@shared/crdt/fugueTree';
-import { DeleteMessage, InsertMessage } from 'shared/crdt/types';
+import { DeleteMessage, InsertMessage } from '@shared/crdt/types';
 
 let tree = new FugueTree();
 

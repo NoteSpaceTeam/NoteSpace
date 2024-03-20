@@ -1,7 +1,7 @@
-import {ReactNode} from 'react';
+import { ReactNode } from 'react';
 
-interface CodeProps{
-  children: ReactNode;
+interface CodeProps {
+  children?: ReactNode;
 }
 
 function Code(props: CodeProps) {

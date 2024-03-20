@@ -1,5 +1,5 @@
 import { Fugue } from '@src/editor/crdt/fugue';
-import { InsertMessage, DeleteMessage } from '@shared/crdt/types';
+import { InsertMessage, DeleteMessage } from '@notespace/shared/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Fugue', () => {

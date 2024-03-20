@@ -1,5 +1,5 @@
 import { Descendant } from 'slate';
-import {CustomText, ElementType} from '@src/editor/slate/modules/types';
+import { CustomText, ElementType } from '@src/editor/slate/model/types.ts';
 
 export const descendant = (type: ElementType, children: CustomText[]): Descendant => {
   return { type, children };

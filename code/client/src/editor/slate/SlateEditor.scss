@@ -58,6 +58,11 @@ div [role='textbox'] {
       font-size: 15px;
       opacity: 0;
       animation: fadeIn 1s ease forwards;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+        transition: 0.5s background-color;
+      }
     }
 
     @keyframes fadeIn {
@@ -67,11 +72,6 @@ div [role='textbox'] {
       to {
         opacity: 1;
       }
-    }
-
-    button:hover {
-      background: rgba(0, 0, 0, 0.1);
-      transition: 0.5s background-color;
     }
   }
 }

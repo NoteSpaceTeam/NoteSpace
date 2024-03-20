@@ -1,5 +1,5 @@
 import { Database } from '@src/types';
-import { DeleteMessage, InsertMessage } from '@shared/crdt/types';
+import { DeleteMessage, InsertMessage } from '@shared/dist/crdt/types';
 
 export default function Services(database: Database) {
   async function getTree() {

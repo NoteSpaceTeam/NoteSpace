@@ -1,5 +1,5 @@
-import {Elements, InlineElements, CustomElement} from "@src/editor/slate/modules/types.ts";
-import {Editor, Element, Range, Text, Transforms} from "slate";
+import { Elements, InlineElements, CustomElement } from '@src/editor/slate/model/types.ts';
+import { Editor, Element, Range, Text, Transforms } from 'slate';
 
 export const shortcuts = [
   { trigger: blockRegex('#'), apply: createSetBlockApply(Elements.h1) },
@@ -10,18 +10,18 @@ export const shortcuts = [
   { trigger: blockRegex('######'), apply: createSetBlockApply(Elements.h6) },
   { trigger: blockRegex('>'), apply: createSetBlockApply(Elements.blockquote) },
   { trigger: blockRegex('-'), apply: createSetBlockApply(Elements.li) },
+  { trigger: blockRegex('*'), apply: createSetBlockApply(Elements.li) },
   { trigger: blockRegex('1.'), apply: createSetBlockApply(Elements.num) },
   { trigger: blockRegex('```'), apply: createSetBlockApply(Elements.code) },
   { trigger: blockRegex('---'), apply: createSetInlineApply(Elements.hr) },
   { trigger: inlineRegex('`'), apply: createSetInlineApply(Elements.code) },
   { trigger: inlineRegex('**'), apply: createSetMarkApply(InlineElements.bold) },
-  { trigger: inlineRegex('__'), apply: createSetMarkApply(InlineElements.bold)},
+  { trigger: inlineRegex('__'), apply: createSetMarkApply(InlineElements.bold) },
   { trigger: inlineRegex('*'), apply: createSetMarkApply(InlineElements.italic) },
   { trigger: inlineRegex('_'), apply: createSetMarkApply(InlineElements.italic) },
   { trigger: inlineRegex('~~'), apply: createSetMarkApply(InlineElements.strikethrough) },
   { trigger: inlineRegex('=='), apply: createSetMarkApply(InlineElements.underline) },
 ];
-
 
 function escapeRegExp(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -49,7 +49,7 @@ function createSetInlineApply(type: Element['type']) {
 
     Transforms.unwrapNodes(editor, {
       at: range,
-      match: (n) => Editor.isInline(editor, n as CustomElement),
+      match: n => Editor.isInline(editor, n as CustomElement),
       mode: 'all',
       split: true,
     });
