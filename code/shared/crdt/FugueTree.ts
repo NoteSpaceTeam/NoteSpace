@@ -15,6 +15,7 @@ export class FugueTree<T> {
       leftChildren: [],
       rightChildren: [],
       depth: 0,
+      styles: [],
     };
     this._nodes.set('root', [this.root]);
   }
@@ -45,6 +46,7 @@ export class FugueTree<T> {
       leftChildren: [],
       rightChildren: [],
       depth: 0,
+      styles: [],
     };
     // Add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];

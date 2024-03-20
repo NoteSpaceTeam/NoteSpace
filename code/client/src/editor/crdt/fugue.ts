@@ -33,7 +33,6 @@ export class Fugue<T> {
    * @param values
    */
   insertLocal(start: number, ...values: T[]): InsertMessage<T>[] {
-    console.log('Tree: ' + this.tree);
     return values.map((value, i) => {
       const msg = this.insertOne(start + i, value);
       this.addNode(msg);

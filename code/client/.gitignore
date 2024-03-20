@@ -23,3 +23,5 @@ dist-ssr
 *.sw?
 /node_modules/
 /package-lock.json
+workbox-*.js
+pnpm-lock.yaml

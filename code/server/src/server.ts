@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import cors from 'cors';
 import eventsInit from './ws/events';
 import servicesInit from './services/services';
-import database from './database/memory';
+import database from './database/memory/memory';
 import router from './http/router';
 import 'tsconfig-paths/register';
 

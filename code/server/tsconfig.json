@@ -28,14 +28,9 @@
     "skipLibCheck": true,
     "baseUrl": "../",
     "paths": {
-      "@shared/*": ["./shared/*"],
       "@src/*": ["./server/src/*"]
     }
   },
-  "references": [{ "path": "../shared/tsconfig.json" }],
   "include": ["src/**/*"],
   "files": ["src/types.d.ts"]
 }
-
-
-//

@@ -1,6 +1,6 @@
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from './firestore-key-5cddf-472039f8dbb6.json';
+import serviceAccount from '../../../firestore-key-5cddf-472039f8dbb6.json';
 import { Nodes, Node, InsertMessage, DeleteMessage } from '@notespace/shared/crdt/types';
 import { FugueTree } from '@notespace/shared/crdt/fugueTree';
 
@@ -24,6 +24,7 @@ async function getDocument() {
     leftChildren: [],
     rightChildren: [],
     depth: 0,
+    styles: [],
   };
   const nodes = { root: [root] } as Nodes<string>;
   setDocument(nodes);
