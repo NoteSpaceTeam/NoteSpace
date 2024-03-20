@@ -27,7 +27,11 @@ export type Node<T> = {
   styles: Style[];
 };
 
-export type InsertMessage<T> = {
+export type Nodes<T> = Record<string, Node<T>[]>;
+
+export type Style = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code';
+
+export type InsertOperation<T> = {
   type: 'insert';
   id: Id;
   value: T;
@@ -35,17 +39,15 @@ export type InsertMessage<T> = {
   side: 'L' | 'R';
 };
 
-export type DeleteMessage = {
+export type DeleteOperation = {
   type: 'delete';
   id: Id;
 };
 
-export type Nodes<T> = Record<string, Node<T>[]>;
+export type StyleOperation = {
+  type: 'style';
+  id: Id;
+  style: Style;
+};
 
-export enum Style {
-  BOLD = "bold",
-  ITALIC = "italic",
-  UNDERLINE = "underline",
-  STRIKETHROUGH = "strikethrough",
-  CODE = "code"
-}
+export type Operation = InsertOperation<string> | DeleteOperation | StyleOperation;

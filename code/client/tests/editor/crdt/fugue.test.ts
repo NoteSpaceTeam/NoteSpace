@@ -1,5 +1,5 @@
 import { Fugue } from '@src/editor/crdt/fugue';
-import { InsertMessage, DeleteMessage } from '@notespace/shared/crdt/types';
+import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Fugue', () => {
@@ -15,13 +15,13 @@ describe('Fugue', () => {
   });
 
   it('should insert values locally', () => {
-    const insertedMessages: InsertMessage<string>[] = fugue.insertLocal(0, 'a', 'b', 'c');
+    const insertedMessages: InsertOperation<string>[] = fugue.insertLocal(0, 'a', 'b', 'c');
     expect(insertedMessages).toHaveLength(3);
     expect(fugue.toString()).toContain('abc');
   });
 
   it('should insert values remotely', () => {
-    const message: InsertMessage<string> = {
+    const message: InsertOperation<string> = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
@@ -39,7 +39,7 @@ describe('Fugue', () => {
   });
 
   it('should delete values remotely', () => {
-    const insertMessage: InsertMessage<string> = {
+    const insertMessage: InsertOperation<string> = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'x',
@@ -47,7 +47,7 @@ describe('Fugue', () => {
       side: 'R',
     };
     fugue.insertRemote(insertMessage);
-    const deleteMessage: DeleteMessage = {
+    const deleteMessage: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
     };

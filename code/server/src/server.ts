@@ -5,15 +5,14 @@ import { config } from 'dotenv';
 import cors from 'cors';
 import eventsInit from './ws/events';
 import servicesInit from './services/services';
-import database from './database/memory/memory';
+import database from './database/memory/operations';
 import router from './http/router';
-import 'tsconfig-paths/register';
 
 config();
 const PORT = process.env.PORT || 8080;
 const services = servicesInit(database);
 const api = router(services);
-const events = eventsInit(database);
+const events = eventsInit(services);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {

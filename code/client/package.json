@@ -16,7 +16,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "file:../shared",
     "escape-html": "^1.0.3",
     "image-extensions": "^1.1.0",
     "is-html": "^3.1.0",

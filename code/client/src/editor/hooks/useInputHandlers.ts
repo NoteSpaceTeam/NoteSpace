@@ -12,7 +12,8 @@ const hotkeys: Record<string, string> = {
 
 function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
   function getSelection() {
-    const { anchor, focus } = editor.selection!;
+    if (!editor.selection) return { start: 0, end: 0 };
+    const { anchor, focus } = editor.selection;
     const start = anchor.offset;
     const end = focus.offset;
     return { start, end };
@@ -52,7 +53,7 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
     const mark = hotkeys[event.key!];
-    CustomEditor.toggleMark(editor, mark);
+    CustomEditor.toggleMark(editor, mark, fugue);
   }
   return { onKeyDown, onPaste };
 }

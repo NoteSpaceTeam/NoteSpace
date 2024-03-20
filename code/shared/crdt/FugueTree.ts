@@ -1,4 +1,4 @@
-import {Id, Node} from './types';
+import {Id, Node, Style} from './types';
 
 export class FugueTree<T> {
 
@@ -124,6 +124,22 @@ export class FugueTree<T> {
   }
 
   /**
+   * Updates the style of the node with the given id.
+   * If the style is already present, it is removed; otherwise, it is added.
+   * @param id
+   * @param style
+   */
+  updateStyle(id: Id, style: Style) {
+    const node = this.getById(id);
+    const index = node.styles.indexOf(style);
+    if (index === -1) {
+      node.styles.push(style);
+    } else {
+      node.styles.splice(index, 1);
+    }
+  }
+
+  /**
    * Traverses the tree by the given number of depth-first steps and returns the node at that position.
    * @param node the root of the subtree.
    * @param index the number of depth-first steps to take.
@@ -200,14 +216,6 @@ export class FugueTree<T> {
         stack.push({ side: 'L', childIndex: 0 });
       }
     }
-  }
-
-  toString(): string {
-    const values: T[] = [];
-    for (const node of this.traverse(this.root)) {
-      values.push(node.value!);
-    }
-    return values.join('');
   }
 
   get root(): Node<T> {

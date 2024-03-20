@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
-import { Database } from '@src/types';
-import { DeleteMessage, InsertMessage } from '@notespace/shared/crdt/types';
+import { Service } from '@src/types';
+import { Operation } from '@notespace/shared/crdt/types';
 
 type CursorChangeData = {
   line: number;
@@ -9,17 +9,22 @@ type CursorChangeData = {
 
 const cursorColorsMap = new Map<string, string>();
 
-export default function events(database: Database) {
-  function onOperation(socket: Socket, data: InsertMessage<string> | DeleteMessage) {
-    switch (data.type) {
+export default function events(service: Service) {
+  function onOperation(socket: Socket, operation: Operation) {
+    switch (operation.type) {
       case 'insert': {
-        database.insertCharacter(data);
-        socket.broadcast.emit('operation', data);
+        service.insertCharacter(operation);
+        socket.broadcast.emit('operation', operation);
         break;
       }
       case 'delete': {
-        database.deleteCharacter(data);
-        socket.broadcast.emit('operation', data);
+        service.deleteCharacter(operation);
+        socket.broadcast.emit('operation', operation);
+        break;
+      }
+      case 'style': {
+        service.updateStyle(operation);
+        socket.broadcast.emit('operation', operation);
         break;
       }
       default:

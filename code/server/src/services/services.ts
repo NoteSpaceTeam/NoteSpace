@@ -1,5 +1,5 @@
 import { Database } from '@src/types';
-import { DeleteMessage, InsertMessage } from '@notespace/shared/crdt/types';
+import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types';
 
 export default function Services(database: Database) {
   async function getTree() {
@@ -10,14 +10,19 @@ export default function Services(database: Database) {
     database.deleteTree();
   }
 
-  function insertCharacter(msg: InsertMessage<string>) {
+  function insertCharacter(msg: InsertOperation<string>) {
     if (msg.type !== 'insert') throw new Error('Invalid operation type');
     database.insertCharacter(msg);
   }
 
-  function deleteCharacter(msg: DeleteMessage) {
+  function deleteCharacter(msg: DeleteOperation) {
     if (msg.type !== 'delete') throw new Error('Invalid operation type');
     database.deleteCharacter(msg);
+  }
+
+  function updateStyle(msg: StyleOperation) {
+    if (msg.type !== 'style') throw new Error('Invalid operation type');
+    database.updateStyle(msg);
   }
 
   return {
@@ -25,5 +30,6 @@ export default function Services(database: Database) {
     deleteTree,
     insertCharacter,
     deleteCharacter,
+    updateStyle,
   };
 }
