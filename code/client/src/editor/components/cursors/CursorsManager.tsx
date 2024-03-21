@@ -2,11 +2,11 @@ import { useState } from 'react';
 import './CursorsManager.scss';
 import useSocketListeners from '../../../socket/useSocketListeners.ts';
 
-type Cursor = {
+interface Cursor {
   id: string;
   position: { line: number; column: number };
   color: string;
-};
+}
 
 function CursorsManager() {
   const [cursors, setCursors] = useState<Cursor[]>([]);
@@ -47,7 +47,7 @@ function CursorsManager() {
             top: `${top}px`,
             left: `${left}px`,
             width: '2px',
-            height: `1.5em`,
+            height: '1.5em',
             backgroundColor: cursor.color,
           }}
         />

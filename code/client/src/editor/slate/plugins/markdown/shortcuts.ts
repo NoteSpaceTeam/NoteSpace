@@ -1,5 +1,6 @@
-import { Elements, InlineElements, CustomElement } from '@src/editor/slate/model/types.ts';
-import { Editor, Element, Range, Text, Transforms } from 'slate';
+import { type CustomElement } from '@editor/slate/model/types.ts';
+import { BlockStyles, InlineStyles } from '@notespace/shared/crdt/styles.ts';
+import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { descendant } from '@editor/slate/model/utils.ts';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -37,15 +38,21 @@ function createSetInlineApply(type: Element['type']) {
       split: true,
     });
 
-    if (rangeRef.current)
+    if (rangeRef.current) {
       Transforms.insertNodes(
         editor,
         { text: '' },
         { match: Text.isText, at: Range.end(rangeRef.current), select: true }
       );
+    }
 
     const targetRange = rangeRef.unref();
-    if (targetRange) Transforms.wrapNodes(editor, descendant(type, []), { at: targetRange, split: true });
+    if (targetRange) {
+      Transforms.wrapNodes(editor, descendant(type, []), {
+        at: targetRange,
+        split: true,
+      });
+    }
   };
 }
 
@@ -64,19 +71,37 @@ function createSetMarkApply(key: Exclude<keyof Text, 'text'>) {
  * Shortcuts for markdown.
  */
 export const shortcuts = [
-  { trigger: blockRules('#'), apply: createSetBlockApply(Elements.h1) },
-  { trigger: blockRules('##'), apply: createSetBlockApply(Elements.h2) },
-  { trigger: blockRules('###'), apply: createSetBlockApply(Elements.h3) },
-  { trigger: blockRules('####'), apply: createSetBlockApply(Elements.h4) },
-  { trigger: blockRules('#####'), apply: createSetBlockApply(Elements.h5) },
-  { trigger: blockRules('######'), apply: createSetBlockApply(Elements.h6) },
-  { trigger: blockRules('>'), apply: createSetBlockApply(Elements.blockquote) },
-  { trigger: blockRules('-', '*'), apply: createSetBlockApply(Elements.li) },
-  { trigger: blockRules('1.'), apply: createSetBlockApply(Elements.num) },
-  { trigger: blockRules('```', '`'), apply: createSetBlockApply(Elements.code) },
-  { trigger: blockRules('---'), apply: createSetInlineApply(Elements.hr) },
-  { trigger: inlineRules('**', '__'), apply: createSetMarkApply(InlineElements.bold) },
-  { trigger: inlineRules('*', '_'), apply: createSetMarkApply(InlineElements.italic) },
-  { trigger: inlineRules('~~'), apply: createSetMarkApply(InlineElements.strikethrough) },
-  { trigger: inlineRules('=='), apply: createSetMarkApply(InlineElements.underline) },
+  { trigger: blockRules('#'), apply: createSetBlockApply(BlockStyles.h1) },
+  { trigger: blockRules('##'), apply: createSetBlockApply(BlockStyles.h2) },
+  { trigger: blockRules('###'), apply: createSetBlockApply(BlockStyles.h3) },
+  { trigger: blockRules('####'), apply: createSetBlockApply(BlockStyles.h4) },
+  { trigger: blockRules('#####'), apply: createSetBlockApply(BlockStyles.h5) },
+  { trigger: blockRules('######'), apply: createSetBlockApply(BlockStyles.h6) },
+  {
+    trigger: blockRules('>'),
+    apply: createSetBlockApply(BlockStyles.blockquote),
+  },
+  { trigger: blockRules('-', '*'), apply: createSetBlockApply(BlockStyles.li) },
+  { trigger: blockRules('1.'), apply: createSetBlockApply(BlockStyles.num) },
+  {
+    trigger: blockRules('```', '`'),
+    apply: createSetBlockApply(BlockStyles.code),
+  },
+  { trigger: blockRules('---'), apply: createSetInlineApply(BlockStyles.hr) },
+  {
+    trigger: inlineRules('**', '__'),
+    apply: createSetMarkApply(InlineStyles.bold),
+  },
+  {
+    trigger: inlineRules('*', '_'),
+    apply: createSetMarkApply(InlineStyles.italic),
+  },
+  {
+    trigger: inlineRules('~~'),
+    apply: createSetMarkApply(InlineStyles.strikethrough),
+  },
+  {
+    trigger: inlineRules('=='),
+    apply: createSetMarkApply(InlineStyles.underline),
+  },
 ];

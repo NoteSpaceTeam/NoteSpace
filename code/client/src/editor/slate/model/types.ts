@@ -1,20 +1,23 @@
-import { BaseEditor, Descendant } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { HistoryEditor } from 'slate-history';
+import { type BaseEditor, type Descendant } from 'slate';
+import { type ReactEditor } from 'slate-react';
+import { type HistoryEditor } from 'slate-history';
+import { type BlockType } from '@notespace/shared/crdt/styles.ts';
 
-export type CustomText = {
+export interface CustomText {
   text: string;
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
   strikethrough?: boolean;
   code?: boolean;
-};
+}
 
-export type CustomElement = {
-  type: ElementType;
+export interface CustomElement {
+  type: BlockType;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   children: Descendant[];
-};
+}
 
 declare module 'slate' {
   interface CustomTypes {
@@ -23,29 +26,3 @@ declare module 'slate' {
     Text: CustomText;
   }
 }
-
-export const Elements = {
-  p: 'paragraph',
-  h1: 'heading-one',
-  h2: 'heading-two',
-  h3: 'heading-three',
-  h4: 'heading-four',
-  h5: 'heading-five',
-  h6: 'heading-six',
-  blockquote: 'block-quote',
-  li: 'list-item',
-  num: 'numbered-list-item',
-  code: 'code',
-  hr: 'horizontal-rule',
-} as const;
-
-export const InlineElements = {
-  bold: 'bold',
-  italic: 'italic',
-  underline: 'underline',
-  strikethrough: 'strikethrough',
-  code: 'inline-code',
-  a: 'link',
-} as const;
-
-export type ElementType = (typeof Elements)[keyof typeof Elements];

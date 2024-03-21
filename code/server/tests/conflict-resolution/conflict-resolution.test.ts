@@ -1,11 +1,11 @@
 import { Server } from 'socket.io';
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
-import { InsertMessage, DeleteMessage } from './types';
-import app from '../../src/server';
+import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/operations';
 import { Node } from '@notespace/shared/crdt/types';
 import { FugueTree } from '@notespace/shared/crdt/fugueTree';
 import request = require('supertest');
+import app from '../../src/server';
 
 const baseURL = `http://localhost:${process.env.PORT}`;
 const httpServer = http.createServer(app);
@@ -35,14 +35,14 @@ describe('Operations must be commutative', () => {
 
   for (let i = 0; i < 10; i++) {
     test(`insert operations should be commutative (${i + 1})`, done => {
-      const insertMessage1: InsertMessage<string> = {
+      const insertMessage1: InsertOperation<string> = {
         type: 'insert',
         id: { sender: 'A', counter: 0 },
         value: 'a',
         parent: { sender: '', counter: 0 },
         side: 'R',
       };
-      const insertMessage2: InsertMessage<string> = {
+      const insertMessage2: InsertOperation<string> = {
         type: 'insert',
         id: { sender: 'B', counter: 0 },
         value: 'b',
@@ -71,14 +71,14 @@ describe('Operations must be idempotent', () => {
   beforeEach(async () => {
     const response = await request(app).delete('/document');
     expect(response.status).toBe(200);
-    const insertMessage: InsertMessage<string> = {
+    const insertMessage: InsertOperation<string> = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
       parent: { sender: '', counter: 0 },
       side: 'R',
     };
-    const insertMessage2: InsertMessage<string> = {
+    const insertMessage2: InsertOperation<string> = {
       type: 'insert',
       id: { sender: 'B', counter: 0 },
       value: 'a',
@@ -92,7 +92,7 @@ describe('Operations must be idempotent', () => {
 
   for (let i = 0; i < 5; i++) {
     test(`delete operations should be idempotent (${i + 1})`, done => {
-      const deleteMessage: DeleteMessage = {
+      const deleteMessage: DeleteOperation = {
         type: 'delete',
         id: { sender: 'A', counter: 0 },
       };

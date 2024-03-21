@@ -6,7 +6,8 @@ export function withNormalize(editor: Editor) {
   editor.normalizeNode = entry => {
     const [node] = entry;
     if (!Editor.isEditor(node) || node.children.length > 0) {
-      return normalizeNode(entry);
+      normalizeNode(entry);
+      return;
     }
     Transforms.insertNodes(
       editor,

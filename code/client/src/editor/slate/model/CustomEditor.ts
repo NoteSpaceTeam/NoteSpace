@@ -1,7 +1,8 @@
 import { Editor, Range } from 'slate';
-import { Style, StyleOperation } from '@notespace/shared/crdt/types';
+import { type Style } from '@notespace/shared/crdt/styles.ts';
+import { type StyleOperation } from '@notespace/shared/crdt/operations.ts';
 import { socket } from '@src/socket/socket.ts';
-import { Fugue } from '@src/editor/crdt/fugue.ts';
+import { type Fugue } from '@editor/crdt/fugue.ts';
 
 /**
  * Gets the absolute indices of the current selection.
@@ -12,8 +13,11 @@ function getAbsoluteIndices(editor: Editor): [number, number] | null {
   if (!selection) return null;
   const { anchor, focus } = selection;
 
-  const anchorString = editor.string({ anchor: editor.start([]), focus: anchor });
-  const focusString = editor.string({ anchor: editor.start([]), focus: focus });
+  const anchorString = editor.string({
+    anchor: editor.start([]),
+    focus: anchor,
+  });
+  const focusString = editor.string({ anchor: editor.start([]), focus });
 
   const start = Range.isBackward(selection) ? focusString.length : anchorString.length;
 
@@ -27,7 +31,7 @@ function getAbsoluteIndices(editor: Editor): [number, number] | null {
  */
 const CustomEditor = {
   isMarkActive(editor: Editor, format: string) {
-    const marks = editor.marks as Partial<Record<string, boolean>>;
+    const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
   toggleMark(editor: Editor, format: string, fugue: Fugue<string>) {
@@ -38,8 +42,13 @@ const CustomEditor = {
     const [start, end] = getAbsoluteIndices(editor)!;
     for (let i = start; i < end; i++) {
       const id = fugue.getElementId(i);
+      console.log('id', id);
       if (!id) continue;
-      const styleMessage: StyleOperation = { type: 'style', id, style: format as Style };
+      const styleMessage: StyleOperation = {
+        type: 'style',
+        id,
+        style: format as Style,
+      }; // TODO: swap to chunked emition
       socket.emit('operation', styleMessage);
     }
   },

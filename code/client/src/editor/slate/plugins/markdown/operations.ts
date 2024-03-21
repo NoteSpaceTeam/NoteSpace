@@ -1,8 +1,8 @@
-import { BaseEditor, BaseRange, Editor, Element, Point, Range, Text, TextUnit, Transforms } from 'slate';
-import { CustomElement } from '@editor/slate/model/types.ts';
+import { type BaseEditor, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
+import { type CustomElement } from '@editor/slate/model/types.ts';
 import { shortcuts } from './shortcuts.ts';
-import { ReactEditor } from 'slate-react';
-import { HistoryEditor } from 'slate-history';
+import { type ReactEditor } from 'slate-react';
+import { type HistoryEditor } from 'slate-history';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -16,7 +16,9 @@ type InsertTextFunction = (text: string) => void;
  * @param stringOffset
  */
 function before(editor: Editor, at: Point, stringOffset: number): Point | undefined {
-  if (at.offset >= stringOffset) return { offset: at.offset - stringOffset, path: at.path };
+  if (at.offset >= stringOffset) {
+    return { offset: at.offset - stringOffset, path: at.path };
+  }
 
   const entry = editor.previous({ at: at.path, match: Text.isText });
   if (!entry) return undefined;
@@ -33,7 +35,7 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
  */
 const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
   const { selection } = editor;
-  const { anchor } = selection as BaseRange;
+  const { anchor } = selection!;
 
   const [text, startText, endText] = match;
 
@@ -44,10 +46,21 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
 
   if (!matchEnd || !matchStart) return;
 
-  const matchRangeRef = editor.rangeRef({ anchor: matchStart, focus: matchEnd });
+  const matchRangeRef = editor.rangeRef({
+    anchor: matchStart,
+    focus: matchEnd,
+  });
 
-  if (endMatchStart) Transforms.delete(editor, { at: { anchor: endMatchStart, focus: matchEnd } });
-  if (startMatchEnd) Transforms.delete(editor, { at: { anchor: matchStart, focus: startMatchEnd } });
+  if (endMatchStart) {
+    Transforms.delete(editor, {
+      at: { anchor: endMatchStart, focus: matchEnd },
+    });
+  }
+  if (startMatchEnd) {
+    Transforms.delete(editor, {
+      at: { anchor: matchStart, focus: startMatchEnd },
+    });
+  }
 
   const applyRange = matchRangeRef.unref();
   if (applyRange) apply(editor, applyRange);
@@ -62,11 +75,16 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
 const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string): void => {
   // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
-  if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) return insertText(insert);
+  if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
+    insertText(insert);
+    return;
+  }
 
   // Check if the text before the selection ends with a trigger character
   const { anchor } = selection;
-  const block = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
+  const block = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
   const path = block ? block[1] : [];
   const blockRange = { anchor, focus: editor.start(path) };
   const beforeText = editor.string(blockRange);
@@ -77,7 +95,9 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply));
+    editor.withoutNormalizing(() => {
+      normalizeDeferral(editor, execArray, apply);
+    });
     return;
   }
   insertText(insert);
@@ -90,14 +110,19 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 const insertBreak = (editor: Editor): void => {
   const { selection } = editor;
   if (selection) {
-    const block = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
+    const block = editor.above({
+      match: (n: CustomElement) => editor.isBlock(n),
+    });
     const path = block ? block[1] : [];
     const end = editor.end(path);
     const wasSelectionAtEnd = Point.equals(end, Range.end(selection));
     Transforms.splitNodes(editor, { always: true });
 
     if (wasSelectionAtEnd) {
-      Transforms.unwrapNodes(editor, { match: (n: CustomElement) => editor.isInline(n), mode: 'all' });
+      Transforms.unwrapNodes(editor, {
+        match: (n: CustomElement) => editor.isInline(n),
+        mode: 'all',
+      });
       Transforms.setNodes(editor, { type: 'paragraph' }, { match: (n: CustomElement) => editor.isBlock(n) });
       const marks = editor.marks ?? {};
       Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
@@ -114,7 +139,9 @@ const insertBreak = (editor: Editor): void => {
 const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, ...args: [TextUnit]) => {
   const { selection } = editor;
   if (selection && Range.isCollapsed(selection)) {
-    const match = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
+    const match = editor.above({
+      match: (n: CustomElement) => editor.isBlock(n),
+    });
     if (match) {
       const [block, path] = match;
       const start = Editor.start(editor, path);

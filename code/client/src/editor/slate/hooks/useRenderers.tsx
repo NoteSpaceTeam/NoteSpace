@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { RenderElementProps, RenderLeafProps } from 'slate-react';
+import { type RenderElementProps, type RenderLeafProps } from 'slate-react';
 import { getElementRenderer, getLeafRenderer } from '@editor/slate/plugins/markdown/rendering/renderers.tsx';
 
 /**

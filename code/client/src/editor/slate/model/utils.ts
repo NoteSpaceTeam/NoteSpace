@@ -1,5 +1,5 @@
-import { Descendant } from 'slate';
-import { CustomText, ElementType } from '@src/editor/slate/model/types.ts';
+import { type Descendant } from 'slate';
+import { type CustomText, type ElementType } from '@editor/slate/model/types.ts';
 
 /**
  * Creates a descendant object.

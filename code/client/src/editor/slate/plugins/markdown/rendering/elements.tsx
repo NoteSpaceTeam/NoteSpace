@@ -1,5 +1,5 @@
-import { Elements } from '@editor/slate/model/types.ts';
-import { RenderElementProps } from 'slate-react';
+import { BlockStyles } from '@notespace/shared/crdt/styles.ts';
+import { type RenderElementProps } from 'slate-react';
 import {
   Blockquote,
   Code,
@@ -13,20 +13,20 @@ import {
   ListItem,
   NumberedListItem,
 } from './components/components.ts';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 export const ElementRenderers = {
-  [Elements.h1]: (props: RenderElementProps) => <Heading1 {...props} />,
-  [Elements.h2]: (props: RenderElementProps) => <Heading2 {...props} />,
-  [Elements.h3]: (props: RenderElementProps) => <Heading3 {...props} />,
-  [Elements.h4]: (props: RenderElementProps) => <Heading4 {...props} />,
-  [Elements.h5]: (props: RenderElementProps) => <Heading5 {...props} />,
-  [Elements.h6]: (props: RenderElementProps) => <Heading6 {...props} />,
-  [Elements.blockquote]: (props: RenderElementProps) => <Blockquote {...props} />,
-  [Elements.li]: (props: RenderElementProps) => <ListItem {...props} />,
-  [Elements.num]: (props: RenderElementProps) => <NumberedListItem {...props} />,
-  [Elements.code]: (props: RenderElementProps) => <Code {...props} />,
-  [Elements.hr]: (props: RenderElementProps) => <LineBreak {...props} />,
+  [BlockStyles.h1]: (props: RenderElementProps) => <Heading1 {...props} />,
+  [BlockStyles.h2]: (props: RenderElementProps) => <Heading2 {...props} />,
+  [BlockStyles.h3]: (props: RenderElementProps) => <Heading3 {...props} />,
+  [BlockStyles.h4]: (props: RenderElementProps) => <Heading4 {...props} />,
+  [BlockStyles.h5]: (props: RenderElementProps) => <Heading5 {...props} />,
+  [BlockStyles.h6]: (props: RenderElementProps) => <Heading6 {...props} />,
+  [BlockStyles.blockquote]: (props: RenderElementProps) => <Blockquote {...props} />,
+  [BlockStyles.li]: (props: RenderElementProps) => <ListItem {...props} />,
+  [BlockStyles.num]: (props: RenderElementProps) => <NumberedListItem {...props} />,
+  [BlockStyles.code]: (props: RenderElementProps) => <Code {...props} />,
+  [BlockStyles.hr]: (props: RenderElementProps) => <LineBreak {...props} />,
 } as const;
 
 export const LeafRenderers = {

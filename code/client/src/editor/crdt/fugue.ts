@@ -1,9 +1,13 @@
-import { DeleteOperation, Id, InsertOperation, Node, Style, StyleOperation } from '@notespace/shared/crdt/types';
+import { type DeleteOperation, type InsertOperation, type StyleOperation } from '@notespace/shared/crdt/operations.ts';
+import { type Node, type Id } from '@notespace/shared/crdt/types.ts';
+import { type Style } from '@notespace/shared/crdt/styles.ts';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree.ts';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket.ts';
-import { Descendant } from 'slate';
-import { CustomElement, CustomText } from '@src/editor/slate/model/types.ts';
+import { type Descendant } from 'slate';
+import { type CustomText } from '@editor/slate/model/types.ts';
+import { children, descendant } from '@editor/slate/model/utils.ts';
+import { type InsertNode } from '@editor/crdt/types.ts';
 
 /**
  * A local replica of a FugueTree.
@@ -25,7 +29,7 @@ export class Fugue<T> {
    * Builds the tree from the given nodes map.
    * @param nodesMap
    */
-  setTree(nodesMap: Map<string, Node<T>[]>): void {
+  setTree(nodesMap: Map<string, Array<Node<T>>>): void {
     this.tree.setTree(nodesMap);
   }
 
@@ -34,7 +38,7 @@ export class Fugue<T> {
    * @param start
    * @param values
    */
-  insertLocal(start: number, ...values: T[]): InsertOperation<T>[] {
+  insertLocal(start: number, ...values: Array<InsertNode<T>>): Array<InsertOperation<T>> {
     return values.map((value, i) => {
       const msg = this.insertOne(start + i, value);
       this.addNode(msg);
@@ -55,15 +59,25 @@ export class Fugue<T> {
    * Inserts a new node in the tree based on the given message.
    * @param start - the index where the new node should be inserted
    * @param value - the value of the new node
+   * @param styles
    * @private
    * @returns the insert message
    */
-  private insertOne(start: number, value: T): InsertOperation<T> {
+  private insertOne(start: number, { value, styles }: InsertNode<T>): InsertOperation<T> {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const leftOrigin = start === 0 ? this.tree.root : this.tree.traverseByIndex(this.tree.root, start - 1);
 
     // leftOrigin has no right children, so we add the new node as a right child
-    if (leftOrigin.rightChildren.length === 0) return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R' };
+    if (leftOrigin.rightChildren.length === 0) {
+      return {
+        type: 'insert',
+        id,
+        value,
+        parent: leftOrigin.id,
+        side: 'R',
+        styles,
+      };
+    }
 
     // Otherwise, the new node is added as a left child of rightOrigin, which
     // is the next node after leftOrigin *including tombstones*.
@@ -156,6 +170,7 @@ export class Fugue<T> {
     let lastStyles: Style[] | null = null;
     for (const node of this.tree.traverse(this.tree.root)) {
       if (node.isDeleted) continue;
+
       const textNode: CustomText = {
         text: node.value as string,
         bold: node.styles.includes('bold'),
@@ -164,30 +179,22 @@ export class Fugue<T> {
         strikethrough: node.styles.includes('strikethrough'),
         code: node.styles.includes('code'),
       };
+
       const lastDescendant = descendants[descendants.length === 0 ? 0 : descendants.length - 1];
-      if (lastDescendant !== undefined) {
+      // If there are descendants, check for consecutive nodes with the same styles
+      if (lastDescendant) {
+        // Check for consecutive nodes with the same styles - merge them into an inline block
         if (lastStyles?.every(s => node.styles.includes(s))) {
           const lastTextNode = lastDescendant.children[lastDescendant.children.length - 1];
+          if (!lastTextNode) continue;
           lastTextNode.text += textNode.text;
-        } else {
-          lastDescendant.children.push(textNode);
-        }
-      } else {
-        const paragraph: CustomElement = {
-          type: 'paragraph',
-          children: [textNode],
-        };
-        descendants.push(paragraph);
-      }
-      lastStyles = node.styles;
+        } else lastDescendant.children.push(textNode); // Create a new inline block
+      } else descendants.push(descendant('paragraph', [textNode])); // Create a new block
+      lastStyles = node.styles; // Update the last styles
     }
-
+    // If there are no descendants, add an empty paragraph
     if (descendants.length === 0) {
-      const paragraph: CustomElement = {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      };
-      descendants.push(paragraph);
+      descendants.push(descendant('paragraph', children('')));
     }
     return descendants;
   }

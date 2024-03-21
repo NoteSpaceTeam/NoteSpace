@@ -1,7 +1,8 @@
-import React from 'react';
-import { Fugue } from '../crdt/fugue.ts';
-import CustomEditor from '@src/editor/slate/model/CustomEditor.ts';
-import { Editor } from 'slate';
+import type React from 'react';
+import { type Fugue } from '../crdt/fugue.ts';
+import CustomEditor from '@editor/slate/model/CustomEditor.ts';
+import { type Editor } from 'slate';
+import { insertNode } from '@editor/crdt/utils.ts';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -22,11 +23,12 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     const selection = getSelection();
     if (e.ctrlKey) {
-      return shortcutHandler(e);
+      shortcutHandler(e);
+      return;
     }
     switch (e.key) {
       case 'Enter':
-        fugue.insertLocal(selection.start, '\n');
+        fugue.insertLocal(selection.start, insertNode('\n', []));
         break;
       case 'Backspace':
         if (selection.start === 0 && selection.end == 0) break;
@@ -35,11 +37,11 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
       case 'Tab':
         e.preventDefault();
         editor.insertText('\t');
-        fugue.insertLocal(selection.start, '\t');
+        fugue.insertLocal(selection.start, insertNode('\t', []));
         break;
       default:
         if (e.key.length !== 1) break;
-        fugue.insertLocal(selection.start, e.key);
+        fugue.insertLocal(selection.start, insertNode(e.key, []));
         break;
     }
   }
@@ -48,11 +50,11 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const selection = getSelection();
-    fugue.insertLocal(selection.start, clipboardData);
+    fugue.insertLocal(selection.start, insertNode(clipboardData, []));
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    const mark = hotkeys[event.key!];
+    const mark = hotkeys[event.key];
     CustomEditor.toggleMark(editor, mark, fugue);
   }
   return { onKeyDown, onPaste };

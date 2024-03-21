@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@src/editor/slate/model/CustomEditor.ts';
-import useSelection from '@src/editor/slate/hooks/useSelection.ts';
+import CustomEditor from '@editor/slate/model/CustomEditor.ts';
+import useSelection from '@editor/slate/hooks/useSelection.ts';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import { Fugue } from '@src/editor/crdt/fugue.ts';
+import { type Fugue } from '@editor/crdt/fugue.ts';
 
 interface MarkOption {
   value: string;
@@ -11,16 +11,16 @@ interface MarkOption {
 }
 
 const markOptions: MarkOption[] = [
-  { value: `bold`, icon: <FaBold /> },
-  { value: `italic`, icon: <FaItalic /> },
-  { value: `underline`, icon: <FaUnderline /> },
-  { value: `strikethrough`, icon: <FaStrikethrough /> },
-  { value: `code`, icon: <FaCode /> },
+  { value: 'bold', icon: <FaBold /> },
+  { value: 'italic', icon: <FaItalic /> },
+  { value: 'underline', icon: <FaUnderline /> },
+  { value: 'strikethrough', icon: <FaStrikethrough /> },
+  { value: 'code', icon: <FaCode /> },
 ];
 
-type ToolbarProps = {
+interface ToolbarProps {
   fugue: Fugue<string>;
-};
+}
 
 function Toolbar({ fugue }: ToolbarProps) {
   const editor = useSlate();
@@ -40,7 +40,9 @@ function Toolbar({ fugue }: ToolbarProps) {
       }
     };
     window.addEventListener('mouseup', getCurrentAbsolutePosition);
-    return () => window.removeEventListener('mouseup', getCurrentAbsolutePosition);
+    return () => {
+      window.removeEventListener('mouseup', getCurrentAbsolutePosition);
+    };
   }, []);
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
@@ -65,7 +67,9 @@ function Toolbar({ fugue }: ToolbarProps) {
       {markOptions.map(mark => (
         <button
           key={mark.value}
-          onMouseDown={e => handleMarkMouseDown(e, mark)}
+          onMouseDown={e => {
+            handleMarkMouseDown(e, mark);
+          }}
           className={CustomEditor.isMarkActive(editor, mark.value) ? 'active item' : 'item'}
         >
           {mark.icon}

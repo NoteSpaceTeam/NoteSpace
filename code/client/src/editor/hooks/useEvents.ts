@@ -1,6 +1,6 @@
 import useSocketListeners from '../../socket/useSocketListeners.ts';
-import { Fugue } from '../crdt/fugue.ts';
-import { Operation, Node } from '@notespace/shared/crdt/types';
+import { type Fugue } from '../crdt/fugue.ts';
+import { type Operation, type Node } from '@notespace/shared/crdt/types';
 
 function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
   function onOperation(operation: Operation) {
@@ -20,8 +20,8 @@ function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
     onDone();
   }
 
-  function onDocument<T>(nodes: Record<string, Node<T>[]>) {
-    const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
+  function onDocument<T>(nodes: Record<string, Array<Node<T>>>) {
+    const nodesMap = new Map<string, Array<Node<T>>>(Object.entries(nodes));
     fugue.setTree(nodesMap);
     onDone();
   }

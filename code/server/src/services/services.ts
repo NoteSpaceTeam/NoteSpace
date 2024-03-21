@@ -1,5 +1,5 @@
 import { Database } from '@src/types';
-import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types';
+import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/operations';
 
 export default function Services(database: Database) {
   async function getTree() {

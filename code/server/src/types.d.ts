@@ -1,8 +1,7 @@
-import { DeleteMessage, InsertMessage, Node } from '@shared/dist/crdt/types';
-import { StyleOperation } from '@notespace/shared/crdt/types';
+import { Nodes, StyleOperation } from '@notespace/shared/crdt/types';
 
 type Database = {
-  getTree: () => Promise<Record<string, Node[]>>;
+  getTree: () => Promise<Nodes<string>>;
   deleteTree: () => void;
   insertCharacter: (msg: InsertMessage<string>) => void;
   deleteCharacter: (msg: DeleteMessage) => void;
@@ -10,7 +9,7 @@ type Database = {
 };
 
 type Service = {
-  getTree: () => Promise<Record<string, Node[]>>;
+  getTree: () => Promise<Nodes<string>>;
   deleteTree: () => void;
   insertCharacter: (msg: InsertMessage) => void;
   deleteCharacter: (msg: DeleteMessage) => void;

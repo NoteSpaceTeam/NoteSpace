@@ -98,7 +98,10 @@ describe('Tree', () => {
     tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'L');
 
     // when
-    const leftmostDescendant = tree.getLeftmostDescendant({ sender: 'root', counter: 0 });
+    const leftmostDescendant = tree.getLeftmostDescendant({
+      sender: 'root',
+      counter: 0,
+    });
 
     // then
     expect(leftmostDescendant.id.counter).toEqual(2);

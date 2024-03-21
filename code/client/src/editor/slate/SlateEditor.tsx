@@ -1,14 +1,14 @@
 import { Editable, Slate, withReact } from 'slate-react';
-import useInputHandlers from '@src/editor/hooks/useInputHandlers.ts';
-import useFugue from '@src/editor/hooks/useFugue.ts';
-import useEvents from '@src/editor/hooks/useEvents.ts';
-import useRenderers from '@src/editor/slate/hooks/useRenderers.tsx';
+import useInputHandlers from '@editor/hooks/useInputHandlers.ts';
+import useFugue from '@editor/hooks/useFugue.ts';
+import useEvents from '@editor/hooks/useEvents.ts';
+import useRenderers from '@editor/slate/hooks/useRenderers.tsx';
 import './SlateEditor.scss';
-import Toolbar from '@src/editor/slate/toolbar/Toolbar.tsx';
+import Toolbar from '@editor/slate/toolbar/Toolbar.tsx';
 import { withHistory } from 'slate-history';
-import useEditor from '@src/editor/slate/hooks/useEditor.ts';
-import { withMarkdown } from '@src/editor/slate/plugins/markdown/withMarkdown.ts';
-import { withNormalize } from '@src/editor/slate/plugins/normalize/withNormalize.ts';
+import useEditor from '@editor/slate/hooks/useEditor.ts';
+import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown.ts';
+import { withNormalize } from '@editor/slate/plugins/normalize/withNormalize.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
