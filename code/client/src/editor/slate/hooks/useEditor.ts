@@ -1,7 +1,7 @@
 import { createEditor, Editor } from 'slate';
-import { useMemo } from 'react';
+import { useState } from 'react';
 
-const useEditor = (...fns: ((editor: Editor) => Editor)[]): Editor =>
-  useMemo(() => fns.reduce((acc, fn) => fn(acc), createEditor()), []);
+const useEditor = (...plugins: ((editor: Editor) => Editor)[]): Editor =>
+  useState(plugins.reduce((acc, plugin) => plugin(acc), createEditor()))[0];
 
 export default useEditor;

@@ -7,8 +7,8 @@ import './SlateEditor.scss';
 import Toolbar from '@src/editor/slate/toolbar/Toolbar.tsx';
 import { withHistory } from 'slate-history';
 import useEditor from '@src/editor/slate/hooks/useEditor.ts';
-import { withMarkdown } from '@src/editor/slate/markdown/withMarkdown.ts';
-import { withNormalize } from '@src/editor/slate/normalize/withNormalize.ts';
+import { withMarkdown } from '@src/editor/slate/plugins/markdown/withMarkdown.ts';
+import { withNormalize } from '@src/editor/slate/plugins/normalize/withNormalize.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);

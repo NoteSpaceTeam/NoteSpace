@@ -24,26 +24,36 @@ export type Node<T> = {
   leftChildren: Id[];
   rightChildren: Id[];
   depth: number;
-  styles: Style[];
+  styles: Style[]
 };
 
 export type Nodes<T> = Record<string, Node<T>[]>;
 
 export type Style = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code';
 
+/**
+ * An insert operation.
+ */
 export type InsertOperation<T> = {
   type: 'insert';
   id: Id;
   value: T;
   parent: Id;
   side: 'L' | 'R';
+  styles?: Style[];
 };
 
+/**
+ * A delete operation.
+ */
 export type DeleteOperation = {
   type: 'delete';
   id: Id;
 };
 
+/**
+ * An operation to apply a style to a node.
+ */
 export type StyleOperation = {
   type: 'style';
   id: Id;

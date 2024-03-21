@@ -1,4 +1,4 @@
-import { Fugue } from '@src/editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 

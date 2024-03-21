@@ -25,3 +25,4 @@ dist-ssr
 /package-lock.json
 workbox-*.js
 pnpm-lock.yaml
+/coverage/

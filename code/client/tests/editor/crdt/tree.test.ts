@@ -65,6 +65,7 @@ describe('Tree', () => {
       leftChildren: [],
       rightChildren: [],
       depth: 1,
+      styles: [],
     };
     nodesMap.set('root', [rootNode]);
     nodesMap.set('A', [childNode]);

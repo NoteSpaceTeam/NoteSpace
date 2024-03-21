@@ -5,6 +5,7 @@
   "author": "notespace-team",
   "private": true,
   "license": "MIT",
+
   "scripts": {
     "start": "vite --host",
     "test": "vitest",
@@ -16,7 +17,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "file:../shared",
+    "@notespace/shared": "file:..\\shared",
     "escape-html": "^1.0.3",
     "image-extensions": "^1.1.0",
     "is-html": "^3.1.0",
@@ -62,8 +63,8 @@
     "prettier": "^3.2.5",
     "sass": "^1.72.0",
     "scss": "^0.2.4",
-    "typescript": "^5.4.2",
-    "vite": "^5.2.0",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.2",
     "vite-plugin-pwa": "^0.19.5",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.4.0"

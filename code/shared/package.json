@@ -1,11 +1,15 @@
 {
   "name": "@notespace/shared",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "shared code",
   "author": "notespace-team",
   "scripts": {
     "build": "tsc"
   },
   "keywords": [],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.3"
+  }
 }
