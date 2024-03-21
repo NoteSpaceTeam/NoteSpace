@@ -10,19 +10,19 @@ export default function Services(database: Database) {
     database.deleteTree();
   }
 
-  function insertCharacter(msg: InsertOperation<string>) {
-    if (msg.type !== 'insert') throw new Error('Invalid operation type');
-    database.insertCharacter(msg);
+  function insertCharacter(operation: InsertOperation) {
+    if (operation.type !== 'insert') throw new Error('Invalid operation type');
+    database.insertCharacter(operation);
   }
 
-  function deleteCharacter(msg: DeleteOperation) {
-    if (msg.type !== 'delete') throw new Error('Invalid operation type');
-    database.deleteCharacter(msg);
+  function deleteCharacter(operation: DeleteOperation) {
+    if (operation.type !== 'delete') throw new Error('Invalid operation type');
+    database.deleteCharacter(operation);
   }
 
-  function updateStyle(msg: StyleOperation) {
-    if (msg.type !== 'style') throw new Error('Invalid operation type');
-    database.updateStyle(msg);
+  function updateStyle(operation: StyleOperation) {
+    if (operation.type !== 'style') throw new Error('Invalid operation type');
+    database.updateStyle(operation);
   }
 
   return {

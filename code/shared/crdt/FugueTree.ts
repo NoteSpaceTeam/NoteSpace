@@ -137,14 +137,15 @@ export class FugueTree<T> {
    * If the style is already present, it is removed; otherwise, it is added.
    * @param id
    * @param style
+   * @param value
    */
-  updateStyle(id: Id, style: Style) {
+  updateStyle(id: Id, style: Style, value: boolean) {
     const node = this.getById(id);
-    const index = node.styles.indexOf(style);
-    if (index === -1) {
+    if (value) {
       node.styles.push(style);
     } else {
-      node.styles.splice(index, 1);
+      const index = node.styles.indexOf(style);
+      if (index !== -1) node.styles.splice(index, 1);
     }
   }
 
@@ -154,7 +155,7 @@ export class FugueTree<T> {
    * @param index the number of depth-first steps to take.
    * @throws if the index is out of range.
    */
-  traverseByIndex(node: Node<T>, index: number): Node<T> {
+  getByIndex(node: Node<T>, index: number): Node<T> {
     if (index < 0 || index >= node.depth)
       throw new Error(`Invalid index: ${index}`);
     let remaining = index;

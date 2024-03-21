@@ -1,8 +1,9 @@
-import useSocketListeners from '../../socket/useSocketListeners.ts';
-import { type Fugue } from '../crdt/fugue.ts';
-import { type Operation, type Node } from '@notespace/shared/crdt/types';
+import useSocketListeners from '../../socket/useSocketListeners';
+import { type Fugue } from '../crdt/fugue';
+import { type Node } from '@notespace/shared/crdt/types';
+import { type Operation } from '@notespace/shared/crdt/operations';
 
-function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
+function useEvents(fugue: Fugue, onDone: () => void) {
   function onOperation(operation: Operation) {
     switch (operation.type) {
       case 'insert':
@@ -12,7 +13,7 @@ function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
         fugue.deleteRemote(operation);
         break;
       case 'style':
-        fugue.updateStyle(operation);
+        fugue.updateStyleRemote(operation);
         break;
       default:
         throw new Error('Invalid operation type');
@@ -20,8 +21,8 @@ function useEvents(fugue: Fugue<unknown>, onDone: () => void) {
     onDone();
   }
 
-  function onDocument<T>(nodes: Record<string, Array<Node<T>>>) {
-    const nodesMap = new Map<string, Array<Node<T>>>(Object.entries(nodes));
+  function onDocument(nodes: Record<string, Array<Node<string>>>) {
+    const nodesMap = new Map<string, Array<Node<string>>>(Object.entries(nodes));
     fugue.setTree(nodesMap);
     onDone();
   }

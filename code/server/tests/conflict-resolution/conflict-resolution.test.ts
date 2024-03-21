@@ -35,14 +35,14 @@ describe('Operations must be commutative', () => {
 
   for (let i = 0; i < 10; i++) {
     test(`insert operations should be commutative (${i + 1})`, done => {
-      const insertMessage1: InsertOperation<string> = {
+      const insertMessage1: InsertOperation = {
         type: 'insert',
         id: { sender: 'A', counter: 0 },
         value: 'a',
         parent: { sender: '', counter: 0 },
         side: 'R',
       };
-      const insertMessage2: InsertOperation<string> = {
+      const insertMessage2: InsertOperation = {
         type: 'insert',
         id: { sender: 'B', counter: 0 },
         value: 'b',
@@ -71,14 +71,14 @@ describe('Operations must be idempotent', () => {
   beforeEach(async () => {
     const response = await request(app).delete('/document');
     expect(response.status).toBe(200);
-    const insertMessage: InsertOperation<string> = {
+    const insertMessage: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
       parent: { sender: '', counter: 0 },
       side: 'R',
     };
-    const insertMessage2: InsertOperation<string> = {
+    const insertMessage2: InsertOperation = {
       type: 'insert',
       id: { sender: 'B', counter: 0 },
       value: 'a',

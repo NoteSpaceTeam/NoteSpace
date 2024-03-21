@@ -1,6 +1,6 @@
-import { type Style } from '@notespace/shared/crdt/types';
+import { type Style } from '@notespace/shared/crdt/styles';
 
-export interface InsertNode<T> {
-  value: T;
+export interface InsertNode {
+  value: string;
   styles: Style[];
 }

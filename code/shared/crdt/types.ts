@@ -22,7 +22,7 @@ export type Node<T> = {
   value: T | null;
   isDeleted: boolean;
   parent: Id | null;
-  side: "L" | "R";
+  side: 'L' | 'R';
   leftChildren: Id[];
   rightChildren: Id[];
   depth: number;

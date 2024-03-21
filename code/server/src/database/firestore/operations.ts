@@ -1,4 +1,4 @@
-import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/types';
+import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/operations';
 import { getTreeInstance, setDocument, updateTree } from '@src/database/firestore/firestore';
 
 async function getTree() {
@@ -10,7 +10,7 @@ async function deleteTree() {
   await setDocument({});
 }
 
-async function insertCharacter({ id, value, parent, side }: InsertOperation<string>) {
+async function insertCharacter({ id, value, parent, side }: InsertOperation) {
   await updateTree(tree => {
     tree.addNode(id, value, parent, side);
   });
@@ -22,9 +22,9 @@ async function deleteCharacter({ id }: DeleteOperation) {
   });
 }
 
-async function updateStyle({ id, style }: StyleOperation) {
+async function updateStyle({ id, style, value }: StyleOperation) {
   await updateTree(tree => {
-    tree.updateStyle(id, style);
+    tree.updateStyle(id, style, value);
   });
 }
 

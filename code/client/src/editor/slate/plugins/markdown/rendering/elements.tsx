@@ -1,5 +1,6 @@
+import { type ReactNode } from 'react';
 import { BlockStyles } from '@notespace/shared/crdt/styles.ts';
-import { type RenderElementProps } from 'slate-react';
+import { RenderElementProps } from 'slate-react';
 import {
   Blockquote,
   Code,
@@ -13,7 +14,6 @@ import {
   ListItem,
   NumberedListItem,
 } from './components/components.ts';
-import { type ReactNode } from 'react';
 
 export const ElementRenderers = {
   [BlockStyles.h1]: (props: RenderElementProps) => <Heading1 {...props} />,

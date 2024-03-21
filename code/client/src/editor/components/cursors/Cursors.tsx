@@ -8,7 +8,7 @@ interface Cursor {
   color: string;
 }
 
-function CursorsManager() {
+function Cursors() {
   const [cursors, setCursors] = useState<Cursor[]>([]);
 
   const handleCursorChange = (cursor: Cursor) => {
@@ -57,4 +57,4 @@ function CursorsManager() {
   return <>{renderCursors()}</>;
 }
 
-export default CursorsManager;
+export default Cursors;

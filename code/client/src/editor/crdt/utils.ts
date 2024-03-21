@@ -1,5 +1,5 @@
 import { type InsertNode } from '@editor/crdt/types.ts';
-import { type Style } from '@notespace/shared/crdt/types';
+import { type Style } from '@notespace/shared/crdt/styles';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;

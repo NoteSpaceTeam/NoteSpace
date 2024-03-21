@@ -19,6 +19,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
+    "downlevelIteration": true,
     "paths": {
       "@src/*": ["./src/*"],
       "@editor/*": ["./src/editor/*"]

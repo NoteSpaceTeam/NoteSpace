@@ -1,13 +1,13 @@
-import { type DeleteOperation, type InsertOperation, type StyleOperation } from '@notespace/shared/crdt/operations.ts';
-import { type Node, type Id } from '@notespace/shared/crdt/types.ts';
-import { type Style } from '@notespace/shared/crdt/styles.ts';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree.ts';
+import { type DeleteOperation, type InsertOperation, type StyleOperation } from '@notespace/shared/crdt/operations';
+import { type Node, type Id } from '@notespace/shared/crdt/types';
+import { type Style } from '@notespace/shared/crdt/styles';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
-import { socket } from '@src/socket/socket.ts';
+import { socket } from '@src/socket/socket';
 import { type Descendant } from 'slate';
-import { type CustomText } from '@editor/slate/model/types.ts';
-import { children, descendant } from '@editor/slate/model/utils.ts';
-import { type InsertNode } from '@editor/crdt/types.ts';
+import { type CustomText } from '@editor/slate/model/types';
+import { createChildren, createDescendant } from '@editor/slate/model/utils';
+import { type InsertNode } from '@editor/crdt/types';
 
 /**
  * A local replica of a FugueTree.
@@ -15,10 +15,10 @@ import { type InsertNode } from '@editor/crdt/types.ts';
  * @class
  * @property {string} replicaId - the id of the replica
  */
-export class Fugue<T> {
+export class Fugue {
   private readonly replicaId: string;
   private counter = 0;
-  private readonly tree: FugueTree<T>;
+  private readonly tree: FugueTree<string>;
 
   constructor() {
     this.replicaId = generateReplicaId();
@@ -29,7 +29,7 @@ export class Fugue<T> {
    * Builds the tree from the given nodes map.
    * @param nodesMap
    */
-  setTree(nodesMap: Map<string, Array<Node<T>>>): void {
+  setTree(nodesMap: Map<string, Node<string>[]>): void {
     this.tree.setTree(nodesMap);
   }
 
@@ -38,7 +38,7 @@ export class Fugue<T> {
    * @param start
    * @param values
    */
-  insertLocal(start: number, ...values: Array<InsertNode<T>>): Array<InsertOperation<T>> {
+  insertLocal(start: number, ...values: InsertNode[]): InsertOperation[] {
     return values.map((value, i) => {
       const msg = this.insertOne(start + i, value);
       this.addNode(msg);
@@ -51,7 +51,7 @@ export class Fugue<T> {
    * Inserts a new node in the tree based on the given message.
    * @param message - the insert message
    */
-  insertRemote(message: InsertOperation<T>): void {
+  insertRemote(message: InsertOperation): void {
     this.addNode(message);
   }
 
@@ -63,10 +63,9 @@ export class Fugue<T> {
    * @private
    * @returns the insert message
    */
-  private insertOne(start: number, { value, styles }: InsertNode<T>): InsertOperation<T> {
+  private insertOne(start: number, { value, styles }: InsertNode): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const leftOrigin = start === 0 ? this.tree.root : this.tree.traverseByIndex(this.tree.root, start - 1);
-
+    const leftOrigin = start === 0 ? this.tree.root : this.tree.getByIndex(this.tree.root, start - 1);
     // leftOrigin has no right children, so we add the new node as a right child
     if (leftOrigin.rightChildren.length === 0) {
       return {
@@ -78,7 +77,6 @@ export class Fugue<T> {
         styles,
       };
     }
-
     // Otherwise, the new node is added as a left child of rightOrigin, which
     // is the next node after leftOrigin *including tombstones*.
     // In this case, rightOrigin is the leftmost descendant of leftOrigin's
@@ -95,7 +93,7 @@ export class Fugue<T> {
    * @param side
    * @private
    */
-  private addNode({ id, value, parent, side }: InsertOperation<T>) {
+  private addNode({ id, value, parent, side }: InsertOperation) {
     this.tree.addNode(id, value, parent, side);
   }
 
@@ -132,7 +130,7 @@ export class Fugue<T> {
    * @returns the delete message
    */
   private deleteOne(index: number): DeleteOperation {
-    const node = this.tree.traverseByIndex(this.tree.root, index);
+    const node = this.tree.getByIndex(this.tree.root, index);
     return { type: 'delete', id: node.id };
   }
 
@@ -145,8 +143,25 @@ export class Fugue<T> {
     this.tree.deleteNode(message.id);
   }
 
-  updateStyle({ id, style }: StyleOperation): void {
-    this.tree.updateStyle(id, style);
+  updateStyleLocal(start: number, end: number, value: boolean, format: string) {
+    for (let i = start; i < end; i++) {
+      const id = this.getElementId(i);
+      if (!id) continue;
+      const style = format as Style;
+      const styleOperation: StyleOperation = {
+        type: 'style',
+        id,
+        style: style,
+        value: value,
+      };
+      this.tree.updateStyle(id, style, value);
+      // TODO: swap to chunked operations
+      socket.emit('operation', styleOperation);
+    }
+  }
+
+  updateStyleRemote({ id, style, value }: StyleOperation): void {
+    this.tree.updateStyle(id, style, value);
   }
 
   /**
@@ -154,7 +169,7 @@ export class Fugue<T> {
    * @returns the string representation of the tree.
    */
   toString(): string {
-    const values: T[] = [];
+    const values: string[] = [];
     for (const node of this.tree.traverse(this.tree.root)) {
       values.push(node.value!);
     }
@@ -167,10 +182,9 @@ export class Fugue<T> {
    */
   toSlate(): Descendant[] {
     const descendants: Descendant[] = [];
-    let lastStyles: Style[] | null = null;
+    let lastStyles: Style[] = [];
     for (const node of this.tree.traverse(this.tree.root)) {
       if (node.isDeleted) continue;
-
       const textNode: CustomText = {
         text: node.value as string,
         bold: node.styles.includes('bold'),
@@ -179,27 +193,33 @@ export class Fugue<T> {
         strikethrough: node.styles.includes('strikethrough'),
         code: node.styles.includes('code'),
       };
-
-      const lastDescendant = descendants[descendants.length === 0 ? 0 : descendants.length - 1];
-      // If there are descendants, check for consecutive nodes with the same styles
-      if (lastDescendant) {
-        // Check for consecutive nodes with the same styles - merge them into an inline block
-        if (lastStyles?.every(s => node.styles.includes(s))) {
-          const lastTextNode = lastDescendant.children[lastDescendant.children.length - 1];
-          if (!lastTextNode) continue;
-          lastTextNode.text += textNode.text;
-        } else lastDescendant.children.push(textNode); // Create a new inline block
-      } else descendants.push(descendant('paragraph', [textNode])); // Create a new block
-      lastStyles = node.styles; // Update the last styles
+      // If there are no descendants or new line, add a new paragraph
+      if (descendants.length === 0 || node.value === '\n') {
+        const children = node.value === '\n' ? createChildren('') : [textNode];
+        descendants.push(createDescendant('paragraph', children));
+        lastStyles = node.styles;
+        continue;
+      }
+      const lastDescendant = descendants[descendants.length - 1];
+      // If node styles are the same as the previous one, append the text to it
+      if (JSON.stringify(lastStyles) === JSON.stringify(node.styles)) {
+        const lastTextNode = lastDescendant.children[lastDescendant.children.length - 1];
+        lastTextNode.text += textNode.text;
+      }
+      // Otherwise, create a new block
+      else {
+        lastDescendant.children.push(textNode);
+      }
+      lastStyles = node.styles;
     }
     // If there are no descendants, add an empty paragraph
     if (descendants.length === 0) {
-      descendants.push(descendant('paragraph', children('')));
+      descendants.push(createDescendant('paragraph', createChildren('')));
     }
     return descendants;
   }
 
   getElementId(index: number): Id {
-    return this.tree.traverseByIndex(this.tree.root, index).id;
+    return this.tree.getByIndex(this.tree.root, index).id;
   }
 }

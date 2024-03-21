@@ -6,7 +6,7 @@ import { Fugue } from '../crdt/fugue.ts';
  * @returns a new FugueReplica
  */
 function useFugue() {
-  return useMemo(() => new Fugue<string>(), []);
+  return useMemo(() => new Fugue(), []);
 }
 
 export default useFugue;

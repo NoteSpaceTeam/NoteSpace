@@ -85,7 +85,7 @@ describe('Tree', () => {
     tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 0 }, 'L');
 
     // when
-    const node = tree.traverseByIndex(tree.root, 2);
+    const node = tree.getByIndex(tree.root, 2);
 
     // then
     expect(node).toEqual(tree.getById({ sender: 'A', counter: 1 }));

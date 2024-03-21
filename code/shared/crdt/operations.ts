@@ -4,10 +4,10 @@ import { Style } from "./styles";
 /**
  * An insert operation.
  */
-export type InsertOperation<T> = {
+export type InsertOperation = {
   type: "insert";
   id: Id;
-  value: T;
+  value: string;
   parent: Id;
   side: "L" | "R";
   styles?: Style[];
@@ -28,9 +28,7 @@ export type StyleOperation = {
   type: "style";
   id: Id;
   style: Style;
+  value: boolean;
 };
 
-export type Operation<T> =
-  | InsertOperation<T>
-  | DeleteOperation
-  | StyleOperation;
+export type Operation = | InsertOperation | DeleteOperation | StyleOperation;

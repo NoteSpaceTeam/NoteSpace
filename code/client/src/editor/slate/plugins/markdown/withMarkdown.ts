@@ -18,6 +18,5 @@ export function withMarkdown(editor: Editor) {
     operations.deleteBackward(editor, deleteBackward, ...args);
   };
   editor.isInline = n => operations.isInline(n, isInline);
-  // (Element.isElement(n) && n.type === 'inline-code') || isInline(n);
   return editor;
 }

@@ -3,6 +3,7 @@ import { type Fugue } from '../crdt/fugue.ts';
 import CustomEditor from '@editor/slate/model/CustomEditor.ts';
 import { type Editor } from 'slate';
 import { insertNode } from '@editor/crdt/utils.ts';
+import { getAbsoluteSelection } from '@editor/slate/model/utils.ts';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -26,22 +27,23 @@ function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
       shortcutHandler(e);
       return;
     }
+    const [start, end] = getAbsoluteSelection(editor);
     switch (e.key) {
       case 'Enter':
-        fugue.insertLocal(selection.start, insertNode('\n', []));
+        fugue.insertLocal(start, insertNode('\n', []));
         break;
       case 'Backspace':
         if (selection.start === 0 && selection.end == 0) break;
-        fugue.deleteLocal(selection.start, selection.end);
+        fugue.deleteLocal(start, end);
         break;
       case 'Tab':
         e.preventDefault();
         editor.insertText('\t');
-        fugue.insertLocal(selection.start, insertNode('\t', []));
+        fugue.insertLocal(start, insertNode('\t', []));
         break;
       default:
         if (e.key.length !== 1) break;
-        fugue.insertLocal(selection.start, insertNode(e.key, []));
+        fugue.insertLocal(start, insertNode(e.key, []));
         break;
     }
   }

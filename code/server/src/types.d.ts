@@ -1,17 +1,18 @@
-import { Nodes, StyleOperation } from '@notespace/shared/crdt/types';
+import { Nodes } from '@notespace/shared/crdt/types';
+import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/operations';
 
 type Database = {
   getTree: () => Promise<Nodes<string>>;
   deleteTree: () => void;
-  insertCharacter: (msg: InsertMessage<string>) => void;
-  deleteCharacter: (msg: DeleteMessage) => void;
-  updateStyle: (msg: StyleOperation) => void;
+  insertCharacter: (operation: InsertOperation<string>) => void;
+  deleteCharacter: (operation: DeleteOperation) => void;
+  updateStyle: (operation: StyleOperation) => void;
 };
 
 type Service = {
   getTree: () => Promise<Nodes<string>>;
   deleteTree: () => void;
-  insertCharacter: (msg: InsertMessage) => void;
-  deleteCharacter: (msg: DeleteMessage) => void;
-  updateStyle: (msg: StyleOperation) => void;
+  insertCharacter: (operation: InsertOperation) => void;
+  deleteCharacter: (operation: DeleteOperation) => void;
+  updateStyle: (operation: StyleOperation) => void;
 };

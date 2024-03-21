@@ -1,7 +1,7 @@
 import { type CustomElement } from '@editor/slate/model/types.ts';
 import { BlockStyles, InlineStyles } from '@notespace/shared/crdt/styles.ts';
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
-import { descendant } from '@editor/slate/model/utils.ts';
+import { createDescendant } from '@editor/slate/model/utils.ts';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -48,7 +48,7 @@ function createSetInlineApply(type: Element['type']) {
 
     const targetRange = rangeRef.unref();
     if (targetRange) {
-      Transforms.wrapNodes(editor, descendant(type, []), {
+      Transforms.wrapNodes(editor, createDescendant(type, []), {
         at: targetRange,
         split: true,
       });
