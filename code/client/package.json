@@ -5,7 +5,6 @@
   "author": "notespace-team",
   "private": true,
   "license": "MIT",
-
   "scripts": {
     "start": "vite --host",
     "test": "vitest",

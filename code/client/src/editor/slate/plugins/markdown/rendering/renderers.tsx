@@ -4,6 +4,7 @@ import { Paragraph } from './components/components.ts';
 import { CustomText } from '@editor/slate/model/types.ts';
 import { ReactNode } from 'react';
 
+// TODO: Convert this so that it can mix and match styles
 export const getElementRenderer = (type: string, props: RenderElementProps) => {
   for (const key in ElementRenderers)
     if (key === type) {
@@ -14,10 +15,12 @@ export const getElementRenderer = (type: string, props: RenderElementProps) => {
 };
 
 export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
+  console.log('leaf', leaf);
   for (const key in leaf) {
     const renderer = LeafRenderers[key as keyof typeof LeafRenderers];
     if (!renderer) continue;
     children = renderer(children);
   }
+  console.log('children', children);
   return children;
 };
