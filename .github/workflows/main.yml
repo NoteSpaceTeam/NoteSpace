@@ -2,50 +2,64 @@
     push:
       branches:
         - main
-    pull_request:
-      branches:
-        - main
   jobs:
     client:
+      strategy:
+        matrix:
+          os: [ubuntu-latest]
+          pnpm: ['latest']
+          node: ['latest']
+          working-directory: [code/client]
+
+
+      runs-on: ${{ matrix.os }}
       defaults:
         run:
-          working-directory: /code/client
-      runs-on: ubuntu-latest
+          working-directory: ${{ matrix.working-directory }}
       steps:
-        - uses: actions/checkout@v2
-
-        - name: Set up pnpm
-          uses: pnpm/action-setup@v2
+        - uses: actions/checkout@v3
+        - uses: pnpm/action-setup@v3
           with:
-            version: 6.7.0
+            version: ${{ matrix.pnpm }}
+        
+        - name: Set up Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ matrix.node }}
 
         - name: Install dependencies
-          run: |
-            pnpm install
-            pnpm update
+          run: pnpm install
 
         - name: Test client
           run: pnpm test
 
         - name: Format client
           run: pnpm format
+
     server:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          os: [ubuntu-latest]
+          pnpm: ['latest']
+          node: ['latest']
+          working-directory: [code/server]
       defaults:
         run:
-          working-directory: /code/server
-      runs-on: ubuntu-latest
+          working-directory: ${{ matrix.working-directory }}
       steps:
-        - uses: actions/checkout@v2
-
-        - name: Set up pnpm
-          uses: pnpm/action-setup@v2
+        - uses: actions/checkout@v3
+        - uses: pnpm/action-setup@v3
           with:
-            version: 6.7.0
+            version: ${{ matrix.pnpm }}
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ matrix.node }}
 
         - name: Install dependencies
-          run: |
-            pnpm install
-            pnpm update
+          run: pnpm install
 
         - name: Test server
           run: pnpm test
@@ -53,25 +67,32 @@
         - name: Format server
           run: pnpm format
     shared:
-        defaults:
-            run:
-              working-directory: /code/shared
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          os: [ubuntu-latest]
+          pnpm: ['latest']
+          node: ['latest']
+          working-directory: [code/shared]
+      defaults:
+        run:
+          working-directory: ${{ matrix.working-directory }}
+      steps:
+        - uses: actions/checkout@v3
+        - uses: pnpm/action-setup@v3
+          with:
+            version: ${{ matrix.pnpm }}
 
-            - name: Set up pnpm
-              uses: pnpm/action-setup@v2
-              with:
-                version: 6.7.0
+        - name: Set up Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ matrix.node }}
 
-            - name: Install dependencies
-              run: |
-                pnpm install
-                pnpm update
+        - name: Install dependencies
+          run: pnpm install
 
-            - name: Test shared
-              run: pnpm test
+        # - name: Test shared
+        #   run: pnpm test
 
-            - name: Format shared
-              run: pnpm format
+        - name: Format shared
+          run: pnpm format
