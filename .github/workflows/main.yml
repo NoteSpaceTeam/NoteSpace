@@ -9,7 +9,7 @@
         - uses: actions/checkout@v2
 
         - name: Set up Node.js
-          uses: pnpm/action-setup@v2
+          uses: pnpm/action-setup@v3
           with:
             node-version: 'latest'
 
