@@ -2,23 +2,27 @@
     push:
       branches:
         - main
-    pull_request:
-      branches:
-        - main
   jobs:
-    client:
-      defaults:
-        run:
-          working-directory: /code/client
+    setup:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
 
-        - name: Set up pnpm
+        - name: Set up Node.js
           uses: pnpm/action-setup@v2
           with:
-            version: 6.7.0
+            node-version: 'latest'
 
+        - name: Install pnpm
+          run: npm install -g pnpm
+
+
+    client:
+      defaults:
+        run:
+          working-directory: ../code/client
+      runs-on: ubuntu-latest
+      steps:
         - name: Install dependencies
           run: |
             pnpm install
@@ -32,16 +36,9 @@
     server:
       defaults:
         run:
-          working-directory: /code/server
+          working-directory: ../code/server
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
-
-        - name: Set up pnpm
-          uses: pnpm/action-setup@v2
-          with:
-            version: 6.7.0
-
         - name: Install dependencies
           run: |
             pnpm install
@@ -55,16 +52,9 @@
     shared:
         defaults:
             run:
-              working-directory: /code/shared
+              working-directory: ../code/shared
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-
-            - name: Set up pnpm
-              uses: pnpm/action-setup@v2
-              with:
-                version: 6.7.0
-
             - name: Install dependencies
               run: |
                 pnpm install
