@@ -1,5 +1,6 @@
-import { type InsertNode } from '@editor/crdt/types.ts';
-import { type Style } from '@notespace/shared/crdt/styles';
+import _, { range } from 'lodash';
+import type { Style } from '@notespace/shared/crdt/styles.ts';
+import type { InsertNode } from '@editor/crdt/types.ts';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;
@@ -7,13 +8,15 @@ const DEFAULT_REPLICA_ID_LENGTH = 10;
 export function generateReplicaId() {
   let id = '';
   const charsLength = BASE64CHARS.length;
-  for (let i = 0; i < DEFAULT_REPLICA_ID_LENGTH; i++) {
+  range(0, DEFAULT_REPLICA_ID_LENGTH).forEach(() => {
     const randomIndex = Math.floor(Math.random() * charsLength);
     id += BASE64CHARS[randomIndex];
-  }
+  });
   return id;
 }
 
-export function insertNode<T>(value: T, styles: Style[]): InsertNode<T> {
+export function insertNode(value: string, styles: Style[]): InsertNode {
   return { value, styles };
 }
+
+

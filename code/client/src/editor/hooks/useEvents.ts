@@ -1,5 +1,5 @@
-import useSocketListeners from '../../socket/useSocketListeners';
-import { type Fugue } from '../crdt/fugue';
+import useSocketListeners from '@src/socket/useSocketListeners';
+import { type Fugue } from '@src/editor/crdt/fugue';
 import { type Node } from '@notespace/shared/crdt/types';
 import { type Operation } from '@notespace/shared/crdt/operations';
 

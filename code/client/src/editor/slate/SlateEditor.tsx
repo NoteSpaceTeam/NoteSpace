@@ -9,6 +9,7 @@ import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor.ts';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown.ts';
 import { withNormalize } from '@editor/slate/plugins/normalize/withNormalize.ts';
+import { toSlate } from '@editor/slate/utils.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
@@ -18,7 +19,7 @@ function SlateEditor() {
 
   useEvents(fugue, () => {
     // force re-render of the editor with new text
-    editor.children = fugue.toSlate();
+    editor.children = toSlate(fugue.fullTraverse)
     editor.onChange();
   });
 

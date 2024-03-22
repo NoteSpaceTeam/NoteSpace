@@ -95,9 +95,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => {
-      normalizeDeferral(editor, execArray, apply);
-    });
+    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply));
     return;
   }
   insertText(insert);

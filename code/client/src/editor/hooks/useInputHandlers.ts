@@ -12,7 +12,7 @@ const hotkeys: Record<string, string> = {
   c: 'code',
 };
 
-function useInputHandlers(editor: Editor, fugue: Fugue<string>) {
+function useInputHandlers(editor: Editor, fugue: Fugue) {
   function getSelection() {
     if (!editor.selection) return { start: 0, end: 0 };
     const { anchor, focus } = editor.selection;

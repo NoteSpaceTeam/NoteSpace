@@ -1,5 +1,6 @@
 import { Id, Node } from "./types";
 import { Style } from "./styles";
+import { isEmpty, isNull, isUndefined } from 'lodash';
 
 export class FugueTree<T> {
   private _nodes = new Map<string, Node<T>[]>();
@@ -50,7 +51,7 @@ export class FugueTree<T> {
     };
     // Add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
-    if (senderNodes.length === 0) this.nodes.set(id.sender, senderNodes);
+    if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
     senderNodes.push(node);
     // Insert into parent's siblings.
     this.insertChild(node);
@@ -108,9 +109,9 @@ export class FugueTree<T> {
    */
   getById(id: Id): Node<T> {
     const bySender = this.nodes.get(id.sender);
-    if (bySender !== undefined) {
+    if (!isUndefined(bySender)) {
       const node = bySender[id.counter];
-      if (node !== undefined) return node;
+      if (!isUndefined(node)) return node;
     }
     throw new Error("Unknown ID: " + JSON.stringify(id));
   }
@@ -122,12 +123,8 @@ export class FugueTree<T> {
    */
   getLeftmostDescendant(nodeId: Id): Node<T> {
     let node = this.getById(nodeId);
-    for (
-      ;
-      node.leftChildren.length !== 0;
-      node = this.getById(node.leftChildren[0])
-    ) {
-      /* empty */
+    while(!isEmpty(node.leftChildren)) {
+      node = this.getById(node.leftChildren[0]);
     }
     return node;
   }
@@ -156,8 +153,7 @@ export class FugueTree<T> {
    * @throws if the index is out of range.
    */
   getByIndex(node: Node<T>, index: number): Node<T> {
-    if (index < 0 || index >= node.depth)
-      throw new Error(`Invalid index: ${index}`);
+    if (index < 0 || index >= node.depth) throw new Error(`Invalid index: ${index}`);
     let remaining = index;
     let continueLoop = true;
     while (continueLoop) {
@@ -216,7 +212,7 @@ export class FugueTree<T> {
           continue;
         }
         // Go to the parent.
-        if (current.parent === null) return;
+        if (isNull(current.parent)) return;
         current = this.getById(current.parent);
         stack.pop();
         continue;

@@ -10,7 +10,7 @@ const CustomEditor = {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
-  toggleMark(editor: Editor, format: string, fugue: Fugue<string>) {
+  toggleMark(editor: Editor, format: string, fugue: Fugue) {
     const isActive = CustomEditor.isMarkActive(editor, format);
     if (isActive) {
       Editor.removeMark(editor, format);

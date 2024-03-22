@@ -4,10 +4,8 @@ import { type Style } from '@notespace/shared/crdt/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';
-import { type Descendant } from 'slate';
-import { type CustomText } from '@editor/slate/model/types';
-import { createChildren, createDescendant } from '@editor/slate/model/utils';
 import { type InsertNode } from '@editor/crdt/types';
+import { isEmpty } from 'lodash';
 
 /**
  * A local replica of a FugueTree.
@@ -67,7 +65,7 @@ export class Fugue {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const leftOrigin = start === 0 ? this.tree.root : this.tree.getByIndex(this.tree.root, start - 1);
     // leftOrigin has no right children, so we add the new node as a right child
-    if (leftOrigin.rightChildren.length === 0) {
+    if (isEmpty(leftOrigin.rightChildren)) {
       return {
         type: 'insert',
         id,
@@ -165,58 +163,20 @@ export class Fugue {
   }
 
   /**
+   * Makes a full traversal of the tree.
+   */
+  fullTraverse = () => this.tree.traverse(this.tree.root);
+
+  /**
    * Returns the string representation of the tree.
    * @returns the string representation of the tree.
    */
   toString(): string {
     const values: string[] = [];
-    for (const node of this.tree.traverse(this.tree.root)) {
+    for (const node of this.fullTraverse()) {
       values.push(node.value!);
     }
     return values.join('');
-  }
-
-  /**
-   * Returns the slate representation of the tree.
-   * @returns the slate representation of the tree.
-   */
-  toSlate(): Descendant[] {
-    const descendants: Descendant[] = [];
-    let lastStyles: Style[] = [];
-    for (const node of this.tree.traverse(this.tree.root)) {
-      if (node.isDeleted) continue;
-      const textNode: CustomText = {
-        text: node.value as string,
-        bold: node.styles.includes('bold'),
-        italic: node.styles.includes('italic'),
-        underline: node.styles.includes('underline'),
-        strikethrough: node.styles.includes('strikethrough'),
-        code: node.styles.includes('code'),
-      };
-      // If there are no descendants or new line, add a new paragraph
-      if (descendants.length === 0 || node.value === '\n') {
-        const children = node.value === '\n' ? createChildren('') : [textNode];
-        descendants.push(createDescendant('paragraph', children));
-        lastStyles = node.styles;
-        continue;
-      }
-      const lastDescendant = descendants[descendants.length - 1];
-      // If node styles are the same as the previous one, append the text to it
-      if (JSON.stringify(lastStyles) === JSON.stringify(node.styles)) {
-        const lastTextNode = lastDescendant.children[lastDescendant.children.length - 1];
-        lastTextNode.text += textNode.text;
-      }
-      // Otherwise, create a new block
-      else {
-        lastDescendant.children.push(textNode);
-      }
-      lastStyles = node.styles;
-    }
-    // If there are no descendants, add an empty paragraph
-    if (descendants.length === 0) {
-      descendants.push(createDescendant('paragraph', createChildren('')));
-    }
-    return descendants;
   }
 
   getElementId(index: number): Id {

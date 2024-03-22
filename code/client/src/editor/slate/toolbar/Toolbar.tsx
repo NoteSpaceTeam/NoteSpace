@@ -19,7 +19,7 @@ const markOptions: MarkOption[] = [
 ];
 
 interface ToolbarProps {
-  fugue: Fugue<string>;
+  fugue: Fugue;
 }
 
 function Toolbar({ fugue }: ToolbarProps) {

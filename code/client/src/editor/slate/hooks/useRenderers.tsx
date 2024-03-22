@@ -9,7 +9,7 @@ function useRenderers() {
   /**
    * Renders the element.
    */
-  const renderElement = useCallback((props: RenderElementProps) => getElementRenderer(props.element.type, props), []);
+  const renderElement = useCallback((props: RenderElementProps) => getElementRenderer(props), []);
 
   /**
    * Renders the leaf.
