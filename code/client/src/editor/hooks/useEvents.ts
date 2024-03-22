@@ -1,7 +1,7 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { type Fugue } from '@src/editor/crdt/fugue';
-import { type Node } from '@notespace/shared/crdt/types';
-import { type Operation } from '@notespace/shared/crdt/operations';
+import { type Node } from '@notespace/shared/crdt/types/nodes';
+import { type Operation } from '@notespace/shared/crdt/types/operations';
 
 function useEvents(fugue: Fugue, onDone: () => void) {
   function onOperation(operation: Operation) {

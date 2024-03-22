@@ -1,15 +1,22 @@
 import { Editable, Slate, withReact } from 'slate-react';
-import useInputHandlers from '@editor/hooks/useInputHandlers.ts';
-import useFugue from '@editor/hooks/useFugue.ts';
-import useEvents from '@editor/hooks/useEvents.ts';
-import useRenderers from '@editor/slate/hooks/useRenderers.tsx';
+import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
+import useFugue from '@editor/hooks/useFugue';
+import useEvents from '@editor/hooks/useEvents';
+import useRenderers from '@editor/slate/hooks/useRenderers';
 import './SlateEditor.scss';
-import Toolbar from '@editor/slate/toolbar/Toolbar.tsx';
+import Toolbar from '@editor/slate/toolbar/Toolbar';
 import { withHistory } from 'slate-history';
-import useEditor from '@editor/slate/hooks/useEditor.ts';
-import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown.ts';
-import { withNormalize } from '@editor/slate/plugins/normalize/withNormalize.ts';
-import { toSlate } from '@editor/slate/utils.ts';
+import useEditor from '@editor/slate/hooks/useEditor';
+import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
+import { withNormalize } from './plugins/normalize/withNormalize';
+import { toSlate } from '@editor/slate/utils';
+
+const initialValue = [
+  {
+    type: 'paragraph',
+    children: [{ text: '' }],
+  },
+]
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
@@ -18,8 +25,7 @@ function SlateEditor() {
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(fugue, () => {
-    // force re-render of the editor with new text
-    editor.children = toSlate(fugue.fullTraverse)
+    editor.children = toSlate(fugue.traverseTree)
     editor.onChange();
   });
 
@@ -30,7 +36,7 @@ function SlateEditor() {
         <h1>NoteSpace</h1>
       </header>
       <div className="container">
-        <Slate editor={editor} initialValue={[]}>
+        <Slate editor={editor} initialValue={initialValue}>
           <Toolbar fugue={fugue} />
           <Editable
             renderElement={renderElement}

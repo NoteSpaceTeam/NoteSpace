@@ -1,10 +1,9 @@
 import { type BaseEditor, type Descendant } from 'slate';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { type BlockType } from '@notespace/shared/crdt/styles.ts';
+import { type BlockStyle } from '@notespace/shared/crdt/types/styles';
 
-export interface CustomText {
-  text: string;
+export interface CustomFormat {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
@@ -12,8 +11,13 @@ export interface CustomText {
   code?: boolean;
 }
 
+export interface CustomText extends CustomFormat {
+  text: string;
+}
+
+
 export interface CustomElement {
-  type: BlockType;
+  type: BlockStyle;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   children: Descendant[];

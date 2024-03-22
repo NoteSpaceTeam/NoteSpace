@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Fugue } from '../crdt/fugue.ts';
+import { Fugue } from '@editor/crdt/fugue';
 
 /**
  * A hook that returns a new replica of a FugueTree, as a FugueReplica.

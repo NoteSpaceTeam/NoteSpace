@@ -1,15 +1,19 @@
-import type { Descendant } from 'slate';
-import type { Style } from '@notespace/shared/crdt/styles.ts';
+import type { Descendant, Editor } from 'slate';
+import type { Style, BlockStyle } from '@notespace/shared/crdt/types/styles';
 import type { CustomText } from '@editor/slate/model/types.ts';
 import { isEmpty, isEqual } from 'lodash';
 import { createChildren, createDescendant } from '@editor/slate/model/utils.ts';
-import { Node } from '@notespace/shared/crdt/types.ts';
+import { Node } from '@notespace/shared/crdt/types/nodes';
+import { Selection } from '@editor/slate/model/cursor';
 
 
-export function toSlate<T>(traverse : () => IterableIterator<Node<T>>): Descendant[] {
+export function toSlate<T>(traverse: () => IterableIterator<Node<T>>): Descendant[] {
   const descendants: Descendant[] = [];
   let lastStyles: Style[] = [];
+  let lineCounter = 0
+  let root: Node<T> | null = null;
   for (const node of traverse()) {
+    if (root === null) root = node;
     if (node.isDeleted) continue;
     const textNode: CustomText = {
       text: node.value as string,
@@ -22,7 +26,8 @@ export function toSlate<T>(traverse : () => IterableIterator<Node<T>>): Descenda
     // If there are no descendants or new line, add a new paragraph
     if (isEmpty(descendants) || node.value === '\n') {
       const children = node.value === '\n' ? createChildren('') : [textNode];
-      descendants.push(createDescendant('paragraph', children));
+      const lineStyle = root.styles[lineCounter++] as BlockStyle;
+      descendants.push(createDescendant(lineStyle, children));
       lastStyles = node.styles;
       continue;
     }
@@ -44,3 +49,5 @@ export function toSlate<T>(traverse : () => IterableIterator<Node<T>>): Descenda
   }
   return descendants;
 }
+
+

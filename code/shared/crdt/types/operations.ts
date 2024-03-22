@@ -1,4 +1,4 @@
-import { Id } from "./types";
+import { Id } from "./nodes";
 import { Style } from "./styles";
 
 /**

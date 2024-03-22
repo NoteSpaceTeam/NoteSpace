@@ -1,6 +1,6 @@
 import _, { range } from 'lodash';
-import type { Style } from '@notespace/shared/crdt/styles.ts';
-import type { InsertNode } from '@editor/crdt/types.ts';
+import type { Style } from '@notespace/shared/crdt/types/styles';
+import type { InsertNode } from '@editor/crdt/types';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;

@@ -4,7 +4,6 @@ import { Paragraph } from './components/components.ts';
 import { type CustomText } from '@editor/slate/model/types.ts';
 import { type ReactNode } from 'react';
 
-// TODO: Convert this so that it can mix and match styles
 export const getElementRenderer = (type: string, props: RenderElementProps) => {
   for (const key in ElementRenderers) {
     if (key === type) {

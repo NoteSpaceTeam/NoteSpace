@@ -1,4 +1,4 @@
-import { Editor } from 'slate';
+import { Editor, Transforms } from 'slate';
 import { type Fugue } from '@editor/crdt/fugue.ts';
 import { getAbsoluteSelection } from '@editor/slate/model/utils.ts';
 
@@ -10,15 +10,12 @@ const CustomEditor = {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
-  toggleMark(editor: Editor, format: string, fugue: Fugue) {
-    const isActive = CustomEditor.isMarkActive(editor, format);
-    if (isActive) {
-      Editor.removeMark(editor, format);
-    } else {
-      Editor.addMark(editor, format, true);
-    }
+  toggleMark(editor: Editor, mark : string, fugue: Fugue) {
+    const isActive = CustomEditor.isMarkActive(editor, mark);
+    Transforms.setNodes(editor, { [mark]: !isActive}, { match: n => Editor.isBlock(editor, n) });
+   
     const [start, end] = getAbsoluteSelection(editor)!;
-    fugue.updateStyleLocal(start, end, !isActive, format);
+    fugue.updateStyleLocal(start, end, !isActive, mark);
   },
 };
 

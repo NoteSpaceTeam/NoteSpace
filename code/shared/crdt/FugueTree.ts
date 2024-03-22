@@ -1,23 +1,14 @@
-import { Id, Node } from "./types";
-import { Style } from "./styles";
-import { isEmpty, isNull, isUndefined } from 'lodash';
+import { Id, Node } from "./types/nodes";
+import { Style } from "./types/styles";
+import { isEmpty, isNull } from 'lodash';
+import { rootNode, treeNode } from "./utils";
 
 export class FugueTree<T> {
   private _nodes = new Map<string, Node<T>[]>();
   private _root: Node<T>;
 
   constructor() {
-    this._root = {
-      id: { sender: "root", counter: 0 },
-      value: null,
-      isDeleted: true,
-      parent: null,
-      side: "R",
-      leftChildren: [],
-      rightChildren: [],
-      depth: 0,
-      styles: [],
-    };
+    this._root = rootNode();
     this._nodes.set("root", [this.root]);
   }
 
@@ -38,17 +29,7 @@ export class FugueTree<T> {
    * @param side the side of the parent node where this node is located.
    */
   addNode(id: Id, value: T, parent: Id, side: "L" | "R") {
-    const node: Node<T> = {
-      id,
-      value,
-      isDeleted: false,
-      parent,
-      side,
-      leftChildren: [],
-      rightChildren: [],
-      depth: 0,
-      styles: [],
-    };
+    const node= treeNode(id, value, parent, side, 0);
     // Add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
     if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
@@ -57,6 +38,9 @@ export class FugueTree<T> {
     this.insertChild(node);
     // Update sizes of ancestors
     this.updateDepths(node, 1);
+    if (value === '\n') {
+      this._root.styles.push('paragraph')
+    }
   }
 
   /**
@@ -68,8 +52,9 @@ export class FugueTree<T> {
    */
   private insertChild({ id, parent, side }: Node<T>) {
     const parentNode = this.getById(parent!);
-    const siblings =
-      side === "L" ? parentNode.leftChildren : parentNode.rightChildren;
+    const siblings = side === "L" 
+      ? parentNode.leftChildren 
+      : parentNode.rightChildren;
     let i = 0;
     for (; i < siblings.length; i++) {
       if (!(id.sender > siblings[i].sender)) break;
@@ -109,9 +94,9 @@ export class FugueTree<T> {
    */
   getById(id: Id): Node<T> {
     const bySender = this.nodes.get(id.sender);
-    if (!isUndefined(bySender)) {
+    if (bySender !== undefined) {
       const node = bySender[id.counter];
-      if (!isUndefined(node)) return node;
+      if (node !== undefined) return node;
     }
     throw new Error("Unknown ID: " + JSON.stringify(id));
   }

@@ -1,10 +1,11 @@
-import { type DeleteOperation, type InsertOperation, type StyleOperation } from '@notespace/shared/crdt/operations';
-import { type Node, type Id } from '@notespace/shared/crdt/types';
-import { type Style } from '@notespace/shared/crdt/styles';
+import { type DeleteOperation, type InsertOperation, type StyleOperation } from '@notespace/shared/crdt/types/operations';
+import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
+import { type Style } from '@notespace/shared/crdt/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';
 import { type InsertNode } from '@editor/crdt/types';
+import {Cursor, Selection} from '@editor/slate/model/cursor'
 import { isEmpty } from 'lodash';
 
 /**
@@ -36,35 +37,38 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: number, ...values: InsertNode[]): InsertOperation[] {
+  insertLocal({start}: Selection, ...values: InsertNode[]): InsertOperation[] {
     return values.map((value, i) => {
-      const msg = this.insertOne(start + i, value);
-      this.addNode(msg);
-      socket.emit('operation', msg); // FIXME: break data into data chunks - less network traffic
-      return msg;
+      const operation = this.insertOne({...start, column: start.column + i}, value);
+      this.addNode(operation);
+      socket.emit('operation', operation); // FIXME: break data into data chunks - less network traffic
+      return operation;
     });
   }
 
   /**
-   * Inserts a new node in the tree based on the given message.
-   * @param message - the insert message
+   * Inserts a new node in the tree based on the given operation.
+   * @param operation - the insert operation
    */
-  insertRemote(message: InsertOperation): void {
-    this.addNode(message);
+  insertRemote(operation: InsertOperation): void {
+    this.addNode(operation);
   }
 
   /**
-   * Inserts a new node in the tree based on the given message.
+   * Inserts a new node in the tree based on the given operation.
    * @param start - the index where the new node should be inserted
    * @param value - the value of the new node
    * @param styles
    * @private
-   * @returns the insert message
+   * @returns the insert operation
    */
-  private insertOne(start: number, { value, styles }: InsertNode): InsertOperation {
+  private insertOne({ line, column } : Cursor, { value, styles }: InsertNode): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const leftOrigin = start === 0 ? this.tree.root : this.tree.getByIndex(this.tree.root, start - 1);
-    // leftOrigin has no right children, so we add the new node as a right child
+
+    const root = this.findNode('\n', line) || this.tree.root;
+
+    const leftOrigin = column === 0 ? root : this.tree.getByIndex(root, column - 1);
+  
     if (isEmpty(leftOrigin.rightChildren)) {
       return {
         type: 'insert',
@@ -75,16 +79,14 @@ export class Fugue {
         styles,
       };
     }
-    // Otherwise, the new node is added as a left child of rightOrigin, which
-    // is the next node after leftOrigin *including tombstones*.
-    // In this case, rightOrigin is the leftmost descendant of leftOrigin's
-    // first right child.
+
     const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
     return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L' };
   }
 
+
   /**
-   * Inserts a new node in the tree based on the given message.
+   * Inserts a new node in the tree based on the given operation.
    * @param id
    * @param value
    * @param parent
@@ -100,45 +102,50 @@ export class Fugue {
    * @param start
    * @param end (exclusive)
    */
-  deleteLocal(start: number, end: number): void {
-    const deleteElement = (index: number) => {
-      const msg = this.deleteOne(index);
+  deleteLocal({start, end} : Selection): void {
+    const deleteElement = (id : Id) => {
+      const msg = this.deleteOne(id);
       this.deleteNode(msg);
       socket.emit('operation', msg); // FIXME: this should be done only once after all the deletes - less network traffic
     };
-    if (start === end) {
-      deleteElement(end - 1);
-      return;
+
+    const startRoot = this.findNode('\n', start.line);
+    const startNode = this.tree.getByIndex(startRoot, start.column);
+
+    const endRoot = this.findNode('\n', end.line);
+    const endNode = this.tree.getByIndex(endRoot, end.column);
+
+    for (const node of this.tree.traverse(startNode)){
+      if (node === endNode) break;
+      deleteElement(node.id);
     }
-    for (let i = end - 1; i >= start; i--) deleteElement(i);
   }
 
   /**
-   * Deletes the node based on the given message.
-   * @param message
+   * Deletes the node based on the given operation.
+   * @param operation
    */
-  deleteRemote(message: DeleteOperation): void {
-    this.deleteNode(message);
+  deleteRemote(operation: DeleteOperation): void {
+    this.deleteNode(operation);
   }
 
   /**
-   * Deletes the node at the given index.
+   * Returns the delete operation
    * @param index
    * @private
-   * @returns the delete message
+   * @returns the delete operation
    */
-  private deleteOne(index: number): DeleteOperation {
-    const node = this.tree.getByIndex(this.tree.root, index);
-    return { type: 'delete', id: node.id };
+  private deleteOne(id : Id): DeleteOperation {
+    return { type: 'delete', id };
   }
 
   /**
-   * Deletes the node based on the given message.
-   * @param message
+   * Deletes the node based on the given operation.
+   * @param operation
    * @private
    */
-  private deleteNode(message: DeleteOperation): void {
-    this.tree.deleteNode(message.id);
+  private deleteNode({id}: DeleteOperation): void {
+    this.tree.deleteNode(id);
   }
 
   updateStyleLocal(start: number, end: number, value: boolean, format: string) {
@@ -165,7 +172,19 @@ export class Fugue {
   /**
    * Makes a full traversal of the tree.
    */
-  fullTraverse = () => this.tree.traverse(this.tree.root);
+  traverseTree = () => this.tree.traverse(this.tree.root);
+
+  findNode(value: string, skip: number): Node<string> {
+    let lastMatch: Node<string> = this.tree.root
+    for (const node of this.traverseTree()){
+      if(node.value === value && !node.isDeleted) {
+        lastMatch = node
+        if (--skip === 0) return lastMatch
+      }
+    }
+    return lastMatch
+  }
+
 
   /**
    * Returns the string representation of the tree.
@@ -173,7 +192,7 @@ export class Fugue {
    */
   toString(): string {
     const values: string[] = [];
-    for (const node of this.fullTraverse()) {
+    for (const node of this.traverseTree()) {
       values.push(node.value!);
     }
     return values.join('');

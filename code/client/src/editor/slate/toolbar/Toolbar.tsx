@@ -25,7 +25,7 @@ interface ToolbarProps {
 function Toolbar({ fugue }: ToolbarProps) {
   const editor = useSlate();
   const focused = useFocused();
-  const selected = useSelection();
+  const {isSelected:selected} = useSelection(editor)
   const [selectionBounds, setSelectionBounds] = React.useState<DOMRect | null>(null);
 
   useEffect(() => {

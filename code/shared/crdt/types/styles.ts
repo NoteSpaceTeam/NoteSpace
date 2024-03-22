@@ -22,6 +22,6 @@ export const InlineStyles = {
   a: "link",
 } as const;
 
-export type BlockType = (typeof BlockStyles)[keyof typeof BlockStyles];
-export type InlineType = (typeof InlineStyles)[keyof typeof InlineStyles];
-export type Style = BlockType | InlineType;
+export type BlockStyle = (typeof BlockStyles)[keyof typeof BlockStyles];
+export type InlineStyle = (typeof InlineStyles)[keyof typeof InlineStyles];
+export type Style = BlockStyle | InlineStyle;

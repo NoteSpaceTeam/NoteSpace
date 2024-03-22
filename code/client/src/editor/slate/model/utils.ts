@@ -1,6 +1,6 @@
 import { type Descendant, Editor, Range } from 'slate';
 import { type CustomText } from '@editor/slate/model/types.ts';
-import { type BlockType } from '@notespace/shared/crdt/styles';
+import { type BlockStyle } from '@notespace/shared/crdt/types/styles';
 
 /**
  * Creates a descendant object.
@@ -8,7 +8,7 @@ import { type BlockType } from '@notespace/shared/crdt/styles';
  * @param children
  * @returns
  */
-export const createDescendant = (type: BlockType, children: CustomText[]): Descendant => {
+export const createDescendant = (type: BlockStyle, children: CustomText[]): Descendant => {
   return { type, children };
 };
 
