@@ -17,7 +17,7 @@
         run:
           working-directory: ${{ matrix.working-directory }}
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - uses: pnpm/action-setup@v3
           with:
             version: ${{ matrix.pnpm }}
@@ -27,6 +27,9 @@
           with:
             node-version: ${{ matrix.node }}
             cache: 'pnpm'
+            cache-dependency-path: |
+              ./code/client/package.json
+              ./code/client/pnpm-lock.yaml
 
         - name: Install dependencies
           run: pnpm install
@@ -49,16 +52,20 @@
         run:
           working-directory: ${{ matrix.working-directory }}
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - uses: pnpm/action-setup@v3
           with:
-            version: ${{ matrix.pnpm }}º
-            cache: 'pnpm'
+            version: ${{ matrix.pnpm }}
 
         - name: Set up Node.js
           uses: actions/setup-node@v4
           with:
             node-version: ${{ matrix.node }}
+            cache: 'pnpm'
+            cache-dependency-path: |
+              ./code/server/package.json
+              ./code/server/pnpm-lock.yaml
+
 
         - name: Install dependencies
           run: pnpm install
@@ -80,16 +87,19 @@
         run:
           working-directory: ${{ matrix.working-directory }}
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - uses: pnpm/action-setup@v3
           with:
             version: ${{ matrix.pnpm }}
-
+            
         - name: Set up Node.js
           uses: actions/setup-node@v4
           with:
             node-version: ${{ matrix.node }}
             cache: 'pnpm'
+            cache-dependency-path: |
+              ./code/shared/package.json
+              ./code/shared/pnpm-lock.yaml
 
         - name: Install dependencies
           run: pnpm install
