@@ -26,8 +26,13 @@ app.use('/', api);
 
 io.on('connection', onConnection(service, events));
 
-server.listen(PORT, () => {
-  console.log(`listening on http://localhost:${PORT}`);
-});
-
-export default app;
+// do not start the server if this file is being imported
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`listening on http://localhost:${PORT}`);
+  });
+}
+export default {
+  app,
+  onConnection: onConnection(service, events),
+};
