@@ -1,7 +1,7 @@
-import { Database } from '@src/types';
-import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/operations';
+import { DocumentDatabase } from '@src/types';
+import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
 
-export default function Services(database: Database) {
+export default function DocumentService(database: DocumentDatabase) {
   async function getTree() {
     return await database.getTree();
   }

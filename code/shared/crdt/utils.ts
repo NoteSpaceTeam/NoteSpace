@@ -1,9 +1,9 @@
 import { Node, Id } from "./types/nodes"
-import { InlineStyle, BlockStyle } from "./types/styles";
+import { InlineStyle } from "./types/styles";
 
 export function rootNode<T>(): Node<T> {
   return {
-    id: { sender: "root", counter: 0 },
+    id: { sender: 'root', counter: 0 },
     value: null,
     isDeleted: true,
     parent: null,
@@ -34,4 +34,4 @@ export function treeNode<T>(
     depth,
     styles,
   };
-};
+}

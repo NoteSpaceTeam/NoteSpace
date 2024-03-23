@@ -174,7 +174,7 @@ export class FugueTree<T> {
   }
 
   /**
-   * Traverses the tree in depth-first order.
+   * Traverses the tree in in-order traversal
    * @param root the root of the subtree.
    * @returns an iterator over the nodes in the subtree.
    */

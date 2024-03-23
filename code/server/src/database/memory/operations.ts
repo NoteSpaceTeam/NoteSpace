@@ -1,9 +1,10 @@
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/operations';
+import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 
 let tree = new FugueTree<string>();
 
-async function getTree() {
+async function getTree(): Promise<Nodes<string>> {
   return Object.fromEntries(Array.from(tree.nodes.entries()));
 }
 

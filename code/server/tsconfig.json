@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "strict": true,
     "skipLibCheck": true,
+    "downlevelIteration": true,
     "baseUrl": "../",
     "paths": {
       "@src/*": ["./server/src/*"]

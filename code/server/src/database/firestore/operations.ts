@@ -1,4 +1,4 @@
-import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/operations';
+import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
 import { getTreeInstance, setDocument, updateTree } from '@src/database/firestore/firestore';
 
 async function getTree() {

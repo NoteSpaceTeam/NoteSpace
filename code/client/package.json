@@ -16,7 +16,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "link:..\\shared",
+    "@notespace/shared": "file:..\\shared",
     "eslint-plugin-playwright": "^1.5.4",
     "lodash": "^4.17.21",
     "react": "^18.2.0",

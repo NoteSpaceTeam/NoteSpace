@@ -3,16 +3,17 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { config } from 'dotenv';
 import cors from 'cors';
-import eventsInit from './ws/events';
-import servicesInit from './services/services';
+import serviceInit from './services/documentService';
+import eventsInit from './controllers/socket/events';
 import database from './database/memory/operations';
-import router from './http/router';
+import router from '@src/controllers/http/router';
+import onConnection from '@src/controllers/socket/onConnection';
 
 config();
 const PORT = process.env.PORT || 8080;
-const services = servicesInit(database);
-const api = router(services);
-const events = eventsInit(services);
+const service = serviceInit(database);
+const events = eventsInit(service);
+const api = router(service);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -23,30 +24,7 @@ const io = new Server(server, {
 app.use(cors({ origin: '*' }));
 app.use('/', api);
 
-io.on('connection', async socket => {
-  console.log('a client connected');
-
-  if (socket.connected) {
-    const tree = await services.getTree();
-    socket.emit('document', tree);
-  }
-
-  Object.entries(events).forEach(([event, handler]) => {
-    socket.on(event, data => {
-      try {
-        console.log(event, data);
-        handler(socket, data);
-      } catch (e) {
-        socket.emit('error');
-        console.error(e);
-      }
-    });
-  });
-
-  socket.on('disconnect', reason => {
-    console.log('a client disconnected', reason);
-  });
-});
+io.on('connection', onConnection(service, events));
 
 server.listen(PORT, () => {
   console.log(`listening on http://localhost:${PORT}`);

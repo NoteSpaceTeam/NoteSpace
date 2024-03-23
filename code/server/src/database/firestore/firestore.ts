@@ -1,8 +1,9 @@
-import { Node, Nodes } from '@notespace/shared/crdt/types';
+import { Node, Nodes } from '@notespace/shared/crdt/types/nodes';
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import serviceAccount from '../../../firestore-key-5cddf-472039f8dbb6.json';
 import { getFirestore } from 'firebase-admin/firestore';
 import { FugueTree } from '@notespace/shared/crdt/fugueTree';
+import { rootNode } from '@notespace/shared/crdt/utils';
 
 initializeApp({
   credential: cert(serviceAccount as ServiceAccount),
@@ -15,17 +16,7 @@ export async function getDocument() {
   if (docRef.exists) {
     return docRef.data() as Nodes<string>;
   }
-  const root: Node<string> = {
-    id: { sender: 'root', counter: 0 },
-    value: null,
-    isDeleted: true,
-    parent: null,
-    side: 'R',
-    leftChildren: [],
-    rightChildren: [],
-    depth: 0,
-    styles: [],
-  };
+  const root: Node<string> = rootNode();
   const nodes = { root: [root] } as Nodes<string>;
   setDocument(nodes);
   return nodes;
