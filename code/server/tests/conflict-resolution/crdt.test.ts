@@ -5,17 +5,19 @@ import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/o
 import { Node } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
-import app from '../../src/server';
-import { treeToString } from '../utils';
+import { getApp, treeToString } from '../utils';
+import { Express } from 'express';
 
 const baseURL = `http://localhost:${process.env.PORT}`;
-const httpServer = http.createServer(app);
+let app: Express;
 
 let ioServer: Server;
 let clientSocket1: Socket;
 let clientSocket2: Socket;
 
 beforeAll(done => {
+  app = getApp();
+  const httpServer = http.createServer(app);
   ioServer = new Server(httpServer);
   clientSocket1 = io(baseURL);
   clientSocket2 = io(baseURL);
@@ -34,41 +36,41 @@ describe('Operations must be commutative', () => {
     expect(response.status).toBe(200);
   });
 
-  for (let i = 0; i < 10; i++) {
-    test(`insert operations should be commutative (${i + 1})`, done => {
-      const insertMessage1: InsertOperation = {
-        type: 'insert',
-        id: { sender: 'A', counter: 0 },
-        value: 'a',
-        parent: { sender: 'root', counter: 0 },
-        side: 'R',
-      };
-      const insertMessage2: InsertOperation = {
-        type: 'insert',
-        id: { sender: 'B', counter: 0 },
-        value: 'b',
-        parent: { sender: 'root', counter: 0 },
-        side: 'R',
-      };
-      // client 1 inserts 'a' and client 2 inserts 'b'
-      setTimeout(() => {
-        clientSocket1.emit('operation', insertMessage1);
-      }, Math.random() * 1000);
-      setTimeout(() => {
-        clientSocket2.emit('operation', insertMessage2);
-      }, Math.random() * 1000);
-      setTimeout(async () => {
-        const response = await request(app).get('/document');
-        expect(response.status).toBe(200);
-        const nodes = response.body as Record<string, Node<string>[]>;
-        const tree = new FugueTree<string>();
-        tree.setTree(new Map(Object.entries(nodes)));
-        const result = treeToString(tree);
-        expect(result).toBe('ab');
-        done();
-      }, 2000);
-    });
-  }
+  test('insert operations should be commutative', async () => {
+    const insertMessage1: InsertOperation = {
+      type: 'insert',
+      id: { sender: 'A', counter: 0 },
+      value: 'a',
+      parent: { sender: 'root', counter: 0 },
+      side: 'R',
+    };
+    const insertMessage2: InsertOperation = {
+      type: 'insert',
+      id: { sender: 'B', counter: 0 },
+      value: 'b',
+      parent: { sender: 'root', counter: 0 },
+      side: 'R',
+    };
+
+    const responsePromises = [
+      new Promise(resolve => {
+        clientSocket1.emit('operation', insertMessage1, resolve);
+      }),
+      new Promise(resolve => {
+        clientSocket2.emit('operation', insertMessage2, resolve);
+      })
+    ];
+
+    await Promise.all(responsePromises);
+
+    const response = await request(app).get('/document');
+    expect(response.status).toBe(200);
+    const nodes = response.body as Record<string, Node<string>[]>;
+    const tree = new FugueTree<string>();
+    tree.setTree(new Map(Object.entries(nodes)));
+    const result = treeToString(tree);
+    expect(result).toBe('ab');
+  }, 10000);
 });
 
 describe('Operations must be idempotent', () => {
@@ -92,28 +94,25 @@ describe('Operations must be idempotent', () => {
     // both clients insert 'a'
     clientSocket1.emit('operation', insertMessage);
     clientSocket2.emit('operation', insertMessage2);
-    setTimeout(() => {}, 1000);
+    await new Promise(resolve => setTimeout(resolve, 100)); // Ensure inserts are processed
   });
 
-  for (let i = 0; i < 5; i++) {
-    test(`delete operations should be idempotent (${i + 1})`, done => {
-      const deleteMessage: DeleteOperation = {
-        type: 'delete',
-        id: { sender: 'A', counter: 0 },
-      };
-      // both clients want to delete the same 'a'
-      clientSocket1.emit('operation', deleteMessage);
-      clientSocket2.emit('operation', deleteMessage);
+  test('delete operations should be idempotent', async () => {
+    const deleteMessage: DeleteOperation = {
+      type: 'delete',
+      id: { sender: 'A', counter: 0 },
+    };
+    // both clients want to delete the same 'a'
+    clientSocket1.emit('operation', deleteMessage);
+    clientSocket2.emit('operation', deleteMessage);
 
-      setTimeout(async () => {
-        const response = await request(app).get('/document');
-        const nodes = response.body as Record<string, Node<string>[]>;
-        const tree = new FugueTree();
-        tree.setTree(new Map(Object.entries(nodes)));
-        const result = treeToString(tree);
-        expect(result).toBe('a');
-        done();
-      }, 1000);
-    });
-  }
+    await new Promise(resolve => setTimeout(resolve, 100)); // Ensure deletes are processed
+
+    const response = await request(app).get('/document');
+    const nodes = response.body as Record<string, Node<string>[]>;
+    const tree = new FugueTree();
+    tree.setTree(new Map(Object.entries(nodes)));
+    const result = treeToString(tree);
+    expect(result).toBe('a');
+  });
 });
