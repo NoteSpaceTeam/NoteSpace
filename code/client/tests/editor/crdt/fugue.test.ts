@@ -1,6 +1,12 @@
 import { Fugue } from '@editor/crdt/fugue';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types';
+import { Selection, Cursor } from '@editor/slate/model/cursor';
+import { InsertNode } from '@editor/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
+
+const a: InsertNode = { value: 'a', styles: [] };
+const b: InsertNode = { value: 'b', styles: [] };
+const c: InsertNode = { value: 'c', styles: [] };
 
 describe('Fugue', () => {
   let fugue: Fugue<string>;
@@ -15,9 +21,9 @@ describe('Fugue', () => {
   });
 
   it('should insert values locally', () => {
-    const insertedMessages: InsertOperation<string>[] = fugue.insertLocal(0, 'a', 'b', 'c');
-    expect(insertedMessages).toHaveLength(3);
-    expect(fugue.toString()).toContain('abc');
+    const start: Cursor = { line: 0, column: 0 };
+    fugue.insertLocal(start, a, b, c);
+    expect(fugue.toString()).toEqual('abc');
   });
 
   it('should insert values remotely', () => {
@@ -33,8 +39,10 @@ describe('Fugue', () => {
   });
 
   it('should delete values locally', () => {
-    fugue.insertLocal(0, 'a', 'b', 'c');
-    fugue.deleteLocal(1, 3);
+    const start: Cursor = { line: 0, column: 0 };
+    fugue.insertLocal(start, a, b, c);
+    const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
+    fugue.deleteLocal(selection);
     expect(fugue.toString()).toEqual('a');
   });
 

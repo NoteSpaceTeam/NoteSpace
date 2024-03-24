@@ -1,5 +1,5 @@
 import { Editor, Transforms } from 'slate';
-import _, { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 // ensure editor always has at least one child.
 export function withNormalize(editor: Editor) {

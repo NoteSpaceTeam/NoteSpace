@@ -4,7 +4,6 @@ import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/o
 import { Node } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
-import { treeToString } from '../utils';
 import { Server } from 'socket.io';
 import server from '../../src/server';
 
@@ -69,8 +68,7 @@ describe('Operations must be commutative', () => {
     const nodes = response.body as Record<string, Node<string>[]>;
     const tree = new FugueTree<string>();
     tree.setTree(new Map(Object.entries(nodes)));
-    const result = treeToString(tree);
-    expect(result).toBe('ab');
+    expect(tree.toString()).toBe('ab');
   });
 });
 
@@ -112,8 +110,7 @@ describe('Operations must be idempotent', () => {
       const nodes = response.body as Record<string, Node<string>[]>;
       const tree = new FugueTree();
       tree.setTree(new Map(Object.entries(nodes)));
-      const result = treeToString(tree);
-      expect(result).toBe('a');
+      expect(tree.toString()).toBe('a');
       done();
     }, 500);
   });

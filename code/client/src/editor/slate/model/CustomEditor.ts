@@ -10,10 +10,10 @@ const CustomEditor = {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
-  toggleMark(editor: Editor, mark : string, fugue: Fugue) {
+  toggleMark(editor: Editor, mark: string, fugue: Fugue) {
     const isActive = CustomEditor.isMarkActive(editor, mark);
-    Transforms.setNodes(editor, { [mark]: !isActive}, { match: n => Editor.isBlock(editor, n) });
-   
+    Transforms.setNodes(editor, { [mark]: !isActive }, { match: n => Editor.isBlock(editor, n) });
+
     const [start, end] = getAbsoluteSelection(editor)!;
     fugue.updateStyleLocal(start, end, !isActive, mark);
   },

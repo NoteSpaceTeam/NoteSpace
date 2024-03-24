@@ -1,4 +1,4 @@
-import _, { range } from 'lodash';
+import { range } from 'lodash';
 import type { Style } from '@notespace/shared/crdt/types/styles';
 import type { InsertNode } from '@editor/crdt/types';
 
@@ -18,5 +18,3 @@ export function generateReplicaId() {
 export function insertNode(value: string, styles: Style[]): InsertNode {
   return { value, styles };
 }
-
-

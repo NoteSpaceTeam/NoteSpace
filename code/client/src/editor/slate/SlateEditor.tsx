@@ -9,14 +9,14 @@ import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { withNormalize } from './plugins/normalize/withNormalize';
-import { toSlate } from '@editor/slate/utils';
+import { toSlate } from '@editor/slate/utils/toSlate';
 
 const initialValue = [
   {
     type: 'paragraph',
     children: [{ text: '' }],
   },
-]
+];
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
@@ -25,7 +25,7 @@ function SlateEditor() {
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(fugue, () => {
-    editor.children = toSlate(fugue.traverseTree)
+    editor.children = toSlate(fugue.traverseTree);
     editor.onChange();
   });
 

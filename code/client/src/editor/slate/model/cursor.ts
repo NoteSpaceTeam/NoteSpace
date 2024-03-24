@@ -1,9 +1,9 @@
 export type Cursor = {
-    line: number;
-    column: number;
-}
-  
+  line: number;
+  column: number;
+};
+
 export type Selection = {
-    start: Cursor;
-    end: Cursor;
-}
+  start: Cursor;
+  end: Cursor;
+};

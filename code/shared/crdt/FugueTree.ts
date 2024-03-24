@@ -213,6 +213,10 @@ export class FugueTree<T> {
     }
   }
 
+  toString() {
+    return Array.from(this.traverse(this.root)).map(node => node.value).join('');
+  }
+
   get root(): Node<T> {
     return this._root;
   }

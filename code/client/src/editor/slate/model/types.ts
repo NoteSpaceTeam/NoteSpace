@@ -15,7 +15,6 @@ export interface CustomText extends CustomFormat {
   text: string;
 }
 
-
 export interface CustomElement {
   type: BlockStyle;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

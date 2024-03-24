@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@editor/slate/model/CustomEditor.ts';
-import useSelection from '@editor/slate/hooks/useSelection.ts';
+import CustomEditor from '@editor/slate/model/CustomEditor';
+import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import { type Fugue } from '@editor/crdt/fugue.ts';
+import { type Fugue } from '@editor/crdt/fugue';
 
 interface MarkOption {
   value: string;
@@ -25,7 +25,7 @@ interface ToolbarProps {
 function Toolbar({ fugue }: ToolbarProps) {
   const editor = useSlate();
   const focused = useFocused();
-  const {isSelected:selected} = useSelection(editor)
+  const selected = isSelected(editor);
   const [selectionBounds, setSelectionBounds] = React.useState<DOMRect | null>(null);
 
   useEffect(() => {
