@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "tsc && node dist/server.js",
     "start": "tsx watch -r tsconfig-paths/register src/server.ts",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "jest --detectOpenHandles --config jest.config.js",
     "knip": "knip",
     "format": "prettier --write . && eslint . --ext .ts"
   },
@@ -23,6 +23,8 @@
     "supertest": "^6.3.4"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.24.3",
+    "@babel/preset-typescript": "^7.24.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
@@ -31,6 +33,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
+    "babel-jest": "^29.7.0",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "knip": "^5.2.2",
