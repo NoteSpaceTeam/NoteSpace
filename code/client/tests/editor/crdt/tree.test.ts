@@ -1,4 +1,4 @@
-import { FugueTree } from '@notespace/shared/crdt/fugueTree';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { Node } from '@notespace/shared/crdt/types/nodes';
 import { InsertOperation } from '@notespace/shared/crdt/types/operations';
 import { describe, it, expect, beforeEach } from 'vitest';
