@@ -67,20 +67,13 @@ export class Fugue {
    */
   private getInsertOperation({ line, column }: Cursor, { value, styles }: InsertNode): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const root = this.findNode('\n', line) || this.tree.root;
-    const leftOrigin = column === 0 ? root : this.tree.getByIndex(root, column - 1);
+    const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
+    const leftOrigin = column === 0 ? lineNode : this.tree.getByIndex(lineNode, line === 0 ? column - 1 : column);
     if (isEmpty(leftOrigin.rightChildren)) {
-      return {
-        type: 'insert',
-        id,
-        value,
-        parent: leftOrigin.id,
-        side: 'R',
-        styles,
-      };
+      return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     }
     const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
-    return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L' };
+    return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
   }
 
   /**
@@ -176,9 +169,9 @@ export class Fugue {
   traverseTree = () => this.tree.traverse(this.tree.root);
 
   findNode(value: string, skip: number): Node<string> {
-    let lastMatch: Node<string> = this.tree.root;
+    let lastMatch = this.tree.root;
     for (const node of this.traverseTree()) {
-      if (node.value === value && !node.isDeleted) {
+      if (node.value === value) {
         lastMatch = node;
         if (--skip === 0) return lastMatch;
       }
@@ -196,5 +189,9 @@ export class Fugue {
 
   getElementId(index: number): Id {
     return this.tree.getByIndex(this.tree.root, index).id;
+  }
+
+  getRootNode(): Node<string> {
+    return this.tree.root!;
   }
 }

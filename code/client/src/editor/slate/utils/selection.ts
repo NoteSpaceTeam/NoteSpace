@@ -1,11 +1,10 @@
 import { Editor } from 'slate';
 import { Selection } from '../model/cursor.ts';
-import { isEqual } from 'lodash';
 
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
   const { anchor, focus } = editor.selection;
-  return isEqual(anchor.path, focus.path) || anchor.offset !== focus.offset;
+  return anchor.offset !== focus.offset;
 }
 
 export function getSelection(editor: Editor): Selection {

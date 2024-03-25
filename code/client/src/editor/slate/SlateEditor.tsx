@@ -25,7 +25,7 @@ function SlateEditor() {
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(fugue, () => {
-    editor.children = toSlate(fugue.traverseTree);
+    editor.children = toSlate(fugue);
     editor.onChange();
   });
 

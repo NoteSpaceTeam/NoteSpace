@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "vite --host",
-    "test": "vitest",
+    "test": "vitest --run",
     "coverage": "vitest run --coverage",
     "build": "tsc && vite build",
     "generate": "pwa-assets-generator",

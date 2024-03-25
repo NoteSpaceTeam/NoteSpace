@@ -1,5 +1,6 @@
 import { FugueTree } from '@notespace/shared/crdt/fugueTree';
-import { InsertOperation, Node } from '@notespace/shared/crdt/types';
+import { Node } from '@notespace/shared/crdt/types/nodes';
+import { InsertOperation } from '@notespace/shared/crdt/types/operations';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Tree', () => {
@@ -10,7 +11,7 @@ describe('Tree', () => {
 
   it('should add a node to the tree', () => {
     // given
-    const insertMessage: InsertOperation<string> = {
+    const insertMessage: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
@@ -33,7 +34,7 @@ describe('Tree', () => {
 
   it('should delete a node from the tree', () => {
     // given
-    const insertMessage: InsertOperation<string> = {
+    const insertMessage: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
