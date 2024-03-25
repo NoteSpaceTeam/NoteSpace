@@ -4,6 +4,8 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  transform: {},
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
   moduleNameMapper: pathsToModuleNameMapper({ '@src/*': ['./src/*'] }, { prefix: '<rootDir>/' }),
 };
