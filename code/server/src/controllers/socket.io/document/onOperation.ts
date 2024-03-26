@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { DocumentService } from '@src/types';
-import { Operation } from 'shared/crdt/types/operations';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 function onOperation(service: DocumentService) {
   return (socket: Socket, operation: Operation) => {

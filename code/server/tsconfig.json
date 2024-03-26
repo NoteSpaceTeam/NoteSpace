@@ -12,7 +12,14 @@
     "downlevelIteration": true,
     "baseUrl": "../",
     "paths": {
-      "@src/*": ["./server/src/*"]
+      /*Controllers*/
+      "@controllers/*": ["./server/src/controllers/*"],
+      /*Databases*/
+      "@database/*": ["./server/src/database/*"],
+      /*Others*/
+      "@src/*": ["./server/src/*"],
+      "@domain/*": ["./server/src/domain/*"],
+      "@services/*": ["./server/src/services/*"],
     }
   },
   "include": ["src/**/*"],

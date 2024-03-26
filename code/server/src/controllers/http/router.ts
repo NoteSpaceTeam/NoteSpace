@@ -1,7 +1,7 @@
 import express from 'express';
 import { DocumentService } from '@src/types';
-import getDocument from '@src/controllers/http/document/getDocument';
-import deleteDocument from '@src/controllers/http/document/deleteDocument';
+import getDocument from '@controllers/http/document/getDocument';
+import deleteDocument from '@controllers/http/document/deleteDocument';
 
 export default function (service: DocumentService) {
   if (!service) {

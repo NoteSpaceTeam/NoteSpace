@@ -3,11 +3,11 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { config } from 'dotenv';
 import cors from 'cors';
-import serviceInit from './services/documentService';
-import eventsInit from './controllers/socket/events';
-import database from './database/memory/operations';
+import serviceInit from '@services/documentService';
+import eventsInit from '@controllers/socket.io/events';
+import database from '@database/memory/operations';
 import router from '@src/controllers/http/router';
-import onConnection from '@src/controllers/socket/onConnection';
+import onConnection from '@controllers/socket.io/onConnection';
 
 config();
 const PORT = process.env.PORT || 8080;

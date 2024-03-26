@@ -1,6 +1,11 @@
 import { Socket } from 'socket.io';
 import { DocumentService, SocketHandler } from '@src/types';
 
+/**
+ * Returns a connection handler for socket.io
+ * @param service
+ * @param events
+ */
 function onConnection(service: DocumentService, events: Record<string, SocketHandler>) {
   return async (socket: Socket) => {
     console.log('a client connected');

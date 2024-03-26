@@ -1,5 +1,5 @@
 import { InsertOperation, DeleteOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
-import { getTreeInstance, setDocument, updateTree } from '@src/database/firestore/firestore';
+import { getTreeInstance, setDocument, updateTree } from '@databases/firestore/firestore';
 
 async function getTree() {
   const tree = await getTreeInstance();

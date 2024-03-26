@@ -1,5 +1,5 @@
-import onOperation from '@src/controllers/socket/document/onOperation';
-import onCursorChange from '@src/controllers/socket/document/onCursorChange';
+import onOperation from '@controllers/socket.io/document/onOperation';
+import onCursorChange from '@controllers/socket.io/document/onCursorChange';
 import { DocumentService, SocketHandler } from '@src/types';
 
 export default function events(service: DocumentService): Record<string, SocketHandler> {
