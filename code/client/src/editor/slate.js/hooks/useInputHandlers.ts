@@ -1,6 +1,6 @@
 import type React from 'react';
 import { type Fugue } from '@editor/crdt/fugue';
-import CustomEditor from '@editor/slate/model/CustomEditor';
+import CustomEditor from '@editor/slate.js/model/CustomEditor';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
@@ -45,15 +45,22 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
-    // const selection = getSelection();
-    // fugue.insertLocal(start, insertNode(clipboardData, []));
+    const selection = getSelection(editor);
+    const { start } = selection;
+    fugue.insertLocal(start, insertNode(clipboardData, [])); // TODO: Fix this
+  }
+
+  function onCut() {
+    const selection = getSelection(editor);
+    fugue.deleteLocal(selection); // TODO: Fix this
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
     const mark = hotkeys[event.key];
     CustomEditor.toggleMark(editor, mark, fugue);
   }
-  return { onKeyDown, onPaste };
+
+  return { onKeyDown, onPaste, onCut };
 }
 
 export default useInputHandlers;

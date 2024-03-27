@@ -1,15 +1,15 @@
 import { Editable, Slate, withReact } from 'slate-react';
-import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
+import useInputHandlers from '@editor/slate.js/hooks/useInputHandlers';
 import useFugue from '@editor/hooks/useFugue';
 import useEvents from '@editor/hooks/useEvents';
-import useRenderers from '@editor/slate/hooks/useRenderers';
+import useRenderers from '@editor/slate.js/hooks/useRenderers';
 import './SlateEditor.scss';
-import Toolbar from '@editor/slate/toolbar/Toolbar';
+import Toolbar from '@editor/slate.js/toolbar/Toolbar';
 import { withHistory } from 'slate-history';
-import useEditor from '@editor/slate/hooks/useEditor';
-import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
+import useEditor from '@editor/slate.js/hooks/useEditor';
+import { withMarkdown } from '@editor/slate.js/plugins/markdown/withMarkdown';
 import { withNormalize } from './plugins/normalize/withNormalize';
-import { toSlate } from '@editor/slate/utils/toSlate';
+import { toSlate } from '@editor/slate.js/utils/toSlate';
 
 const initialValue = [
   {
@@ -21,7 +21,7 @@ const initialValue = [
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
   const fugue = useFugue();
-  const { onKeyDown, onPaste } = useInputHandlers(editor, fugue);
+  const { onKeyDown, onPaste, onCut } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(fugue, () => {
@@ -45,6 +45,7 @@ function SlateEditor() {
             placeholder={'Start writing...'}
             onKeyDown={onKeyDown}
             onPaste={onPaste}
+            onCut={onCut}
           />
         </Slate>
       </div>

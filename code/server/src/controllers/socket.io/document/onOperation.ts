@@ -4,6 +4,7 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 
 function onOperation(service: DocumentService) {
   return (socket: Socket, operation: Operation) => {
+    console.log('operation', operation);
     switch (operation.type) {
       case 'insert': {
         service.insertCharacter(operation);

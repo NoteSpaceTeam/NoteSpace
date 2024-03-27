@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@editor/slate/model/CustomEditor';
-import { isSelected } from '@editor/slate/utils/selection';
+import CustomEditor from '@editor/slate.js/model/CustomEditor';
+import { isSelected } from '@editor/slate.js/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 import { type Fugue } from '@editor/crdt/fugue';
 
