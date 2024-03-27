@@ -10,7 +10,6 @@ const hotkeys: Record<string, string> = {
   b: 'bold',
   i: 'italic',
   u: 'underline',
-  c: 'code',
 };
 
 function useInputHandlers(editor: Editor, fugue: Fugue) {
@@ -56,7 +55,9 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
+    console.log(event.key)
     const mark = hotkeys[event.key];
+    console.log(mark);
     CustomEditor.toggleMark(editor, mark, fugue);
   }
 

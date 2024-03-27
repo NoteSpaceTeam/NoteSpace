@@ -1,5 +1,5 @@
 import { type BaseEditor, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@editor/slate/model/types.ts';
+import { type CustomElement } from '@editor/slate.js/model/types.ts';
 import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
