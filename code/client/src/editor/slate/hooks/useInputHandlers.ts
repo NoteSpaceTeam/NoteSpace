@@ -18,7 +18,6 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
 
     const selection = getSelection(editor);
     const { start, end } = selection;
-
     switch (e.key) {
       case 'Enter':
         fugue.insertLocal(start, insertNode('\n', []));
@@ -37,10 +36,9 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
       default: {
         if (e.key.length !== 1) break;
         if (selection.start.column !== selection.end.column) {
-          // replace selection
-          fugue.deleteLocal(selection);
+          fugue.deleteLocal(selection); // replace selection
         }
-        const previousNode = fugue.getNodeByCursor({ line: start.line, column: start.column - 1 });
+        const previousNode = fugue.getNodeByCursor(start);
         const styles = previousNode?.styles || [];
         fugue.insertLocal(start, insertNode(e.key, styles));
         break;
@@ -71,11 +69,20 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   }
 
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    const mark = hotkeys[event.key];
-    CustomEditor.toggleMark(editor, mark, fugue);
+    switch (event.key) {
+      case 'z':
+        onUndo();
+        break;
+      case 'y':
+        onRedo();
+        break;
+      default: {
+        const mark = hotkeys[event.key];
+        CustomEditor.toggleMark(editor, mark, fugue);
+      }
+    }
   }
-
-  return { onKeyDown, onPaste, onCut, onUndo, onRedo };
+  return { onKeyDown, onPaste, onCut };
 }
 
 export default useInputHandlers;

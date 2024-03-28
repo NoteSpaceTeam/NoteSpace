@@ -8,6 +8,7 @@ function useEvents(fugue: Fugue, onDone: () => void) {
     switch (operation.type) {
       case 'insert':
         fugue.insertRemote(operation);
+        // TODO: update the style of the added node in slate
         break;
       case 'delete':
         fugue.deleteRemote(operation);

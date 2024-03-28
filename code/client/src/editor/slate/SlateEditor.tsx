@@ -8,7 +8,6 @@ import Toolbar from '@editor/slate.js/toolbar/Toolbar';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate.js/hooks/useEditor';
 import { withMarkdown } from '@editor/slate.js/plugins/markdown/withMarkdown';
-import { withNormalize } from './plugins/normalize/withNormalize';
 import { toSlate } from '@editor/slate.js/utils/toSlate';
 
 const initialValue = [
@@ -19,7 +18,7 @@ const initialValue = [
 ];
 
 function SlateEditor() {
-  const editor = useEditor(withHistory, withReact, withMarkdown, withNormalize);
+  const editor = useEditor(withHistory, withReact, withMarkdown);
   const fugue = useFugue();
   const { onKeyDown, onPaste, onCut } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
