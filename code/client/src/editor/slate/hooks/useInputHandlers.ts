@@ -1,6 +1,6 @@
 import type React from 'react';
 import { type Fugue } from '@editor/crdt/fugue';
-import CustomEditor from '@editor/slate.js/model/CustomEditor';
+import CustomEditor from '@editor/slate/model/CustomEditor';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';

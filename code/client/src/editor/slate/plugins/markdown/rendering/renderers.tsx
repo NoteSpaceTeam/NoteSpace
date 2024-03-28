@@ -1,7 +1,7 @@
 import { type RenderElementProps } from 'slate-react';
 import { ElementRenderers, LeafRenderers } from './elements.tsx';
 import { Paragraph } from './components/components.ts';
-import { type CustomText } from '@editor/slate.js/model/types.ts';
+import { type CustomText } from '@editor/slate/model/types.ts';
 import { type ReactNode } from 'react';
 
 export const getElementRenderer = (type: string, props: RenderElementProps) => {

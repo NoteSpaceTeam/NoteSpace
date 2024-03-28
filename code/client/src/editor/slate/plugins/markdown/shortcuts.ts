@@ -1,7 +1,7 @@
-import { type CustomElement } from '@editor/slate.js/model/types.ts';
+import { type CustomElement } from '@editor/slate/model/types.ts';
 import { BlockStyles, InlineStyles } from '@notespace/shared/crdt/types/styles';
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
-import { createDescendant } from '@editor/slate.js/model/utils.ts';
+import { createDescendant } from '@editor/slate/model/utils.ts';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

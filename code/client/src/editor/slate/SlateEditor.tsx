@@ -1,14 +1,14 @@
 import { Editable, Slate, withReact } from 'slate-react';
-import useInputHandlers from '@editor/slate.js/hooks/useInputHandlers';
+import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
 import useFugue from '@editor/hooks/useFugue';
 import useEvents from '@editor/hooks/useEvents';
-import useRenderers from '@editor/slate.js/hooks/useRenderers';
+import useRenderers from '@editor/slate/hooks/useRenderers';
 import './SlateEditor.scss';
-import Toolbar from '@editor/slate.js/toolbar/Toolbar';
+import Toolbar from '@editor/slate/toolbar/Toolbar';
 import { withHistory } from 'slate-history';
-import useEditor from '@editor/slate.js/hooks/useEditor';
-import { withMarkdown } from '@editor/slate.js/plugins/markdown/withMarkdown';
-import { toSlate } from '@editor/slate.js/utils/toSlate';
+import useEditor from '@editor/slate/hooks/useEditor';
+import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
+import { toSlate } from '@editor/slate/utils/toSlate';
 
 const initialValue = [
   {

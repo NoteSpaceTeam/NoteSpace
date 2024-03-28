@@ -1,6 +1,6 @@
 import { Editor } from 'slate';
 import { type Fugue } from '@editor/crdt/fugue.ts';
-import { getSelection } from '@editor/slate.js/utils/selection.ts';
+import { getSelection } from '@editor/slate/utils/selection.ts';
 
 /**
  * Custom editor operations.

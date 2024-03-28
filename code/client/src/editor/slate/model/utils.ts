@@ -1,5 +1,5 @@
 import { type Descendant, Editor, Range } from 'slate';
-import { type CustomText } from '@editor/slate.js/model/types.ts';
+import { type CustomText } from '@editor/slate/model/types.ts';
 import { type BlockStyle } from '@notespace/shared/crdt/types/styles';
 
 /**

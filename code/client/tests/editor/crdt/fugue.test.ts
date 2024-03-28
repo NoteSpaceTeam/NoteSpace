@@ -1,6 +1,6 @@
 import { Fugue } from '@editor/crdt/fugue';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types';
-import { Selection, Cursor } from '@editor/slate.js/model/cursor';
+import { Selection, Cursor } from '@editor/slate/model/cursor';
 import { InsertNode } from '@editor/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
