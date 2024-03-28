@@ -14,7 +14,7 @@ const CustomEditor = {
     const isActive = CustomEditor.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
-    const selection = getSelection(editor)!;
+    const selection = getSelection(editor);
     fugue.updateStyleLocal(selection, !isActive, mark);
   },
 };

@@ -155,13 +155,13 @@ export class Fugue {
       ) {
         inBounds = true;
       }
-      // yield node if in bounds
-      if (inBounds && node.value !== '\n') {
-        yield node;
-      }
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
         break;
+      }
+      // yield node if in bounds
+      if (inBounds && node.value !== '\n') {
+        yield node;
       }
       // update counters
       if (node.value === '\n') {
