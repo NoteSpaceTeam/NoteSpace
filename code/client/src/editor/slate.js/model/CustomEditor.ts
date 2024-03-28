@@ -1,6 +1,6 @@
 import { Editor } from 'slate';
 import { type Fugue } from '@editor/crdt/fugue.ts';
-import { getAbsoluteSelection } from '@editor/slate.js/model/utils.ts';
+import { getSelection } from '@editor/slate.js/utils/selection.ts';
 
 /**
  * Custom editor operations.
@@ -14,8 +14,8 @@ const CustomEditor = {
     const isActive = CustomEditor.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
-    const [start, end] = getAbsoluteSelection(editor)!;
-    fugue.updateStyleLocal(start, end, !isActive, mark);
+    const selection = getSelection(editor)!;
+    fugue.updateStyleLocal(selection, !isActive, mark);
   },
 };
 

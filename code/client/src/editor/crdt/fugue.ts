@@ -92,37 +92,12 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal({ start, end }: Selection): void {
-    // delete from start to end
-    let lineCounter = 0;
-    let columnCounter = 0;
-    let deleteFlag = false;
-    for (const node of this.traverseTree()) {
-      // delete condition
-      if (
-        lineCounter === start.line &&
-        (columnCounter === start.column || (isEqual(start, end) && columnCounter === start.column - 1))
-      ) {
-        deleteFlag = true;
-      }
-      // delete operation
-      if (deleteFlag) {
-        const { id } = node;
-        this.removeNode(id);
-        const operation: DeleteOperation = { type: 'delete', id };
-        socket.emit('operation', operation); // TODO: break data into data chunks - less network traffic
-      }
-      // end condition
-      if (lineCounter === end.line && columnCounter === end.column) {
-        break;
-      }
-      // update counters
-      if (node.value === '\n') {
-        lineCounter++;
-        columnCounter = 0;
-      } else {
-        columnCounter++;
-      }
+  deleteLocal(selection: Selection): void {
+    for (const node of this.traverseBySelection(selection)) {
+      const { id } = node;
+      this.removeNode(id);
+      const operation: DeleteOperation = { type: 'delete', id };
+      socket.emit('operation', operation); // TODO: break data into data chunks - less network traffic
     }
   }
 
@@ -143,10 +118,9 @@ export class Fugue {
     this.tree.deleteNode(id);
   }
 
-  updateStyleLocal(start: number, end: number, value: boolean, format: string) {
-    for (let i = start; i < end; i++) {
-      const id = this.getElementId(i);
-      if (!id) continue;
+  updateStyleLocal(selection: Selection, value: boolean, format: string) {
+    for (const node of this.traverseBySelection(selection)) {
+      const { id } = node;
       const style = format as Style;
       const styleOperation: StyleOperation = {
         type: 'style',
@@ -168,7 +142,43 @@ export class Fugue {
    */
   traverseTree = () => this.tree.traverse(this.tree.root);
 
-  findNode(value: string, skip: number): Node<string> {
+  private *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
+    const { start, end } = selection;
+    let lineCounter = 0;
+    let columnCounter = 0;
+    let inBounds = false;
+    for (const node of this.traverseTree()) {
+      // start condition
+      if (
+        lineCounter === start.line &&
+        (columnCounter === start.column || (isEqual(start, end) && columnCounter === start.column - 1))
+      ) {
+        inBounds = true;
+      }
+      // yield node if in bounds
+      if (inBounds && node.value !== '\n') {
+        yield node;
+      }
+      // end condition
+      if (lineCounter === end.line && columnCounter === end.column) {
+        break;
+      }
+      // update counters
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      } else {
+        columnCounter++;
+      }
+    }
+  }
+
+  getNodeByCursor(cursor: Cursor): Node<string> {
+    const iterator = this.traverseBySelection({ start: cursor, end: cursor });
+    return iterator.next().value;
+  }
+
+  private findNode(value: string, skip: number): Node<string> {
     let lastMatch = this.tree.root;
     for (const node of this.traverseTree()) {
       if (node.value === value) {
@@ -185,10 +195,6 @@ export class Fugue {
    */
   toString(): string {
     return this.tree.toString();
-  }
-
-  getElementId(index: number): Id {
-    return this.tree.getByIndex(this.tree.root, index).id;
   }
 
   getRootNode(): Node<string> {

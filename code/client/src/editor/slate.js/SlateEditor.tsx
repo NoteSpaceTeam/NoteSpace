@@ -42,6 +42,7 @@ function SlateEditor() {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}
+            onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
             onKeyDown={onKeyDown}
             onPaste={onPaste}

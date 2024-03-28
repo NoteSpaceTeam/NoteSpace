@@ -19,7 +19,7 @@
       /*Others*/
       "@src/*": ["./server/src/*"],
       "@domain/*": ["./server/src/domain/*"],
-      "@services/*": ["./server/src/services/*"],
+      "@services/*": ["./server/src/services/*"]
     }
   },
   "include": ["src/**/*"],

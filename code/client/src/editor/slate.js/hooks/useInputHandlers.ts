@@ -34,34 +34,48 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
         editor.insertText('\t');
         fugue.insertLocal(start, insertNode('\t', []));
         break;
-      default:
+      default: {
         if (e.key.length !== 1) break;
-        fugue.insertLocal(start, insertNode(e.key, []));
+        if (selection.start.column !== selection.end.column) {
+          // replace selection
+          fugue.deleteLocal(selection);
+        }
+        const previousNode = fugue.getNodeByCursor({ line: start.line, column: start.column - 1 });
+        const styles = previousNode?.styles || [];
+        fugue.insertLocal(start, insertNode(e.key, styles));
         break;
+      }
     }
   }
 
   function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
-    const selection = getSelection(editor);
-    const { start } = selection;
-    fugue.insertLocal(start, insertNode(clipboardData, [])); // TODO: Fix this
+    const { start } = getSelection(editor);
+    for (const char of clipboardData.split('').reverse().join('')) {
+      fugue.insertLocal(start, insertNode(char, []));
+    }
   }
 
   function onCut() {
-    const selection = getSelection(editor);
+    const selection = getSelection(editor); // problem here
     fugue.deleteLocal(selection); // TODO: Fix this
   }
 
+  function onUndo() {
+    // TODO: Implement undo
+  }
+
+  function onRedo() {
+    // TODO: Implement redo
+  }
+
   function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    console.log(event.key)
     const mark = hotkeys[event.key];
-    console.log(mark);
     CustomEditor.toggleMark(editor, mark, fugue);
   }
 
-  return { onKeyDown, onPaste, onCut };
+  return { onKeyDown, onPaste, onCut, onUndo, onRedo };
 }
 
 export default useInputHandlers;
