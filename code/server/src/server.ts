@@ -4,10 +4,10 @@ import { Server } from 'socket.io';
 import { config } from 'dotenv';
 import cors from 'cors';
 import serviceInit from '@services/documentService';
-import eventsInit from '@controllers/socket.io/events';
+import eventsInit from '@controllers/websocket/events';
 import database from '@database/memory/operations';
 import router from '@src/controllers/http/router';
-import onConnection from '@controllers/socket.io/onConnection';
+import onConnection from '@controllers/websocket/onConnection';
 
 config();
 const PORT = process.env.PORT || 8080;

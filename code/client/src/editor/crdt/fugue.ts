@@ -7,7 +7,7 @@ import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
 import { type Style } from '@notespace/shared/crdt/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
-import { socket } from '@src/socket.io/socket';
+import { socket } from '@src/socket/socket';
 import { type InsertNode } from '@editor/crdt/types';
 import { Cursor, Selection } from '@editor/slate.js/model/cursor';
 import { isEmpty, isEqual } from 'lodash';
