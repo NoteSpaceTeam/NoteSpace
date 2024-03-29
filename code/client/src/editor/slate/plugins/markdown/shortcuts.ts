@@ -1,5 +1,5 @@
 import { type CustomElement } from '@editor/slate/model/types.ts';
-import { BlockStyles, InlineStyles } from '@notespace/shared/crdt/types/styles';
+import { BlockStyles, InlineStyles } from '../../../../../../shared/types/styles.ts';
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { createDescendant } from '@editor/slate/model/utils.ts';
 

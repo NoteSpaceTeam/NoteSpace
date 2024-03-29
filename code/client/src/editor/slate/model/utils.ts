@@ -1,6 +1,6 @@
 import { type Descendant, Editor, Range } from 'slate';
 import { type CustomText } from '@editor/slate/model/types.ts';
-import { type BlockStyle } from '@notespace/shared/crdt/types/styles';
+import { type BlockStyle } from '../../../../../shared/types/styles.ts';
 
 /**
  * Creates a descendant object.

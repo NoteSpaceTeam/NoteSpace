@@ -1,5 +1,5 @@
 import { Node, Id } from "./types/nodes"
-import { InlineStyle } from "./types/styles";
+import { InlineStyle } from "../types/styles";
 
 export function rootNode<T>(): Node<T> {
   return {

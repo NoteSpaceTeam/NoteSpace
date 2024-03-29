@@ -1,5 +1,5 @@
 import { Id, Node } from "./types/nodes";
-import { Style } from "./types/styles";
+import { Style } from "../types/styles";
 import { isEmpty, isNull } from 'lodash';
 import { rootNode, treeNode } from "./utils";
 

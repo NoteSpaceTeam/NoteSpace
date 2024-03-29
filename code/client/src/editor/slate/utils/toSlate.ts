@@ -1,5 +1,5 @@
 import type { Descendant } from 'slate';
-import type { Style, BlockStyle } from '../../../../../shared/crdt/types/styles';
+import type { Style, BlockStyle } from '../../../../../shared/types/styles.ts';
 import type { CustomText } from '@editor/slate/model/types.ts';
 import { isEmpty, isEqual } from 'lodash';
 import { createChildren, createDescendant } from '@editor/slate/model/utils.ts';

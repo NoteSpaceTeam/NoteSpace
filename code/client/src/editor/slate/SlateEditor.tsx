@@ -1,14 +1,14 @@
 import { Editable, Slate, withReact } from 'slate-react';
-import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
+import useInputHandlers from '@editor/slate/hooks/useInputHandlers.ts';
 import useFugue from '@editor/hooks/useFugue';
 import useEvents from '@editor/hooks/useEvents';
 import useRenderers from '@editor/slate/hooks/useRenderers';
-import './SlateEditor.scss';
 import Toolbar from '@editor/slate/toolbar/Toolbar';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { toSlate } from '@editor/slate/utils/toSlate';
+import './SlateEditor.scss';
 
 const initialValue = [
   {
@@ -20,7 +20,7 @@ const initialValue = [
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
   const fugue = useFugue();
-  const { onKeyDown, onPaste, onCut } = useInputHandlers(editor, fugue);
+  const { onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(fugue, () => {
@@ -46,6 +46,7 @@ function SlateEditor() {
             onKeyDown={onKeyDown}
             onPaste={onPaste}
             onCut={onCut}
+            onSelect={onSelect}
           />
         </Slate>
       </div>

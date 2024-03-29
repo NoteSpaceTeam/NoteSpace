@@ -4,7 +4,7 @@ import {
   type StyleOperation,
 } from '@notespace/shared/crdt/types/operations';
 import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
-import { type Style } from '@notespace/shared/crdt/types/styles';
+import { type Style } from '../../../../shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';

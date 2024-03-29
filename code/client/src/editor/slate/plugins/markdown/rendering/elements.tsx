@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { BlockStyles } from '@notespace/shared/crdt/types/styles';
+import { BlockStyles } from '../../../../../../../shared/types/styles.ts';
 import { RenderElementProps } from 'slate-react';
 import {
   Blockquote,

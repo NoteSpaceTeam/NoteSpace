@@ -1,4 +1,4 @@
-import { type Style } from '@notespace/shared/crdt/types/styles';
+import { type Style } from '../../../../shared/types/styles.ts';
 
 export type InsertNode = {
   value: string;

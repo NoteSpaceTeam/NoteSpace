@@ -1,7 +1,7 @@
 import { type BaseEditor, type Descendant } from 'slate';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { type BlockStyle } from '@notespace/shared/crdt/types/styles';
+import { type BlockStyle } from '../../../../../shared/types/styles.ts';
 
 export interface CustomFormat {
   bold?: boolean;

@@ -1,5 +1,5 @@
 import { Id } from "./nodes";
-import { Style } from "./styles";
+import { Style } from "../../types/styles";
 
 /**
  * An insert operation.

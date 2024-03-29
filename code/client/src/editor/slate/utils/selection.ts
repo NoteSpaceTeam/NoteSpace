@@ -1,12 +1,5 @@
 import { Editor, Range, Point, Text, Node, Path } from 'slate';
-import { Cursor, Selection } from '../model/cursor.ts';
-
-function emptySelection(): Selection {
-  return {
-    start: { line: 0, column: 0 },
-    end: { line: 0, column: 0 },
-  };
-}
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
@@ -58,6 +51,12 @@ function getAbsoluteOffset(editor: Editor, point: Point): number {
       offset = 0;
     }
   }
-
   return offset;
+}
+
+function emptySelection(): Selection {
+  return {
+    start: { line: 0, column: 0 },
+    end: { line: 0, column: 0 },
+  };
 }

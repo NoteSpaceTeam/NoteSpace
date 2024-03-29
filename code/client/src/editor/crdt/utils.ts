@@ -1,5 +1,5 @@
 import { range } from 'lodash';
-import type { Style } from '@notespace/shared/crdt/types/styles';
+import type { Style } from '../../../../shared/types/styles.ts';
 import type { InsertNode } from '@editor/crdt/types';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';

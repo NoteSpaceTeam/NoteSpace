@@ -5,6 +5,8 @@ import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { socket } from '@src/socket/socket.ts';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -15,35 +17,71 @@ const hotkeys: Record<string, string> = {
 function useInputHandlers(editor: Editor, fugue: Fugue) {
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (e.ctrlKey) return shortcutHandler(e);
-
     const selection = getSelection(editor);
-    const { start, end } = selection;
     switch (e.key) {
       case 'Enter':
-        fugue.insertLocal(start, insertNode('\n', []));
+        onEnter(selection.start);
         break;
       case 'Backspace': {
-        const startPosition = { line: 0, column: 0 };
-        if (isEqual(startPosition, start) && isEqual(startPosition, end)) break;
-        fugue.deleteLocal(selection);
+        onBackspace(selection);
         break;
       }
       case 'Tab':
         e.preventDefault();
-        editor.insertText('\t');
-        fugue.insertLocal(start, insertNode('\t', []));
+        onTab(selection.start);
         break;
       default: {
         if (e.key.length !== 1) break;
-        if (selection.start.column !== selection.end.column) {
-          fugue.deleteLocal(selection); // replace selection
-        }
-        const previousNode = fugue.getNodeByCursor(start);
-        const styles = previousNode?.styles || [];
-        fugue.insertLocal(start, insertNode(e.key, styles));
+        onKey(e.key, selection);
         break;
       }
     }
+  }
+
+  function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
+    switch (event.key) {
+      case 'z':
+        onUndo();
+        break;
+      case 'y':
+        onRedo();
+        break;
+      case 'Backspace':
+        onCtrlBackspace();
+        break;
+      case 'Delete':
+        onCtrlDelete();
+        break;
+      default: {
+        onFormat(event.key);
+      }
+    }
+  }
+
+  function onKey(key: string, selection: Selection) {
+    if (selection.start.column !== selection.end.column) {
+      fugue.deleteLocal(selection); // replace selection
+    }
+    const previousNode = fugue.getNodeByCursor(selection.start);
+    const styles = previousNode?.styles || [];
+    fugue.insertLocal(selection.start, insertNode(key, styles));
+  }
+
+  function onEnter(cursor: Cursor) {
+    fugue.insertLocal(cursor, insertNode('\n', []));
+  }
+
+  function onBackspace(selection: Selection) {
+    const startPosition = { line: 0, column: 0 };
+    if ([startPosition, selection.start, selection.end].every(isEqual)) {
+      return; // beginning of document
+    }
+    fugue.deleteLocal(selection);
+  }
+
+  function onTab(cursor: Cursor) {
+    editor.insertText('\t');
+    fugue.insertLocal(cursor, insertNode('\t', []));
   }
 
   function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
@@ -56,33 +94,38 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   }
 
   function onCut() {
-    const selection = getSelection(editor); // problem here
-    fugue.deleteLocal(selection); // TODO: Fix this
+    const selection = getSelection(editor);
+    fugue.deleteLocal(selection);
   }
 
   function onUndo() {
-    // TODO: Implement undo
+    // TODO: Implement undo (broadcast to other clients)
   }
 
   function onRedo() {
-    // TODO: Implement redo
+    // TODO: Implement redo (broadcast to other clients)
   }
 
-  function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
-    switch (event.key) {
-      case 'z':
-        onUndo();
-        break;
-      case 'y':
-        onRedo();
-        break;
-      default: {
-        const mark = hotkeys[event.key];
-        CustomEditor.toggleMark(editor, mark, fugue);
-      }
-    }
+  function onCtrlBackspace() {
+    // TODO: Implement delete word to the left of the cursor (broadcast to other clients)
   }
-  return { onKeyDown, onPaste, onCut };
+
+  function onCtrlDelete() {
+    // TODO: Implement delete word to the right of the cursor (broadcast to other clients)
+  }
+
+  function onFormat(key: string) {
+    const mark = hotkeys[key];
+    if (!mark) return;
+    CustomEditor.toggleMark(editor, mark, fugue);
+  }
+
+  function onSelect() {
+    const selection = getSelection(editor);
+    socket.emit('cursorChange', selection);
+  }
+
+  return { onKeyDown, onPaste, onCut, onSelect };
 }
 
 export default useInputHandlers;

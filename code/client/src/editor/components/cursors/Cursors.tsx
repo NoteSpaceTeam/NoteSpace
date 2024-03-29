@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import './CursorsManager.scss';
 import useSocketListeners from '../../../socket/useSocketListeners.ts';
-
-interface Cursor {
-  id: string;
-  position: { line: number; column: number };
-  color: string;
-}
+import { CursorData } from '@editor/components/cursors/CursorData.ts';
+import Cursor from '@editor/components/cursors/Cursor.tsx';
 
 function Cursors() {
-  const [cursors, setCursors] = useState<Cursor[]>([]);
+  const [cursors, setCursors] = useState<CursorData[]>([]);
 
-  const handleCursorChange = (cursor: Cursor) => {
+  const onCursorChange = (cursor: CursorData) => {
     setCursors(prevCursors => {
       const updatedCursors = prevCursors.filter(c => c.id !== cursor.id);
       return [...updatedCursors, cursor];
@@ -19,42 +15,10 @@ function Cursors() {
   };
 
   useSocketListeners({
-    cursorChange: handleCursorChange,
+    cursorChange: onCursorChange,
   });
 
-  const getCharacterWidth = (textarea: HTMLElement) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d')!;
-    const computedStyle = getComputedStyle(textarea);
-    ctx.font = computedStyle.font;
-    return ctx.measureText('W').width;
-  };
-
-  const renderCursors = () => {
-    return cursors.map(cursor => {
-      const textarea = document.querySelector('textarea')!;
-      const fontSize = parseFloat(getComputedStyle(textarea).fontSize);
-      const lineHeight = fontSize * 1.2;
-      const characterWidth = getCharacterWidth(textarea);
-      const top = textarea.offsetTop + (cursor.position.line - 1) * lineHeight - 2;
-      const left = textarea.offsetLeft + (cursor.position.column - 1) * characterWidth + 1;
-      return (
-        <div
-          className="cursor"
-          key={cursor.id}
-          style={{
-            position: 'absolute',
-            top: `${top}px`,
-            left: `${left}px`,
-            width: '2px',
-            height: '1.5em',
-            backgroundColor: cursor.color,
-          }}
-        />
-      );
-    });
-  };
-  return <>{renderCursors()}</>;
+  return cursors.map(cursor => <Cursor key={cursor.id} color={cursor.color} selection={cursor.selection} />);
 }
 
 export default Cursors;
