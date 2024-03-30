@@ -1,5 +1,5 @@
 import { Id, Node } from "./types/nodes";
-import { Style } from "../types/styles";
+import {InlineStyle, Style} from "../types/styles";
 import { isEmpty, isNull } from 'lodash';
 import { rootNode, treeNode } from "./utils";
 
@@ -27,9 +27,10 @@ export class FugueTree<T> {
    * @param value the value of the node.
    * @param parent the id of the parent node.
    * @param side the side of the parent node where this node is located.
+   * @param styles the styles of the node.
    */
-  addNode(id: Id, value: T, parent: Id, side: "L" | "R") {
-    const node= treeNode(id, value, parent, side, 0);
+  addNode(id: Id, value: T, parent: Id, side: "L" | "R", styles?: InlineStyle[]) {
+    const node = treeNode(id, value, parent, side, 0, styles);
     // Add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
     if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);

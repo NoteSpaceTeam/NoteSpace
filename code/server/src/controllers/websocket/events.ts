@@ -8,6 +8,6 @@ export default function events(service: DocumentService): Record<string, SocketH
   }
   return {
     operation: onOperation(service),
-    cursorChange: onCursorChange,
+    cursorChange: onCursorChange(),
   };
 }

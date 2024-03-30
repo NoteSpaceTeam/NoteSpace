@@ -88,9 +88,8 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    for (const char of clipboardData.split('').reverse().join('')) {
-      fugue.insertLocal(start, insertNode(char, []));
-    }
+    const nodes = clipboardData.split('').map(char => insertNode(char, []));
+    fugue.insertLocal(start, ...nodes);
   }
 
   function onCut() {
@@ -121,8 +120,11 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   }
 
   function onSelect() {
-    const selection = getSelection(editor);
-    socket.emit('cursorChange', selection);
+    // let the selection update before sending it
+    setTimeout(() => {
+      const selection = getSelection(editor);
+      socket.emit('cursorChange', selection);
+    }, 10);
   }
 
   return { onKeyDown, onPaste, onCut, onSelect };

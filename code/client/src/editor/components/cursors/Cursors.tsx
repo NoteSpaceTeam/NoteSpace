@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import './CursorsManager.scss';
 import useSocketListeners from '../../../socket/useSocketListeners.ts';
 import { CursorData } from '@editor/components/cursors/CursorData.ts';
 import Cursor from '@editor/components/cursors/Cursor.tsx';
+import './Cursors.scss';
 
 function Cursors() {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
     setCursors(prevCursors => {
-      const updatedCursors = prevCursors.filter(c => c.id !== cursor.id);
-      return [...updatedCursors, cursor];
+      const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
+      return [...otherCursors, cursor];
     });
   };
 

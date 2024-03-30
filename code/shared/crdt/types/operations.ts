@@ -1,5 +1,5 @@
 import { Id } from "./nodes";
-import { Style } from "../../types/styles";
+import {InlineStyle, Style} from "../../types/styles";
 
 /**
  * An insert operation.
@@ -10,7 +10,7 @@ export type InsertOperation = {
   value: string;
   parent: Id;
   side: "L" | "R";
-  styles?: Style[];
+  styles?: InlineStyle[];
 };
 
 /**

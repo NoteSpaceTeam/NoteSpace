@@ -6,11 +6,13 @@ import {
 import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
 import { type Style } from '../../../../shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { generateReplicaId } from './utils';
+import { chunkData, generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';
 import { type InsertNode } from '@editor/crdt/types';
-import { Cursor, Selection } from '@editor/slate/model/cursor';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, isEqual } from 'lodash';
+
+const CHUNK_DATA_SIZE = 50;
 
 /**
  * A local replica of a FugueTree.
@@ -42,10 +44,14 @@ export class Fugue {
    * @param values
    */
   insertLocal(start: Cursor, ...values: InsertNode[]): void {
-    values.forEach((value, i) => {
+    const operations = values.map((value, i) => {
       const operation = this.getInsertOperation({ ...start, column: start.column + i }, value);
       this.addNode(operation);
-      socket.emit('operation', operation); // TODO: break data into data chunks - less network traffic
+      return operation;
+    });
+    // break data into data chunks - less network traffic
+    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
+      socket.emit('operation', chunk);
     });
   }
 
@@ -82,10 +88,10 @@ export class Fugue {
    * @param value
    * @param parent
    * @param side
-   * @private
+   * @param styles
    */
-  private addNode({ id, value, parent, side }: InsertOperation) {
-    this.tree.addNode(id, value, parent, side);
+  private addNode({ id, value, parent, side, styles }: InsertOperation) {
+    this.tree.addNode(id, value, parent, side, styles);
   }
 
   /**
@@ -93,12 +99,15 @@ export class Fugue {
    * @param selection
    */
   deleteLocal(selection: Selection): void {
-    for (const node of this.traverseBySelection(selection)) {
+    const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
       this.removeNode(id);
-      const operation: DeleteOperation = { type: 'delete', id };
-      socket.emit('operation', operation); // TODO: break data into data chunks - less network traffic
-    }
+      return { type: 'delete', id };
+    });
+    // break data into data chunks - less network traffic
+    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
+      socket.emit('operation', chunk);
+    });
   }
 
   /**
@@ -112,25 +121,27 @@ export class Fugue {
   /**
    * Deletes the node based on the given node id
    * @param id
-   * @private
    */
   private removeNode(id: Id): void {
     this.tree.deleteNode(id);
   }
 
   updateStyleLocal(selection: Selection, value: boolean, format: string) {
-    for (const node of this.traverseBySelection(selection)) {
+    const operations: StyleOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
       const style = format as Style;
-      const styleOperation: StyleOperation = {
+      this.tree.updateStyle(id, style, value);
+      return {
         type: 'style',
         id,
         style: style,
         value: value,
       };
-      this.tree.updateStyle(id, style, value);
-      socket.emit('operation', styleOperation); // TODO: break data into data chunks - less network traffic
-    }
+    });
+    // break data into data chunks - less network traffic
+    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
+      socket.emit('operation', chunk);
+    });
   }
 
   updateStyleRemote({ id, style, value }: StyleOperation): void {

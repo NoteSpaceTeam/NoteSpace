@@ -35,9 +35,11 @@ function SlateEditor() {
         <h1>NoteSpace</h1>
       </header>
       <div className="container">
+        {/*<Cursors />*/}
         <Slate editor={editor} initialValue={initialValue}>
           <Toolbar fugue={fugue} />
           <Editable
+            className="editable"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}
