@@ -1,14 +1,15 @@
 import type { Descendant } from 'slate';
-import type { Style, BlockStyle } from '../../../../../shared/types/styles.ts';
+import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
 import type { CustomText } from '@editor/slate/model/types.ts';
 import { isEmpty, isEqual } from 'lodash';
 import { createChildren, createDescendant } from '@editor/slate/model/utils.ts';
 import { Fugue } from '@editor/crdt/fugue.ts';
 
-export function toSlate(fugue: Fugue): Descendant[] {
+export function toSlate(): Descendant[] {
+  const fugue = Fugue.getInstance();
   const root = fugue.getRootNode();
   const descendants: Descendant[] = [];
-  let lastStyles: Style[] = [];
+  let lastStyles: InlineStyle[] = [];
   let lineCounter = 0;
   for (const node of fugue.traverseTree()) {
     const textNode: CustomText = {
@@ -24,7 +25,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
       const children = node.value === '\n' ? createChildren('') : [textNode];
       const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
       descendants.push(createDescendant(lineStyle, children));
-      lastStyles = node.styles;
+      lastStyles = node.styles as InlineStyle[];
       continue;
     }
     const lastDescendant = descendants[descendants.length - 1];
@@ -37,7 +38,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
     else {
       lastDescendant.children.push(textNode);
     }
-    lastStyles = node.styles;
+    lastStyles = node.styles as InlineStyle[];
   }
   // If there are no descendants, add an empty paragraph
   if (isEmpty(descendants)) {

@@ -3,7 +3,6 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@editor/slate/model/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import { type Fugue } from '@editor/crdt/fugue';
 
 interface MarkOption {
   value: string;
@@ -18,11 +17,7 @@ const markOptions: MarkOption[] = [
   { value: 'code', icon: <FaCode /> },
 ];
 
-interface ToolbarProps {
-  fugue: Fugue;
-}
-
-function Toolbar({ fugue }: ToolbarProps) {
+function Toolbar() {
   const editor = useSlate();
   const focused = useFocused();
   const selected = isSelected(editor);
@@ -48,7 +43,7 @@ function Toolbar({ fugue }: ToolbarProps) {
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();
-    CustomEditor.toggleMark(editor, mark.value, fugue);
+    CustomEditor.toggleMark(editor, mark.value);
   };
 
   if (!selectionBounds || !selected || !focused) return null;

@@ -1,9 +1,6 @@
 import { Id } from "./nodes";
-import {InlineStyle, Style} from "../../types/styles";
+import { InlineStyle, BlockStyle } from "../../types/styles";
 
-/**
- * An insert operation.
- */
 export type InsertOperation = {
   type: "insert";
   id: Id;
@@ -13,22 +10,26 @@ export type InsertOperation = {
   styles?: InlineStyle[];
 };
 
-/**
- * A delete operation.
- */
 export type DeleteOperation = {
   type: "delete";
   id: Id;
 };
 
-/**
- * An operation to apply a style to a node.
- */
-export type StyleOperation = {
-  type: "style";
+export type InlineStyleOperation = {
+  type: "inline-style";
   id: Id;
-  style: Style;
+  style: InlineStyle;
   value: boolean;
 };
 
-export type Operation = | InsertOperation | DeleteOperation | StyleOperation;
+export type BlockStyleOperation = {
+  type: "block-style";
+  line: number;
+  style: BlockStyle;
+};
+
+export type Operation =
+  | InsertOperation
+  | DeleteOperation
+  | InlineStyleOperation
+  | BlockStyleOperation;

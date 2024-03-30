@@ -1,5 +1,5 @@
 import type React from 'react';
-import { type Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/model/CustomEditor';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
@@ -14,7 +14,8 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-function useInputHandlers(editor: Editor, fugue: Fugue) {
+function useInputHandlers(editor: Editor) {
+  const fugue: Fugue = Fugue.getInstance();
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (e.ctrlKey) return shortcutHandler(e);
     const selection = getSelection(editor);
@@ -116,7 +117,7 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    CustomEditor.toggleMark(editor, mark, fugue);
+    CustomEditor.toggleMark(editor, mark);
   }
 
   function onSelect() {

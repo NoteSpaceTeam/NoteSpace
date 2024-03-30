@@ -1,10 +1,11 @@
 import {
   type DeleteOperation,
   type InsertOperation,
-  type StyleOperation,
+  type InlineStyleOperation,
+  BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
 import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
-import { type Style } from '../../../../shared/types/styles';
+import { BlockStyle, InlineStyle } from '../../../../shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { chunkData, generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';
@@ -15,19 +16,25 @@ import { isEmpty, isEqual } from 'lodash';
 const CHUNK_DATA_SIZE = 50;
 
 /**
- * A local replica of a FugueTree.
+ * Singleton that represents a local replica of a FugueTree
  * @param T - the type of the values stored in the tree
- * @class
- * @property {string} replicaId - the id of the replica
  */
 export class Fugue {
+  private static instance: Fugue;
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
 
-  constructor() {
+  private constructor() {
     this.replicaId = generateReplicaId();
     this.tree = new FugueTree();
+  }
+
+  static getInstance(): Fugue {
+    if (!Fugue.instance) {
+      Fugue.instance = new Fugue();
+    }
+    return Fugue.instance;
   }
 
   /**
@@ -57,19 +64,16 @@ export class Fugue {
 
   /**
    * Inserts a new node in the tree based on the given operation.
-   * @param operation - the insert operation
+   * @param operation
    */
   insertRemote(operation: InsertOperation): void {
     this.addNode(operation);
   }
 
   /**
-   * Gets the insert operation based on the given cursor and insert node.
-   * @param start - the index where the new node should be inserted
-   * @param value - the value of the new node
-   * @param styles
-   * @private
-   * @returns the insert operation
+   * Returns the insert operation based on the given cursor and insert node
+   * @param cursor
+   * @param insertNode
    */
   private getInsertOperation({ line, column }: Cursor, { value, styles }: InsertNode): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
@@ -111,7 +115,7 @@ export class Fugue {
   }
 
   /**
-   * Deletes the node based on the given operation.
+   * Deletes the node based on the given operation
    * @param operation
    */
   deleteRemote(operation: DeleteOperation): void {
@@ -126,16 +130,22 @@ export class Fugue {
     this.tree.deleteNode(id);
   }
 
-  updateStyleLocal(selection: Selection, value: boolean, format: string) {
-    const operations: StyleOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
+  /**
+   * Updates the style of the nodes by the given selection
+   * @param selection
+   * @param value
+   * @param format
+   */
+  updateInlineStyleLocal(selection: Selection, value: boolean, format: InlineStyle) {
+    const operations: InlineStyleOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
-      const style = format as Style;
-      this.tree.updateStyle(id, style, value);
+      const style = format as InlineStyle;
+      this.tree.updateInlineStyle(id, style, value);
       return {
-        type: 'style',
+        type: 'inline-style',
         id,
-        style: style,
-        value: value,
+        style,
+        value,
       };
     });
     // break data into data chunks - less network traffic
@@ -144,15 +154,40 @@ export class Fugue {
     });
   }
 
-  updateStyleRemote({ id, style, value }: StyleOperation): void {
-    this.tree.updateStyle(id, style, value);
+  /**
+   * Updates the style of the node based on the given operation
+   * @param id
+   * @param style
+   * @param value
+   */
+  updateInlineStyleRemote({ id, style, value }: InlineStyleOperation): void {
+    this.tree.updateInlineStyle(id, style, value);
+  }
+
+  updateBlockStyleLocal(type: BlockStyle, line: number) {
+    this.tree.updateBlockStyle(type, line);
+    const operation: BlockStyleOperation = {
+      type: 'block-style',
+      line,
+      style: type,
+    };
+    socket.emit('operation', [operation]);
+  }
+
+  updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
+    this.tree.updateBlockStyle(style, line);
   }
 
   /**
-   * Makes a full traversal of the tree.
+   * Traverses the tree in in-order traversal
+   * @returns iterator of nodes
    */
   traverseTree = () => this.tree.traverse(this.tree.root);
 
+  /**
+   * Traverses the tree by the given selection
+   * @param selection
+   */
   private *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
     const { start, end } = selection;
     let lineCounter = 0;
@@ -184,11 +219,20 @@ export class Fugue {
     }
   }
 
+  /**
+   * Returns the node at the given cursor
+   * @param cursor
+   */
   getNodeByCursor(cursor: Cursor): Node<string> {
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
   }
 
+  /**
+   * Finds the node skip-th node with the given value
+   * @param value
+   * @param skip
+   */
   private findNode(value: string, skip: number): Node<string> {
     let lastMatch = this.tree.root;
     for (const node of this.traverseTree()) {
@@ -202,12 +246,14 @@ export class Fugue {
 
   /**
    * Returns the string representation of the tree.
-   * @returns the string representation of the tree.
    */
   toString(): string {
     return this.tree.toString();
   }
 
+  /**
+   * Returns the root node of the tree
+   */
   getRootNode(): Node<string> {
     return this.tree.root!;
   }

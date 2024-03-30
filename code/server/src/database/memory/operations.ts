@@ -1,5 +1,10 @@
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
+import {
+  DeleteOperation,
+  InsertOperation,
+  InlineStyleOperation,
+  BlockStyleOperation,
+} from '@notespace/shared/crdt/types/operations';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
 
 let tree = new FugueTree<string>();
@@ -20,8 +25,12 @@ function deleteCharacter({ id }: DeleteOperation): void {
   tree.deleteNode(id);
 }
 
-function updateStyle({ id, style, value }: StyleOperation): void {
-  tree.updateStyle(id, style, value);
+function updateInlineStyle({ id, style, value }: InlineStyleOperation): void {
+  tree.updateInlineStyle(id, style, value);
+}
+
+function updateBlockStyle({ line, style }: BlockStyleOperation): void {
+  tree.updateBlockStyle(style, line);
 }
 
 export default {
@@ -29,5 +38,6 @@ export default {
   deleteTree,
   insertCharacter,
   deleteCharacter,
-  updateStyle,
+  updateInlineStyle,
+  updateBlockStyle,
 };

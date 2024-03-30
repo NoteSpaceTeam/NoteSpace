@@ -1,6 +1,6 @@
 import { range } from 'lodash';
-import type { Style } from '../../../../shared/types/styles.ts';
 import type { InsertNode } from '@editor/crdt/types';
+import { InlineStyle } from '../../../../shared/types/styles.ts';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;
@@ -25,7 +25,7 @@ export function generateReplicaId() {
  * @param styles
  * @returns the insert node
  */
-export function insertNode(value: string, styles: Style[]): InsertNode {
+export function insertNode(value: string, styles: InlineStyle[]): InsertNode {
   return { value, styles };
 }
 

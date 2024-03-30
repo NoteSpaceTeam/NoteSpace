@@ -14,8 +14,12 @@ function onOperation(service: DocumentService) {
           service.deleteCharacter(operation);
           break;
         }
-        case 'style': {
-          service.updateStyle(operation);
+        case 'inline-style': {
+          service.updateInlineStyle(operation);
+          break;
+        }
+        case 'block-style': {
+          service.updateBlockStyle(operation);
           break;
         }
         default:

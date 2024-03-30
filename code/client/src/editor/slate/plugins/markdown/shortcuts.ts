@@ -1,7 +1,7 @@
-import { type CustomElement } from '@editor/slate/model/types.ts';
-import { BlockStyles, InlineStyles } from '../../../../../../shared/types/styles.ts';
+import { BlockStyles, InlineStyle, InlineStyles } from '@notespace/shared/types/styles';
+import { type Selection } from '@notespace/shared/types/cursor';
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
-import { createDescendant } from '@editor/slate/model/utils.ts';
+import { Fugue } from '@editor/crdt/fugue.ts';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -14,61 +14,43 @@ const inlineRules = (...triggers: string[]) =>
   });
 
 /**
- * Creates a function that applies a block element to the editor.
+ * Creates a function that applies a block element to the editor
  * @param type
  */
 function createSetBlockApply(type: Element['type']) {
+  const fugue = Fugue.getInstance();
   return (editor: Editor, range: Range) => {
+    const line = range.anchor.path[0];
+    fugue.updateBlockStyleLocal(type, line);
     Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
   };
 }
 
 /**
- * Creates a function that applies an inline element to the editor.
- * @param type
- */
-function createSetInlineApply(type: Element['type']) {
-  return (editor: Editor, range: Range) => {
-    const rangeRef = editor.rangeRef(range);
-
-    Transforms.unwrapNodes(editor, {
-      at: range,
-      match: (n: CustomElement) => editor.isInline(n),
-      mode: 'all',
-      split: true,
-    });
-
-    if (rangeRef.current) {
-      Transforms.insertNodes(
-        editor,
-        { text: '' },
-        { match: Text.isText, at: Range.end(rangeRef.current), select: true }
-      );
-    }
-
-    const targetRange = rangeRef.unref();
-    if (targetRange) {
-      Transforms.wrapNodes(editor, createDescendant(type, []), {
-        at: targetRange,
-        split: true,
-      });
-    }
-  };
-}
-
-/**
- * Creates a function that applies a mark to the editor.
+ * Returns a function that applies an inline style to a block of text in the editor
  * @param key
  */
-function createSetMarkApply(key: Exclude<keyof Text, 'text'>) {
+function createSetInlineApply(key: Exclude<keyof Text, 'text'>) {
+  const fugue = Fugue.getInstance();
   return (editor: Editor, range: Range) => {
+    const selection: Selection = {
+      start: {
+        line: range.anchor.path[0],
+        column: range.anchor.offset,
+      },
+      end: {
+        line: range.focus.path[0],
+        column: range.focus.offset,
+      },
+    };
+    fugue.updateInlineStyleLocal(selection, true, key as InlineStyle);
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });
     Transforms.setNodes(editor, { [key]: true }, { match: Text.isText, at: range, split: true });
   };
 }
 
 /**
- * Shortcuts for markdown.
+ * Shortcuts for the markdown editor
  */
 export const shortcuts = [
   { trigger: blockRules('#'), apply: createSetBlockApply(BlockStyles.h1) },
@@ -87,21 +69,21 @@ export const shortcuts = [
     trigger: blockRules('```', '`'),
     apply: createSetBlockApply(BlockStyles.code),
   },
-  { trigger: blockRules('---'), apply: createSetInlineApply(BlockStyles.hr) },
+  { trigger: blockRules('---'), apply: createSetBlockApply(BlockStyles.hr) },
   {
     trigger: inlineRules('**', '__'),
-    apply: createSetMarkApply(InlineStyles.bold),
+    apply: createSetInlineApply(InlineStyles.bold),
   },
   {
     trigger: inlineRules('*', '_'),
-    apply: createSetMarkApply(InlineStyles.italic),
+    apply: createSetInlineApply(InlineStyles.italic),
   },
   {
     trigger: inlineRules('~~'),
-    apply: createSetMarkApply(InlineStyles.strikethrough),
+    apply: createSetInlineApply(InlineStyles.strikethrough),
   },
   {
     trigger: inlineRules('=='),
-    apply: createSetMarkApply(InlineStyles.underline),
+    apply: createSetInlineApply(InlineStyles.underline),
   },
 ];

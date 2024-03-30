@@ -1,9 +1,10 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
-import { type Fugue } from '@src/editor/crdt/fugue';
+import { Fugue } from '@src/editor/crdt/fugue';
 import { type Node } from '@notespace/shared/crdt/types/nodes';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 
-function useEvents(fugue: Fugue, onDone: () => void) {
+function useEvents(onDone: () => void) {
+  const fugue = Fugue.getInstance();
   function onOperation(operations: Operation[]) {
     for (const operation of operations) {
       switch (operation.type) {
@@ -13,8 +14,11 @@ function useEvents(fugue: Fugue, onDone: () => void) {
         case 'delete':
           fugue.deleteRemote(operation);
           break;
-        case 'style':
-          fugue.updateStyleRemote(operation);
+        case 'inline-style':
+          fugue.updateInlineStyleRemote(operation);
+          break;
+        case 'block-style':
+          fugue.updateBlockStyleRemote(operation);
           break;
         default:
           throw new Error('Invalid operation type');

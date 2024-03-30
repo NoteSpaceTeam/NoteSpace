@@ -1,6 +1,6 @@
 import { Id, Node } from "./types/nodes";
-import {InlineStyle, Style} from "../types/styles";
-import { isEmpty, isNull } from 'lodash';
+import { BlockStyle, InlineStyle } from "../types/styles";
+import { isEmpty, isNull } from "lodash";
 import { rootNode, treeNode } from "./utils";
 
 export class FugueTree<T> {
@@ -29,7 +29,13 @@ export class FugueTree<T> {
    * @param side the side of the parent node where this node is located.
    * @param styles the styles of the node.
    */
-  addNode(id: Id, value: T, parent: Id, side: "L" | "R", styles?: InlineStyle[]) {
+  addNode(
+    id: Id,
+    value: T,
+    parent: Id,
+    side: "L" | "R",
+    styles?: InlineStyle[],
+  ) {
     const node = treeNode(id, value, parent, side, 0, styles);
     // Add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
@@ -39,8 +45,8 @@ export class FugueTree<T> {
     this.insertChild(node);
     // Update sizes of ancestors
     this.updateDepths(node, 1);
-    if (value === '\n') {
-      this._root.styles.push('paragraph')
+    if (value === "\n") {
+      this._root.styles.push("paragraph");
     }
   }
 
@@ -53,9 +59,8 @@ export class FugueTree<T> {
    */
   private insertChild({ id, parent, side }: Node<T>) {
     const parentNode = this.getById(parent!);
-    const siblings = side === "L" 
-      ? parentNode.leftChildren 
-      : parentNode.rightChildren;
+    const siblings =
+      side === "L" ? parentNode.leftChildren : parentNode.rightChildren;
     let i = 0;
     for (; i < siblings.length; i++) {
       if (!(id.sender > siblings[i].sender)) break;
@@ -109,7 +114,7 @@ export class FugueTree<T> {
    */
   getLeftmostDescendant(nodeId: Id): Node<T> {
     let node = this.getById(nodeId);
-    while(!isEmpty(node.leftChildren)) {
+    while (!isEmpty(node.leftChildren)) {
       node = this.getById(node.leftChildren[0]);
     }
     return node;
@@ -122,7 +127,7 @@ export class FugueTree<T> {
    * @param style
    * @param value
    */
-  updateStyle(id: Id, style: Style, value: boolean) {
+  updateInlineStyle(id: Id, style: InlineStyle, value: boolean) {
     const node = this.getById(id);
     if (value) {
       node.styles.push(style);
@@ -132,6 +137,12 @@ export class FugueTree<T> {
     }
   }
 
+  updateBlockStyle(style: BlockStyle, line: number) {
+    const blockStyles = this._root.styles;
+    blockStyles[line] = style;
+    this._root.styles = blockStyles;
+  }
+
   /**
    * Traverses the tree by the given number of depth-first steps and returns the node at that position.
    * @param node the root of the subtree.
@@ -139,7 +150,8 @@ export class FugueTree<T> {
    * @throws if the index is out of range.
    */
   getByIndex(node: Node<T>, index: number): Node<T> {
-    if (index < 0 || index >= node.depth) throw new Error(`Invalid index: ${index}`);
+    if (index < 0 || index >= node.depth)
+      throw new Error(`Invalid index: ${index}`);
     let remaining = index;
     let continueLoop = true;
     while (continueLoop) {
@@ -215,7 +227,9 @@ export class FugueTree<T> {
   }
 
   toString() {
-    return Array.from(this.traverse(this.root)).map(node => node.value).join('');
+    return Array.from(this.traverse(this.root))
+      .map((node) => node.value)
+      .join("");
   }
 
   get root(): Node<T> {

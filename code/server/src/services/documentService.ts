@@ -1,5 +1,10 @@
 import { DocumentDatabase } from '@src/types';
-import { DeleteOperation, InsertOperation, StyleOperation } from '@notespace/shared/crdt/types/operations';
+import {
+  DeleteOperation,
+  InsertOperation,
+  InlineStyleOperation,
+  BlockStyleOperation,
+} from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentService(database: DocumentDatabase) {
   async function getTree() {
@@ -20,9 +25,14 @@ export default function DocumentService(database: DocumentDatabase) {
     database.deleteCharacter(operation);
   }
 
-  function updateStyle(operation: StyleOperation) {
-    if (operation.type !== 'style') throw new Error('Invalid operation type');
-    database.updateStyle(operation);
+  function updateInlineStyle(operation: InlineStyleOperation) {
+    if (operation.type !== 'inline-style') throw new Error('Invalid operation type');
+    database.updateInlineStyle(operation);
+  }
+
+  function updateBlockStyle(operation: BlockStyleOperation) {
+    if (operation.type !== 'block-style') throw new Error('Invalid operation type');
+    database.updateBlockStyle(operation);
   }
 
   return {
@@ -30,6 +40,7 @@ export default function DocumentService(database: DocumentDatabase) {
     deleteTree,
     insertCharacter,
     deleteCharacter,
-    updateStyle,
+    updateInlineStyle,
+    updateBlockStyle,
   };
 }
