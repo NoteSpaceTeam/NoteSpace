@@ -89,8 +89,8 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
   const blockRange = { anchor, focus: editor.start(path) };
   const beforeText = editor.string(blockRange);
 
-  for (const { trigger, apply } of shortcuts) {
-    const match = trigger.find(trigger => trigger.exec(beforeText) !== null);
+  for (const { triggers, apply } of shortcuts) {
+    const match = triggers.find(trigger => trigger.exec(beforeText) !== null);
     if (!match) continue;
 
     const execArray = match.exec(beforeText);

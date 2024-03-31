@@ -114,6 +114,12 @@ export class Fugue {
     });
   }
 
+  deleteLocalById(id: Id): void {
+    this.removeNode(id);
+    const operation: DeleteOperation = { type: 'delete', id };
+    socket.emit('operation', [operation]);
+  }
+
   /**
    * Deletes the node based on the given operation
    * @param operation
@@ -188,7 +194,7 @@ export class Fugue {
    * Traverses the tree by the given selection
    * @param selection
    */
-  private *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
+  *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
     const { start, end } = selection;
     let lineCounter = 0;
     let columnCounter = 0;
@@ -216,6 +222,18 @@ export class Fugue {
       } else {
         columnCounter++;
       }
+    }
+  }
+
+  *traverseBySeparator(separator: string, line: number): IterableIterator<Node<string>[]> {
+    const nodes: Node<string>[] = [];
+    for (const node of this.traverseBySelection({ start: { line, column: 0 }, end: { line: line + 1, column: 0 } })) {
+      if (node.value === separator) {
+        yield nodes;
+        nodes.length = 0;
+        continue;
+      }
+      nodes.push(node);
     }
   }
 

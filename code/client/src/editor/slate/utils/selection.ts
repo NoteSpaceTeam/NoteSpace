@@ -60,3 +60,16 @@ function emptySelection(): Selection {
     end: { line: 0, column: 0 },
   };
 }
+
+export function getSelectionByRange(range: Range, offset: number = 0): Selection {
+  return {
+    start: {
+      line: range.anchor.path[0],
+      column: range.anchor.offset + offset,
+    },
+    end: {
+      line: range.focus.path[0],
+      column: range.focus.offset + offset,
+    },
+  };
+}

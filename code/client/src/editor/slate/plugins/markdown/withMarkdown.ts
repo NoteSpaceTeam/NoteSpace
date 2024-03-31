@@ -1,5 +1,5 @@
 import { type Editor } from 'slate';
-import * as operations from './operations.ts';
+import * as operations from './editorOperations';
 
 /**
  * Adds markdown support to the editor.

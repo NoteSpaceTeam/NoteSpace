@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@src/socket/socket.ts';
+import { InlineStyle } from '@notespace/shared/types/styles.ts';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -64,7 +65,7 @@ function useInputHandlers(editor: Editor) {
       fugue.deleteLocal(selection); // replace selection
     }
     const previousNode = fugue.getNodeByCursor(selection.start);
-    const styles = previousNode?.styles || [];
+    const styles = (previousNode?.styles as InlineStyle[]) || [];
     fugue.insertLocal(selection.start, insertNode(key, styles));
   }
 
