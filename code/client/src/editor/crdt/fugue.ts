@@ -78,7 +78,7 @@ export class Fugue {
   private getInsertOperation({ line, column }: Cursor, { value, styles }: InsertNode): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
-    const leftOrigin = column === 0 ? lineNode : this.tree.getByIndex(lineNode, line === 0 ? column - 1 : column);
+    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column });
     if (isEmpty(leftOrigin.rightChildren)) {
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     }

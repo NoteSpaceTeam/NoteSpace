@@ -3,6 +3,7 @@ import { type CustomElement } from '@editor/slate/model/types.ts';
 import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
+import { Fugue } from '@editor/crdt/fugue.ts';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -36,21 +37,18 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
 const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
   const { selection } = editor;
   const { anchor } = selection!;
-
   const [text, startText, endText] = match;
 
   const matchEnd = anchor;
   const endMatchStart = endText && before(editor, matchEnd, endText.length);
   const startMatchEnd = startText && before(editor, matchEnd, text.length - startText.length);
   const matchStart = before(editor, matchEnd, text.length);
-
   if (!matchEnd || !matchStart) return;
 
   const matchRangeRef = editor.rangeRef({
     anchor: matchStart,
     focus: matchEnd,
   });
-
   if (endMatchStart) {
     Transforms.delete(editor, {
       at: { anchor: endMatchStart, focus: matchEnd },
@@ -61,7 +59,6 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
       at: { anchor: matchStart, focus: startMatchEnd },
     });
   }
-
   const applyRange = matchRangeRef.unref();
   if (applyRange) apply(editor, applyRange);
 };
@@ -149,6 +146,11 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
         block.type !== 'paragraph' &&
         Point.equals(selection.anchor, start)
       ) {
+        // reset block style to paragraph
+        const fugue = Fugue.getInstance();
+        const line = selection.anchor.path[0];
+        fugue.updateBlockStyleLocal('paragraph', line);
+        console.log(line);
         Transforms.setNodes(editor, { type: 'paragraph' });
         return;
       }

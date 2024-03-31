@@ -27,6 +27,7 @@ function pointToCursor(editor: Editor, point: Point): Cursor {
 }
 
 function getAbsoluteOffset(editor: Editor, point: Point): number {
+  // TODO: fix this - inline styling (separation of children in different tree nodes) should not affect output
   let offset = 0;
   let line = 0;
 
