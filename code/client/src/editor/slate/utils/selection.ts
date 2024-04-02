@@ -1,4 +1,4 @@
-import { Editor, Range, Point, Text, Node, Path } from 'slate';
+import { Editor, Range, Point, Path, Text, Node } from 'slate';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 
 export function isSelected(editor: Editor) {
@@ -7,7 +7,34 @@ export function isSelected(editor: Editor) {
   return anchor.path !== focus.path && anchor.offset !== focus.offset;
 }
 
+/**
+ * Returns the current default slate selection
+ * @param editor
+ */
 export function getSelection(editor: Editor): Selection {
+  const { selection } = editor;
+  if (!selection) {
+    return emptySelection();
+  }
+  const start = selection.anchor;
+  const end = selection.focus;
+  return {
+    start: {
+      line: start.path[0],
+      column: start.offset,
+    },
+    end: {
+      line: end.path[0],
+      column: end.offset,
+    },
+  };
+}
+
+/**
+ * Returns the current selection as an absolute selection, regardless of tree structure
+ * @param editor
+ */
+export function getAbsoluteSelection(editor: Editor): Selection {
   const { selection } = editor;
   if (!selection) {
     return emptySelection();
@@ -22,34 +49,30 @@ export function getSelection(editor: Editor): Selection {
 function pointToCursor(editor: Editor, point: Point): Cursor {
   return {
     line: point.path[0],
-    column: getAbsoluteOffset(editor, point),
+    column: getLineOffset(editor, point),
   };
 }
 
-function getAbsoluteOffset(editor: Editor, point: Point): number {
-  // TODO: fix this - inline styling (separation of children in different tree nodes) should not affect output
+function getLineOffset(editor: Editor, point: Point): number {
   let offset = 0;
-  let line = 0;
+  // get the children of the line where the selection is
+  const lineChildren = Node.children(editor, [point.path[0]]);
 
-  // Traverse the nodes in the document
-  for (const [node, path] of Node.nodes(editor)) {
+  for (const entry of lineChildren) {
+    const [node, nodePath] = entry;
+    // if the node is a text node
     if (Text.isText(node)) {
-      if (Path.isBefore(path, point.path)) {
-        // If the current text node is before the point, add its length to the offset
+      // if the path of the current node is less than the path of the selection
+      if (Path.compare(nodePath, point.path) < 0) {
+        // add its text length to the offset
         offset += node.text.length;
-        // If the text node contains a line break, increment the line count and reset the offset
-        if (node.text.includes('\n')) {
-          line++;
-          offset = 0;
-        }
-      } else if (Path.equals(path, point.path)) {
-        // If the current text node contains the point, add the point's offset to the total offset
-        offset += point.offset;
+      }
+      // if the path of the current node is equal to the path of the selection
+      else if (Path.compare(nodePath, point.path) === 0) {
+        // add the offset within the node to the column
+        offset += editor.selection?.anchor.offset || 0;
         break;
       }
-    }
-    if (line !== point.path[0]) {
-      offset = 0;
     }
   }
   return offset;

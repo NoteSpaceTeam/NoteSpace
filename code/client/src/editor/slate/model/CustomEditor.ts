@@ -1,6 +1,6 @@
 import { Editor } from 'slate';
 import { Fugue } from '@editor/crdt/fugue.ts';
-import { getSelection } from '@editor/slate/utils/selection.ts';
+import { getAbsoluteSelection } from '@editor/slate/utils/selection.ts';
 import { InlineStyle } from '@notespace/shared/types/styles.ts';
 
 /**
@@ -16,7 +16,7 @@ const CustomEditor = {
     Editor.addMark(editor, mark, !isActive);
 
     const fugue = Fugue.getInstance();
-    const selection = getSelection(editor);
+    const selection = getAbsoluteSelection(editor);
     fugue.updateInlineStyleLocal(selection, !isActive, mark as InlineStyle);
   },
 };

@@ -2,7 +2,7 @@ import type React from 'react';
 import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/model/CustomEditor';
 import { type Editor } from 'slate';
-import { getSelection } from '../utils/selection';
+import { getAbsoluteSelection, getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
@@ -19,13 +19,13 @@ function useInputHandlers(editor: Editor) {
   const fugue: Fugue = Fugue.getInstance();
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (e.ctrlKey) return shortcutHandler(e);
-    const selection = getSelection(editor);
+    const selection = getAbsoluteSelection(editor);
     switch (e.key) {
       case 'Enter':
         onEnter(selection.start);
         break;
       case 'Backspace': {
-        onBackspace(selection);
+        onBackspace();
         break;
       }
       case 'Tab':
@@ -73,7 +73,8 @@ function useInputHandlers(editor: Editor) {
     fugue.insertLocal(cursor, insertNode('\n', []));
   }
 
-  function onBackspace(selection: Selection) {
+  function onBackspace() {
+    const selection = getSelection(editor);
     const startPosition = { line: 0, column: 0 };
     if ([startPosition, selection.start, selection.end].every(isEqual)) {
       return; // beginning of document

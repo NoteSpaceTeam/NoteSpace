@@ -228,12 +228,11 @@ export class Fugue {
   *traverseBySeparator(separator: string, line: number): IterableIterator<Node<string>[]> {
     const nodes: Node<string>[] = [];
     for (const node of this.traverseBySelection({ start: { line, column: 0 }, end: { line: line + 1, column: 0 } })) {
+      nodes.push(node);
       if (node.value === separator) {
         yield nodes;
         nodes.length = 0;
-        continue;
       }
-      nodes.push(node);
     }
   }
 
