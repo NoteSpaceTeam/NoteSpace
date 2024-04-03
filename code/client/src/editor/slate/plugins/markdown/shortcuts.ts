@@ -7,7 +7,6 @@ export const shortcuts = [
   blockRules(BlockStyles.h3, '###'),
   blockRules(BlockStyles.h4, '####'),
   blockRules(BlockStyles.h5, '#####'),
-  blockRules(BlockStyles.h6, '######'),
   blockRules(BlockStyles.blockquote, '>'),
   blockRules(BlockStyles.li, '-'),
   blockRules(BlockStyles.li, '*'),

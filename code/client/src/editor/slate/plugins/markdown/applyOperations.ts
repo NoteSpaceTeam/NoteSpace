@@ -14,15 +14,17 @@ export function createSetBlockApply(type: BlockStyle) {
   return (editor: Editor, range: Range) => {
     const line = range.anchor.path[0];
 
-    // remove trigger characters
-    const triggerNodes = fugue.traverseBySeparator(' ', line).next().value;
+    const cursor = { line, column: 0 };
+    const triggerNodes = fugue.traverseBySeparator(' ', cursor, false).next().value;
     triggerNodes.forEach((node: Node<string>) => fugue.deleteLocalById(node.id));
 
     // update styles in the tree
     fugue.updateBlockStyleLocal(type, line);
 
     // apply styles to the editor
-    Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
+    Transforms.setNodes(editor, { type }, { match: n =>
+        Element.isElement(n) && editor.isBlock(n), at: range
+    });
   };
 }
 

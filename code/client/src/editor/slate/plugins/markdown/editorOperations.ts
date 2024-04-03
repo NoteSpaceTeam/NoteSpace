@@ -17,9 +17,8 @@ type InsertTextFunction = (text: string) => void;
  * @param stringOffset
  */
 function before(editor: Editor, at: Point, stringOffset: number): Point | undefined {
-  if (at.offset >= stringOffset) {
-    return { offset: at.offset - stringOffset, path: at.path };
-  }
+  if (at.offset >= stringOffset) return { offset: at.offset - stringOffset, path: at.path };
+
 
   const entry = editor.previous({ at: at.path, match: Text.isText });
   if (!entry) return undefined;
@@ -49,16 +48,19 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
     anchor: matchStart,
     focus: matchEnd,
   });
+
   if (endMatchStart) {
     Transforms.delete(editor, {
       at: { anchor: endMatchStart, focus: matchEnd },
     });
   }
+
   if (startMatchEnd) {
     Transforms.delete(editor, {
       at: { anchor: matchStart, focus: startMatchEnd },
     });
   }
+
   const applyRange = matchRangeRef.unref();
   if (applyRange) apply(editor, applyRange);
 };
@@ -79,9 +81,11 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
   // Check if the text before the selection ends with a trigger character
   const { anchor } = selection;
+
   const block = editor.above({
     match: (n: CustomElement) => editor.isBlock(n),
   });
+
   const path = block ? block[1] : [];
   const blockRange = { anchor, focus: editor.start(path) };
   const beforeText = editor.string(blockRange);
@@ -110,15 +114,15 @@ const insertBreak = (editor: Editor): void => {
     });
     const path = block ? block[1] : [];
     const end = editor.end(path);
-    const wasSelectionAtEnd = Point.equals(end, Range.end(selection));
     Transforms.splitNodes(editor, { always: true });
-
-    if (wasSelectionAtEnd) {
+    Transforms.setNodes(editor, { type: 'paragraph' });
+    
+    // if selection was at the end of the block, unwrap the block
+    if (Point.equals(end, Range.end(selection))) {
       Transforms.unwrapNodes(editor, {
         match: (n: CustomElement) => editor.isInline(n),
         mode: 'all',
       });
-      Transforms.setNodes(editor, { type: 'paragraph' }, { match: (n: CustomElement) => editor.isBlock(n) });
       const marks = editor.marks ?? {};
       Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
     }

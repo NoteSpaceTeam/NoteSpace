@@ -2,8 +2,14 @@ import useSocketListeners from '@src/socket/useSocketListeners';
 import { Fugue } from '@src/editor/crdt/fugue';
 import { type Node } from '@notespace/shared/crdt/types/nodes';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
+import { Editor } from 'slate';
 
-function useEvents(onDone: () => void) {
+/**
+ * Hook to listen to the socket events and update the editor accordingly
+ * @param editor
+ * @param onDone
+ */
+function useEvents(editor : Editor, onDone: () => void) {
   const fugue = Fugue.getInstance();
   function onOperation(operations: Operation[]) {
     for (const operation of operations) {
@@ -33,9 +39,23 @@ function useEvents(onDone: () => void) {
     onDone();
   }
 
+  function onEditorOperations(operation : string,){
+    switch (operation){
+      case 'undo':
+        editor.undo()
+        console.log("Undo")
+        break
+      case 'redo':
+        editor.redo()
+        console.log("Redo")
+        break
+    }
+  }
+
   useSocketListeners({
     operation: onOperation,
     document: onDocument,
+    editorOperations: onEditorOperations,
   });
 }
 

@@ -3,7 +3,6 @@ import Heading2 from './elements/Heading2';
 import Heading3 from './elements/Heading3';
 import Heading4 from './elements/Heading4';
 import Heading5 from './elements/Heading5';
-import Heading6 from './elements/Heading6';
 import Blockquote from './elements/Blockquote';
 import ListItem from './elements/ListItem';
 import NumberedListItem from './elements/NumberedListItem';
@@ -17,7 +16,6 @@ export {
   Heading3,
   Heading4,
   Heading5,
-  Heading6,
   Blockquote,
   ListItem,
   NumberedListItem,

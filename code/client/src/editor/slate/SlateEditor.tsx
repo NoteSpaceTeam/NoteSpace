@@ -8,20 +8,16 @@ import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { toSlate } from '@editor/slate/utils/toSlate';
 import './SlateEditor.scss';
-
-const initialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: '' }],
-  },
-];
+import { descendant } from '@editor/slate/model/utils.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
+  const initialValue = [descendant('paragraph', '')];
+
   const { onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
   const { renderElement, renderLeaf } = useRenderers();
 
-  useEvents(() => {
+  useEvents(editor, () => {
     editor.children = toSlate();
     editor.onChange();
   });
@@ -34,6 +30,7 @@ function SlateEditor() {
       </header>
       <div className="container">
         {/*<Cursors />*/}
+        <input placeholder={"Untitled"} className={"editor title"}/>
         <Slate editor={editor} initialValue={initialValue}>
           <Toolbar />
           <Editable

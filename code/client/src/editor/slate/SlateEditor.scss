@@ -21,6 +21,20 @@ div [role='textbox'] {
     padding: 2em;
     align-items: flex-start;
   }
+  .title {
+    min-height: auto;
+    border: transparent;
+    background-color: transparent;
+    min-width: 100%;
+    font-size: xxx-large;
+    font-family: Ubuntu, monospace;
+    color: black;
+    margin: 0;
+
+    &:focus {
+      outline: none;
+    }
+  }
 
   header {
     color: black;
@@ -35,7 +49,7 @@ div [role='textbox'] {
       font-size: 1.5vh;
       padding: 1vh;
       margin: 0 0 0 1vh;
-      font-family: 'Poppins Medium', monospace;
+      font-family: Ubuntu, monospace;
     }
   }
 
