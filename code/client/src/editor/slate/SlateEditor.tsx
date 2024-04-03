@@ -30,7 +30,7 @@ function SlateEditor() {
       </header>
       <div className="container">
         {/*<Cursors />*/}
-        <input placeholder={"Untitled"} className={"editor title"}/>
+        <input placeholder={'Untitled'} className={'editor title'} />
         <Slate editor={editor} initialValue={initialValue}>
           <Toolbar />
           <Editable

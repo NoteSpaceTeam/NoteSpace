@@ -4,6 +4,7 @@ import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
 import { Fugue } from '@editor/crdt/fugue.ts';
+import CustomEditor from '@editor/slate/model/CustomEditor.ts';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -18,7 +19,6 @@ type InsertTextFunction = (text: string) => void;
  */
 function before(editor: Editor, at: Point, stringOffset: number): Point | undefined {
   if (at.offset >= stringOffset) return { offset: at.offset - stringOffset, path: at.path };
-
 
   const entry = editor.previous({ at: at.path, match: Text.isText });
   if (!entry) return undefined;
@@ -116,7 +116,8 @@ const insertBreak = (editor: Editor): void => {
     const end = editor.end(path);
     Transforms.splitNodes(editor, { always: true });
     Transforms.setNodes(editor, { type: 'paragraph' });
-    
+    CustomEditor.resetMarks(editor);
+
     // if selection was at the end of the block, unwrap the block
     if (Point.equals(end, Range.end(selection))) {
       Transforms.unwrapNodes(editor, {
@@ -154,7 +155,6 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
         const fugue = Fugue.getInstance();
         const line = selection.anchor.path[0];
         fugue.updateBlockStyleLocal('paragraph', line);
-        console.log(line);
         Transforms.setNodes(editor, { type: 'paragraph' });
         return;
       }

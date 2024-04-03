@@ -7,6 +7,7 @@ import { type BlockStyle } from '../../../../../shared/types/styles.ts';
  * @param children
  * @returns
  */
-export const descendant = (type: BlockStyle, ...children: string[]): Descendant => (
-  { type, children: children.map(text => ({text}))}
-)
+export const descendant = (type: BlockStyle, ...children: string[]): Descendant => ({
+  type,
+  children: children.map(text => ({ text })),
+});

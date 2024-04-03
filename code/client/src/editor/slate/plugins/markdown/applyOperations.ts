@@ -22,9 +22,7 @@ export function createSetBlockApply(type: BlockStyle) {
     fugue.updateBlockStyleLocal(type, line);
 
     // apply styles to the editor
-    Transforms.setNodes(editor, { type }, { match: n =>
-        Element.isElement(n) && editor.isBlock(n), at: range
-    });
+    Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
   };
 }
 
@@ -37,7 +35,7 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number) {
   const fugue = Fugue.getInstance();
   return (editor: Editor, range: Range) => {
     // remove trigger characters
-    const selection = getSelectionByRange(range, triggerLength);
+    const selection = getSelectionByRange(editor, range, triggerLength);
     deleteAroundSelection(selection, triggerLength);
 
     // update styles in the tree

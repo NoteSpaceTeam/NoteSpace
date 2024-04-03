@@ -34,7 +34,7 @@ function useInputHandlers(editor: Editor) {
         break;
       default:
         if (e.key.length !== 1) break;
-        onKey(e.key, selection);
+        onKeyPressed(e.key, selection);
         break;
     }
   }
@@ -53,14 +53,14 @@ function useInputHandlers(editor: Editor) {
       case 'Delete':
         onCtrlDelete();
         break;
-      default: onFormat(event.key);
+      default:
+        onFormat(event.key);
     }
   }
 
-  function onKey(key: string, selection: Selection) {
+  function onKeyPressed(key: string, selection: Selection) {
     if (selection.start.column !== selection.end.column) fugue.deleteLocal(selection);
-    const previousNode = fugue.getNodeByCursor(selection.start);
-    const styles = (previousNode?.styles as InlineStyle[]) || [];
+    const styles = CustomEditor.getMarks(editor) as InlineStyle[];
     fugue.insertLocal(selection.start, insertNode(key, styles));
   }
 
@@ -107,7 +107,7 @@ function useInputHandlers(editor: Editor) {
   }
 
   function onCtrlDelete() {
-    const {start} = getSelection(editor);
+    const { start } = getSelection(editor);
     fugue.deleteWordLocal(start, false);
   }
 

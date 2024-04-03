@@ -196,7 +196,9 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
     const { start, end } = selection;
-    let lineCounter = 0, columnCounter = 0, inBounds = false;
+    let lineCounter = 0,
+      columnCounter = 0,
+      inBounds = false;
     for (const node of this.traverseTree()) {
       // start condition
       if (
@@ -223,17 +225,21 @@ export class Fugue {
     }
   }
 
-  *traverseBySeparator(separator: string, { line, column } : Cursor, reverse : boolean = false): IterableIterator<Node<string>[]> {
+  *traverseBySeparator(
+    separator: string,
+    { line, column }: Cursor,
+    reverse: boolean = false
+  ): IterableIterator<Node<string>[]> {
     const nodes: Node<string>[] = [];
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line: line, column: column } }
-      : { start: { line, column: column }, end: { line: line, column: Infinity }}
+      : { start: { line, column: column }, end: { line: line, column: Infinity } };
 
-    const iterator = this.traverseBySelection(selection)
-    const list = Array.from(iterator)
-    const elements = reverse ? list.reverse() : list
+    const iterator = this.traverseBySelection(selection);
+    const list = Array.from(iterator);
+    const elements = reverse ? list.reverse() : list;
 
-    for ( const node of elements ) {
+    for (const node of elements) {
       if (node.value === separator || node.value === '\n') {
         yield nodes;
         nodes.length = 0;
@@ -245,24 +251,23 @@ export class Fugue {
     }
   }
 
-
   /**
    * Deletes the word at the given cursor
    * @param line
    * @param column
    * @param reverse - if true, deletes the word to the left of the cursor
    */
-  deleteWordLocal({line, column} : Cursor, reverse : boolean) {
-    const iterator = this.traverseBySeparator(' ', {line, column}, reverse)
-    const operations : Node<string>[] = iterator.next().value
+  deleteWordLocal({ line, column }: Cursor, reverse: boolean) {
+    const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
+    const operations: Node<string>[] = iterator.next().value;
 
-    chunkData(operations.map(
-      node => ({ type: 'delete', id: node.id })
-      ) , CHUNK_DATA_SIZE).forEach(chunk => {
+    chunkData(
+      operations.map(node => ({ type: 'delete', id: node.id })),
+      CHUNK_DATA_SIZE
+    ).forEach(chunk => {
       socket.emit('operation', chunk);
     });
   }
-
 
   /**
    * Returns the node at the given cursor

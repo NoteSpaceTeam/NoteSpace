@@ -9,7 +9,7 @@ import { Editor } from 'slate';
  * @param editor
  * @param onDone
  */
-function useEvents(editor : Editor, onDone: () => void) {
+function useEvents(editor: Editor, onDone: () => void) {
   const fugue = Fugue.getInstance();
   function onOperation(operations: Operation[]) {
     for (const operation of operations) {
@@ -39,16 +39,14 @@ function useEvents(editor : Editor, onDone: () => void) {
     onDone();
   }
 
-  function onEditorOperations(operation : string,){
-    switch (operation){
+  function onEditorOperations(operation: string) {
+    switch (operation) {
       case 'undo':
-        editor.undo()
-        console.log("Undo")
-        break
+        editor.undo();
+        break;
       case 'redo':
-        editor.redo()
-        console.log("Redo")
-        break
+        editor.redo();
+        break;
     }
   }
 

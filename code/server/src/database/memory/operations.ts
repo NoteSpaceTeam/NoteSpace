@@ -17,8 +17,8 @@ function deleteTree(): void {
   tree = new FugueTree();
 }
 
-function insertCharacter({ id, value, parent, side }: InsertOperation): void {
-  tree.addNode(id, value, parent, side);
+function insertCharacter({ id, value, parent, side, styles }: InsertOperation): void {
+  tree.addNode(id, value, parent, side, styles);
 }
 
 function deleteCharacter({ id }: DeleteOperation): void {
