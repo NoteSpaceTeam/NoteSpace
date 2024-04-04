@@ -5,7 +5,7 @@ import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
-import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { Cursor, emptyCursor, Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@src/socket/socket.ts';
 import { InlineStyle } from '@notespace/shared/types/styles.ts';
 
@@ -17,6 +17,7 @@ const hotkeys: Record<string, string> = {
 
 function useInputHandlers(editor: Editor) {
   const fugue: Fugue = Fugue.getInstance();
+
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (e.ctrlKey) return shortcutHandler(e);
     const selection = getSelection(editor);
@@ -70,8 +71,8 @@ function useInputHandlers(editor: Editor) {
 
   function onBackspace() {
     const selection = getSelection(editor);
-    const startPosition = { line: 0, column: 0 };
-    if ([startPosition, selection.start, selection.end].every(isEqual)) return;
+    const startCursor = emptyCursor();
+    if ([startCursor, selection.start, selection.end].every(isEqual)) return;
     fugue.deleteLocal(selection);
   }
 

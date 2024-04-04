@@ -33,31 +33,27 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
  * @param match
  * @param apply
  */
-const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
+const normalizeCallback = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
   const { selection } = editor;
-  const { anchor } = selection!;
+  const { anchor: matchEnd } = selection!;
   const [text, startText, endText] = match;
 
-  const matchEnd = anchor;
+  const offset = text.length - startText.length;
   const endMatchStart = endText && before(editor, matchEnd, endText.length);
-  const startMatchEnd = startText && before(editor, matchEnd, text.length - startText.length);
+  const startMatchEnd = startText && before(editor, matchEnd, offset);
+
   const matchStart = before(editor, matchEnd, text.length);
+
   if (!matchEnd || !matchStart) return;
 
-  const matchRangeRef = editor.rangeRef({
-    anchor: matchStart,
-    focus: matchEnd,
-  });
+  const matchRangeRef = editor.rangeRef({ anchor: matchStart, focus: matchEnd });
 
-  if (endMatchStart) {
+  if (endMatchStart || startMatchEnd) {
     Transforms.delete(editor, {
-      at: { anchor: endMatchStart, focus: matchEnd },
-    });
-  }
-
-  if (startMatchEnd) {
-    Transforms.delete(editor, {
-      at: { anchor: matchStart, focus: startMatchEnd },
+      at: {
+        anchor: endMatchStart ? endMatchStart : matchStart,
+        focus: startMatchEnd ? startMatchEnd : matchEnd,
+      },
     });
   }
 
@@ -72,7 +68,6 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
  * @param editor
  */
 const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string): void => {
-  // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
   if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
     insertText(insert);
@@ -82,9 +77,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
   // Check if the text before the selection ends with a trigger character
   const { anchor } = selection;
 
-  const block = editor.above({
-    match: (n: CustomElement) => editor.isBlock(n),
-  });
+  const block = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
 
   const path = block ? block[1] : [];
   const blockRange = { anchor, focus: editor.start(path) };
@@ -96,7 +89,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply));
+    editor.withoutNormalizing(() => normalizeCallback(editor, execArray, apply));
     return;
   }
   insertText(insert);
@@ -114,6 +107,7 @@ const insertBreak = (editor: Editor): void => {
     });
     const path = block ? block[1] : [];
     const end = editor.end(path);
+
     Transforms.splitNodes(editor, { always: true });
     Transforms.setNodes(editor, { type: 'paragraph' });
     CustomEditor.resetMarks(editor);
@@ -145,6 +139,7 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
     if (match) {
       const [block, path] = match;
       const start = Editor.start(editor, path);
+
       if (
         !Editor.isEditor(block) &&
         Element.isElement(block) &&

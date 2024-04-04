@@ -37,9 +37,9 @@ export function insertNode(value: string, styles: InlineStyle[]): InsertNode {
  * @returns the data chunks
  */
 export function chunkData<T>(data: T[], chunkSize: number): T[][] {
-  const chunks = [];
-  for (let i = 0; i < data.length; i += chunkSize) {
+  const chunks: T[][] = [];
+  range(0, data.length, chunkSize).forEach(i => {
     chunks.push(data.slice(i, i + chunkSize));
-  }
+  });
   return chunks;
 }
