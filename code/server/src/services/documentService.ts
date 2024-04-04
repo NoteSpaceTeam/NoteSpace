@@ -1,4 +1,4 @@
-import { DocumentDatabase } from '@src/types';
+import { DocumentDatabase, DocumentService } from '@src/types';
 import {
   DeleteOperation,
   InsertOperation,
@@ -6,13 +6,13 @@ import {
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
 
-export default function DocumentService(database: DocumentDatabase) {
-  async function getTree() {
-    return await database.getTree();
+export default function DocumentService(database: DocumentDatabase): DocumentService {
+  async function getDocument() {
+    return await database.getDocument();
   }
 
-  function deleteTree() {
-    database.deleteTree();
+  function deleteDocument() {
+    database.deleteDocument();
   }
 
   function insertCharacter(operation: InsertOperation) {
@@ -35,12 +35,17 @@ export default function DocumentService(database: DocumentDatabase) {
     database.updateBlockStyle(operation);
   }
 
+  function updateTitle(title: string) {
+    database.updateTitle(title);
+  }
+
   return {
-    getTree,
-    deleteTree,
+    getDocument,
+    deleteDocument,
     insertCharacter,
     deleteCharacter,
     updateInlineStyle,
     updateBlockStyle,
+    updateTitle,
   };
 }

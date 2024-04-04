@@ -3,6 +3,7 @@ import useInputHandlers from '@editor/slate/hooks/useInputHandlers.ts';
 import useEvents from '@editor/hooks/useEvents';
 import useRenderers from '@editor/slate/hooks/useRenderers';
 import Toolbar from '@editor/slate/toolbar/Toolbar';
+import EditorTitle from '@editor/components/input/EditorTitle.tsx';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
@@ -30,9 +31,9 @@ function SlateEditor() {
       </header>
       <div className="container">
         {/*<Cursors />*/}
-        <input placeholder={'Untitled'} className={'editor title'} />
         <Slate editor={editor} initialValue={initialValue}>
           <Toolbar />
+          <EditorTitle placeholder={'Untitled'} className={'title'} />
           <Editable
             className="editable"
             renderElement={renderElement}

@@ -3,14 +3,15 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { config } from 'dotenv';
 import cors from 'cors';
+import databaseInit from '@database/memory/operations';
 import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/websocket/events';
-import database from '@database/memory/operations';
 import router from '@src/controllers/http/router';
 import onConnection from '@controllers/websocket/onConnection';
 
 config();
 const PORT = process.env.PORT || 8080;
+const database = databaseInit();
 const service = serviceInit(database);
 const events = eventsInit(service);
 const api = router(service);

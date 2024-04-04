@@ -1,15 +1,18 @@
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import {
   DeleteOperation,
   InsertOperation,
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
+import { DocumentDatabase } from '@src/types';
+import { Document } from '@notespace/shared/crdt/types/document';
 
 let tree = new FugueTree<string>();
+let documentTitle = '';
 
-async function getTree(): Promise<Nodes<string>> {
+async function getNodes(): Promise<Nodes<string>> {
   return Object.fromEntries(Array.from(tree.nodes.entries()));
 }
 
@@ -17,27 +20,46 @@ function deleteTree(): void {
   tree = new FugueTree();
 }
 
-function insertCharacter({ id, value, parent, side, styles }: InsertOperation): void {
-  tree.addNode(id, value, parent, side, styles);
-}
+export default function DocumentDatabase(): DocumentDatabase {
+  async function getDocument(): Promise<Document> {
+    const nodes = await getNodes();
+    return {
+      title: documentTitle,
+      nodes,
+    };
+  }
 
-function deleteCharacter({ id }: DeleteOperation): void {
-  tree.deleteNode(id);
-}
+  function deleteDocument(): void {
+    deleteTree();
+  }
 
-function updateInlineStyle({ id, style, value }: InlineStyleOperation): void {
-  tree.updateInlineStyle(id, style, value);
-}
+  function insertCharacter({ id, value, parent, side, styles }: InsertOperation): void {
+    tree.addNode(id, value, parent, side, styles);
+  }
 
-function updateBlockStyle({ line, style }: BlockStyleOperation): void {
-  tree.updateBlockStyle(style, line);
-}
+  function deleteCharacter({ id }: DeleteOperation): void {
+    tree.deleteNode(id);
+  }
 
-export default {
-  getTree,
-  deleteTree,
-  insertCharacter,
-  deleteCharacter,
-  updateInlineStyle,
-  updateBlockStyle,
-};
+  function updateInlineStyle({ id, style, value }: InlineStyleOperation): void {
+    tree.updateInlineStyle(id, style, value);
+  }
+
+  function updateBlockStyle({ line, style }: BlockStyleOperation): void {
+    tree.updateBlockStyle(style, line);
+  }
+
+  function updateTitle(title: string): void {
+    documentTitle = title;
+  }
+
+  return {
+    getDocument,
+    deleteDocument,
+    insertCharacter,
+    deleteCharacter,
+    updateInlineStyle,
+    updateBlockStyle,
+    updateTitle,
+  };
+}

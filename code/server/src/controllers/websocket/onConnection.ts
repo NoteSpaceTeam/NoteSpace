@@ -11,8 +11,8 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
     console.log('a client connected');
 
     if (socket.connected) {
-      const tree = await service.getTree();
-      socket.emit('document', tree);
+      const document = await service.getDocument();
+      socket.emit('document', document);
     }
 
     Object.entries(events).forEach(([event, handler]) => {

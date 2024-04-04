@@ -24,6 +24,7 @@ export class Fugue {
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
+  private title = '';
 
   private constructor() {
     this.replicaId = generateReplicaId();
@@ -306,5 +307,20 @@ export class Fugue {
    */
   getRootNode(): Node<string> {
     return this.tree.root!;
+  }
+
+  /**
+   * Returns the title of the document
+   */
+  getTitle(): string {
+    return this.title;
+  }
+
+  /**
+   * Sets the title of the document
+   * @param title
+   */
+  setTitle(title: string): void {
+    this.title = title;
   }
 }

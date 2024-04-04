@@ -3,7 +3,7 @@ import { DocumentService } from '@src/types';
 
 function deleteDocument(service: DocumentService) {
   return (req: Request, res: Response) => {
-    service.deleteTree();
+    service.deleteDocument();
     res.status(200).send();
   };
 }

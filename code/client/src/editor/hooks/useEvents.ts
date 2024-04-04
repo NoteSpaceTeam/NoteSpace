@@ -3,6 +3,7 @@ import { Fugue } from '@src/editor/crdt/fugue';
 import { type Node } from '@notespace/shared/crdt/types/nodes';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Editor } from 'slate';
+import { Document } from '@notespace/shared/crdt/types/document';
 
 /**
  * Hook to listen to the socket events and update the editor accordingly
@@ -33,7 +34,7 @@ function useEvents(editor: Editor, onDone: () => void) {
     onDone();
   }
 
-  function onDocument(nodes: Record<string, Array<Node<string>>>) {
+  function onDocument({ nodes }: Document) {
     const nodesMap = new Map<string, Array<Node<string>>>(Object.entries(nodes));
     fugue.setTree(nodesMap);
     onDone();

@@ -1,28 +1,30 @@
-import { Nodes } from '@notespace/shared/crdt/types';
+import { Socket } from 'socket.io';
+import { Document } from '@notespace/shared/crdt/types/document';
 import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
-import { Socket } from 'socket.io';
 
 type DocumentDatabase = {
-  getTree: () => Promise<Nodes<string>>;
-  deleteTree: () => void;
-  insertCharacter: (operation: InsertOperation<string>) => void;
-  deleteCharacter: (operation: DeleteOperation) => void;
-  updateInlineStyle: (operation: InlineStyleOperation) => void;
-  updateBlockStyle: (operation: BlockStyleOperation) => void;
-};
-
-type DocumentService = {
-  getTree: () => Promise<Nodes<string>>;
-  deleteTree: () => void;
+  getDocument: () => Promise<Document>;
+  deleteDocument: () => void;
   insertCharacter: (operation: InsertOperation) => void;
   deleteCharacter: (operation: DeleteOperation) => void;
   updateInlineStyle: (operation: InlineStyleOperation) => void;
   updateBlockStyle: (operation: BlockStyleOperation) => void;
+  updateTitle: (title: string) => void;
+};
+
+type DocumentService = {
+  getDocument: () => Promise<Document>;
+  deleteDocument: () => void;
+  insertCharacter: (operation: InsertOperation) => void;
+  deleteCharacter: (operation: DeleteOperation) => void;
+  updateInlineStyle: (operation: InlineStyleOperation) => void;
+  updateBlockStyle: (operation: BlockStyleOperation) => void;
+  updateTitle: (title: string) => void;
 };
 
 type SocketHandler = (socket: Socket, data: any) => void;
