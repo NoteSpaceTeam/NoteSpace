@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Fugue } from '@editor/crdt/fugue';
-import MarkUtils from '@editor/slate/model/MarkUtils.ts';
+import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
@@ -61,7 +61,7 @@ function useInputHandlers(editor: Editor) {
 
   function onKeyPressed(key: string, selection: Selection) {
     if (selection.start.column !== selection.end.column) fugue.deleteLocal(selection);
-    const styles = MarkUtils.getMarks(editor) as InlineStyle[];
+    const styles = CustomEditor.getMarks(editor) as InlineStyle[];
     fugue.insertLocal(selection.start, insertNode(key, styles));
   }
 
@@ -115,7 +115,7 @@ function useInputHandlers(editor: Editor) {
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    MarkUtils.toggleMark(editor, mark);
+    CustomEditor.toggleMark(editor, mark);
   }
 
   function onSelect() {

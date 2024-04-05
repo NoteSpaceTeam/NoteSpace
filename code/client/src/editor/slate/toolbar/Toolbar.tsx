@@ -1,6 +1,6 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import MarkUtils from '@editor/slate/model/MarkUtils.ts';
+import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 
@@ -39,7 +39,7 @@ function Toolbar() {
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();
-    MarkUtils.toggleMark(editor, mark.value);
+    CustomEditor.toggleMark(editor, mark.value);
   };
 
   if (!selectionBounds || !selected || !focused) return null;
@@ -57,7 +57,7 @@ function Toolbar() {
   const onMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) =>
     handleMarkMouseDown(e, mark);
 
-  const getClassName = (mark: MarkOption) => (MarkUtils.isMarkActive(editor, mark.value) ? 'active item' : 'item');
+  const getClassName = (mark: MarkOption) => (CustomEditor.isMarkActive(editor, mark.value) ? 'active item' : 'item');
 
   return (
     <div className="toolbar" style={toolbarStyle}>

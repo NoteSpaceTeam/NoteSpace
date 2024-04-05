@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { socket } from '@src/socket/socket.ts';
-import { Document } from '../../../../../shared/crdt/types/document.ts';
+import { Document } from '../../../../shared/crdt/types/document.ts';
 import useSocketListeners from '@src/socket/useSocketListeners.ts';
 import { ReactEditor, useSlate } from 'slate-react';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}

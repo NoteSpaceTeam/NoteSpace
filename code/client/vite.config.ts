@@ -79,6 +79,7 @@ export default defineConfig({
     }),
   ],
   test: {
+    globals: true,
     alias: {
       '@src': new URL('./src', import.meta.url).pathname,
       '@editor': new URL('./src/editor', import.meta.url).pathname,

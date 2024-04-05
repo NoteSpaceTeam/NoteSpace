@@ -23,7 +23,8 @@
     "paths": {
       "@src/*": ["./src/*"],
       "@editor/*": ["./src/editor/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
   "exclude": ["vite.config.ts"],

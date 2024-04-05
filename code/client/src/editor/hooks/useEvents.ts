@@ -1,17 +1,22 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { Fugue } from '@src/editor/crdt/fugue';
-import { type Node } from '@notespace/shared/crdt/types/nodes';
-import { type Operation } from '@notespace/shared/crdt/types/operations';
+import { type Operation } from '../../../../shared/crdt/types/operations.ts';
 import { Editor } from 'slate';
 import { Document } from '@notespace/shared/crdt/types/document';
+import { FugueNode } from '@editor/crdt/types.ts';
 
 /**
- * Hook to listen to the socket events and update the editor accordingly
+ * Hook client socket listeners to events
  * @param editor
  * @param onDone
  */
 function useEvents(editor: Editor, onDone: () => void) {
   const fugue = Fugue.getInstance();
+
+  /**
+   * Hook socket listeners to an edit event
+   * @param operations - Edit operations
+   */
   function onOperation(operations: Operation[]) {
     for (const operation of operations) {
       switch (operation.type) {
@@ -20,6 +25,9 @@ function useEvents(editor: Editor, onDone: () => void) {
           break;
         case 'delete':
           fugue.deleteRemote(operation);
+          break;
+        case 'editor':
+          //editor.apply(operation.operation);
           break;
         case 'inline-style':
           fugue.updateInlineStyleRemote(operation);
@@ -35,26 +43,14 @@ function useEvents(editor: Editor, onDone: () => void) {
   }
 
   function onDocument({ nodes }: Document) {
-    const nodesMap = new Map<string, Array<Node<string>>>(Object.entries(nodes));
+    const nodesMap = new Map<string, Array<FugueNode>>(Object.entries(nodes));
     fugue.setTree(nodesMap);
     onDone();
-  }
-
-  function onEditorOperations(operation: string) {
-    switch (operation) {
-      case 'undo':
-        editor.undo();
-        break;
-      case 'redo':
-        editor.redo();
-        break;
-    }
   }
 
   useSocketListeners({
     operation: onOperation,
     document: onDocument,
-    editorOperations: onEditorOperations,
   });
 }
 

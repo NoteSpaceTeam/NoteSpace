@@ -2,6 +2,10 @@ import { Editor, Range, Point, Path, Node } from 'slate';
 import { Cursor, Selection, emptySelection } from '@notespace/shared/types/cursor';
 import { first } from 'lodash';
 
+/**
+ * Checks if the current selection is active
+ * @param editor
+ */
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
   const { anchor, focus } = editor.selection;
@@ -49,6 +53,12 @@ function pointToCursor(editor: Editor, point: Point): Cursor {
   return cursor;
 }
 
+/**
+ * Returns the selection by range
+ * @param editor
+ * @param range
+ * @param offset
+ */
 export function getSelectionByRange(editor: Editor, range: Range, offset: number = 0): Selection {
   const selection = pointsToSelection(editor, range.anchor, range.focus);
   selection.start.column += offset;

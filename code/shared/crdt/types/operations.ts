@@ -28,8 +28,14 @@ export type BlockStyleOperation = {
   style: BlockStyle;
 };
 
+export type GlobalOperation = {
+  type: "global";
+  operation: "undo" | "redo";
+};
+
 export type Operation =
   | InsertOperation
   | DeleteOperation
   | InlineStyleOperation
-  | BlockStyleOperation;
+  | BlockStyleOperation
+  | GlobalOperation;

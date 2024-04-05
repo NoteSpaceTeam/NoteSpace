@@ -3,13 +3,13 @@ import useInputHandlers from '@editor/slate/hooks/useInputHandlers.ts';
 import useEvents from '@editor/hooks/useEvents';
 import useRenderers from '@editor/slate/hooks/useRenderers';
 import Toolbar from '@editor/slate/toolbar/Toolbar';
-import EditorTitle from '@editor/components/input/EditorTitle.tsx';
+import EditorTitle from '@editor/components/EditorTitle.tsx';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
-import { toSlate } from '@editor/slate/utils/toSlate';
+import { fugueToSlate } from '@editor/slate/utils/slate.ts';
 import './SlateEditor.scss';
-import { descendant } from '@editor/slate/model/utils.ts';
+import { descendant } from '@editor/slate/utils/slate.ts';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
@@ -19,7 +19,7 @@ function SlateEditor() {
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(editor, () => {
-    editor.children = toSlate();
+    editor.children = fugueToSlate();
     editor.onChange();
   });
 

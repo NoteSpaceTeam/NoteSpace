@@ -4,7 +4,7 @@ import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
 import { Fugue } from '@editor/crdt/fugue.ts';
-import MarkUtils from '@editor/slate/model/MarkUtils.ts';
+import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -110,7 +110,7 @@ const insertBreak = (editor: Editor): void => {
 
     Transforms.splitNodes(editor, { always: true });
     Transforms.setNodes(editor, { type: 'paragraph' });
-    MarkUtils.resetMarks(editor);
+    CustomEditor.resetMarks(editor);
 
     // if selection was at the end of the block, unwrap the block
     if (Point.equals(end, Range.end(selection))) {

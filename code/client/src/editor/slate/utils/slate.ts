@@ -2,10 +2,9 @@ import type { Descendant } from 'slate';
 import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
 import type { CustomText } from '@editor/slate/model/types.ts';
 import { isEqual, last } from 'lodash';
-import { descendant } from '@editor/slate/model/utils.ts';
 import { Fugue } from '@editor/crdt/fugue.ts';
 
-export function toSlate(): Descendant[] {
+export function fugueToSlate(): Descendant[] {
   const fugue = Fugue.getInstance();
   const root = fugue.getRootNode();
   const descendants: Descendant[] = [];
@@ -44,3 +43,14 @@ export function toSlate(): Descendant[] {
   }
   return descendants;
 }
+
+/**
+ * Creates a descendant object.
+ * @param type
+ * @param children
+ * @returns
+ */
+export const descendant = (type: BlockStyle, ...children: string[]): Descendant => ({
+  type,
+  children: children.map(text => ({ text })),
+});

@@ -1,12 +1,12 @@
 import { Fugue } from '@editor/crdt/fugue';
-import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types';
+import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@editor/slate/model/cursor';
-import { InsertNode } from '@editor/crdt/types';
+import { NodeInsert } from '@editor/crdt/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
-const a: InsertNode = { value: 'a', styles: [] };
-const b: InsertNode = { value: 'b', styles: [] };
-const c: InsertNode = { value: 'c', styles: [] };
+const a: NodeInsert = { value: 'a', styles: [] };
+const b: NodeInsert = { value: 'b', styles: [] };
+const c: NodeInsert = { value: 'c', styles: [] };
 
 describe('Fugue', () => {
   let fugue: Fugue<string>;
@@ -27,7 +27,7 @@ describe('Fugue', () => {
   });
 
   it('should insert values remotely', () => {
-    const message: InsertOperation<string> = {
+    const message: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
@@ -47,7 +47,7 @@ describe('Fugue', () => {
   });
 
   it('should delete values remotely', () => {
-    const insertMessage: InsertOperation<string> = {
+    const insertMessage: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'x',

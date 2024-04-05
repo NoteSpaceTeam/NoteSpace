@@ -17,7 +17,7 @@ export function createSetBlockApply(type: BlockStyle) {
 
     const cursor = { line, column: 0 };
     const triggerNodes = fugue.traverseBySeparator(' ', cursor, false).next().value;
-    triggerNodes.forEach((node: Node<string>) => fugue.deleteLocalById(node.id));
+    triggerNodes.forEach((node: FugueNode) => fugue.deleteLocalById(node.id));
 
     fugue.updateBlockStyleLocal(type, line);
 

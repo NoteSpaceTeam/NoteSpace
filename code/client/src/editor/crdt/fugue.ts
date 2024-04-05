@@ -1,15 +1,15 @@
 import {
-  type DeleteOperation,
-  type InsertOperation,
-  type InlineStyleOperation,
+  InsertOperation,
+  DeleteOperation,
   BlockStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
-import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
+  InlineStyleOperation,
+} from '../../../../shared/crdt/types/operations.ts';
+import { type Id } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '../../../../shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { chunkData, generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';
-import { type InsertNode } from '@editor/crdt/types';
+import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, isEqual } from 'lodash';
 
@@ -42,7 +42,7 @@ export class Fugue {
    * Builds the tree from the given nodes map.
    * @param nodesMap
    */
-  setTree(nodesMap: Map<string, Node<string>[]>): void {
+  setTree(nodesMap: Map<string, FugueNode[]>): void {
     this.tree.setTree(nodesMap);
   }
 
@@ -51,7 +51,7 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: Cursor, ...values: InsertNode[]): void {
+  insertLocal(start: Cursor, ...values: NodeInsert[]): void {
     const operations = values.map((value, i) => {
       const operation = this.getInsertOperation({ ...start, column: start.column + i }, value);
       this.addNode(operation);
@@ -76,7 +76,7 @@ export class Fugue {
    * @param cursor
    * @param insertNode
    */
-  private getInsertOperation({ line, column }: Cursor, { value, styles }: InsertNode): InsertOperation {
+  private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
     const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column });
@@ -195,7 +195,7 @@ export class Fugue {
    * Traverses the tree by the given selection
    * @param selection
    */
-  *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
+  *traverseBySelection(selection: Selection): IterableIterator<FugueNode> {
     const { start, end } = selection;
     let lineCounter = 0,
       columnCounter = 0,
@@ -230,8 +230,8 @@ export class Fugue {
     separator: string,
     { line, column }: Cursor,
     reverse: boolean = false
-  ): IterableIterator<Node<string>[]> {
-    const nodes: Node<string>[] = [];
+  ): IterableIterator<FugueNode[]> {
+    const nodes: FugueNode[] = [];
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line: line, column: column } }
       : { start: { line, column: column }, end: { line: line, column: Infinity } };
@@ -260,7 +260,7 @@ export class Fugue {
    */
   deleteWordLocal({ line, column }: Cursor, reverse: boolean) {
     const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
-    const operations: Node<string>[] = iterator.next().value;
+    const operations: FugueNode[] = iterator.next().value;
 
     chunkData(
       operations.map(node => ({ type: 'delete', id: node.id })),
@@ -274,7 +274,7 @@ export class Fugue {
    * Returns the node at the given cursor
    * @param cursor
    */
-  getNodeByCursor(cursor: Cursor): Node<string> {
+  getNodeByCursor(cursor: Cursor): FugueNode {
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
   }
@@ -284,7 +284,7 @@ export class Fugue {
    * @param value
    * @param skip
    */
-  private findNode(value: string, skip: number): Node<string> {
+  private findNode(value: string, skip: number): FugueNode {
     let lastMatch = this.tree.root;
     for (const node of this.traverseTree()) {
       if (node.value === value) {
@@ -305,7 +305,7 @@ export class Fugue {
   /**
    * Returns the root node of the tree
    */
-  getRootNode(): Node<string> {
+  getRootNode(): FugueNode {
     return this.tree.root!;
   }
 

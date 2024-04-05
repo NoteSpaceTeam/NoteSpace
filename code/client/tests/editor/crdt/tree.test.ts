@@ -1,6 +1,6 @@
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { Node } from '@notespace/shared/crdt/types/nodes';
-import { InsertOperation } from '@notespace/shared/crdt/types/operations';
+import { InsertOperation } from '../../../../shared/crdt/types/operations';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Tree', () => {
@@ -55,9 +55,9 @@ describe('Tree', () => {
 
   it('should set the tree to the given nodes', () => {
     // given
-    const nodesMap = new Map<string, Node<string>[]>();
-    const rootNode: Node<string> = tree.root;
-    const childNode: Node<string> = {
+    const nodesMap = new Map<string, FugueNode[]>();
+    const rootNode: FugueNode = tree.root;
+    const childNode: FugueNode = {
       id: { sender: 'A', counter: 0 },
       value: 'a',
       isDeleted: false,

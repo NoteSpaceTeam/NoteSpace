@@ -16,7 +16,7 @@ export async function getDocument() {
   if (docRef.exists) {
     return docRef.data() as Nodes<string>;
   }
-  const root: Node<string> = rootNode();
+  const root: FugueNode = rootNode();
   const nodes = { root: [root] } as Nodes<string>;
   setDocument(nodes);
   return nodes;
