@@ -1,6 +1,6 @@
 {
   "name": "@notespace/shared",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "shared code",
   "author": "notespace-team",
   "scripts": {
@@ -11,16 +11,12 @@
   "keywords": [],
   "license": "MIT",
   "devDependencies": {
-    "@types/lodash": "^4.17.0",
-    "@types/node": "^20.12.3",
+    "@types/node": "^20.12.4",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "eslint": "^8.57.0",
-    "knip": "^5.7.0",
+    "knip": "^5.7.2",
     "prettier": "^3.2.5",
     "typescript": "^5.4.3"
-  },
-  "dependencies": {
-    "lodash": "^4.17.21"
   }
 }

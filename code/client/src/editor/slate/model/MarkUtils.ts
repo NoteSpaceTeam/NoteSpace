@@ -6,16 +6,16 @@ import { InlineStyle } from '@notespace/shared/types/styles.ts';
 /**
  * Custom editor operations.
  */
-const CustomEditor = {
+const MarkUtils = {
   isMarkActive(editor: Editor, format: string) {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
+
   toggleMark(editor: Editor, mark: string) {
-    const isActive = CustomEditor.isMarkActive(editor, mark);
+    const isActive = MarkUtils.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
-    // do not apply operation if no selection
     const selected = isSelected(editor);
     if (!selected) return;
 
@@ -23,18 +23,16 @@ const CustomEditor = {
     const selection = getSelection(editor);
     fugue.updateInlineStyleLocal(selection, !isActive, mark as InlineStyle);
   },
+
   resetMarks(editor: Editor) {
     const marks = Editor.marks(editor);
-    if (marks) {
-      for (const mark in marks) {
-        Editor.removeMark(editor, mark);
-      }
-    }
+    if (marks) for (const mark in marks) Editor.removeMark(editor, mark);
   },
+
   getMarks(editor: Editor): string[] {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? Object.keys(marks).filter(m => marks[m]) : [];
   },
 };
 
-export default CustomEditor;
+export default MarkUtils;

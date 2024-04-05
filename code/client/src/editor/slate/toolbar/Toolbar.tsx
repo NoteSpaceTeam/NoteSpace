@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@editor/slate/model/CustomEditor';
+import MarkUtils from '@editor/slate/model/MarkUtils.ts';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 
@@ -18,10 +18,10 @@ const markOptions: MarkOption[] = [
 ];
 
 function Toolbar() {
-  const editor = useSlate();
-  const focused = useFocused();
-  const selected = isSelected(editor);
-  const [selectionBounds, setSelectionBounds] = React.useState<DOMRect | null>(null);
+  const editor = useSlate(),
+    focused = useFocused(),
+    selected = isSelected(editor);
+  const [selectionBounds, setSelectionBounds] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     const getCurrentAbsolutePosition = () => {
@@ -30,43 +30,39 @@ function Toolbar() {
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
         setSelectionBounds(rect);
-      } else {
-        setSelectionBounds(null);
-      }
+      } else setSelectionBounds(null);
     };
     window.addEventListener('mouseup', getCurrentAbsolutePosition);
-    return () => {
-      window.removeEventListener('mouseup', getCurrentAbsolutePosition);
-    };
+    return () => window.removeEventListener('mouseup', getCurrentAbsolutePosition);
   }, []);
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();
-    CustomEditor.toggleMark(editor, mark.value);
+    MarkUtils.toggleMark(editor, mark.value);
   };
 
   if (!selectionBounds || !selected || !focused) return null;
+
   const position = {
     top: selectionBounds.top - 50,
     left: selectionBounds.left,
   };
+
+  const toolbarStyle: CSSProperties = {
+    position: 'absolute',
+    ...position,
+  };
+
+  const onMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) =>
+    handleMarkMouseDown(e, mark);
+
+  const getClassName = (mark: MarkOption) => (MarkUtils.isMarkActive(editor, mark.value) ? 'active item' : 'item');
+
   return (
-    <div
-      className="toolbar"
-      style={{
-        position: 'absolute',
-        ...position,
-      }}
-    >
+    <div className="toolbar" style={toolbarStyle}>
       {markOptions.map(mark => (
-        <button
-          key={mark.value}
-          onMouseDown={e => {
-            handleMarkMouseDown(e, mark);
-          }}
-          className={CustomEditor.isMarkActive(editor, mark.value) ? 'active item' : 'item'}
-        >
+        <button key={mark.value} onMouseDown={e => onMouseDown(e, mark)} className={getClassName(mark)}>
           {mark.icon}
         </button>
       ))}

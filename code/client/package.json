@@ -17,7 +17,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "link:..\\shared",
     "eslint-plugin-playwright": "^1.5.4",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
@@ -31,9 +31,9 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.12.3",
+    "@types/node": "^20.12.4",
     "@types/react": "^18.2.74",
-    "@types/react-dom": "^18.2.23",
+    "@types/react-dom": "^18.2.24",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
@@ -48,9 +48,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "jsdom": "^24.0.0",
-    "knip": "^5.7.1",
+    "knip": "^5.7.2",
     "prettier": "^3.2.5",
-    "sass": "^1.72.0",
+    "sass": "^1.74.1",
     "typescript": "^5.4.3",
     "vite": "^5.2.8",
     "vite-plugin-pwa": "^0.19.7",

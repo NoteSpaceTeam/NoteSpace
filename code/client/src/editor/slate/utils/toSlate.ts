@@ -1,7 +1,7 @@
 import type { Descendant } from 'slate';
 import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
 import type { CustomText } from '@editor/slate/model/types.ts';
-import { isEqual } from 'lodash';
+import { isEqual, last } from 'lodash';
 import { descendant } from '@editor/slate/model/utils.ts';
 import { Fugue } from '@editor/crdt/fugue.ts';
 
@@ -32,15 +32,14 @@ export function toSlate(): Descendant[] {
       lastStyles = node.styles as InlineStyle[];
       continue;
     }
-    const lastDescendant = descendants[descendants.length - 1];
+    const lastDescendant = last(descendants);
     // if node styles are the same as the previous one, append the text to it
     if (isEqual(lastStyles, node.styles)) {
-      const lastTextNode = lastDescendant.children[lastDescendant.children.length - 1];
+      const lastTextNode = last(lastDescendant.children) as CustomText;
       lastTextNode.text += textNode.text;
     }
     // otherwise, create a new block
     else lastDescendant.children.push(textNode);
-
     lastStyles = node.styles as InlineStyle[];
   }
   return descendants;

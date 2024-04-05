@@ -1,5 +1,6 @@
 import { Editor, Range, Point, Path, Node } from 'slate';
-import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { Cursor, Selection, emptySelection } from '@notespace/shared/types/cursor';
+import { first } from 'lodash';
 
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
@@ -19,6 +20,19 @@ export function getSelection(editor: Editor): Selection {
 }
 
 /**
+ * Converts slate points to a selection
+ * @param editor
+ * @param start
+ * @param end
+ */
+function pointsToSelection(editor: Editor, start: Point, end: Point): Selection {
+  return {
+    start: pointToCursor(editor, start),
+    end: pointToCursor(editor, end),
+  };
+}
+
+/**
  * Converts a slate point to a cursor
  * @param editor
  * @param point
@@ -30,7 +44,7 @@ function pointToCursor(editor: Editor, point: Point): Cursor {
 
   for (const entry of children) {
     if (Path.equals(entry[1], point.path)) break;
-    cursor.column += entry[0].text.length;
+    cursor.column += first(entry).text.length;
   }
   return cursor;
 }
@@ -40,18 +54,4 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   selection.start.column += offset;
   selection.end.column += offset;
   return selection;
-}
-
-function pointsToSelection(editor: Editor, start: Point, end: Point): Selection {
-  return {
-    start: pointToCursor(editor, start),
-    end: pointToCursor(editor, end),
-  };
-}
-
-function emptySelection(): Selection {
-  return {
-    start: { line: 0, column: 0 },
-    end: { line: 0, column: 0 },
-  };
 }
