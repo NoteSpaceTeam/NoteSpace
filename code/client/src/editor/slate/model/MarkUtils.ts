@@ -6,14 +6,14 @@ import { InlineStyle } from '@notespace/shared/types/styles.ts';
 /**
  * Custom editor operations.
  */
-const CustomEditor = {
+const MarkUtils = {
   isMarkActive(editor: Editor, format: string) {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
 
   toggleMark(editor: Editor, mark: string) {
-    const isActive = CustomEditor.isMarkActive(editor, mark);
+    const isActive = MarkUtils.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
     const selected = isSelected(editor);
@@ -35,4 +35,4 @@ const CustomEditor = {
   },
 };
 
-export default CustomEditor;
+export default MarkUtils;
