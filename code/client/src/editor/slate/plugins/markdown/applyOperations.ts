@@ -1,10 +1,10 @@
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
-import { Id, Node } from '@notespace/shared/crdt/types/nodes';
 import { getSelectionByRange } from '@editor/slate/utils/selection';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { Selection } from '@notespace/shared/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { range } from 'lodash';
+import { FugueNode } from '@editor/crdt/types';
 
 /**
  * Creates a function that applies a block element to the editor
@@ -57,20 +57,14 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number) {
  */
 function deleteAroundSelection(selection: Selection, amount: number) {
   const fugue = Fugue.getInstance();
-  const idsToDelete: Id[] = [];
-  // get characters before the selection
+  const deleteNodeByCursor = (cursor: Cursor) => {
+    const node = fugue.getNodeByCursor(cursor);
+    if (node) fugue.deleteLocalById(node.id);
+  };
   range(1, amount + 1).forEach(i => {
     const leftCursor = { ...selection.start, column: selection.start.column - i + 1 };
-
     const rightCursor = { ...selection.end, column: selection.end.column + i };
-
-    const leftNode = fugue.getNodeByCursor(leftCursor);
-    const rightNode = fugue.getNodeByCursor(rightCursor);
-
-    [leftNode, rightNode].forEach(node => {
-      if (node) idsToDelete.push(node.id);
-    });
+    deleteNodeByCursor(leftCursor);
+    deleteNodeByCursor(rightCursor);
   });
-  // delete the nodes
-  idsToDelete.forEach(id => fugue.deleteLocalById(id));
 }

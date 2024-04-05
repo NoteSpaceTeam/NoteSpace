@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
-import {Nodes} from '@notespace/shared/crdt/types/nodes';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';

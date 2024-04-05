@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "vite --host",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "build": "tsc && vite build",
@@ -18,7 +18,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "link:..\\shared",
+    "@notespace/shared": "file:..\\shared",
     "@testing-library/jest-dom": "^6.4.2",
     "eslint-plugin-playwright": "^1.5.4",
     "lodash": "^4.17.21",
