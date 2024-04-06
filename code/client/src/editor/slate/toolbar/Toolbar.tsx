@@ -28,6 +28,7 @@ function Toolbar() {
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
+        if (!range.getBoundingClientRect) return; // tests fail without this check
         const rect = range.getBoundingClientRect();
         setSelectionBounds(rect);
       } else setSelectionBounds(null);

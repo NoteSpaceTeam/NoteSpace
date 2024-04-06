@@ -1,7 +1,7 @@
 import { Fugue } from '@editor/crdt/fugue';
-import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
-import { Selection, Cursor } from '@editor/slate/model/cursor';
 import { NodeInsert } from '@editor/crdt/types';
+import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
+import { Selection, Cursor } from '@notespace/shared/types/cursor';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 const a: NodeInsert = { value: 'a', styles: [] };

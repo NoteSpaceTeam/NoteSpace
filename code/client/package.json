@@ -9,6 +9,7 @@
   "scripts": {
     "start": "vite --host",
     "test": "vitest --run",
+    "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "build": "tsc && vite build",
