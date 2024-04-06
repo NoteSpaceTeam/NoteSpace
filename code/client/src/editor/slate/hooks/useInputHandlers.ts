@@ -1,13 +1,14 @@
 import type React from 'react';
 import { Fugue } from '@editor/crdt/fugue';
-import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
+import CustomEditor from '@editor/slate/CustomEditor.ts';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
 import { Cursor, emptyCursor, Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@src/socket/socket.ts';
-import { InlineStyle } from '@notespace/shared/types/styles.ts';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
+import { isMultiBlock } from '@editor/slate/utils/slate.ts';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -67,6 +68,10 @@ function useInputHandlers(editor: Editor) {
 
   function onEnter(cursor: Cursor) {
     fugue.insertLocal(cursor, insertNode('\n', []));
+    const type = editor.children[cursor.line].type as BlockStyle;
+    if (isMultiBlock(type)) {
+      fugue.updateBlockStyleLocal(type, cursor.line + 1);
+    }
   }
 
   function onBackspace() {
@@ -96,10 +101,12 @@ function useInputHandlers(editor: Editor) {
 
   function onUndo() {
     // TODO: Implement undo (broadcast to other clients)
+    fugue.undo();
   }
 
   function onRedo() {
     // TODO: Implement redo (broadcast to other clients)
+    fugue.redo();
   }
 
   function onCtrlBackspace() {

@@ -3,7 +3,7 @@ import {
   DeleteOperation,
   BlockStyleOperation,
   InlineStyleOperation,
-} from '../../../../shared/crdt/types/operations.ts';
+} from '@notespace/shared/crdt/types/operations';
 import { type Id } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '../../../../shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
@@ -12,6 +12,7 @@ import { socket } from '@src/socket/socket';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, isEqual } from 'lodash';
+import History from '@editor/history/history';
 
 const CHUNK_DATA_SIZE = 50;
 
@@ -24,7 +25,7 @@ export class Fugue {
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
-  private title = '';
+  private readonly history = new History();
 
   private constructor() {
     this.replicaId = generateReplicaId();
@@ -61,6 +62,10 @@ export class Fugue {
     chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
       socket.emit('operation', chunk);
     });
+    this.history.register(operations);
+    if (operations.find(op => op.value === '\n')) {
+      this.history.save();
+    }
   }
 
   /**
@@ -113,6 +118,7 @@ export class Fugue {
     chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
       socket.emit('operation', chunk);
     });
+    this.history.register(operations);
   }
 
   deleteLocalById(id: Id): void {
@@ -309,18 +315,22 @@ export class Fugue {
     return this.tree.root!;
   }
 
-  /**
-   * Returns the title of the document
-   */
-  getTitle(): string {
-    return this.title;
+  undo() {
+    const operations = this.history.undo();
+    // need to reverse operations (insert => delete, delete => insert, etc.)
+    const reversedOperations = operations.map(op => {
+      if (op.type === 'insert') {
+        return { id: op.id, type: 'delete' };
+      } else if (op.type === 'delete') {
+        return { ...op, type: 'insert' }; // wrong
+      }
+      return op;
+    });
+    socket.emit('operation', reversedOperations);
   }
 
-  /**
-   * Sets the title of the document
-   * @param title
-   */
-  setTitle(title: string): void {
-    this.title = title;
+  redo() {
+    const operations = this.history.redo();
+    socket.emit('operation', operations);
   }
 }

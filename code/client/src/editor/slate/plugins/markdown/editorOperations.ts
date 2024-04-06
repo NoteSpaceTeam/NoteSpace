@@ -1,10 +1,11 @@
-import { type BaseEditor, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
+import { type BaseEditor, Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
 import { type CustomElement } from '@editor/slate/model/types.ts';
 import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
 import { Fugue } from '@editor/crdt/fugue.ts';
-import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
+import CustomEditor from '@editor/slate/CustomEditor.ts';
+import { isMultiBlock } from '@editor/slate/utils/slate.ts';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -33,27 +34,31 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
  * @param match
  * @param apply
  */
-const normalizeCallback = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
+const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
   const { selection } = editor;
-  const { anchor: matchEnd } = selection!;
+  const { anchor } = selection!;
   const [text, startText, endText] = match;
 
-  const offset = text.length - startText.length;
+  const matchEnd = anchor;
   const endMatchStart = endText && before(editor, matchEnd, endText.length);
-  const startMatchEnd = startText && before(editor, matchEnd, offset);
-
+  const startMatchEnd = startText && before(editor, matchEnd, text.length - startText.length);
   const matchStart = before(editor, matchEnd, text.length);
-
   if (!matchEnd || !matchStart) return;
 
-  const matchRangeRef = editor.rangeRef({ anchor: matchStart, focus: matchEnd });
+  const matchRangeRef = editor.rangeRef({
+    anchor: matchStart,
+    focus: matchEnd,
+  });
 
-  if (endMatchStart || startMatchEnd) {
+  if (endMatchStart) {
     Transforms.delete(editor, {
-      at: {
-        anchor: endMatchStart ? endMatchStart : matchStart,
-        focus: startMatchEnd ? startMatchEnd : matchEnd,
-      },
+      at: { anchor: endMatchStart, focus: matchEnd },
+    });
+  }
+
+  if (startMatchEnd) {
+    Transforms.delete(editor, {
+      at: { anchor: matchStart, focus: startMatchEnd },
     });
   }
 
@@ -68,6 +73,7 @@ const normalizeCallback = (editor: Editor, match: RegExpExecArray, apply: ApplyF
  * @param editor
  */
 const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string): void => {
+  // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
   if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
     insertText(insert);
@@ -77,7 +83,9 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
   // Check if the text before the selection ends with a trigger character
   const { anchor } = selection;
 
-  const block = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
+  const block = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
 
   const path = block ? block[1] : [];
   const blockRange = { anchor, focus: editor.start(path) };
@@ -89,7 +97,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeCallback(editor, execArray, apply));
+    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply));
     return;
   }
   insertText(insert);
@@ -107,10 +115,13 @@ const insertBreak = (editor: Editor): void => {
     });
     const path = block ? block[1] : [];
     const end = editor.end(path);
-
     Transforms.splitNodes(editor, { always: true });
-    Transforms.setNodes(editor, { type: 'paragraph' });
-    CustomEditor.resetMarks(editor);
+
+    const type = (block![0] as Descendant).type;
+    if (!isMultiBlock(type)) {
+      Transforms.setNodes(editor, { type: 'paragraph' });
+      CustomEditor.resetMarks(editor);
+    }
 
     // if selection was at the end of the block, unwrap the block
     if (Point.equals(end, Range.end(selection))) {
@@ -139,7 +150,6 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
     if (match) {
       const [block, path] = match;
       const start = Editor.start(editor, path);
-
       if (
         !Editor.isEditor(block) &&
         Element.isElement(block) &&

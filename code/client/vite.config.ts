@@ -9,11 +9,7 @@ import { pwaConfig } from './src/pwa/pwa-config';
 
 export default defineConfig({
   publicDir: './public',
-  plugins: [
-    tsconfigPaths(),
-    react(),
-    VitePWA(pwaConfig),
-  ],
+  plugins: [tsconfigPaths(), react(), VitePWA(pwaConfig)],
   test: {
     globals: true,
     alias: {

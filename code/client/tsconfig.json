@@ -24,7 +24,7 @@
       "@src/*": ["./src/*"],
       "@editor/*": ["./src/editor/*"]
     },
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
   "exclude": ["vite.config.ts"],

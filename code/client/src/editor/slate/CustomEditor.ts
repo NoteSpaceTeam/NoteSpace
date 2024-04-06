@@ -1,10 +1,10 @@
 import { Editor } from 'slate';
 import { Fugue } from '@editor/crdt/fugue.ts';
 import { getSelection, isSelected } from '@editor/slate/utils/selection.ts';
-import { InlineStyle } from '../../../../../shared/types/styles.ts';
+import { InlineStyle } from '../../../../shared/types/styles.ts';
 
 /**
- * Custom mark utilities for Slate editor.
+ * Custom Editor for Inline Styles
  */
 const CustomEditor = {
   isMarkActive(editor: Editor, format: string) {

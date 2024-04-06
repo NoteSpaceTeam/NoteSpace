@@ -8,8 +8,8 @@ import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { fugueToSlate } from '@editor/slate/utils/slate.ts';
-import './SlateEditor.scss';
 import { descendant } from '@editor/slate/utils/slate.ts';
+import './SlateEditor.scss';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
@@ -18,7 +18,7 @@ function SlateEditor() {
   const { onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
   const { renderElement, renderLeaf } = useRenderers();
 
-  useEvents(editor, () => {
+  useEvents(() => {
     editor.children = fugueToSlate();
     editor.onChange();
   });

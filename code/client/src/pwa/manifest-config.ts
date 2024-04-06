@@ -1,6 +1,6 @@
 import { ManifestOptions } from 'vite-plugin-pwa';
 
-export const manifestConfig : Partial<ManifestOptions> = {
+export const manifestConfig: Partial<ManifestOptions> = {
   name: 'NoteSpace',
   short_name: 'NoteSpace',
   start_url: '/',

@@ -3,6 +3,7 @@ import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts'
 import type { CustomText } from '@editor/slate/model/types.ts';
 import { isEqual, last } from 'lodash';
 import { Fugue } from '@editor/crdt/fugue.ts';
+import { BlockStyles } from '@notespace/shared/types/styles.ts';
 
 export function fugueToSlate(): Descendant[] {
   const fugue = Fugue.getInstance();
@@ -54,3 +55,8 @@ export const descendant = (type: BlockStyle, ...children: string[]): Descendant 
   type,
   children: children.map(text => ({ text })),
 });
+
+export const isMultiBlock = (blockStyle: BlockStyle) => {
+  const multiBlocks: BlockStyle[] = [BlockStyles.li, BlockStyles.num, BlockStyles.blockquote];
+  return multiBlocks.includes(blockStyle);
+};

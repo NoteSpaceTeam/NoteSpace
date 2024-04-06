@@ -1,6 +1,6 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@editor/slate/utils/CustomEditor.ts';
+import CustomEditor from '@editor/slate/CustomEditor.ts';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 
