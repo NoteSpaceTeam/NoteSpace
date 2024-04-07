@@ -1,6 +1,6 @@
 import { range } from 'lodash';
 import type { NodeInsert } from '@editor/crdt/types';
-import { InlineStyle } from '../../../../shared/types/styles.ts';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;

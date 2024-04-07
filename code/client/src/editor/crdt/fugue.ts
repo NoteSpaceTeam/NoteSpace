@@ -5,7 +5,7 @@ import {
   InlineStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
 import { type Id } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '../../../../shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { chunkData, generateReplicaId } from './utils';
 import { socket } from '@src/socket/socket';

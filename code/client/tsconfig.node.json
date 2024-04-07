@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "strict": true
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true
   },
-  "include": ["vite.config.ts", "src"]
+  "include": ["vite.config.ts", "src/pwa/pwa-config.ts"]
 }

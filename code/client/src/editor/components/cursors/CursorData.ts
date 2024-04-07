@@ -1,4 +1,4 @@
-import { Selection } from '../../../../../shared/types/cursor.ts';
+import { Selection } from '@notespace/shared/types/cursor';
 
 export type CursorData = {
   id: string;

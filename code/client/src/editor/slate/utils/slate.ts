@@ -1,9 +1,9 @@
 import type { Descendant } from 'slate';
-import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import type { CustomText } from '@editor/slate/model/types.ts';
+import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import type { CustomText } from '@editor/slate/model/types';
 import { isEqual, last } from 'lodash';
-import { Fugue } from '@editor/crdt/fugue.ts';
-import { BlockStyles } from '@notespace/shared/types/styles.ts';
+import { Fugue } from '@editor/crdt/fugue';
+import { BlockStyles } from '@notespace/shared/types/styles';
 
 export function fugueToSlate(): Descendant[] {
   const fugue = Fugue.getInstance();

@@ -1,7 +1,7 @@
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue.ts';
-import { getSelection, isSelected } from '@editor/slate/utils/selection.ts';
-import { InlineStyle } from '../../../../shared/types/styles.ts';
+import { Fugue } from '@editor/crdt/fugue';
+import { getSelection, isSelected } from '@editor/slate/utils/selection';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 /**
  * Custom Editor for Inline Styles

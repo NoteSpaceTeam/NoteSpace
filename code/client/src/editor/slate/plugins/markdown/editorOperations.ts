@@ -1,10 +1,10 @@
 import { type BaseEditor, Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@editor/slate/model/types.ts';
-import { shortcuts } from './shortcuts.ts';
+import { type CustomElement } from '@editor/slate/model/types';
+import { shortcuts } from './shortcuts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import CustomEditor from '@editor/slate/CustomEditor.ts';
-import { isMultiBlock } from '@editor/slate/utils/slate.ts';
+import CustomEditor from '@editor/slate/CustomEditor';
+import { isMultiBlock } from '@editor/slate/utils/slate';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;

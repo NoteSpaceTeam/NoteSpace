@@ -5,10 +5,11 @@ import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
 import { Cursor, emptyCursor, Selection } from '@notespace/shared/types/cursor';
-import { socket } from '@src/socket/socket.ts';
+import { socket } from '@src/socket/socket';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { isMultiBlock } from '@editor/slate/utils/slate';
-import { getKeyFromInputEvent, getClipboardEvent } from '@editor/slate/utils/domEvents';
+import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
+import React from 'react';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -23,11 +24,11 @@ function useInputHandlers(editor: Editor) {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
-    if (key === 'Paste') {
-      const pasteEvent = getClipboardEvent(e);
-      onPaste(pasteEvent);
-      return;
-    }
+    // if (key === 'Paste') {
+    //   const pasteEvent = getClipboardEvent(e);
+    //   onPaste(pasteEvent);
+    //   return;
+    // }
     const keyboardEvent = new KeyboardEvent('keydown', { key });
     onKeyPressed(keyboardEvent);
   }
@@ -52,13 +53,13 @@ function useInputHandlers(editor: Editor) {
     }
   }
 
-  function onKeyDown(e: KeyboardEvent) {
+  function onKeyDown(e: React.KeyboardEvent) {
     if (e.ctrlKey) {
       shortcutHandler(e);
     }
   }
 
-  function shortcutHandler(event: KeyboardEvent) {
+  function shortcutHandler(event: React.KeyboardEvent) {
     switch (event.key) {
       case 'z':
         onUndo();
@@ -106,7 +107,7 @@ function useInputHandlers(editor: Editor) {
     fugue.insertLocal(cursor, insertNode('\t', []));
   }
 
-  function onPaste(e: ClipboardEvent) {
+  function onPaste(e: React.ClipboardEvent) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);

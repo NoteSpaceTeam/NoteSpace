@@ -17,15 +17,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.serverOptions);
 
-app.use(cors({ origin: config.ORIGIN }));
+app.use(cors({ origin: config.CLIENT_ORIGIN }));
 app.use('/', api);
 
 io.on('connection', onConnection(service, events));
 
 // do not start the server if this file is being imported
 if (require.main === module) {
-  server.listen(config.PORT, () => {
-    console.log(`listening on http://localhost:${config.PORT}`);
+  server.listen(config.PORT, config.ORIGIN, 3, () => {
+    console.log(`listening on http://${config.ORIGIN}:${config.PORT}`);
   });
 }
 export default {

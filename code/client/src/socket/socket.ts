@@ -1,4 +1,6 @@
 import { io } from 'socket.io-client';
+import config from '@src/config';
 
-const SOCKET_SERVER_URL = 'ws://localhost:8080';
-export const socket = io(SOCKET_SERVER_URL);
+const socket_url = config.SOCKET_SERVER_URL;
+
+export const socket = io(socket_url);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import useSocketListeners from '../../../socket/useSocketListeners.ts';
-import { CursorData } from '@editor/components/cursors/CursorData.ts';
-import Cursor from '@editor/components/cursors/Cursor.tsx';
+import useSocketListeners from '@socket/useSocketListeners';
+import { CursorData } from '@editor/components/cursors/CursorData';
+import Cursor from '@editor/components/cursors/Cursor';
 import './Cursors.scss';
 
 function Cursors() {

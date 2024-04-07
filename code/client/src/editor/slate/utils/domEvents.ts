@@ -16,7 +16,7 @@ export function getKeyFromInputEvent(e: InputEvent) {
   return inputEventToKey[e.inputType];
 }
 
-export function getClipboardEvent(e: InputEvent) {
+export function getClipboardEvent(e: InputEvent): ClipboardEvent {
   const dataTransfer = new DataTransfer();
   dataTransfer.setData('text/plain', e.data || '');
   return new ClipboardEvent('paste', { clipboardData: dataTransfer });
