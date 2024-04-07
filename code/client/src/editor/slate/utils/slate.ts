@@ -16,7 +16,9 @@ export function fugueToSlate(): Descendant[] {
   const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
   descendants.push(descendant(lineStyle, ''));
 
-  for (const node of fugue.traverseTree()) {
+  const iterator = fugue.traverseTree();
+  for (const node of iterator) {
+    if (!node.value) continue;
     const textNode: CustomText = {
       text: node.value as string,
       bold: node.styles.includes('bold'),
