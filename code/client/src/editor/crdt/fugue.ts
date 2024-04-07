@@ -12,7 +12,6 @@ import { socket } from '@src/socket/socket';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, isEqual } from 'lodash';
-import History from '@editor/history/history';
 
 const CHUNK_DATA_SIZE = 50;
 
@@ -25,7 +24,6 @@ export class Fugue {
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
-  private readonly history = new History();
 
   private constructor() {
     this.replicaId = generateReplicaId();
@@ -62,10 +60,6 @@ export class Fugue {
     chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
       socket.emit('operation', chunk);
     });
-    this.history.register(operations);
-    if (operations.find(op => op.value === '\n')) {
-      this.history.save();
-    }
   }
 
   /**
@@ -118,7 +112,6 @@ export class Fugue {
     chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
       socket.emit('operation', chunk);
     });
-    this.history.register(operations);
   }
 
   deleteLocalById(id: Id): void {
@@ -185,6 +178,12 @@ export class Fugue {
       style: type,
     };
     socket.emit('operation', [operation]);
+  }
+
+  updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
+    for (let line = selection.start.line; line <= selection.end.line; line++) {
+      this.updateBlockStyleLocal(type, line);
+    }
   }
 
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
@@ -313,24 +312,5 @@ export class Fugue {
    */
   getRootNode(): FugueNode {
     return this.tree.root!;
-  }
-
-  undo() {
-    const operations = this.history.undo();
-    // need to reverse operations (insert => delete, delete => insert, etc.)
-    const reversedOperations = operations.map(op => {
-      if (op.type === 'insert') {
-        return { id: op.id, type: 'delete' };
-      } else if (op.type === 'delete') {
-        return { ...op, type: 'insert' }; // wrong
-      }
-      return op;
-    });
-    socket.emit('operation', reversedOperations);
-  }
-
-  redo() {
-    const operations = this.history.redo();
-    socket.emit('operation', operations);
   }
 }

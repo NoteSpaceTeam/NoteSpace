@@ -1,3 +1,4 @@
+import React from 'react';
 import { Editable, Slate, withReact } from 'slate-react';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers.ts';
 import useEvents from '@editor/hooks/useEvents';
@@ -10,12 +11,13 @@ import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { fugueToSlate } from '@editor/slate/utils/slate.ts';
 import { descendant } from '@editor/slate/utils/slate.ts';
 import './SlateEditor.scss';
+import Cursors from '@editor/components/cursors/Cursors.tsx';
 
 function SlateEditor() {
   const editor = useEditor(withHistory, withReact, withMarkdown);
   const initialValue = [descendant('paragraph', '')];
 
-  const { onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
+  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
   const { renderElement, renderLeaf } = useRenderers();
 
   useEvents(() => {
@@ -30,10 +32,10 @@ function SlateEditor() {
         <h1>NoteSpace</h1>
       </header>
       <div className="container">
-        {/*<Cursors />*/}
+        <Cursors />
         <Slate editor={editor} initialValue={initialValue}>
           <Toolbar />
-          <EditorTitle placeholder={'Untitled'} className={'title'} />
+          <EditorTitle placeholder={'Untitled'} />
           <Editable
             className="editable"
             renderElement={renderElement}
@@ -42,6 +44,7 @@ function SlateEditor() {
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
             onKeyDown={onKeyDown}
+            onDOMBeforeInput={onInput}
             onPaste={onPaste}
             onCut={onCut}
             onSelect={onSelect}

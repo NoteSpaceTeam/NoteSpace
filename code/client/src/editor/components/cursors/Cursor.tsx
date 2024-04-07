@@ -2,11 +2,12 @@ import { Selection } from '@notespace/shared/types/cursor';
 import { useEffect, useRef } from 'react';
 
 type CursorProps = {
+  id: string;
   selection: Selection;
   color: string;
 };
 
-function Cursor({ selection, color }: CursorProps) {
+function Cursor({ id, selection, color }: CursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,16 +19,22 @@ function Cursor({ selection, color }: CursorProps) {
       const fontSize = parseFloat(getComputedStyle(editor).fontSize);
       const editorRect = editor.getBoundingClientRect();
       const lineHeight = fontSize * 2.5;
-      const charWidth = 8;
-      const top = start.line * lineHeight + editorRect.top + 'px';
-      const left = start.column * charWidth + editorRect.left + 'px';
-      cursorRef.current.style.top = top;
-      cursorRef.current.style.left = left;
+      const charWidth = 8.8;
+      let top = start.line * lineHeight + editorRect.top;
+      let left = start.column * charWidth + editorRect.left;
+      if (left + charWidth > editorRect.right) {
+        // overflow to the next line
+        left -= editorRect.width - 2;
+        top += fontSize * 1.5;
+      }
+      cursorRef.current.style.top = top + 'px';
+      cursorRef.current.style.left = left + 'px';
     }
   }, [selection]);
 
   return (
     <div
+      id={`cursor-${id}`}
       ref={cursorRef}
       className="cursor"
       style={{

@@ -8,6 +8,11 @@ function Cursors() {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
+    const cursorElement = document.getElementById(`cursor-${cursor.id}`);
+    cursorElement?.classList.remove('animate');
+    setTimeout(() => {
+      cursorElement?.classList.add('animate');
+    }, 500);
     setCursors(prevCursors => {
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
       return [...otherCursors, cursor];
@@ -18,7 +23,9 @@ function Cursors() {
     cursorChange: onCursorChange,
   });
 
-  return cursors.map(cursor => <Cursor key={cursor.id} color={cursor.color} selection={cursor.selection} />);
+  return cursors.map(cursor => (
+    <Cursor key={cursor.id} id={cursor.id} color={cursor.color} selection={cursor.selection} />
+  ));
 }
 
 export default Cursors;

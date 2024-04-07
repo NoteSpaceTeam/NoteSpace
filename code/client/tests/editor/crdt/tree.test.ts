@@ -79,19 +79,6 @@ describe('Tree', () => {
     expect(tree.getById({ sender: 'A', counter: 0 })).toEqual(childNode);
   });
 
-  it('should traverse the tree by index and return the correct node', () => {
-    // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');
-    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'root', counter: 0 }, 'R');
-    tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 0 }, 'L');
-
-    // when
-    const node = tree.getByIndex(tree.root, 2);
-
-    // then
-    expect(node).toEqual(tree.getById({ sender: 'A', counter: 1 }));
-  });
-
   it('should return the leftmost descendant of a node', () => {
     // given
     tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');

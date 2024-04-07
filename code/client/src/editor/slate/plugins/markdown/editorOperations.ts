@@ -3,7 +3,6 @@ import { type CustomElement } from '@editor/slate/model/types.ts';
 import { shortcuts } from './shortcuts.ts';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { Fugue } from '@editor/crdt/fugue.ts';
 import CustomEditor from '@editor/slate/CustomEditor.ts';
 import { isMultiBlock } from '@editor/slate/utils/slate.ts';
 
@@ -156,10 +155,6 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
         block.type !== 'paragraph' &&
         Point.equals(selection.anchor, start)
       ) {
-        // reset block style to paragraph
-        const fugue = Fugue.getInstance();
-        const line = selection.anchor.path[0];
-        fugue.updateBlockStyleLocal('paragraph', line);
         Transforms.setNodes(editor, { type: 'paragraph' });
         return;
       }

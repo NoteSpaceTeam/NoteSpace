@@ -1,14 +1,14 @@
-import type React from 'react';
 import { Fugue } from '@editor/crdt/fugue';
-import CustomEditor from '@editor/slate/CustomEditor.ts';
+import CustomEditor from '@editor/slate/CustomEditor';
 import { type Editor } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
 import { Cursor, emptyCursor, Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@src/socket/socket.ts';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import { isMultiBlock } from '@editor/slate/utils/slate.ts';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { isMultiBlock } from '@editor/slate/utils/slate';
+import { getKeyFromInputEvent, getClipboardEvent } from '@editor/slate/utils/domEvents';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -19,29 +19,46 @@ const hotkeys: Record<string, string> = {
 function useInputHandlers(editor: Editor) {
   const fugue: Fugue = Fugue.getInstance();
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.ctrlKey) return shortcutHandler(e);
+  // support for mobile browsers
+  function onInput(e: InputEvent) {
+    const key = getKeyFromInputEvent(e);
+    if (!key) return;
+    if (key === 'Paste') {
+      const pasteEvent = getClipboardEvent(e);
+      onPaste(pasteEvent);
+      return;
+    }
+    const keyboardEvent = new KeyboardEvent('keydown', { key });
+    onKeyPressed(keyboardEvent);
+  }
+
+  function onKeyPressed(e: KeyboardEvent) {
     const selection = getSelection(editor);
     switch (e.key) {
       case 'Enter':
         onEnter(selection.start);
         break;
-      case 'Backspace': {
+      case 'Backspace':
         onBackspace();
         break;
-      }
       case 'Tab':
         e.preventDefault();
         onTab(selection.start);
         break;
       default:
         if (e.key.length !== 1) break;
-        onKeyPressed(e.key, selection);
+        onInsertText(e.key, selection);
         break;
     }
   }
 
-  function shortcutHandler(event: React.KeyboardEvent<HTMLDivElement>) {
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.ctrlKey) {
+      shortcutHandler(e);
+    }
+  }
+
+  function shortcutHandler(event: KeyboardEvent) {
     switch (event.key) {
       case 'z':
         onUndo();
@@ -60,7 +77,7 @@ function useInputHandlers(editor: Editor) {
     }
   }
 
-  function onKeyPressed(key: string, selection: Selection) {
+  function onInsertText(key: string, selection: Selection) {
     if (selection.start.column !== selection.end.column) fugue.deleteLocal(selection);
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
     fugue.insertLocal(selection.start, insertNode(key, styles));
@@ -79,6 +96,9 @@ function useInputHandlers(editor: Editor) {
     const startCursor = emptyCursor();
     if ([startCursor, selection.start, selection.end].every(isEqual)) return;
     fugue.deleteLocal(selection);
+    if (selection.start.column === 0) {
+      fugue.updateBlockStylesLocalBySelection('paragraph', selection);
+    }
   }
 
   function onTab(cursor: Cursor) {
@@ -86,7 +106,7 @@ function useInputHandlers(editor: Editor) {
     fugue.insertLocal(cursor, insertNode('\t', []));
   }
 
-  function onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
+  function onPaste(e: ClipboardEvent) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
@@ -101,12 +121,14 @@ function useInputHandlers(editor: Editor) {
 
   function onUndo() {
     // TODO: Implement undo (broadcast to other clients)
-    fugue.undo();
+    const undoOperation = editor.history.undos.at(-1);
+    socket.emit('historyOperation', { operation: undoOperation, type: 'undo' });
   }
 
   function onRedo() {
     // TODO: Implement redo (broadcast to other clients)
-    fugue.redo();
+    const redoOperation = editor.history.redos.at(-1);
+    socket.emit('historyOperation', { operation: redoOperation, type: 'redo' });
   }
 
   function onCtrlBackspace() {
@@ -133,7 +155,7 @@ function useInputHandlers(editor: Editor) {
     }, 10);
   }
 
-  return { onKeyDown, onPaste, onCut, onSelect };
+  return { onInput, onKeyDown, onPaste, onCut, onSelect };
 }
 
 export default useInputHandlers;

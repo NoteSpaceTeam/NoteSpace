@@ -1,7 +1,7 @@
 import onOperation from '@controllers/websocket/document/onOperation';
 import onCursorChange from '@controllers/websocket/document/onCursorChange';
 import { DocumentService, SocketHandler } from '@src/types';
-import onEditorOperations from '@controllers/websocket/document/onEditorOperations';
+import onHistoryOperation from '@controllers/websocket/document/onHistoryOperation';
 import onTitleChange from '@controllers/websocket/document/onTitleChange';
 
 export default function events(service: DocumentService): Record<string, SocketHandler> {
@@ -11,7 +11,7 @@ export default function events(service: DocumentService): Record<string, SocketH
   return {
     operation: onOperation(service),
     cursorChange: onCursorChange(),
-    editorOperations: onEditorOperations(),
+    historyOperation: onHistoryOperation(),
     titleChange: onTitleChange(service),
   };
 }

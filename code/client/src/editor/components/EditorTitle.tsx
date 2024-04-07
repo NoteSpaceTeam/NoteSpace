@@ -41,7 +41,15 @@ function EditorTitle(props: InputProps) {
   });
 
   return (
-    <input value={title} onInput={onInput} onBlur={onConfirm} onKeyDown={onKeyDown} spellCheck={false} {...props} />
+    <input
+      className={'title'}
+      value={title}
+      onInput={onInput}
+      onBlur={onConfirm}
+      onKeyDown={onKeyDown}
+      spellCheck={false}
+      {...props}
+    />
   );
 }
 

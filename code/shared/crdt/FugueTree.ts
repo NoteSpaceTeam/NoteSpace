@@ -144,49 +144,6 @@ export class FugueTree<T> {
   }
 
   /**
-   * Traverses the tree by the given number of depth-first steps and returns the node at that position.
-   * @param node the root of the subtree.
-   * @param index the number of depth-first steps to take.
-   * @throws if the index is out of range.
-   */
-  getByIndex(node: Node<T>, index: number): Node<T> {
-    if (index < 0 || index >= node.depth)
-      throw new Error(`Invalid index: ${index}`);
-    let remaining = index;
-    let continueLoop = true;
-    while (continueLoop) {
-      continueLoop = false;
-      // 1 - Iterate over left children first
-      for (const childId of node.leftChildren) {
-        const child = this.getById(childId);
-        if (remaining < child.depth) {
-          node = child;
-          continueLoop = true;
-          break;
-        }
-        remaining -= child.depth;
-      }
-      if (continueLoop) continue;
-      // 2 - If no left children, visit the current node
-      if (!node.isDeleted) {
-        if (remaining === 0) return node;
-        remaining--;
-      }
-      // 3 - Iterate over right children
-      for (const childId of node.rightChildren) {
-        const child = this.getById(childId);
-        if (remaining < child.depth) {
-          node = child;
-          continueLoop = true;
-          break;
-        }
-        remaining -= child.depth;
-      }
-    }
-    throw new Error(`No node found at node: ${node.id} with index: ${index}`);
-  }
-
-  /**
    * Traverses the tree in in-order traversal
    * @param root the root of the subtree.
    * @returns an iterator over the nodes in the subtree.
