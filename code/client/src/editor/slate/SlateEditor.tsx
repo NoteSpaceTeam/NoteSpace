@@ -37,6 +37,7 @@ function SlateEditor() {
           <EditorTitle placeholder={'Untitled'} />
           <Editable
             className="editable"
+            data-testid={"editable"}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}

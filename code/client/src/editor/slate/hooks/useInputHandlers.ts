@@ -94,11 +94,17 @@ function useInputHandlers(editor: Editor) {
 
   function onBackspace() {
     const selection = getSelection(editor);
+      const { start, end } = selection
     const startCursor = emptyCursor();
-    if ([startCursor, selection.start, selection.end].every(isEqual)) return;
+    if ([startCursor, start, end].every(isEqual)) return;
     fugue.deleteLocal(selection);
-    if (selection.start.column === 0) {
-      fugue.updateBlockStylesLocalBySelection('paragraph', selection);
+
+    // Reset block style - same line if only one line selected else only the last line
+    if (start.column === 0 || start.line !== end.line) {
+      const newSelection = start.line !== end.line
+        ? {start: {line: start.line + 1, column: 0}, end}
+        : selection
+      fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
     }
   }
 

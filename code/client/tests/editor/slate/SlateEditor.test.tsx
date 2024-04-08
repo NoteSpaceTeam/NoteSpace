@@ -7,9 +7,9 @@ const EDITOR_PLACEHOLDER = 'Start writing...';
 describe('SlateEditor', () => {
   let editor: HTMLElement;
 
-  beforeEach(() => {
-    const { container } = render(<SlateEditor />);
-    editor = container.querySelector('.editable') as HTMLElement;
+  beforeEach(async () => {
+    const { findByTestId } = render(<SlateEditor />);
+    editor = await findByTestId('editable'); // calls 'act' under the hood, but is more readable
     editor.focus();
   });
 

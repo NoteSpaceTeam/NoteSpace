@@ -5,5 +5,5 @@
     "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true
   },
-  "include": ["vite.config.ts", "src/pwa/pwa-config.ts"]
+  "include": ["vite.config.ts", "src/pwa/*"]
 }

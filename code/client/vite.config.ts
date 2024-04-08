@@ -13,9 +13,6 @@ config();
 
 export default defineConfig({
   publicDir: './public',
-  // define:{
-  //   'process.env': {}
-  // },
   server: {
     port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
   },

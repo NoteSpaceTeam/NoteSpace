@@ -1,5 +1,5 @@
-import { injectConfig } from './inject-config';
-import { manifestConfig } from './manifest-config';
+import { injectConfig } from './inject-config.ts';
+import { manifestConfig } from './manifest-config.ts';
 import { VitePWAOptions } from 'vite-plugin-pwa';
 
 export const pwaConfig: Partial<VitePWAOptions> = {
