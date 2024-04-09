@@ -4,7 +4,7 @@ import { getSelectionByRange } from '@editor/slate/utils/selection';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Selection } from '@notespace/shared/types/cursor';
 import { FugueNode } from '@editor/crdt/types';
-import { Id } from '../../../../../../shared/crdt/types/nodes.ts';
+import { Id } from '@notespace/shared/crdt/types/nodes';
 
 /**
  * Creates a function that applies a block element to the editor

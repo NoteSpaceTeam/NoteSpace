@@ -1,5 +1,5 @@
-import { createSetBlockApply, createSetInlineApply } from '@editor/slate/plugins/markdown/applyOperations.ts';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
+import { createSetBlockApply, createSetInlineApply } from '@editor/slate/plugins/markdown/applyOperations';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

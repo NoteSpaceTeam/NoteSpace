@@ -1,7 +1,7 @@
 import { type RenderElementProps } from 'slate-react';
-import { ElementRenderers, LeafRenderers } from './elements.tsx';
-import { Paragraph } from './components/components.ts';
-import { type CustomText } from '@editor/slate/model/types.ts';
+import { ElementRenderers, LeafRenderers } from './elements';
+import { Paragraph } from './components/components';
+import { type CustomText } from '@editor/slate/model/types';
 import { type ReactNode } from 'react';
 
 export const getElementRenderer = (type: string, props: RenderElementProps) => {
@@ -11,7 +11,7 @@ export const getElementRenderer = (type: string, props: RenderElementProps) => {
       return ElementRenderers[k](props);
     }
   }
-  return <Paragraph {...props} />;
+  return <Paragraph {...props} children={props.children} />;
 };
 
 export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {

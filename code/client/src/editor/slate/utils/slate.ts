@@ -1,4 +1,4 @@
-import type { Descendant } from 'slate';
+import { createEditor, Descendant, Editor } from 'slate';
 import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import type { CustomText } from '@editor/slate/model/types';
 import { isEqual, last } from 'lodash';
@@ -62,3 +62,6 @@ export const isMultiBlock = (blockStyle: BlockStyle) => {
   const multiBlocks: BlockStyle[] = [BlockStyles.li, BlockStyles.num, BlockStyles.blockquote];
   return multiBlocks.includes(blockStyle);
 };
+
+export const buildEditor = (...plugins: Array<(editor: Editor) => Editor>): Editor =>
+  plugins.reduce((acc, plugin) => plugin(acc), createEditor());

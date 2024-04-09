@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SlateEditor from '@editor/slate/SlateEditor.tsx';
+import SlateEditor from '@editor/slate/SlateEditor';
 import './App.scss';
 
 function App() {

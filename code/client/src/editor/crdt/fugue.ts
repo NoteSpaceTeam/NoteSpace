@@ -30,6 +30,9 @@ export class Fugue {
     this.tree = new FugueTree();
   }
 
+  /**
+   * Returns the singleton instance of the Fugue class
+   */
   static getInstance(): Fugue {
     if (!Fugue.instance) {
       Fugue.instance = new Fugue();

@@ -1,8 +1,8 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { Fugue } from '@src/editor/crdt/fugue';
-import { type Operation } from '../../../../shared/crdt/types/operations.ts';
+import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { FugueNode } from '@editor/crdt/types.ts';
+import { FugueNode } from '@editor/crdt/types';
 
 /**
  * Hook client socket listeners to events
@@ -10,7 +10,6 @@ import { FugueNode } from '@editor/crdt/types.ts';
  */
 function useEvents(onDone: () => void) {
   const fugue = Fugue.getInstance();
-
   /**
    * Hook socket listeners to an edit event
    * @param operations - Edit operations

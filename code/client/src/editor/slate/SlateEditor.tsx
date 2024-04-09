@@ -11,9 +11,17 @@ import { fugueToSlate } from '@editor/slate/utils/slate';
 import { descendant } from '@editor/slate/utils/slate';
 import './SlateEditor.scss';
 import Cursors from '@editor/components/cursors/Cursors';
+import { Editor } from 'slate';
 
-function SlateEditor() {
-  const editor = useEditor(withHistory, withReact, withMarkdown);
+type SlateEditorProps = { editor?: Editor };
+
+function SlateEditor({ editor }: SlateEditorProps) {
+  // For testing purposes, we need to be able to pass in an editor
+
+  const internalEditor = useEditor(withHistory, withReact, withMarkdown);
+
+  editor = editor || internalEditor;
+
   const initialValue = [descendant('paragraph', '')];
 
   const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
