@@ -10,6 +10,7 @@ import { FugueNode } from '@editor/crdt/types';
  */
 function useEvents(onDone: () => void) {
   const fugue = Fugue.getInstance();
+
   /**
    * Hook socket listeners to an edit event
    * @param operations - Edit operations

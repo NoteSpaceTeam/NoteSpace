@@ -53,9 +53,10 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: Cursor, ...values: NodeInsert[]): void {
+  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]): void {
     const operations = values.map((value, i) => {
-      const operation = this.getInsertOperation({ ...start, column: start.column + i }, value);
+      const node = typeof value === 'string' ? { value, styles: [] } : value;
+      const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
       this.addNode(operation);
       return operation;
     });

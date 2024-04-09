@@ -4,7 +4,6 @@ import { ReactElement } from 'react';
 import { afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
-
 afterEach(cleanup);
 
 function setup(ui: ReactElement, options = {}) {

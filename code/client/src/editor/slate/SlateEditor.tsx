@@ -9,21 +9,16 @@ import useEditor from '@editor/slate/hooks/useEditor';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { fugueToSlate } from '@editor/slate/utils/slate';
 import { descendant } from '@editor/slate/utils/slate';
-import './SlateEditor.scss';
 import Cursors from '@editor/components/cursors/Cursors';
+import './SlateEditor.scss';
 import { Editor } from 'slate';
 
+// for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = { editor?: Editor };
 
-function SlateEditor({ editor }: SlateEditorProps) {
-  // For testing purposes, we need to be able to pass in an editor
-
-  const internalEditor = useEditor(withHistory, withReact, withMarkdown);
-
-  editor = editor || internalEditor;
-
+function SlateEditor({ editor: _editor }: SlateEditorProps) {
+  const editor = useEditor(_editor, withHistory, withReact, withMarkdown);
   const initialValue = [descendant('paragraph', '')];
-
   const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
   const { renderElement, renderLeaf } = useRenderers();
 
@@ -51,8 +46,8 @@ function SlateEditor({ editor }: SlateEditorProps) {
             spellCheck={false}
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
-            onKeyDown={onKeyDown}
             onDOMBeforeInput={onInput}
+            onKeyDown={onKeyDown}
             onPaste={onPaste}
             onCut={onCut}
             onSelect={onSelect}

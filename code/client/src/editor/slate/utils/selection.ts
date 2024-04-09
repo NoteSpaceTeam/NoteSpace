@@ -65,3 +65,7 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   selection.end.column += offset;
   return selection;
 }
+
+export function getSelectionBySlate(path: Path, offset: number): Selection {
+  return { start: { line: path[0], column: offset }, end: { line: path[0], column: offset } };
+}

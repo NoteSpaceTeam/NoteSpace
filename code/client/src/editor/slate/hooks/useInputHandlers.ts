@@ -9,6 +9,7 @@ import { socket } from '@src/socket/socket';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import { getClipboardEvent, getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
+import useHistory from '@editor/slate/hooks/useHistory';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -18,6 +19,7 @@ const hotkeys: Record<string, string> = {
 
 function useInputHandlers(editor: Editor) {
   const fugue: Fugue = Fugue.getInstance();
+  const { undo, redo } = useHistory(editor);
 
   // support for mobile browsers
   function onInput(e: InputEvent) {
@@ -34,7 +36,6 @@ function useInputHandlers(editor: Editor) {
 
   function onKeyPressed(e: KeyboardEvent) {
     const selection = getSelection(editor);
-    console.log('key pressed', e.key);
     if (e.key !== 'Backspace') {
       // when typing with a selection, delete the selection first
       if (selection.start.column !== selection.end.column) onBackspace();
@@ -45,10 +46,6 @@ function useInputHandlers(editor: Editor) {
         break;
       case 'Backspace':
         onBackspace();
-        break;
-      case 'Tab':
-        e.preventDefault();
-        onTab(selection.start);
         break;
       default:
         if (e.key.length !== 1) break;
@@ -63,17 +60,17 @@ function useInputHandlers(editor: Editor) {
     }
     if (e.key === 'Tab') {
       e.preventDefault();
-      onTab(getSelection(editor).start);
+      onTab();
     }
   }
 
   function shortcutHandler(event: KeyboardEvent) {
     switch (event.key) {
       case 'z':
-        onUndo();
+        undo();
         break;
       case 'y':
-        onRedo();
+        redo();
         break;
       case 'Backspace':
         onCtrlBackspace();
@@ -92,7 +89,7 @@ function useInputHandlers(editor: Editor) {
   }
 
   function onEnter(cursor: Cursor) {
-    fugue.insertLocal(cursor, insertNode('\n', []));
+    fugue.insertLocal(cursor, '\n');
     const type = editor.children[cursor.line].type as BlockStyle;
     if (isMultiBlock(type)) {
       fugue.updateBlockStyleLocal(type, cursor.line + 1);
@@ -113,9 +110,10 @@ function useInputHandlers(editor: Editor) {
     }
   }
 
-  function onTab(cursor: Cursor) {
+  function onTab() {
+    const cursor = getSelection(editor).start;
     editor.insertText('\t');
-    fugue.insertLocal(cursor, insertNode('\t', []));
+    fugue.insertLocal(cursor, '\t');
   }
 
   function onPaste(e: ClipboardEvent) {
@@ -129,18 +127,6 @@ function useInputHandlers(editor: Editor) {
   function onCut() {
     const selection = getSelection(editor);
     fugue.deleteLocal(selection);
-  }
-
-  function onUndo() {
-    // TODO: Implement undo (broadcast to other clients)
-    const undoOperation = editor.history.undos.at(-1);
-    socket.emit('historyOperation', { operation: undoOperation, type: 'undo' });
-  }
-
-  function onRedo() {
-    // TODO: Implement redo (broadcast to other clients)
-    const redoOperation = editor.history.redos.at(-1);
-    socket.emit('historyOperation', { operation: redoOperation, type: 'redo' });
   }
 
   function onCtrlBackspace() {

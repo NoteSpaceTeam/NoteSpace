@@ -7,7 +7,7 @@ describe('Inserts', () => {
 
   beforeEach(async () => {
     const { editorElement } = await setupEditor();
-    editor = editorElement
+    editor = editorElement;
   });
 
   it('should display written text in the editor', async () => {
