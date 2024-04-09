@@ -31,13 +31,13 @@ function SlateEditor() {
         <h1>NoteSpace</h1>
       </header>
       <div className="container">
-        <Cursors />
         <Slate editor={editor} initialValue={initialValue}>
+          <Cursors />
           <Toolbar />
           <EditorTitle placeholder={'Untitled'} />
           <Editable
             className="editable"
-            data-testid={"editable"}
+            data-testid={'editor'}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             spellCheck={false}

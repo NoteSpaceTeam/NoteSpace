@@ -3,10 +3,6 @@ export type Cursor = {
   column: number;
 };
 
-export function emptyCursor(): Cursor {
-  return { line: 0, column: 0 };
-}
-
 export type Selection = {
   start: Cursor;
   end: Cursor;
@@ -14,4 +10,8 @@ export type Selection = {
 
 export function emptySelection(): Selection {
   return { start: emptyCursor(), end: emptyCursor() };
+}
+
+export function emptyCursor(): Cursor {
+  return { line: 0, column: 0 };
 }

@@ -1,7 +1,7 @@
-import { Selection } from '@notespace/shared/types/cursor';
+import { Range } from 'slate';
 
 export type CursorData = {
   id: string;
-  selection: Selection;
+  range: Range;
   color: string;
 };

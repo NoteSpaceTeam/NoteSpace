@@ -1,6 +1,6 @@
 import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { type Editor } from 'slate';
+import { type Editor, Range } from 'slate';
 import { getSelection } from '../utils/selection';
 import { isEqual } from 'lodash';
 import { insertNode } from '@src/editor/crdt/utils';
@@ -8,8 +8,7 @@ import { Cursor, emptyCursor, Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@src/socket/socket';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { isMultiBlock } from '@editor/slate/utils/slate';
-import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
-import React from 'react';
+import { getClipboardEvent, getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -24,17 +23,22 @@ function useInputHandlers(editor: Editor) {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
-    // if (key === 'Paste') {
-    //   const pasteEvent = getClipboardEvent(e);
-    //   onPaste(pasteEvent);
-    //   return;
-    // }
+    if (key === 'Paste') {
+      const pasteEvent = getClipboardEvent(e);
+      onPaste(pasteEvent);
+      return;
+    }
     const keyboardEvent = new KeyboardEvent('keydown', { key });
     onKeyPressed(keyboardEvent);
   }
 
   function onKeyPressed(e: KeyboardEvent) {
     const selection = getSelection(editor);
+    console.log('key pressed', e.key);
+    if (e.key !== 'Backspace') {
+      // when typing with a selection, delete the selection first
+      if (selection.start.column !== selection.end.column) onBackspace();
+    }
     switch (e.key) {
       case 'Enter':
         onEnter(selection.start);
@@ -53,13 +57,17 @@ function useInputHandlers(editor: Editor) {
     }
   }
 
-  function onKeyDown(e: React.KeyboardEvent) {
+  function onKeyDown(e: KeyboardEvent) {
     if (e.ctrlKey) {
       shortcutHandler(e);
     }
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      onTab(getSelection(editor).start);
+    }
   }
 
-  function shortcutHandler(event: React.KeyboardEvent) {
+  function shortcutHandler(event: KeyboardEvent) {
     switch (event.key) {
       case 'z':
         onUndo();
@@ -79,7 +87,6 @@ function useInputHandlers(editor: Editor) {
   }
 
   function onInsertText(key: string, selection: Selection) {
-    if (selection.start.column !== selection.end.column) fugue.deleteLocal(selection);
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
     fugue.insertLocal(selection.start, insertNode(key, styles));
   }
@@ -94,16 +101,14 @@ function useInputHandlers(editor: Editor) {
 
   function onBackspace() {
     const selection = getSelection(editor);
-      const { start, end } = selection
+    const { start, end } = selection;
     const startCursor = emptyCursor();
     if ([startCursor, start, end].every(isEqual)) return;
     fugue.deleteLocal(selection);
 
     // Reset block style - same line if only one line selected else only the last line
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line
-        ? {start: {line: start.line + 1, column: 0}, end}
-        : selection
+      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
     }
   }
@@ -113,7 +118,7 @@ function useInputHandlers(editor: Editor) {
     fugue.insertLocal(cursor, insertNode('\t', []));
   }
 
-  function onPaste(e: React.ClipboardEvent) {
+  function onPaste(e: ClipboardEvent) {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
@@ -157,8 +162,8 @@ function useInputHandlers(editor: Editor) {
   function onSelect() {
     // let the selection update before sending it
     setTimeout(() => {
-      const selection = getSelection(editor);
-      socket.emit('cursorChange', selection);
+      const range: Range | null = editor.selection;
+      socket.emit('cursorChange', range);
     }, 10);
   }
 

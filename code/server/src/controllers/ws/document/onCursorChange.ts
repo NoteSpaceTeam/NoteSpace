@@ -1,16 +1,15 @@
 import { Socket } from 'socket.io';
-import { Selection } from '@notespace/shared/types/cursor';
 
 const cursorColorsMap = new Map<string, string>();
 
 function onCursorChange() {
-  return (socket: Socket, selection: Selection) => {
+  return (socket: Socket, range: any) => {
     if (!cursorColorsMap.has(socket.id)) {
       const randomColor = 'hsl(' + Math.random() * 360 + ', 100%, 75%)';
       cursorColorsMap.set(socket.id, randomColor);
     }
     const color = cursorColorsMap.get(socket.id);
-    socket.broadcast.emit('cursorChange', { selection, id: socket.id, color });
+    socket.broadcast.emit('cursorChange', { range, id: socket.id, color });
   };
 }
 

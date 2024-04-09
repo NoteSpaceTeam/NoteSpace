@@ -3,19 +3,22 @@ import * as process from 'node:process';
 
 config();
 
-const PORT = Number.parseInt(process.env.PORT || '') || 8080;
-const ORIGIN = process.env.SERVER_IP || 'localhost';
-const CLIENT_ORIGIN = ['http://localhost', `http://${process.env.CLIENT_IP}`].map(
-  url => `${url}:${process.env.CLIENT_PORT}`
-);
-const serverOptions = {
-  cors: { origin: CLIENT_ORIGIN },
+const SERVER_PORT = parseInt(process.env.PORT || '8080');
+const CLIENT_PORT = parseInt(process.env.CLIENT_PORT || '5173');
+const HOST_IP = process.env.HOST_IP;
+const ORIGIN = [`http://localhost:${CLIENT_PORT}`];
+if (HOST_IP) ORIGIN.push(`http://${HOST_IP}:${CLIENT_PORT}`);
+const SERVER_IP = HOST_IP || 'localhost';
+
+const SERVER_OPTIONS = {
+  cors: { origin: ORIGIN },
   connectionStateRecovery: {},
 };
 
 export default {
-  PORT,
-  CLIENT_ORIGIN,
+  SERVER_PORT,
+  CLIENT_PORT,
   ORIGIN,
-  serverOptions,
+  SERVER_IP,
+  SERVER_OPTIONS,
 };

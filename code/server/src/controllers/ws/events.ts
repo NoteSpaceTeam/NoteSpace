@@ -1,8 +1,8 @@
-import onOperation from '@controllers/websocket/document/onOperation';
-import onCursorChange from '@controllers/websocket/document/onCursorChange';
+import onOperation from '@controllers/ws/document/onOperation';
+import onCursorChange from '@controllers/ws/document/onCursorChange';
 import { DocumentService, SocketHandler } from '@src/types';
-import onHistoryOperation from '@controllers/websocket/document/onHistoryOperation';
-import onTitleChange from '@controllers/websocket/document/onTitleChange';
+import onHistoryOperation from '@controllers/ws/document/onHistoryOperation';
+import onTitleChange from '@controllers/ws/document/onTitleChange';
 
 export default function events(service: DocumentService): Record<string, SocketHandler> {
   if (!service) {
