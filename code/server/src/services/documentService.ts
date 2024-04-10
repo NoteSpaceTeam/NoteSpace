@@ -1,12 +1,12 @@
 import { DocumentDatabase, DocumentService } from '@src/types';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import {
   DeleteOperation,
   InsertOperation,
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
-import { FugueTree } from '@notespace/shared/crdt/fugueTree';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
   const tree = new FugueTree<string>();
