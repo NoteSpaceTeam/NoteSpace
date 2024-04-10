@@ -8,12 +8,12 @@ import { getElementRenderer, getLeafRenderer } from '@editor/slate/plugins/markd
 function useRenderers() {
   const renderElement = useCallback((props: RenderElementProps) => getElementRenderer(props.element.type, props), []);
 
-  const renderLeaf = useCallback(
+  const renderLeaf = useCallback (
     ({ attributes, children, leaf }: RenderLeafProps) => <span {...attributes}>{getLeafRenderer(leaf, children)}</span>,
     []
   );
 
-  return { renderElement, renderLeaf };
+  return { getElementRenderer: renderElement, getLeafRenderer: renderLeaf };
 }
 
 export default useRenderers;

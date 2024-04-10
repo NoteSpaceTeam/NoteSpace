@@ -20,7 +20,7 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
   const editor = useEditor(_editor, withHistory, withReact, withMarkdown);
   const initialValue = [descendant('paragraph', '')];
   const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
-  const { renderElement, renderLeaf } = useRenderers();
+  const { getElementRenderer, getLeafRenderer } = useRenderers();
 
   useEvents(() => {
     editor.children = fugueToSlate();
@@ -41,8 +41,8 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
           <Editable
             className="editable"
             data-testid={'editor'}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
+            renderElement={getElementRenderer}
+            renderLeaf={getLeafRenderer}
             spellCheck={false}
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}

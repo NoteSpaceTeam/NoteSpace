@@ -108,30 +108,28 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
  */
 const insertBreak = (editor: Editor): void => {
   const { selection } = editor;
-  if (selection) {
-    const block = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
-    });
-    const path = block ? block[1] : [];
-    const end = editor.end(path);
-    Transforms.splitNodes(editor, { always: true });
+  if (!selection) return;
+  const block = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
+  const path = block ? block[1] : [];
+  const end = editor.end(path);
+  Transforms.splitNodes(editor, { always: true });
 
-    const type = (block![0] as Descendant).type;
-    if (!isMultiBlock(type)) {
-      Transforms.setNodes(editor, { type: 'paragraph' });
-      CustomEditor.resetMarks(editor);
-    }
-
-    // if selection was at the end of the block, unwrap the block
-    if (Point.equals(end, Range.end(selection))) {
-      Transforms.unwrapNodes(editor, {
-        match: (n: CustomElement) => editor.isInline(n),
-        mode: 'all',
-      });
-      const marks = editor.marks ?? {};
-      Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
-    }
+  const type = (block![0] as Descendant).type;
+  if (!isMultiBlock(type)) {
+    Transforms.setNodes(editor, { type: 'paragraph' });
+    CustomEditor.resetMarks(editor);
   }
+
+  // if selection was at the end of the block, unwrap the block
+  if(!Point.equals(end, Range.end(selection))) return;
+  Transforms.unwrapNodes(editor, {
+    match: (n: CustomElement) => editor.isInline(n),
+    mode: 'all',
+  });
+  const marks = editor.marks ?? {};
+  Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
 };
 
 /**
@@ -142,25 +140,26 @@ const insertBreak = (editor: Editor): void => {
  */
 const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, ...args: [TextUnit]) => {
   const { selection } = editor;
-  if (selection && Range.isCollapsed(selection)) {
-    const match = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
-    });
-    if (match) {
-      const [block, path] = match;
-      const start = Editor.start(editor, path);
-      if (
-        !Editor.isEditor(block) &&
-        Element.isElement(block) &&
-        block.type !== 'paragraph' &&
-        Point.equals(selection.anchor, start)
-      ) {
-        Transforms.setNodes(editor, { type: 'paragraph' });
-        return;
-      }
+  if(!selection || !Range.isCollapsed(selection)) return;
+  const match = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
+  if (match) {
+    const [block, path] = match;
+    const start = Editor.start(editor, path);
+
+    // TODO - REFACTOR
+    if (
+      !Editor.isEditor(block) &&
+      Element.isElement(block) &&
+      block.type !== 'paragraph' &&
+      Point.equals(selection.anchor, start)
+    ) {
+      Transforms.setNodes(editor, { type: 'paragraph' });
+      return;
     }
-    deleteBackward(...args);
   }
+  deleteBackward(...args);
 };
 
 /**

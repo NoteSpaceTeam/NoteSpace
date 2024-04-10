@@ -5,6 +5,7 @@ import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Selection } from '@notespace/shared/types/cursor';
 import { FugueNode } from '@editor/crdt/types';
 import { Id } from '@notespace/shared/crdt/types/nodes';
+import { range } from 'lodash';
 
 /**
  * Creates a function that applies a block element to the editor
@@ -57,12 +58,12 @@ function deleteAroundSelection(selection: Selection, amount: number) {
   const fugue = Fugue.getInstance();
   const idsToDelete: Id[] = [];
 
-  for (let i = 1; i <= amount; i++) {
+  range(1, amount, 1).forEach(i => {
     const cursorBefore = { line: selection.start.line, column: selection.start.column - i + 1 };
     const nodeBefore = fugue.getNodeByCursor(cursorBefore);
     const cursorAfter = { line: selection.end.line, column: selection.end.column + i };
     const nodeAfter = fugue.getNodeByCursor(cursorAfter);
     idsToDelete.push(nodeBefore?.id, nodeAfter?.id);
-  }
+  });
   idsToDelete.forEach(id => id && fugue.deleteLocalById(id));
 }

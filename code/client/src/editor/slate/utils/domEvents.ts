@@ -1,4 +1,4 @@
-const inputEventToKey: Record<string, string> = {
+const inputEventsKeys: Record<string, string> = {
   deleteContentBackward: 'Backspace',
   deleteContentForward: 'Delete',
   insertLineBreak: 'Enter',
@@ -9,12 +9,8 @@ const inputEventToKey: Record<string, string> = {
   insertFromPaste: 'Paste',
 } as const;
 
-export function getKeyFromInputEvent(e: InputEvent) {
-  if (e.inputType === 'insertText') {
-    return e.data;
-  }
-  return inputEventToKey[e.inputType];
-}
+export const getKeyFromInputEvent = (e: InputEvent) =>
+  (e.inputType === 'insertText') ? e.data : inputEventsKeys[e.inputType];
 
 export function getClipboardEvent(e: InputEvent): ClipboardEvent {
   const dataTransfer = new DataTransfer();

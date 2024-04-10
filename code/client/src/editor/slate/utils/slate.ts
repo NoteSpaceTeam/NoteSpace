@@ -5,6 +5,9 @@ import { isEqual, last } from 'lodash';
 import { Fugue } from '@editor/crdt/fugue';
 import { BlockStyles } from '@notespace/shared/types/styles';
 
+/**
+ * Converts the FugueTree to a Slate document.
+ */
 export function fugueToSlate(): Descendant[] {
   const fugue = Fugue.getInstance();
   const root = fugue.getRootNode();
@@ -16,9 +19,9 @@ export function fugueToSlate(): Descendant[] {
   const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
   descendants.push(descendant(lineStyle, ''));
 
-  const iterator = fugue.traverseTree();
-  for (const node of iterator) {
+  for (const node of fugue.traverseTree()) {
     if (!node.value) continue;
+    // create a text node with the given styles
     const textNode: CustomText = {
       text: node.value as string,
       bold: node.styles.includes('bold'),
@@ -27,21 +30,19 @@ export function fugueToSlate(): Descendant[] {
       strikethrough: node.styles.includes('strikethrough'),
       code: node.styles.includes('code'),
     };
-    // if new line, add a new paragraph
+    // new line
     if (node.value === '\n') {
-      const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
+      const lineStyle = root.styles[lineCounter++] as BlockStyle || 'paragraph';
       descendants.push(descendant(lineStyle, ''));
       lastStyles = node.styles as InlineStyle[];
       continue;
     }
     const lastDescendant = last(descendants);
-    // if node styles are the same as the previous one, append the text to it
-    if (isEqual(lastStyles, node.styles)) {
+    if (!isEqual(lastStyles, node.styles)) lastDescendant.children.push(textNode);
+    else {
       const lastTextNode = last(lastDescendant.children) as CustomText;
       lastTextNode.text += textNode.text;
     }
-    // otherwise, create a new block
-    else lastDescendant.children.push(textNode);
     lastStyles = node.styles as InlineStyle[];
   }
   return descendants;
@@ -58,10 +59,18 @@ export const descendant = (type: BlockStyle, ...children: string[]): Descendant 
   children: children.map(text => ({ text })),
 });
 
+/**
+ * Checks if the block style is a multi block.
+ * @param blockStyle
+ */
 export const isMultiBlock = (blockStyle: BlockStyle) => {
   const multiBlocks: BlockStyle[] = [BlockStyles.li, BlockStyles.num, BlockStyles.blockquote];
   return multiBlocks.includes(blockStyle);
 };
 
+/**
+ * Builds the editor with the given plugins.
+ * @param plugins
+ */
 export const buildEditor = (...plugins: Array<(editor: Editor) => Editor>): Editor =>
   plugins.reduce((acc, plugin) => plugin(acc), createEditor());

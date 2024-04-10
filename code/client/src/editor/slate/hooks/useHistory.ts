@@ -3,6 +3,10 @@ import { Operation as SlateOperation } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import { getSelectionBySlate } from '@editor/slate/utils/selection';
 
+/**
+ * Handles undo and redo operations
+ * @param editor
+ */
 function useHistory(editor: Editor) {
   const fugue = Fugue.getInstance();
 

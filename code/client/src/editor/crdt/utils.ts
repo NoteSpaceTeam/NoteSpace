@@ -25,7 +25,7 @@ export function generateReplicaId() {
  * @param styles
  * @returns the insert node
  */
-export function insertNode(value: string, styles: InlineStyle[]): NodeInsert {
+export function nodeInsert(value: string, styles: InlineStyle[]): NodeInsert {
   return { value, styles };
 }
 
