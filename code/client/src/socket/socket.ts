@@ -4,7 +4,11 @@ import { chunkData } from '@editor/crdt/utils';
 
 export const socket = io(config.SOCKET_SERVER_URL);
 
-export const emitChunked = (event: string, data: any, chunkSize : number) =>
-  chunkData(data, chunkSize).forEach((chunk) => socket.emit(event, chunk));
+declare module 'socket.io-client' {
+  interface Socket {
+    emitChunked: (event: string, data: any, chunkSize: number) => void;
+  }
+}
 
-export const singleEmit = (event: string, data: any) => socket.emit(event, data);
+socket.emitChunked = (event: string, data: any, chunkSize: number) =>
+  chunkData(data, chunkSize).forEach(chunk => socket.emit(event, chunk));

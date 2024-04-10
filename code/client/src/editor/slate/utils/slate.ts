@@ -32,7 +32,7 @@ export function fugueToSlate(): Descendant[] {
     };
     // new line
     if (node.value === '\n') {
-      const lineStyle = root.styles[lineCounter++] as BlockStyle || 'paragraph';
+      const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
       descendants.push(descendant(lineStyle, ''));
       lastStyles = node.styles as InlineStyle[];
       continue;

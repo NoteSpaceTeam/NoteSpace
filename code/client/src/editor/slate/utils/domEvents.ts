@@ -10,7 +10,7 @@ const inputEventsKeys: Record<string, string> = {
 } as const;
 
 export const getKeyFromInputEvent = (e: InputEvent) =>
-  (e.inputType === 'insertText') ? e.data : inputEventsKeys[e.inputType];
+  e.inputType === 'insertText' ? e.data : inputEventsKeys[e.inputType];
 
 export function getClipboardEvent(e: InputEvent): ClipboardEvent {
   const dataTransfer = new DataTransfer();

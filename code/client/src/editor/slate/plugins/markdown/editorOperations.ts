@@ -123,7 +123,7 @@ const insertBreak = (editor: Editor): void => {
   }
 
   // if selection was at the end of the block, unwrap the block
-  if(!Point.equals(end, Range.end(selection))) return;
+  if (!Point.equals(end, Range.end(selection))) return;
   Transforms.unwrapNodes(editor, {
     match: (n: CustomElement) => editor.isInline(n),
     mode: 'all',
@@ -140,7 +140,7 @@ const insertBreak = (editor: Editor): void => {
  */
 const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, ...args: [TextUnit]) => {
   const { selection } = editor;
-  if(!selection || !Range.isCollapsed(selection)) return;
+  if (!selection || !Range.isCollapsed(selection)) return;
   const match = editor.above({
     match: (n: CustomElement) => editor.isBlock(n),
   });

@@ -24,7 +24,6 @@ const hotkeys: Record<string, string> = {
  */
 function useInputHandlers(editor: Editor) {
   const fugue: Fugue = Fugue.getInstance();
-  // adds undo and redo functionality
   const { undo, redo } = useHistory(editor);
 
   /**
@@ -119,8 +118,7 @@ function useInputHandlers(editor: Editor) {
   function onEnter(cursor: Cursor) {
     fugue.insertLocal(cursor, '\n');
     const type = editor.children[cursor.line].type as BlockStyle;
-    if (isMultiBlock(type))
-      fugue.updateBlockStyleLocal(type, cursor.line + 1);
+    if (isMultiBlock(type)) fugue.updateBlockStyleLocal(type, cursor.line + 1);
   }
 
   /**
@@ -135,9 +133,7 @@ function useInputHandlers(editor: Editor) {
 
     // Reset block style - same line if only one line selected else only the last line
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line
-        ? { start: { line: start.line + 1, column: 0 }, end }
-        : selection;
+      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
     }
   }

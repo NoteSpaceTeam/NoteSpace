@@ -6,22 +6,18 @@ function onOperation(service: DocumentService) {
   return (socket: Socket, operations: Operation[]) => {
     for (const operation of operations) {
       switch (operation.type) {
-        case 'insert': {
+        case 'insert':
           service.insertCharacter(operation);
           break;
-        }
-        case 'delete': {
+        case 'delete':
           service.deleteCharacter(operation);
           break;
-        }
-        case 'inline-style': {
+        case 'inline-style':
           service.updateInlineStyle(operation);
           break;
-        }
-        case 'block-style': {
+        case 'block-style':
           service.updateBlockStyle(operation);
           break;
-        }
         default:
           throw new Error('Invalid operation type');
       }

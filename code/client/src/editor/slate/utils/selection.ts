@@ -29,9 +29,10 @@ export function getSelection(editor: Editor): Selection {
  * @param start
  * @param end
  */
-const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection => (
-   { start: pointToCursor(editor, start), end: pointToCursor(editor, end), }
-)
+const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection => ({
+  start: pointToCursor(editor, start),
+  end: pointToCursor(editor, end),
+});
 
 /**
  * Converts a slate point to a cursor
@@ -63,6 +64,7 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   return selection;
 }
 
-export const getSelectionBySlate = (path: Path, offset: number): Selection => (
-  { start: { line: path[0], column: offset }, end: { line: path[0], column: offset } }
-)
+export const getSelectionBySlate = (path: Path, offset: number): Selection => ({
+  start: { line: path[0], column: offset },
+  end: { line: path[0], column: offset },
+});

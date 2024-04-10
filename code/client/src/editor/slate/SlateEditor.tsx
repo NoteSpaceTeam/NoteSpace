@@ -2,7 +2,7 @@ import { Editable, Slate, withReact } from 'slate-react';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
 import useEvents from '@editor/hooks/useEvents';
 import useRenderers from '@editor/slate/hooks/useRenderers';
-import Toolbar from '@editor/slate/toolbar/Toolbar';
+import Toolbar from '@editor/components/toolbar/Toolbar';
 import EditorTitle from '@editor/components/EditorTitle';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
