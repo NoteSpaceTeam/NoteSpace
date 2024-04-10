@@ -1,19 +1,16 @@
-import {
-  InsertOperation,
-  DeleteOperation,
-  BlockStyleOperation,
-  InlineStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { chunkData, generateReplicaId } from './utils';
-import { socket } from '@src/socket/socket';
+import { generateReplicaId } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, isEqual } from 'lodash';
-
-const CHUNK_DATA_SIZE = 50;
+import { isEmpty, isEqual, range } from 'lodash';
+import {
+  BlockStyleOperation,
+  DeleteOperation,
+  InlineStyleOperation,
+  InsertOperation,
+} from '@notespace/shared/crdt/types/operations';
 
 /**
  * Class that represents a local replica of a FugueTree
@@ -42,16 +39,14 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]): void {
-    const operations = values.map((value, i) => {
-      const node = typeof value === 'string' ? { value, styles: [] } : value;
+  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]){
+    return values.map((value, i) => {
+      const node = typeof value === 'string'
+        ? { value, styles: [] }
+        : value;
       const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
       this.addNode(operation);
       return operation;
-    });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
     });
   }
 
@@ -95,25 +90,24 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal(selection: Selection): void {
+  deleteLocal(selection: Selection){
     const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
       this.removeNode(id);
       return { type: 'delete', id };
     });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+    return operations;
   }
 
-  deleteLocalById(...ids: Id[]): void {
-    for (const id of ids) {
+  /**
+   * Deletes the node based on the given operation
+   * @param ids
+   */
+  deleteLocalById = (...ids: Id[]) : DeleteOperation[] =>
+    ids.map(id => {
       this.removeNode(id);
-      const operation: DeleteOperation = { type: 'delete', id };
-      socket.emit('operation', [operation]);
-    }
-  }
+      return { type: 'delete', id };
+    });
 
   /**
    * Deletes the node based on the given operation
@@ -149,10 +143,7 @@ export class Fugue {
         value,
       };
     });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+    return operations;
   }
 
   /**
@@ -172,13 +163,12 @@ export class Fugue {
       line,
       style: type,
     };
-    socket.emit('operation', [operation]);
+    return operation;
   }
 
   updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
-    for (let line = selection.start.line; line <= selection.end.line; line++) {
-      this.updateBlockStyleLocal(type, line);
-    }
+    return range(selection.start.line, selection.end.line + 1, 1)
+      .map(line => this.updateBlockStyleLocal(type, line));
   }
 
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
@@ -247,9 +237,7 @@ export class Fugue {
       }
       nodes.push(node);
     }
-    if (nodes.length > 0) {
-      yield nodes;
-    }
+    if (isEmpty(nodes)) yield nodes;
   }
 
   /**
@@ -262,7 +250,7 @@ export class Fugue {
     const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
     const nodes: FugueNode[] = iterator.next().value;
     if (!nodes) return;
-    this.deleteLocalById(...nodes.map(node => node.id));
+    return this.deleteLocalById(...nodes.map(node => node.id));
   }
 
   /**

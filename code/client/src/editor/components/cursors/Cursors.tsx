@@ -3,8 +3,13 @@ import useSocketListeners from '@socket/useSocketListeners';
 import { CursorData } from '@editor/components/cursors/CursorData';
 import Cursor from '@editor/components/cursors/Cursor';
 import './Cursors.scss';
+import { Socket } from 'socket.io-client';
 
-function Cursors() {
+type CursorProps = {
+  socket : Socket
+}
+
+function Cursors({socket} : CursorProps) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
@@ -14,7 +19,7 @@ function Cursors() {
     });
   };
 
-  useSocketListeners({
+  useSocketListeners(socket, {
     cursorChange: onCursorChange,
   });
 

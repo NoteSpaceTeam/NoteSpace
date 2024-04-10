@@ -1,6 +1,6 @@
 import { createSetBlockApply, createSetInlineApply } from '@editor/slate/plugins/markdown/applyOperations';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

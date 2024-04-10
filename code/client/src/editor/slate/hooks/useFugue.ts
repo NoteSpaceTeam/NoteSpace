@@ -1,8 +1,4 @@
-import { Fugue } from '@src/editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
 import { useMemo } from 'react';
 
-function useFugue() {
-  return useMemo(() => new Fugue(), []);
-}
-
-export default useFugue;
+export default () => useMemo(() => new Fugue(), []);

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { socket } from './socket';
+import { Socket } from 'socket.io-client';
 
-function useSocketListeners(eventHandlers: Record<string, (...args: any[]) => void>) {
+function useSocketListeners(socket : Socket, eventHandlers: Record<string, (...args: any[]) => void>) {
   useEffect(() => {
     const setupEventListeners = () => {
       Object.entries(eventHandlers).forEach(([event, handler]) => {
@@ -17,7 +17,7 @@ function useSocketListeners(eventHandlers: Record<string, (...args: any[]) => vo
 
     setupEventListeners();
     return cleanupEventListeners;
-  }, [eventHandlers]);
+  }, [eventHandlers, socket]);
 }
 
 export default useSocketListeners;

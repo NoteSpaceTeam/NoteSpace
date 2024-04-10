@@ -1,11 +1,12 @@
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
 import { getSelectionByRange } from '@editor/slate/utils/selection';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Selection } from '@notespace/shared/types/cursor';
 import { FugueNode } from '@editor/crdt/types';
 import { Id } from '@notespace/shared/crdt/types/nodes';
 import { range } from 'lodash';
+import { DeleteOperation } from '@notespace/shared/crdt/types/operations';
 
 /**
  * Creates a function that applies a block element to the editor
@@ -17,10 +18,13 @@ export function createSetBlockApply(type: BlockStyle, fugue: Fugue) {
     const line = range.anchor.path[0];
     const cursor = { line, column: 0 };
     const triggerNodes = fugue.traverseBySeparator(' ', cursor, false).next().value;
-    triggerNodes.forEach((node: FugueNode) => fugue.deleteLocalById(node.id));
+    const deleteOperations : DeleteOperation[] = triggerNodes.map(
+      (node: FugueNode) => fugue.deleteLocalById(node.id)
+    ).flat();
 
-    fugue.updateBlockStyleLocal(type, line);
+    const styleOperation = fugue.updateBlockStyleLocal(type, line);
     Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
+    return [...deleteOperations, styleOperation];
   };
 }
 
@@ -34,18 +38,19 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
   return (editor: Editor, range: Range) => {
     // remove trigger characters
     const selection = getSelectionByRange(editor, range, triggerLength);
-    deleteAroundSelection(selection, triggerLength, fugue);
+    const deletions = deleteAroundSelection(selection, triggerLength, fugue);
 
     // update styles in the tree
     const newSelection = {
       start: { ...selection.start, column: selection.start.column - triggerLength },
       end: { ...selection.end, column: selection.end.column - triggerLength },
     };
-    fugue.updateInlineStyleLocal(newSelection, true, key as InlineStyle);
+    const operations = fugue.updateInlineStyleLocal(newSelection, true, key as InlineStyle);
 
     // apply styles in the editor
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });
     Transforms.setNodes(editor, { [key]: true }, { match: Text.isText, at: range, split: true });
+    return [...deletions, ...operations];
   };
 }
 
@@ -55,7 +60,7 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
  * @param amount
  * @param fugue
  */
-function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue) {
+function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue) : DeleteOperation[] {
   const idsToDelete: Id[] = [];
 
   range(1, amount, 1).forEach(i => {
@@ -65,5 +70,5 @@ function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugu
     const nodeAfter = fugue.getNodeByCursor(cursorAfter);
     idsToDelete.push(nodeBefore?.id, nodeAfter?.id);
   });
-  idsToDelete.forEach(id => id && fugue.deleteLocalById(id));
+  return idsToDelete.map(id => fugue.deleteLocalById(id)).flat();
 }

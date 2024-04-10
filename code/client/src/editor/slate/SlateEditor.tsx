@@ -13,18 +13,24 @@ import './SlateEditor.scss';
 import { Editor } from 'slate';
 import useFugue from './hooks/useFugue';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
+import { socket } from '@socket/socket';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = { editor?: Editor };
 
 function SlateEditor({ editor: _editor }: SlateEditorProps) {
   const fugue = useFugue();
-  const editor = useEditor(_editor, withHistory, withReact, (editor: Editor) => withMarkdown(editor, fugue));
+  const editor = useEditor(_editor,
+    withHistory,
+    withReact,
+    (editor: Editor) => withMarkdown(editor, fugue, socket)
+  );
+
   const { getElementRenderer, getLeafRenderer } = useRenderers();
-  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
+  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue, socket);
   const initialValue = [descendant('paragraph', '')];
 
-  useEvents(fugue, () => {
+  useEvents(fugue,socket, () => {
     editor.children = toSlate(fugue);
     editor.onChange();
   });
@@ -37,9 +43,9 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
       </header>
       <div className="container">
         <Slate editor={editor} initialValue={initialValue}>
-          <Cursors />
+          <Cursors socket={socket}/>
           <Toolbar />
-          <EditorTitle placeholder={'Untitled'} />
+          <EditorTitle placeholder={'Untitled'} socket={socket} />
           <Editable
             className="editable"
             data-testid={'editor'}

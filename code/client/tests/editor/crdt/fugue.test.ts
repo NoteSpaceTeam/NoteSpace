@@ -1,4 +1,4 @@
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
 import { NodeInsert } from '@editor/crdt/types';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@notespace/shared/types/cursor';

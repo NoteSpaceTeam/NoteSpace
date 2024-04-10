@@ -1,13 +1,13 @@
-import { type BaseEditor, Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
+import { Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
 import { type CustomElement } from '@editor/slate/model/types';
 import { shortcuts } from './shortcuts';
-import { type ReactEditor } from 'slate-react';
-import { type HistoryEditor } from 'slate-history';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
+import { Socket } from 'socket.io-client';
+import { BlockStyleOperation, DeleteOperation, InlineStyleOperation } from '@notespace/shared/crdt/types/operations';
 
-type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
+type ApplyFunction = (editor: Editor, range: Range) => (BlockStyleOperation | InlineStyleOperation | DeleteOperation)[];
 type InlineFunction = (n: unknown) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
 type InsertTextFunction = (text: string) => void;
@@ -31,10 +31,16 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
 /**
  * Handler to be called while normalization gets deferred.
  * @param editor
+ * @param socket
  * @param match
  * @param apply
  */
-const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
+const normalizeDeferral = (
+  editor: Editor,
+  socket : Socket,
+  match: RegExpExecArray,
+  apply: ApplyFunction
+) => {
   const { selection } = editor;
   const { anchor } = selection!;
   const [text, startText, endText] = match;
@@ -63,7 +69,10 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
   }
 
   const applyRange = matchRangeRef.unref();
-  if (applyRange) apply(editor, applyRange);
+  if (applyRange) {
+    const operations = apply(editor, applyRange);
+    socket.emitChunked('operation', operations);
+  }
 };
 
 /**
@@ -71,8 +80,16 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
  * @param insertText
  * @param insert
  * @param editor
+ * @param fugue
+ * @param socket
  */
-const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string, fugue: Fugue): void => {
+const insertText = (
+  editor: Editor,
+  fugue: Fugue,
+  socket : Socket,
+  insert : string,
+  insertText: InsertTextFunction
+): void => {
   // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
   if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
@@ -97,7 +114,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(fugue)));
+    editor.withoutNormalizing(() => normalizeDeferral(editor, socket, execArray, apply(fugue)));
     return;
   }
   insertText(insert);

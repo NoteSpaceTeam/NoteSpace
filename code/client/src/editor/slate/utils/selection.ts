@@ -66,9 +66,8 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
 }
 
 export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
-  const start: Point = { path, offset };
-  const end: Point = { path, offset };
-  return pointsToSelection(editor, start, end);
+  const point : Point = {path, offset}
+  return pointsToSelection(editor, point, point);
 }
 
 /**

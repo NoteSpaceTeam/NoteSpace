@@ -1,10 +1,17 @@
 import { getSelection } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@editor/crdt/Fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { HistoryOperations } from '@editor/slate/hooks/historyEvents';
+import { HistoryOperations } from '@editor/slate/events/historyEvents';
+import { Socket } from 'socket.io-client';
 
-export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations) => {
+
+export default (
+  editor: Editor,
+  fugue: Fugue,
+  socket : Socket,
+  { undo, redo }: HistoryOperations
+) => {
   const hotkeys: Record<string, string> = {
     b: 'bold',
     i: 'italic',
@@ -52,7 +59,7 @@ export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations)
   function onTab() {
     const cursor = getSelection(editor).start;
     editor.insertText('\t');
-    fugue.insertLocal(cursor, '\t');
+    socket.emitChunked('operation', fugue.insertLocal(cursor, '\t'));
   }
 
   /**
@@ -60,7 +67,9 @@ export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations)
    */
   function onCtrlBackspace() {
     const { start } = getSelection(editor);
-    fugue.deleteWordLocal(start, true);
+    const data = fugue.deleteWordLocal(start, true);
+    if(!data) return;
+    socket.emitChunked('operation', data);
   }
 
   /**
@@ -68,7 +77,9 @@ export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations)
    */
   function onCtrlDelete() {
     const { start } = getSelection(editor);
-    fugue.deleteWordLocal(start, false);
+    const data = fugue.deleteWordLocal(start, false);
+    if(!data) return;
+    socket.emitChunked('operation', data);
   }
 
   /**
@@ -78,7 +89,7 @@ export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations)
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    CustomEditor.toggleMark(editor, mark, fugue);
+    CustomEditor.toggleMark(editor, socket, mark, fugue);
   }
 
   return { onKeyDown };

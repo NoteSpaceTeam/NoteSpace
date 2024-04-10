@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Document } from '../../../../../shared/crdt/types/document';
 import useSocketListeners from '@socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
-import { socket } from '@socket/socket';
+import { Socket } from 'socket.io-client';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  socket: Socket;
+}
 
 function EditorTitle(props: InputProps) {
   const [title, setTitle] = useState('');
@@ -17,7 +19,7 @@ function EditorTitle(props: InputProps) {
   }
 
   function onConfirm() {
-    socket.emit('titleChange', title);
+    props.socket.emit('titleChange', title);
   }
 
   function onDocument({ title }: Document) {
@@ -31,7 +33,7 @@ function EditorTitle(props: InputProps) {
     }
   }
 
-  useSocketListeners({
+  useSocketListeners(props.socket, {
     document: onDocument,
     titleChange: setTitle,
   });

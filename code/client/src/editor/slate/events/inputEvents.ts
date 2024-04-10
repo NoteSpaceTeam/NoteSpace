@@ -6,12 +6,12 @@ import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { Editor, Range } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
+import { Editor } from 'slate';
+import { Fugue } from '@editor/crdt/Fugue';
 import { Selection } from '@notespace/shared/types/cursor';
-import { socket } from '@socket/socket';
+import { Socket } from 'socket.io-client';
 
-export default (editor: Editor, fugue: Fugue) => {
+export default (editor: Editor, fugue: Fugue, socket : Socket) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -55,7 +55,9 @@ export default (editor: Editor, fugue: Fugue) => {
    */
   function onInsertText(key: string, selection: Selection) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    fugue.insertLocal(selection.start, nodeInsert(key, styles));
+    socket.emitChunked('operation',
+      fugue.insertLocal(selection.start, nodeInsert(key, styles))
+    );
   }
 
   /**
@@ -63,9 +65,14 @@ export default (editor: Editor, fugue: Fugue) => {
    * @param cursor
    */
   function onEnter(cursor: Cursor) {
-    fugue.insertLocal(cursor, '\n');
+    socket.emitChunked('operation',
+      fugue.insertLocal(cursor, '\n')
+    );
     const type = editor.children[cursor.line].type as BlockStyle;
-    if (isMultiBlock(type)) fugue.updateBlockStyleLocal(type, cursor.line + 1);
+    if(!isMultiBlock(type)) return;
+    socket.emitChunked('operation',
+      [fugue.updateBlockStyleLocal(type, cursor.line + 1)]
+    );
   }
 
   /**
@@ -76,12 +83,19 @@ export default (editor: Editor, fugue: Fugue) => {
     const { start, end } = selection;
     const startCursor = emptyCursor();
     if ([startCursor, start, end].every(isEqual)) return;
-    fugue.deleteLocal(selection);
+    socket.emitChunked('operation',
+      fugue.deleteLocal(selection)
+    );
 
     // Reset block style - same line if only one line selected else only the last line
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
-      fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
+      const newSelection = start.line !== end.line
+        ? { start: { line: start.line + 1, column: 0 }, end }
+        : selection;
+
+      socket.emitChunked('operation',
+        fugue.updateBlockStylesLocalBySelection('paragraph', newSelection)
+      );
     }
   }
 
@@ -90,7 +104,10 @@ export default (editor: Editor, fugue: Fugue) => {
     if (!clipboardData) return;
     const { start } = getSelection(editor);
     const nodes = clipboardData.split('').map(char => nodeInsert(char, []));
-    fugue.insertLocal(start, ...nodes);
+
+    socket.emitChunked('operation',
+      fugue.insertLocal(start, ...nodes)
+    );
   }
 
   /**
@@ -98,7 +115,10 @@ export default (editor: Editor, fugue: Fugue) => {
    */
   function onCut() {
     const selection = getSelection(editor);
-    fugue.deleteLocal(selection);
+
+    socket.emitChunked('operation',
+      fugue.deleteLocal(selection)
+    );
   }
 
   /**
@@ -107,8 +127,7 @@ export default (editor: Editor, fugue: Fugue) => {
   function onSelect() {
     // let the selection update before sending it
     setTimeout(() => {
-      const range: Range | null = editor.selection;
-      socket.emit('cursorChange', range);
+      socket.emitChunked('cursorChange', [editor.selection]);
     }, 10);
   }
 
