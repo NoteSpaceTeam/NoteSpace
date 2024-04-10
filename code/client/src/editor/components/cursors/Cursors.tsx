@@ -18,7 +18,14 @@ function Cursors() {
     cursorChange: onCursorChange,
   });
 
-  return cursors.map(cursor => <Cursor key={cursor.id} id={cursor.id} color={cursor.color} range={cursor.range} />);
+  return cursors.map(cursor =>
+    <Cursor
+      key={cursor.id}
+      id={cursor.id}
+      color={cursor.color}
+      range={cursor.range}
+    />
+  );
 }
 
 export default Cursors;

@@ -1,35 +1,36 @@
 import { useEffect, useRef } from 'react';
-import { getPositionByRange } from '@editor/components/cursors/utils';
+import { toDomRange } from '@editor/components/cursors/utils';
 import { useSlate } from 'slate-react';
-import { Range } from 'slate';
+import { CursorData } from '@editor/components/cursors/CursorData';
 
-type CursorProps = {
-  id: string;
-  range: Range;
-  color: string;
-};
-
-function Cursor({ id, range, color }: CursorProps) {
+/**
+ * Renders a cursor at the given range
+ * @param id
+ * @param range
+ * @param color
+ * @constructor
+ */
+function Cursor({ id, range, color }: CursorData){
   const cursorRef = useRef<HTMLDivElement>(null);
   const editor = useSlate();
 
   useEffect(() => {
-    if (cursorRef.current) {
-      cursorRef.current?.classList.remove('animate');
-      const { top, left, size } = getPositionByRange(editor, range);
-      cursorRef.current.style.top = `${top - 1}px`;
-      cursorRef.current.style.left = `${left - 1}px`;
-      if (size) {
-        cursorRef.current.style.width = `${size.width}px`;
-        cursorRef.current.style.height = `${size.height}px`;
-      } else {
-        cursorRef.current.style.width = '2px';
-        cursorRef.current.style.height = '1.5em';
-        setTimeout(() => {
-          cursorRef.current?.classList.add('animate');
-        }, 500);
-      }
+    if(!cursorRef.current) return;
+    cursorRef.current?.classList.remove('animate');
+    const { top, left, size } = toDomRange(editor, range);
+
+    cursorRef.current.style.top = `${top - 1}px`;
+    cursorRef.current.style.left = `${left - 1}px`;
+    cursorRef.current.style.width = (size) ? `${size.width}px` : '2px';
+    cursorRef.current.style.height = (size) ? `${size.height}px` : '1.5em';
+
+    if(!size) {
+      setTimeout(() => {
+        cursorRef.current?.classList.add('animate');
+        }, 500
+      );
     }
+
   }, [editor, range]);
 
   return (
@@ -37,12 +38,7 @@ function Cursor({ id, range, color }: CursorProps) {
       id={`cursor-${id}`}
       ref={cursorRef}
       className="cursor"
-      style={{
-        position: 'absolute',
-        width: '2px',
-        height: '1.5em',
-        backgroundColor: color,
-      }}
+      style={{ backgroundColor: color}}
     />
   );
 }

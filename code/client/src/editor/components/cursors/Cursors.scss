@@ -13,3 +13,9 @@
 .animate {
   animation: blink 1s infinite;
 }
+
+.cursor {
+  position: absolute;
+  width: 2px;
+  height: 1.5em;
+}

@@ -24,6 +24,9 @@ function Toolbar() {
   const [selectionBounds, setSelectionBounds] = useState<DOMRect | null>(null);
 
   useEffect(() => {
+    /**
+     * Get the current selection bounds
+     */
     const getCurrentAbsolutePosition = () => {
       const selection = window.getSelection();
 
@@ -37,9 +40,11 @@ function Toolbar() {
       const rect = range.getBoundingClientRect();
       setSelectionBounds(rect);
     };
+
     window.addEventListener('mouseup', getCurrentAbsolutePosition);
     return () => window.removeEventListener('mouseup', getCurrentAbsolutePosition);
-  }, []);
+    }, []
+  );
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
