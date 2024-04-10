@@ -3,7 +3,6 @@ import { Operation as SlateOperation } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import { getSelectionBySlate } from '@editor/slate/utils/selection';
 
-
 export type HistoryOperations = {
   undo: () => void;
   redo: () => void;
@@ -12,10 +11,9 @@ export type HistoryOperations = {
 /**
  * Handles undo and redo operations
  * @param editor
+ * @param fugue
  */
-function useHistory(editor: Editor) : HistoryOperations {
-  const fugue = Fugue.getInstance();
-
+function historyEvents(editor: Editor, fugue: Fugue): HistoryOperations {
   function undo() {
     const { history } = editor;
     const undo = history.undos[history.undos.length - 1];
@@ -34,12 +32,12 @@ function useHistory(editor: Editor) : HistoryOperations {
   function applyOperation(operation: SlateOperation) {
     switch (operation.type) {
       case 'insert_text': {
-        const selection = getSelectionBySlate(operation.path, operation.offset);
+        const selection = getSelectionBySlate(editor, operation.path, operation.offset);
         fugue.deleteLocal(selection);
         break;
       }
       case 'remove_text': {
-        const selection = getSelectionBySlate(operation.path, operation.offset);
+        const selection = getSelectionBySlate(editor, operation.path, operation.offset);
         fugue.insertLocal(selection.start, ...operation.text.split(''));
         break;
       }
@@ -52,4 +50,4 @@ function useHistory(editor: Editor) : HistoryOperations {
   return { undo, redo };
 }
 
-export default useHistory;
+export default historyEvents;

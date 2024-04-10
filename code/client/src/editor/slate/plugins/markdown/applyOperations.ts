@@ -10,9 +10,9 @@ import { range } from 'lodash';
 /**
  * Creates a function that applies a block element to the editor
  * @param type
+ * @param fugue
  */
-export function createSetBlockApply(type: BlockStyle) {
-  const fugue = Fugue.getInstance();
+export function createSetBlockApply(type: BlockStyle, fugue: Fugue) {
   return (editor: Editor, range: Range) => {
     const line = range.anchor.path[0];
     const cursor = { line, column: 0 };
@@ -28,13 +28,13 @@ export function createSetBlockApply(type: BlockStyle) {
  * Returns a function that applies an inline style to a block of text in the editor
  * @param key
  * @param triggerLength
+ * @param fugue
  */
-export function createSetInlineApply(key: InlineStyle, triggerLength: number) {
-  const fugue = Fugue.getInstance();
+export function createSetInlineApply(key: InlineStyle, triggerLength: number, fugue: Fugue) {
   return (editor: Editor, range: Range) => {
     // remove trigger characters
     const selection = getSelectionByRange(editor, range, triggerLength);
-    deleteAroundSelection(selection, triggerLength);
+    deleteAroundSelection(selection, triggerLength, fugue);
 
     // update styles in the tree
     const newSelection = {
@@ -53,9 +53,9 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number) {
  * Deletes characters around the selection
  * @param selection
  * @param amount
+ * @param fugue
  */
-function deleteAroundSelection(selection: Selection, amount: number) {
-  const fugue = Fugue.getInstance();
+function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue) {
   const idsToDelete: Id[] = [];
 
   range(1, amount, 1).forEach(i => {

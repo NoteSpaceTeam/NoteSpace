@@ -12,14 +12,12 @@ const CustomEditor = {
     return marks ? marks[format] : false;
   },
 
-  toggleMark(editor: Editor, mark: string) {
+  toggleMark(editor: Editor, mark: string, fugue: Fugue) {
     const isActive = CustomEditor.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
     const selected = isSelected(editor);
     if (!selected) return;
-
-    const fugue = Fugue.getInstance();
     const selection = getSelection(editor);
     fugue.updateInlineStyleLocal(selection, !isActive, mark as InlineStyle);
   },

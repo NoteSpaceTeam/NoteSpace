@@ -5,11 +5,10 @@ import { Document } from '@notespace/shared/crdt/types/document';
 
 /**
  * Hook client socket listeners to events
+ * @param fugue
  * @param onDone
  */
-function useEvents(onDone: () => void) {
-  const fugue = Fugue.getInstance();
-
+function useEvents(fugue: Fugue, onDone: () => void) {
   /**
    * Hook socket listeners to an edit event
    * @param operations - Edit operations

@@ -16,28 +16,17 @@ import { isEmpty, isEqual } from 'lodash';
 const CHUNK_DATA_SIZE = 50;
 
 /**
- * Singleton that represents a local replica of a FugueTree
+ * Class that represents a local replica of a FugueTree
  * @param T - the type of the values stored in the tree
  */
 export class Fugue {
-  private static instance: Fugue;
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
 
-  private constructor() {
+  constructor() {
     this.replicaId = generateReplicaId();
     this.tree = new FugueTree();
-  }
-
-  /**
-   * Returns the singleton instance of the Fugue class
-   */
-  static getInstance(): Fugue {
-    if (!Fugue.instance) {
-      Fugue.instance = new Fugue();
-    }
-    return Fugue.instance;
   }
 
   /**
@@ -118,10 +107,12 @@ export class Fugue {
     });
   }
 
-  deleteLocalById(id: Id): void {
-    this.removeNode(id);
-    const operation: DeleteOperation = { type: 'delete', id };
-    socket.emit('operation', [operation]);
+  deleteLocalById(...ids: Id[]): void {
+    for (const id of ids) {
+      this.removeNode(id);
+      const operation: DeleteOperation = { type: 'delete', id };
+      socket.emit('operation', [operation]);
+    }
   }
 
   /**
@@ -269,14 +260,9 @@ export class Fugue {
    */
   deleteWordLocal({ line, column }: Cursor, reverse: boolean) {
     const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
-    const operations: FugueNode[] = iterator.next().value;
-
-    chunkData(
-      operations.map(node => ({ type: 'delete', id: node.id })),
-      CHUNK_DATA_SIZE
-    ).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+    const nodes: FugueNode[] = iterator.next().value;
+    if (!nodes) return;
+    this.deleteLocalById(...nodes.map(node => node.id));
   }
 
   /**

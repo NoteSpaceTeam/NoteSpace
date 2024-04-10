@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { toDomRange } from '@editor/components/cursors/utils';
+import { toDomRange } from '@editor/slate/utils/selection';
 import { useSlate } from 'slate-react';
 import { CursorData } from '@editor/components/cursors/CursorData';
 
@@ -10,37 +10,28 @@ import { CursorData } from '@editor/components/cursors/CursorData';
  * @param color
  * @constructor
  */
-function Cursor({ id, range, color }: CursorData){
+function Cursor({ id, range, color }: CursorData) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const editor = useSlate();
 
   useEffect(() => {
-    if(!cursorRef.current) return;
+    if (!cursorRef.current) return;
     cursorRef.current?.classList.remove('animate');
     const { top, left, size } = toDomRange(editor, range);
 
     cursorRef.current.style.top = `${top - 1}px`;
     cursorRef.current.style.left = `${left - 1}px`;
-    cursorRef.current.style.width = (size) ? `${size.width}px` : '2px';
-    cursorRef.current.style.height = (size) ? `${size.height}px` : '1.5em';
+    cursorRef.current.style.width = size ? `${size.width}px` : '2px';
+    cursorRef.current.style.height = size ? `${size.height}px` : '1.5em';
 
-    if(!size) {
+    if (!size) {
       setTimeout(() => {
         cursorRef.current?.classList.add('animate');
-        }, 500
-      );
+      }, 500);
     }
-
   }, [editor, range]);
 
-  return (
-    <div
-      id={`cursor-${id}`}
-      ref={cursorRef}
-      className="cursor"
-      style={{ backgroundColor: color}}
-    />
-  );
+  return <div id={`cursor-${id}`} ref={cursorRef} className="cursor" style={{ backgroundColor: color }} />;
 }
 
 export default Cursor;

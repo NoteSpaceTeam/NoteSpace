@@ -43,8 +43,7 @@ function Toolbar() {
 
     window.addEventListener('mouseup', getCurrentAbsolutePosition);
     return () => window.removeEventListener('mouseup', getCurrentAbsolutePosition);
-    }, []
-  );
+  }, []);
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();

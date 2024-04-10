@@ -5,6 +5,7 @@ import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
+import { Fugue } from '@editor/crdt/fugue';
 
 type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
 type InlineFunction = (n: unknown) => boolean;
@@ -71,7 +72,7 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: ApplyF
  * @param insert
  * @param editor
  */
-const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string): void => {
+const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string, fugue: Fugue): void => {
   // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
   if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
@@ -96,7 +97,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply));
+    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(fugue)));
     return;
   }
   insertText(insert);
@@ -147,8 +148,6 @@ const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, 
   if (match) {
     const [block, path] = match;
     const start = Editor.start(editor, path);
-
-    // TODO - REFACTOR
     if (
       !Editor.isEditor(block) &&
       Element.isElement(block) &&

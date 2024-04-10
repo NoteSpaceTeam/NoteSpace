@@ -2,10 +2,9 @@ import { getSelection } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { HistoryOperations } from '@editor/slate/hooks/useHistory';
+import { HistoryOperations } from '@editor/slate/hooks/historyEvents';
 
-export default (editor: Editor, fugue : Fugue, {undo, redo} : HistoryOperations) => {
-
+export default (editor: Editor, fugue: Fugue, { undo, redo }: HistoryOperations) => {
   const hotkeys: Record<string, string> = {
     b: 'bold',
     i: 'italic',
@@ -79,8 +78,8 @@ export default (editor: Editor, fugue : Fugue, {undo, redo} : HistoryOperations)
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    CustomEditor.toggleMark(editor, mark);
+    CustomEditor.toggleMark(editor, mark, fugue);
   }
 
-  return {onKeyDown};
-}
+  return { onKeyDown };
+};

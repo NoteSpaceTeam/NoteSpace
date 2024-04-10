@@ -8,11 +8,10 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Editor, Range } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
-import {Selection} from '@notespace/shared/types/cursor';
+import { Selection } from '@notespace/shared/types/cursor';
 import { socket } from '@socket/socket';
 
-export default (editor : Editor, fugue : Fugue) => {
-
+export default (editor: Editor, fugue: Fugue) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -114,4 +113,4 @@ export default (editor : Editor, fugue : Fugue) => {
   }
 
   return { onInput, onPaste, onCut, onSelect };
-}
+};

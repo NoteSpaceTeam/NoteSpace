@@ -1,6 +1,7 @@
-import { Editor, Range, Point, Path, Node } from 'slate';
-import { Cursor, Selection, emptySelection } from '@notespace/shared/types/cursor';
+import { Editor, Node, Path, Point, Range } from 'slate';
+import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { first } from 'lodash';
+import { ReactEditor } from 'slate-react';
 
 /**
  * Checks if the current selection is active
@@ -64,7 +65,20 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   return selection;
 }
 
-export const getSelectionBySlate = (path: Path, offset: number): Selection => ({
-  start: { line: path[0], column: offset },
-  end: { line: path[0], column: offset },
-});
+export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
+  const start: Point = { path, offset };
+  const end: Point = { path, offset };
+  return pointsToSelection(editor, start, end);
+}
+
+/**
+ * Get the position of a range in the editor
+ * @param editor
+ * @param range
+ */
+export function toDomRange(editor: ReactEditor, range: Range) {
+  const domRange = ReactEditor.toDOMRange(editor, range);
+  const { top, left, width, height } = domRange.getBoundingClientRect();
+  const size = width > 0.1 ? { width, height } : undefined;
+  return { top, left, size };
+}

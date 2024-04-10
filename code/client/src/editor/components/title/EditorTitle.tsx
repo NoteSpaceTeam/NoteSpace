@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { socket } from '@src/socket/socket';
-import { Document } from '@notespace/shared/crdt/types/document';
-import useSocketListeners from '@src/socket/useSocketListeners';
+import { Document } from '../../../../../shared/crdt/types/document';
+import useSocketListeners from '@socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
+import { socket } from '@socket/socket';
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 function EditorTitle(props: InputProps) {
@@ -23,13 +24,8 @@ function EditorTitle(props: InputProps) {
     setTitle(title);
   }
 
-  function onTitleChange(newTitle: string) {
-    setTitle(newTitle);
-  }
-
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
-      e.preventDefault();
       onConfirm();
       ReactEditor.focus(editor);
     }
@@ -37,7 +33,7 @@ function EditorTitle(props: InputProps) {
 
   useSocketListeners({
     document: onDocument,
-    titleChange: onTitleChange,
+    titleChange: setTitle,
   });
 
   return (

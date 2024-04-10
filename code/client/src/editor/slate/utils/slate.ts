@@ -6,10 +6,9 @@ import { Fugue } from '@editor/crdt/fugue';
 import { BlockStyles } from '@notespace/shared/types/styles';
 
 /**
- * Converts the FugueTree to a Slate document.
+ * Converts a FugueTree to a Slate document
  */
-export function fugueToSlate(): Descendant[] {
-  const fugue = Fugue.getInstance();
+export function toSlate(fugue: Fugue): Descendant[] {
   const root = fugue.getRootNode();
   const descendants: Descendant[] = [];
   let lastStyles: InlineStyle[] = [];
