@@ -1,4 +1,4 @@
-import { Id, Node } from "./types/nodes";
+import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
 import { isEmpty, isNull } from "lodash";
 import { rootNode, treeNode } from "./utils";
@@ -13,21 +13,22 @@ export class FugueTree<T> {
   }
 
   /**
-   * Sets the tree to the given nodes.
-   * @param nodesMap the nodes.
+   * Sets the tree to the given nodes
+   * @param nodes
    */
-  setTree(nodesMap: Map<string, Node<T>[]>) {
+  setTree(nodes: Nodes<T>) {
+    const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
     this._nodes = nodesMap;
     this._root = nodesMap.get("root")![0];
   }
 
   /**
-   * Adds a node to the tree.
-   * @param id the id of the node.
-   * @param value the value of the node.
-   * @param parent the id of the parent node.
-   * @param side the side of the parent node where this node is located.
-   * @param styles the styles of the node.
+   * Adds a node to the tree
+   * @param id the id of the node
+   * @param value the value of the node
+   * @param parent the id of the parent node
+   * @param side the side of the parent node where this node is located
+   * @param styles the styles of the node
    */
   addNode(
     id: Id,

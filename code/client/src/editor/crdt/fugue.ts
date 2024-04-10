@@ -4,7 +4,7 @@ import {
   BlockStyleOperation,
   InlineStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
-import { type Id } from '@notespace/shared/crdt/types/nodes';
+import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { chunkData, generateReplicaId } from './utils';
@@ -42,10 +42,10 @@ export class Fugue {
 
   /**
    * Builds the tree from the given nodes map.
-   * @param nodesMap
+   * @param nodes
    */
-  setTree(nodesMap: Map<string, FugueNode[]>): void {
-    this.tree.setTree(nodesMap);
+  setTree(nodes: Nodes<string>): void {
+    this.tree.setTree(nodes);
   }
 
   /**

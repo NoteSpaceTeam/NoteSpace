@@ -16,19 +16,20 @@ const api = router(service);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
+const onConnectionHandler = onConnection(service, events);
 
 app.use(cors({ origin: config.ORIGIN }));
 app.use('/', api);
 
-io.on('connection', onConnection(service, events));
+io.on('connection', onConnectionHandler);
 
 // do not start the server if this file is being imported
 if (require.main === module) {
-  server.listen(config.SERVER_PORT, config.SERVER_IP, 3, () => {
+  server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
     console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
   });
 }
 export default {
   app,
-  onConnection: onConnection(service, events),
+  onConnectionHandler,
 };

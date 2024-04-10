@@ -9,12 +9,9 @@ import {
 
 type DocumentDatabase = {
   getDocument: () => Promise<Document>;
-  deleteDocument: () => void;
-  insertCharacter: (operation: InsertOperation) => void;
-  deleteCharacter: (operation: DeleteOperation) => void;
-  updateInlineStyle: (operation: InlineStyleOperation) => void;
-  updateBlockStyle: (operation: BlockStyleOperation) => void;
+  updateDocument: (nodes: Nodes<string>) => void;
   updateTitle: (title: string) => void;
+  deleteDocument: () => void;
 };
 
 type DocumentService = {

@@ -2,7 +2,6 @@ import useSocketListeners from '@src/socket/useSocketListeners';
 import { Fugue } from '@src/editor/crdt/fugue';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { FugueNode } from '@editor/crdt/types';
 
 /**
  * Hook client socket listeners to events
@@ -38,8 +37,7 @@ function useEvents(onDone: () => void) {
   }
 
   function onDocument({ nodes }: Document) {
-    const nodesMap = new Map<string, Array<FugueNode>>(Object.entries(nodes));
-    fugue.setTree(nodesMap);
+    fugue.setTree(nodes);
     onDone();
   }
 

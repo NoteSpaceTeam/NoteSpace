@@ -1,65 +1,33 @@
-import {
-  DeleteOperation,
-  InsertOperation,
-  InlineStyleOperation,
-  BlockStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { DocumentDatabase } from '@src/types';
 import { Document } from '@notespace/shared/crdt/types/document';
-
-let tree = new FugueTree<string>();
-let documentTitle = '';
-
-async function getNodes(): Promise<Nodes<string>> {
-  return Object.fromEntries(Array.from(tree.nodes.entries()));
-}
-
-function deleteTree(): void {
-  tree = new FugueTree();
-}
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
+import { emptyTree } from '@notespace/shared/crdt/utils';
 
 export default function DocumentDatabase(): DocumentDatabase {
+  let nodes: Nodes<string> = emptyTree();
+  let title = '';
+
   async function getDocument(): Promise<Document> {
-    const nodes = await getNodes();
-    return {
-      title: documentTitle,
-      nodes,
-    };
+    return { title, nodes };
   }
 
-  function deleteDocument(): void {
-    deleteTree();
+  function updateDocument(newNodes: Nodes<string>) {
+    nodes = newNodes;
   }
 
-  function insertCharacter({ id, value, parent, side, styles }: InsertOperation): void {
-    tree.addNode(id, value, parent, side, styles);
+  function updateTitle(newTitle: string) {
+    title = newTitle;
   }
 
-  function deleteCharacter({ id }: DeleteOperation): void {
-    tree.deleteNode(id);
-  }
-
-  function updateInlineStyle({ id, style, value }: InlineStyleOperation): void {
-    tree.updateInlineStyle(id, style, value);
-  }
-
-  function updateBlockStyle({ line, style }: BlockStyleOperation): void {
-    tree.updateBlockStyle(style, line);
-  }
-
-  function updateTitle(title: string): void {
-    documentTitle = title;
+  function deleteDocument() {
+    nodes = emptyTree();
+    title = '';
   }
 
   return {
     getDocument,
     deleteDocument,
-    insertCharacter,
-    deleteCharacter,
-    updateInlineStyle,
-    updateBlockStyle,
+    updateDocument,
     updateTitle,
   };
 }
