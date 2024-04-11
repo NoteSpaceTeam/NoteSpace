@@ -4,6 +4,7 @@ import { Fugue } from '@editor/crdt/Fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
 import { Communication } from '@socket/communication';
+import { Cursor } from '@notespace/shared/types/cursor';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -20,7 +21,8 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
     if (e.ctrlKey) shortcutHandler(e);
     if (e.key === 'Tab') {
       e.preventDefault();
-      onTab();
+      const { start: cursor } = getSelection(editor);
+      onTab(cursor);
     }
   }
 
@@ -29,6 +31,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
    * @param event
    */
   function shortcutHandler(event: KeyboardEvent) {
+    const { start: cursor } = getSelection(editor);
     switch (event.key) {
       case 'z':
         history.undo();
@@ -37,10 +40,10 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
         history.redo();
         break;
       case 'Backspace':
-        onCtrlBackspace();
+        onCtrlBackspace(cursor);
         break;
       case 'Delete':
-        onCtrlDelete();
+        onCtrlDelete(cursor);
         break;
       default:
         onFormat(event.key);
@@ -48,32 +51,21 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
   }
 
   /**
-   * Handles tab key press
-   */
-  function onTab() {
-    const cursor = getSelection(editor).start;
-    editor.insertText('\t');
-    communication.emitChunked('operation', fugue.insertLocal(cursor, '\t'));
-  }
-
-  /**
    * Handles ctrl + backspace
    */
-  function onCtrlBackspace() {
-    const { start } = getSelection(editor);
-    const data = fugue.deleteWordLocal(start, true);
-    if (!data) return;
-    communication.emitChunked('operation', data);
+  function onCtrlBackspace(cursor: Cursor) {
+    const operations = fugue.deleteWordLocal(cursor, true);
+    if (!operations) return;
+    communication.emit('operation', operations);
   }
 
   /**
    * Handles ctrl + delete
    */
-  function onCtrlDelete() {
-    const { start } = getSelection(editor);
-    const data = fugue.deleteWordLocal(start, false);
-    if (!data) return;
-    communication.emitChunked('operation', data);
+  function onCtrlDelete(cursor: Cursor) {
+    const operations = fugue.deleteWordLocal(cursor, false);
+    if (!operations) return;
+    communication.emit('operation', operations);
   }
 
   /**
@@ -85,6 +77,16 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
     if (!mark) return;
     const operations = CustomEditor.toggleMark(editor, mark, fugue);
     communication.emitChunked('operation', operations);
+  }
+
+  /**
+   * Handles tab key press
+   */
+  function onTab(cursor: Cursor) {
+    const tab = '\t';
+    editor.insertText(tab);
+    const operations = fugue.insertLocal(cursor, tab);
+    communication.emit('operation', operations);
   }
 
   return { onKeyDown };

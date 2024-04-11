@@ -13,11 +13,9 @@ function useEvents(fugue: Fugue, onDone: () => void) {
    * @param operations - Edit operations
    */
   function onOperation(operations: Operation[]) {
-    console.log('onOperation', operations);
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
-          console.log('Event fugue: ', fugue);
           fugue.insertRemote(operation);
           break;
         case 'delete':
@@ -37,7 +35,6 @@ function useEvents(fugue: Fugue, onDone: () => void) {
   }
 
   function onDocument({ nodes }: Document) {
-    console.log('onDocument', nodes);
     fugue.setTree(nodes);
     onDone();
   }

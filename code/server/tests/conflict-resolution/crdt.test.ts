@@ -67,7 +67,6 @@ describe('Operations must be commutative', () => {
     const response = await request(app).get('/document');
     expect(response.status).toBe(200);
     const nodes = response.body.nodes as Nodes<string>;
-    console.log('nodes', nodes);
     tree.setTree(nodes);
     expect(tree.toString()).toBe('ab');
   });

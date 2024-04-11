@@ -4,7 +4,7 @@ import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, isEqual, range } from 'lodash';
+import { isEmpty, isEqual, last, range } from 'lodash';
 import {
   BlockStyleOperation,
   DeleteOperation,
@@ -226,25 +226,23 @@ export class Fugue {
     const iterator = this.traverseBySelection(selection);
     const list = Array.from(iterator);
     const elements = reverse ? list.reverse() : list;
-
     for (const node of elements) {
-      if (node.value === separator || node.value === '\n') {
+      if (node.value === separator && last(nodes)?.value !== separator) {
         yield nodes;
         nodes.length = 0;
       }
       nodes.push(node);
     }
-    if (isEmpty(nodes)) yield nodes;
+    yield nodes;
   }
 
   /**
    * Deletes the word at the given cursor
-   * @param line
-   * @param column
+   * @param cursor
    * @param reverse - if true, deletes the word to the left of the cursor
    */
-  deleteWordLocal({ line, column }: Cursor, reverse: boolean) {
-    const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
+  deleteWordLocal(cursor: Cursor, reverse: boolean) {
+    const iterator = this.traverseBySeparator(' ', cursor, reverse);
     const nodes: FugueNode[] = iterator.next().value;
     if (!nodes) return;
     return this.deleteLocalById(...nodes.map(node => node.id));
@@ -257,6 +255,15 @@ export class Fugue {
   getNodeByCursor(cursor: Cursor): FugueNode {
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
+  }
+
+  /**
+   * Deletes the node at the given cursor
+   * @param cursor
+   */
+  deleteNodeByCursor(cursor: Cursor) {
+    const node = this.getNodeByCursor(cursor);
+    if (node) return this.deleteLocalById(node.id);
   }
 
   /**

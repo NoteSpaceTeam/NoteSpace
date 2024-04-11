@@ -5,7 +5,6 @@ import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Selection } from '@notespace/shared/types/cursor';
 import { FugueNode } from '@editor/crdt/types';
 import { Id } from '@notespace/shared/crdt/types/nodes';
-import { range } from 'lodash';
 import { DeleteOperation } from '@notespace/shared/crdt/types/operations';
 
 /**
@@ -41,11 +40,11 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
     const deletions = deleteAroundSelection(selection, triggerLength, fugue);
 
     // update styles in the tree
-    const newSelection = {
+    const updatedSelection = {
       start: { ...selection.start, column: selection.start.column - triggerLength },
       end: { ...selection.end, column: selection.end.column - triggerLength },
     };
-    const operations = fugue.updateInlineStyleLocal(newSelection, true, key as InlineStyle);
+    const operations = fugue.updateInlineStyleLocal(updatedSelection, true, key as InlineStyle);
 
     // apply styles in the editor
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });
@@ -62,13 +61,12 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
  */
 function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue): DeleteOperation[] {
   const idsToDelete: Id[] = [];
-
-  range(1, amount, 1).forEach(i => {
+  for (let i = 1; i <= amount; i++) {
     const cursorBefore = { line: selection.start.line, column: selection.start.column - i + 1 };
     const nodeBefore = fugue.getNodeByCursor(cursorBefore);
     const cursorAfter = { line: selection.end.line, column: selection.end.column + i };
     const nodeAfter = fugue.getNodeByCursor(cursorAfter);
     idsToDelete.push(nodeBefore?.id, nodeAfter?.id);
-  });
+  }
   return idsToDelete.map(id => fugue.deleteLocalById(id)).flat();
 }

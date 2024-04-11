@@ -25,7 +25,6 @@ const initialValue = [descendant('paragraph', '')];
 function SlateEditor({ editor: _editor }: SlateEditorProps) {
   const fugue = useFugue();
   const communication = useCommunication();
-  console.log('SlateFugue: ', fugue);
   const editor = useEditor(_editor, withHistory, withReact, editor => withMarkdown(editor, fugue, communication));
   const { getElementRenderer, getLeafRenderer } = useRenderers();
   const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
