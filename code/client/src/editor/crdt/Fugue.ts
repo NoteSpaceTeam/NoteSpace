@@ -39,11 +39,9 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]){
+  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]) {
     return values.map((value, i) => {
-      const node = typeof value === 'string'
-        ? { value, styles: [] }
-        : value;
+      const node = typeof value === 'string' ? { value, styles: [] } : value;
       const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
       this.addNode(operation);
       return operation;
@@ -90,7 +88,7 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal(selection: Selection){
+  deleteLocal(selection: Selection) {
     const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
       this.removeNode(id);
@@ -103,7 +101,7 @@ export class Fugue {
    * Deletes the node based on the given operation
    * @param ids
    */
-  deleteLocalById = (...ids: Id[]) : DeleteOperation[] =>
+  deleteLocalById = (...ids: Id[]): DeleteOperation[] =>
     ids.map(id => {
       this.removeNode(id);
       return { type: 'delete', id };
@@ -167,8 +165,7 @@ export class Fugue {
   }
 
   updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1, 1)
-      .map(line => this.updateBlockStyleLocal(type, line));
+    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
   }
 
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {

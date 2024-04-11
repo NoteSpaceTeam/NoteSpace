@@ -18,9 +18,9 @@ export function createSetBlockApply(type: BlockStyle, fugue: Fugue) {
     const line = range.anchor.path[0];
     const cursor = { line, column: 0 };
     const triggerNodes = fugue.traverseBySeparator(' ', cursor, false).next().value;
-    const deleteOperations : DeleteOperation[] = triggerNodes.map(
-      (node: FugueNode) => fugue.deleteLocalById(node.id)
-    ).flat();
+    const deleteOperations: DeleteOperation[] = triggerNodes
+      .map((node: FugueNode) => fugue.deleteLocalById(node.id))
+      .flat();
 
     const styleOperation = fugue.updateBlockStyleLocal(type, line);
     Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
@@ -60,7 +60,7 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
  * @param amount
  * @param fugue
  */
-function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue) : DeleteOperation[] {
+function deleteAroundSelection(selection: Selection, amount: number, fugue: Fugue): DeleteOperation[] {
   const idsToDelete: Id[] = [];
 
   range(1, amount, 1).forEach(i => {

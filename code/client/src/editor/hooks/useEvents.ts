@@ -1,23 +1,20 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
-import { Fugue } from '@editor/crdt/Fugue';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { Socket } from 'socket.io-client';
+import useFugue from '@editor/hooks/useFugue';
 /**
  * Hook client socket listeners to events
- * @param fugue
- * @param socket
  * @param onDone
  */
-function useEvents(
-  fugue: Fugue,
-  socket: Socket,
-  onDone: () => void) {
+function useEvents(onDone: () => void) {
+  const fugue = useFugue();
+
   /**
    * Hook socket listeners to an edit event
    * @param operations - Edit operations
    */
   function onOperation(operations: Operation[]) {
+    console.log('onOperation', operations);
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
@@ -40,11 +37,12 @@ function useEvents(
   }
 
   function onDocument({ nodes }: Document) {
+    console.log('onDocument', nodes);
     fugue.setTree(nodes);
     onDone();
   }
 
-  useSocketListeners(socket,{
+  useSocketListeners({
     operation: onOperation,
     document: onDocument,
   });

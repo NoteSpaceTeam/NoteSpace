@@ -2,6 +2,6 @@ import { Range } from 'slate';
 
 export type CursorData = {
   id: string;
-  range: Range;
+  range: Range | null;
   color: string;
 };

@@ -2,8 +2,8 @@ import { Editor } from 'slate';
 import { Operation as SlateOperation } from 'slate';
 import { Fugue } from '@editor/crdt/Fugue';
 import { getSelectionBySlate } from '@editor/slate/utils/selection';
-import { Socket } from 'socket.io-client';
 import { last } from 'lodash';
+import { Communication } from '@socket/communication';
 
 export type HistoryOperations = {
   undo: () => void;
@@ -14,19 +14,19 @@ export type HistoryOperations = {
  * Handles undo and redo operations
  * @param editor
  * @param fugue
- * @param socket
+ * @param communication
  */
-function historyEvents(editor: Editor, fugue: Fugue, socket : Socket): HistoryOperations {
+function historyEvents(editor: Editor, fugue: Fugue, communication: Communication): HistoryOperations {
   function undo() {
     const { history } = editor;
-    const undo = last(history.undos)
+    const undo = last(history.undos);
     if (undo) {
       undo.operations.map(applyOperation);
     }
   }
   function redo() {
     const { history } = editor;
-    const redo = last(history.redos)
+    const redo = last(history.redos);
     if (redo) {
       redo.operations.map(applyOperation);
     }
@@ -36,12 +36,14 @@ function historyEvents(editor: Editor, fugue: Fugue, socket : Socket): HistoryOp
     switch (operation.type) {
       case 'insert_text': {
         const selection = getSelectionBySlate(editor, operation.path, operation.offset);
-        socket.emitChunked('operation', fugue.deleteLocal(selection));
+        const operations = fugue.deleteLocal(selection);
+        communication.emitChunked('operation', operations);
         break;
       }
       case 'remove_text': {
         const selection = getSelectionBySlate(editor, operation.path, operation.offset);
-        socket.emitChunked('operation', fugue.insertLocal(selection.start, ...operation.text.split('')));
+        const operations = fugue.insertLocal(selection.start, ...operation.text.split(''));
+        communication.emitChunked('operation', operations);
         break;
       }
       // other operation types

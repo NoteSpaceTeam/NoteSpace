@@ -1,23 +1,13 @@
 import { useEffect } from 'react';
-import { Socket } from 'socket.io-client';
+import useCommunication from '@editor/hooks/useCommunication';
 
-function useSocketListeners(socket : Socket, eventHandlers: Record<string, (...args: any[]) => void>) {
+function useSocketListeners(eventHandlers: Record<string, (...args: any[]) => void>) {
+  const { on, off } = useCommunication();
+
   useEffect(() => {
-    const setupEventListeners = () => {
-      Object.entries(eventHandlers).forEach(([event, handler]) => {
-        socket.on(event, handler);
-      });
-    };
-
-    const cleanupEventListeners = () => {
-      Object.entries(eventHandlers).forEach(([event, handler]) => {
-        socket.off(event, handler);
-      });
-    };
-
-    setupEventListeners();
-    return cleanupEventListeners;
-  }, [eventHandlers, socket]);
+    on(eventHandlers);
+    return () => off(eventHandlers);
+  }, [eventHandlers, on, off]);
 }
 
 export default useSocketListeners;

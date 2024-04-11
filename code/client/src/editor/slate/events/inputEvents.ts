@@ -6,12 +6,12 @@ import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { Editor } from 'slate';
+import { Editor, Range } from 'slate';
 import { Fugue } from '@editor/crdt/Fugue';
 import { Selection } from '@notespace/shared/types/cursor';
-import { Socket } from 'socket.io-client';
+import { Communication } from '@socket/communication';
 
-export default (editor: Editor, fugue: Fugue, socket : Socket) => {
+export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -55,9 +55,7 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
    */
   function onInsertText(key: string, selection: Selection) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    socket.emitChunked('operation',
-      fugue.insertLocal(selection.start, nodeInsert(key, styles))
-    );
+    communication.emitChunked('operation', fugue.insertLocal(selection.start, nodeInsert(key, styles)));
   }
 
   /**
@@ -65,14 +63,10 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
    * @param cursor
    */
   function onEnter(cursor: Cursor) {
-    socket.emitChunked('operation',
-      fugue.insertLocal(cursor, '\n')
-    );
+    communication.emitChunked('operation', fugue.insertLocal(cursor, '\n'));
     const type = editor.children[cursor.line].type as BlockStyle;
-    if(!isMultiBlock(type)) return;
-    socket.emitChunked('operation',
-      [fugue.updateBlockStyleLocal(type, cursor.line + 1)]
-    );
+    if (!isMultiBlock(type)) return;
+    communication.emitChunked('operation', [fugue.updateBlockStyleLocal(type, cursor.line + 1)]);
   }
 
   /**
@@ -83,19 +77,12 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
     const { start, end } = selection;
     const startCursor = emptyCursor();
     if ([startCursor, start, end].every(isEqual)) return;
-    socket.emitChunked('operation',
-      fugue.deleteLocal(selection)
-    );
+    communication.emitChunked('operation', fugue.deleteLocal(selection));
 
     // Reset block style - same line if only one line selected else only the last line
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line
-        ? { start: { line: start.line + 1, column: 0 }, end }
-        : selection;
-
-      socket.emitChunked('operation',
-        fugue.updateBlockStylesLocalBySelection('paragraph', newSelection)
-      );
+      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
+      communication.emitChunked('operation', fugue.updateBlockStylesLocalBySelection('paragraph', newSelection));
     }
   }
 
@@ -104,10 +91,7 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
     if (!clipboardData) return;
     const { start } = getSelection(editor);
     const nodes = clipboardData.split('').map(char => nodeInsert(char, []));
-
-    socket.emitChunked('operation',
-      fugue.insertLocal(start, ...nodes)
-    );
+    communication.emitChunked('operation', fugue.insertLocal(start, ...nodes));
   }
 
   /**
@@ -115,10 +99,7 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
    */
   function onCut() {
     const selection = getSelection(editor);
-
-    socket.emitChunked('operation',
-      fugue.deleteLocal(selection)
-    );
+    communication.emitChunked('operation', fugue.deleteLocal(selection));
   }
 
   /**
@@ -127,7 +108,8 @@ export default (editor: Editor, fugue: Fugue, socket : Socket) => {
   function onSelect() {
     // let the selection update before sending it
     setTimeout(() => {
-      socket.emitChunked('cursorChange', [editor.selection]);
+      const range: Range | null = editor.selection;
+      communication.emit('cursorChange', range);
     }, 10);
   }
 

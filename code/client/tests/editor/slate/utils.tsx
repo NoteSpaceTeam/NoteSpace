@@ -8,7 +8,7 @@ import { Editor } from 'slate';
  * @returns user and the slate editor
  */
 const setupEditor = async (editor?: Editor) => {
-  const { user, render } = setup(<SlateEditor reactEditor={editor} />);
+  const { user, render } = setup(<SlateEditor editor={editor} />);
   const { findByTestId } = render;
   const editorElement = await findByTestId('editor'); // calls 'act' under the hood, but is more readable
   editorElement.focus();

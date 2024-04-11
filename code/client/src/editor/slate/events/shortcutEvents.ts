@@ -3,21 +3,15 @@ import { Editor } from 'slate';
 import { Fugue } from '@editor/crdt/Fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
-import { Socket } from 'socket.io-client';
+import { Communication } from '@socket/communication';
 
+const hotkeys: Record<string, string> = {
+  b: 'bold',
+  i: 'italic',
+  u: 'underline',
+};
 
-export default (
-  editor: Editor,
-  fugue: Fugue,
-  socket : Socket,
-  { undo, redo }: HistoryOperations
-) => {
-  const hotkeys: Record<string, string> = {
-    b: 'bold',
-    i: 'italic',
-    u: 'underline',
-  };
-
+export default (editor: Editor, fugue: Fugue, communication: Communication, history: HistoryOperations) => {
   /**
    * Handles key down events
    * @param e
@@ -37,10 +31,10 @@ export default (
   function shortcutHandler(event: KeyboardEvent) {
     switch (event.key) {
       case 'z':
-        undo();
+        history.undo();
         break;
       case 'y':
-        redo();
+        history.redo();
         break;
       case 'Backspace':
         onCtrlBackspace();
@@ -59,7 +53,7 @@ export default (
   function onTab() {
     const cursor = getSelection(editor).start;
     editor.insertText('\t');
-    socket.emitChunked('operation', fugue.insertLocal(cursor, '\t'));
+    communication.emitChunked('operation', fugue.insertLocal(cursor, '\t'));
   }
 
   /**
@@ -68,8 +62,8 @@ export default (
   function onCtrlBackspace() {
     const { start } = getSelection(editor);
     const data = fugue.deleteWordLocal(start, true);
-    if(!data) return;
-    socket.emitChunked('operation', data);
+    if (!data) return;
+    communication.emitChunked('operation', data);
   }
 
   /**
@@ -78,8 +72,8 @@ export default (
   function onCtrlDelete() {
     const { start } = getSelection(editor);
     const data = fugue.deleteWordLocal(start, false);
-    if(!data) return;
-    socket.emitChunked('operation', data);
+    if (!data) return;
+    communication.emitChunked('operation', data);
   }
 
   /**
@@ -89,7 +83,8 @@ export default (
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    CustomEditor.toggleMark(editor, socket, mark, fugue);
+    const operations = CustomEditor.toggleMark(editor, mark, fugue);
+    communication.emitChunked('operation', operations);
   }
 
   return { onKeyDown };

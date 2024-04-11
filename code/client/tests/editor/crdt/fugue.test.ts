@@ -9,10 +9,10 @@ const b: NodeInsert = { value: 'b', styles: [] };
 const c: NodeInsert = { value: 'c', styles: [] };
 
 describe('Fugue', () => {
-  let fugue: Fugue<string>;
+  let fugue: Fugue;
 
   beforeEach(() => {
-    fugue = new Fugue<string>();
+    fugue = new Fugue();
   });
 
   it('should initialize properly', () => {

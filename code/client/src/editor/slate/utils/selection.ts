@@ -66,7 +66,7 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
 }
 
 export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
-  const point : Point = {path, offset}
+  const point: Point = { path, offset };
   return pointsToSelection(editor, point, point);
 }
 
@@ -75,7 +75,8 @@ export function getSelectionBySlate(editor: Editor, path: Path, offset: number):
  * @param editor
  * @param range
  */
-export function toDomRange(editor: ReactEditor, range: Range) {
+export function toDomRange(editor: ReactEditor, range: Range | null) {
+  if (!range) return { top: 0, left: 0, size: undefined };
   const domRange = ReactEditor.toDOMRange(editor, range);
   const { top, left, width, height } = domRange.getBoundingClientRect();
   const size = width > 0.1 ? { width, height } : undefined;

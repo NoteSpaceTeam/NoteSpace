@@ -4,8 +4,8 @@ import { shortcuts } from './shortcuts';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import { Fugue } from '@editor/crdt/Fugue';
-import { Socket } from 'socket.io-client';
 import { BlockStyleOperation, DeleteOperation, InlineStyleOperation } from '@notespace/shared/crdt/types/operations';
+import { Communication } from '@socket/communication';
 
 type ApplyFunction = (editor: Editor, range: Range) => (BlockStyleOperation | InlineStyleOperation | DeleteOperation)[];
 type InlineFunction = (n: unknown) => boolean;
@@ -31,15 +31,15 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
 /**
  * Handler to be called while normalization gets deferred.
  * @param editor
- * @param socket
  * @param match
  * @param apply
+ * @param communication
  */
 const normalizeDeferral = (
   editor: Editor,
-  socket : Socket,
   match: RegExpExecArray,
-  apply: ApplyFunction
+  apply: ApplyFunction,
+  communication: Communication
 ) => {
   const { selection } = editor;
   const { anchor } = selection!;
@@ -71,7 +71,7 @@ const normalizeDeferral = (
   const applyRange = matchRangeRef.unref();
   if (applyRange) {
     const operations = apply(editor, applyRange);
-    socket.emitChunked('operation', operations);
+    communication.emitChunked('operation', operations);
   }
 };
 
@@ -81,14 +81,14 @@ const normalizeDeferral = (
  * @param insert
  * @param editor
  * @param fugue
- * @param socket
+ * @param communication
  */
 const insertText = (
   editor: Editor,
+  insert: string,
+  insertText: InsertTextFunction,
   fugue: Fugue,
-  socket : Socket,
-  insert : string,
-  insertText: InsertTextFunction
+  communication: Communication
 ): void => {
   // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
@@ -114,7 +114,7 @@ const insertText = (
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeDeferral(editor, socket, execArray, apply(fugue)));
+    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(fugue), communication));
     return;
   }
   insertText(insert);
