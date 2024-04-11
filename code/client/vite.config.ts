@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { pwaConfig } from './src/pwa/pwa-config';
+import { pwaConfig } from './src/pwa/pwa-config.ts';
 import { qrcode } from 'vite-plugin-qrcode';
 import { config } from 'dotenv';
 

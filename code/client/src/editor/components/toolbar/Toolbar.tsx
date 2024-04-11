@@ -3,8 +3,8 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import useFugue from '@editor/hooks/useFugue';
 import useCommunication from '@editor/hooks/useCommunication';
+import { Fugue } from '@editor/crdt/Fugue';
 
 interface MarkOption {
   value: string;
@@ -19,11 +19,14 @@ const markOptions: MarkOption[] = [
   { value: 'code', icon: <FaCode /> },
 ];
 
-function Toolbar() {
+type ToolbarProps = {
+  fugue: Fugue;
+};
+
+function Toolbar({ fugue }: ToolbarProps) {
   const editor = useSlate();
   const focused = useFocused();
   const selected = isSelected(editor);
-  const fugue = useFugue();
   const { emitChunked } = useCommunication();
   const [selectionBounds, setSelectionBounds] = useState<DOMRect | null>(null);
 

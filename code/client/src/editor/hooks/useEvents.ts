@@ -1,14 +1,13 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import useFugue from '@editor/hooks/useFugue';
+import { Fugue } from '@editor/crdt/Fugue';
 /**
  * Hook client socket listeners to events
+ * @param fugue
  * @param onDone
  */
-function useEvents(onDone: () => void) {
-  const fugue = useFugue();
-
+function useEvents(fugue: Fugue, onDone: () => void) {
   /**
    * Hook socket listeners to an edit event
    * @param operations - Edit operations
@@ -18,6 +17,7 @@ function useEvents(onDone: () => void) {
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
+          console.log('Event fugue: ', fugue);
           fugue.insertRemote(operation);
           break;
         case 'delete':

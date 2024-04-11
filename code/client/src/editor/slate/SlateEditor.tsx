@@ -5,13 +5,15 @@ import Toolbar from '@editor/components/toolbar/Toolbar';
 import EditorTitle from '@editor/components/title/EditorTitle';
 import { withHistory } from 'slate-history';
 import useEditor from '@editor/slate/hooks/useEditor';
-import { useMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import { toSlate } from '@editor/slate/utils/slate';
 import { descendant } from '@editor/slate/utils/slate';
 import './SlateEditor.scss';
 import { Editor } from 'slate';
 import useFugue from '../hooks/useFugue';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
+import Cursors from '@editor/components/cursors/Cursors';
+import useCommunication from '@editor/hooks/useCommunication';
+import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
@@ -22,11 +24,13 @@ const initialValue = [descendant('paragraph', '')];
 
 function SlateEditor({ editor: _editor }: SlateEditorProps) {
   const fugue = useFugue();
-  const editor = useEditor(_editor, withHistory, withReact, useMarkdown);
+  const communication = useCommunication();
+  console.log('SlateFugue: ', fugue);
+  const editor = useEditor(_editor, withHistory, withReact, editor => withMarkdown(editor, fugue, communication));
   const { getElementRenderer, getLeafRenderer } = useRenderers();
-  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor);
+  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
 
-  useEvents(() => {
+  useEvents(fugue, () => {
     editor.children = toSlate(fugue);
     editor.onChange();
   });
@@ -39,8 +43,8 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
       </header>
       <div className="container">
         <Slate editor={editor} initialValue={initialValue}>
-          {/*<Cursors />*/}
-          <Toolbar />
+          <Cursors />
+          <Toolbar fugue={fugue} />
           <EditorTitle placeholder={'Untitled'} />
           <Editable
             className="editable"
