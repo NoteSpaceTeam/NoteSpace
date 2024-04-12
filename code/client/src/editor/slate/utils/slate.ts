@@ -48,12 +48,12 @@ export function toSlate(fugue: Fugue): Descendant[] {
 
 /**
  * Creates a descendant object.
- * @param type
+ * @param style
  * @param children
  * @returns
  */
-export const descendant = (type: BlockStyle, ...children: string[]): Descendant => ({
-  type,
+export const descendant = (style: BlockStyle, ...children: string[]): Descendant => ({
+  type: style,
   children: children.map(text => ({ text })),
 });
 

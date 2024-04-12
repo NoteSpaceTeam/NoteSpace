@@ -56,13 +56,6 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     const startCursor = emptyCursor();
     if ([startCursor, start, end].every(isEqual)) return;
     const operations: Operation[] = fugue.deleteLocal(selection);
-
-    // // reset block styles
-    // if (start.column === 0 || start.line !== end.line) {
-    //   const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
-    //   const styleOperations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
-    //   operations.push(...styleOperations);
-    // }
     communication.emitChunked('operation', operations);
   }
 
@@ -82,9 +75,6 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onEnter(cursor: Cursor) {
     communication.emitChunked('operation', fugue.insertLocal(cursor, '\n'));
-    //const type = editor.children[cursor.line].type as BlockStyle;
-    //if (!isMultiBlock(type)) return;
-    //communication.emitChunked('operation', [fugue.updateBlockStyleLocal(type, cursor.line + 1)]);
   }
 
   /**

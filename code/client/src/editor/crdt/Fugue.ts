@@ -1,5 +1,5 @@
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle, Style } from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
@@ -155,26 +155,24 @@ export class Fugue {
     this.tree.updateInlineStyle(id, style, value);
   }
 
-  updateBlockStyleLocal(type: BlockStyle, line: number) {
-    this.tree.updateBlockStyle(type, line);
+  updateBlockStyleLocal(style: BlockStyle, line: number) {
+    this.tree.updateBlockStyle(style, line);
     const operation: BlockStyleOperation = {
       type: 'block-style',
       line,
-      style: type,
+      style,
     };
     return operation;
   }
 
-
   /**
    * Updates the style of the nodes by the given selection
-   * @param type
+   * @param style
    * @param selection
    */
-  updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
+  updateBlockStylesLocalBySelection(style: BlockStyle, selection: Selection) {
+    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(style, line));
   }
-
 
   /**
    * Updates the style of the node based on the given operation

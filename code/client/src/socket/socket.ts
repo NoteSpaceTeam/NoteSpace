@@ -12,20 +12,7 @@ declare module 'socket.io-client' {
 }
 
 socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA_SIZE) =>
-  chunkData(data, chunkSize).forEach(chunk => socket.emit(event, chunk));
-
-
-/**
- * Breaks the given data into chunks of the given size.
- * Useful for breaking large data into smaller chunks for network transmission
- * @param data
- * @param chunkSize
- * @returns the data chunks
- */
-export function chunkData<T>(data: T[], chunkSize: number): T[][] {
-  const chunks: T[][] = [];
   range(0, data.length, chunkSize).forEach(i => {
-    chunks.push(data.slice(i, i + chunkSize));
+    const chunk = data.slice(i, i + chunkSize);
+    socket.emit(event, chunk);
   });
-  return chunks;
-}

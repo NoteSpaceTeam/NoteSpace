@@ -1,35 +1,34 @@
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { getSelectionByRange } from '@editor/slate/utils/selection';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { BlockCallback, InlineCallback } from '@editor/slate/plugins/markdown/connector/types';
+import { BlockHandler, InlineHandler } from '@editor/domain/markdown/types';
 
 /**
  * Creates a function that applies a block element to the editor
- * @param type
- * @param callback
+ * @param style
+ * @param handler
  */
-export function createSetBlockApply(type: BlockStyle, callback: BlockCallback) {
+export function createSetBlockApply(style: BlockStyle, handler: BlockHandler) {
   return (editor: Editor, range: Range) => {
     const line = range.anchor.path[0];
-    Transforms.setNodes(editor, { type }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
-    callback(type, line);
+    Transforms.setNodes(editor, { type: style }, { match: n => Element.isElement(n) && editor.isBlock(n), at: range });
+    handler(style, line);
   };
 }
 
 /**
  * Returns a function that applies an inline style to a block of text in the editor
- * @param key
+ * @param style
  * @param triggerLength
- * @param callback
+ * @param handler
  */
-export function createSetInlineApply(key: InlineStyle, triggerLength: number, callback: InlineCallback) {
+export function createSetInlineApply(style: InlineStyle, triggerLength: number, handler: InlineHandler) {
   return (editor: Editor, range: Range) => {
-    // remove trigger characters
-    const selection = getSelectionByRange(editor, range, triggerLength);
-
-    // apply styles in the editor
+    const key = style;
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });
     Transforms.setNodes(editor, { [key]: true }, { match: Text.isText, at: range, split: true });
-    callback(key, triggerLength, selection);
+
+    const selection = getSelectionByRange(editor, range, triggerLength);
+    handler(key, triggerLength, selection);
   };
 }

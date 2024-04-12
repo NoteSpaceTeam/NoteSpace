@@ -1,19 +1,15 @@
 import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
-import { MarkdownConnector } from '@editor/slate/plugins/markdown/connector/types';
-
+import { MarkdownHandlers } from '@editor/domain/markdown/types';
 
 /**
  * Adds markdown support to the editor.
  * @param editor
- * @param connector
+ * @param handlers
  */
-export function withMarkdown(editor: Editor, connector : MarkdownConnector) {
-  const { deleteBackward, insertText, isInline, delete : deleteOperation} = editor;
-
-  //const adapter = fugueAdapter(fugue);
-
-  const editorOperations = operations(editor, connector);
+export function withMarkdown(editor: Editor, handlers: MarkdownHandlers) {
+  const { deleteBackward, insertText, isInline, delete: deleteOperation } = editor;
+  const editorOperations = operations(editor, handlers);
 
   editor.insertText = insert => {
     editorOperations.insertText(insert, insertText);
