@@ -1,26 +1,32 @@
 import { type Editor } from 'slate';
-import * as operations from './editorOperations';
-import { Fugue } from '@editor/crdt/Fugue';
-import { Communication } from '@socket/communication';
+import operations from './operations/editorOperations';
+import { MarkdownConnector } from '@editor/slate/plugins/markdown/connector/types';
+
 
 /**
  * Adds markdown support to the editor.
  * @param editor
- * @param fugue
- * @param communication
+ * @param connector
  */
-export function withMarkdown(editor: Editor, fugue: Fugue, communication: Communication) {
-  const { deleteBackward, insertText, isInline } = editor;
+export function withMarkdown(editor: Editor, connector : MarkdownConnector) {
+  const { deleteBackward, insertText, isInline, delete : deleteOperation} = editor;
+
+  //const adapter = fugueAdapter(fugue);
+
+  const editorOperations = operations(editor, connector);
 
   editor.insertText = insert => {
-    operations.insertText(editor, insert, insertText, fugue, communication);
+    editorOperations.insertText(insert, insertText);
   };
   editor.insertBreak = () => {
-    operations.insertBreak(editor);
+    editorOperations.insertBreak();
+  };
+  editor.delete = options => {
+    editorOperations.delete(deleteOperation, options);
   };
   editor.deleteBackward = (...args) => {
-    operations.deleteBackward(editor, deleteBackward, ...args);
+    editorOperations.deleteBackward(deleteBackward, ...args);
   };
-  editor.isInline = n => operations.isInline(n, isInline);
+  editor.isInline = n => editorOperations.isInline(n, isInline);
   return editor;
 }

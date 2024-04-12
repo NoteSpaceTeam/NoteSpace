@@ -65,6 +65,12 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   return selection;
 }
 
+/**
+ * Returns the selection by slate
+ * @param editor
+ * @param path
+ * @param offset
+ */
 export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
   const point: Point = { path, offset };
   return pointsToSelection(editor, point, point);

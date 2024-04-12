@@ -165,10 +165,22 @@ export class Fugue {
     return operation;
   }
 
-  updateBlockStylesLocalBySelection(selection: Selection, type: BlockStyle) {
+
+  /**
+   * Updates the style of the nodes by the given selection
+   * @param type
+   * @param selection
+   */
+  updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
     return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
   }
 
+
+  /**
+   * Updates the style of the node based on the given operation
+   * @param line
+   * @param style
+   */
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
     this.tree.updateBlockStyle(style, line);
   }
@@ -218,8 +230,18 @@ export class Fugue {
     }
   }
 
-  *traverseBySeparator(separator: string, cursor: Cursor, reverse: boolean = false): IterableIterator<FugueNode[]> {
-    const { line, column } = cursor;
+  /**
+   * Traverses the tree until the given separator is found
+   * @param separator
+   * @param line
+   * @param column
+   * @param reverse
+   */
+  *traverseBySeparator(
+    separator: string,
+    { line, column }: Cursor,
+    reverse: boolean = false
+  ): IterableIterator<FugueNode[]> {
     const nodes: FugueNode[] = [];
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line: line, column: column } }

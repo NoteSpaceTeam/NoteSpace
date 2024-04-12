@@ -14,6 +14,7 @@ import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
 import Cursors from '@editor/components/cursors/Cursors';
 import useCommunication from '@editor/hooks/useCommunication';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
+import markdownConnector from '@editor/slate/plugins/markdown/connector/connector';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
@@ -25,7 +26,15 @@ const initialValue = [descendant('paragraph', '')];
 function SlateEditor({ editor: _editor }: SlateEditorProps) {
   const fugue = useFugue();
   const communication = useCommunication();
-  const editor = useEditor(_editor, withHistory, withReact, editor => withMarkdown(editor, fugue, communication));
+  const editor = useEditor(
+    _editor,
+    withHistory,
+    withReact,
+    editor => {
+      const connector = markdownConnector(fugue, communication);
+      return withMarkdown(editor, connector)
+    }
+  );
   const { getElementRenderer, getLeafRenderer } = useRenderers();
   const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
 

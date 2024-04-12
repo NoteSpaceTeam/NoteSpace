@@ -21,18 +21,22 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
     const { history } = editor;
     const undo = last(history.undos);
     if (undo) {
-      undo.operations.map(applyOperation);
+      undo.operations.map(reverseOperation);
     }
   }
   function redo() {
     const { history } = editor;
     const redo = last(history.redos);
     if (redo) {
-      redo.operations.map(applyOperation);
+      redo.operations.map(reverseOperation);
     }
   }
 
-  function applyOperation(operation: SlateOperation) {
+  /**
+   * Reverses the given operation
+   * @param operation
+   */
+  function reverseOperation(operation: SlateOperation) {
     switch (operation.type) {
       case 'insert_text': {
         const selection = getSelectionBySlate(editor, operation.path, operation.offset);
