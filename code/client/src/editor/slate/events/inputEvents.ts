@@ -3,9 +3,8 @@ import { getSelection } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { nodeInsert } from '@editor/crdt/utils';
 import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
-import { isMultiBlock } from '@editor/slate/utils/slate';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor, Range } from 'slate';
 import { Fugue } from '@editor/crdt/Fugue';
 import { Selection } from '@notespace/shared/types/cursor';
@@ -58,12 +57,12 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     if ([startCursor, start, end].every(isEqual)) return;
     const operations: Operation[] = fugue.deleteLocal(selection);
 
-    // reset block styles
-    if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
-      const styleOperations = fugue.updateBlockStylesLocalBySelection(newSelection, 'paragraph');
-      operations.push(...styleOperations);
-    }
+    // // reset block styles
+    // if (start.column === 0 || start.line !== end.line) {
+    //   const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
+    //   const styleOperations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
+    //   operations.push(...styleOperations);
+    // }
     communication.emitChunked('operation', operations);
   }
 
@@ -83,9 +82,9 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onEnter(cursor: Cursor) {
     communication.emitChunked('operation', fugue.insertLocal(cursor, '\n'));
-    const type = editor.children[cursor.line].type as BlockStyle;
-    if (!isMultiBlock(type)) return;
-    communication.emitChunked('operation', [fugue.updateBlockStyleLocal(type, cursor.line + 1)]);
+    //const type = editor.children[cursor.line].type as BlockStyle;
+    //if (!isMultiBlock(type)) return;
+    //communication.emitChunked('operation', [fugue.updateBlockStyleLocal(type, cursor.line + 1)]);
   }
 
   /**
@@ -93,6 +92,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    * Deletes the character before the cursor
    */
   function onBackspace(cursor: Cursor) {
+    // if cursor is at the beginning of the document, reset the block style
     const operations = fugue.deleteNodeByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
