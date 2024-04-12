@@ -9,13 +9,12 @@ import { BlockStyles } from '@notespace/shared/types/styles';
  * Converts a FugueTree to a Slate document
  */
 export function toSlate(fugue: Fugue): Descendant[] {
-  const root = fugue.getRootNode();
   const descendants: Descendant[] = [];
   let lastStyles: InlineStyle[] = [];
   let lineCounter = 0;
 
   // create a new paragraph
-  const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
+  const lineStyle = fugue.getBlockStyle(lineCounter++);
   descendants.push(descendant(lineStyle, ''));
 
   for (const node of fugue.traverseTree()) {
@@ -31,7 +30,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
     };
     // new line
     if (node.value === '\n') {
-      const lineStyle = (root.styles[lineCounter++] as BlockStyle) || 'paragraph';
+      const lineStyle = fugue.getBlockStyle(lineCounter++);
       descendants.push(descendant(lineStyle, ''));
       lastStyles = node.styles as InlineStyle[];
       continue;

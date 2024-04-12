@@ -61,7 +61,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     // reset block styles
     if (start.column === 0 || start.line !== end.line) {
       const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
-      const styleOperations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
+      const styleOperations = fugue.updateBlockStylesLocalBySelection(newSelection, 'paragraph');
       operations.push(...styleOperations);
     }
     communication.emitChunked('operation', operations);

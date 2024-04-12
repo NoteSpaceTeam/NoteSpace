@@ -19,7 +19,7 @@ const CustomEditor = {
     const selected = isSelected(editor);
     if (!selected) return [];
     const selection = getSelection(editor);
-    return fugue.updateInlineStyleLocal(selection, !isActive, mark as InlineStyle);
+    return fugue.updateInlineStyleLocal(selection, mark as InlineStyle, !isActive);
   },
 
   resetMarks(editor: Editor) {

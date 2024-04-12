@@ -35,7 +35,7 @@ function useEvents(fugue: Fugue, onDone: () => void) {
   }
 
   function onDocument({ nodes }: Document) {
-    fugue.setTree(nodes);
+    fugue.init(nodes);
     onDone();
   }
 

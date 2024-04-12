@@ -1,5 +1,5 @@
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle, Style } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
@@ -30,7 +30,7 @@ export class Fugue {
    * Builds the tree from the given nodes map.
    * @param nodes
    */
-  setTree(nodes: Nodes<string>): void {
+  init(nodes: Nodes<string>): void {
     this.tree.setTree(nodes);
   }
 
@@ -129,8 +129,9 @@ export class Fugue {
    * @param value
    * @param format
    */
-  updateInlineStyleLocal(selection: Selection, value: boolean, format: InlineStyle) {
-    const operations: InlineStyleOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
+  updateInlineStyleLocal(selection: Selection, format: InlineStyle, value: boolean = true) {
+    const iterator = this.traverseBySelection(selection);
+    const operations: InlineStyleOperation[] = Array.from(iterator).map(node => {
       const { id } = node;
       const style = format as InlineStyle;
       this.tree.updateInlineStyle(id, style, value);
@@ -164,12 +165,16 @@ export class Fugue {
     return operation;
   }
 
-  updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
+  updateBlockStylesLocalBySelection(selection: Selection, type: BlockStyle) {
     return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
   }
 
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
     this.tree.updateBlockStyle(style, line);
+  }
+
+  getBlockStyle(line: number): BlockStyle {
+    return (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
   }
 
   /**
@@ -213,11 +218,8 @@ export class Fugue {
     }
   }
 
-  *traverseBySeparator(
-    separator: string,
-    { line, column }: Cursor,
-    reverse: boolean = false
-  ): IterableIterator<FugueNode[]> {
+  *traverseBySeparator(separator: string, cursor: Cursor, reverse: boolean = false): IterableIterator<FugueNode[]> {
+    const { line, column } = cursor;
     const nodes: FugueNode[] = [];
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line: line, column: column } }
@@ -237,11 +239,11 @@ export class Fugue {
   }
 
   /**
-   * Deletes the word at the given cursor
+   * Deletes the next word by the given cursor
    * @param cursor
    * @param reverse - if true, deletes the word to the left of the cursor
    */
-  deleteWordLocal(cursor: Cursor, reverse: boolean) {
+  deleteWordByCursor(cursor: Cursor, reverse: boolean = false) {
     const iterator = this.traverseBySeparator(' ', cursor, reverse);
     const nodes: FugueNode[] = iterator.next().value;
     if (!nodes) return;
@@ -290,9 +292,9 @@ export class Fugue {
   }
 
   /**
-   * Returns the root node of the tree
+   * Returns a node by id
    */
-  getRootNode(): FugueNode {
-    return this.tree.root!;
+  getNodeById(id: Id): FugueNode {
+    return this.tree.getById(id);
   }
 }

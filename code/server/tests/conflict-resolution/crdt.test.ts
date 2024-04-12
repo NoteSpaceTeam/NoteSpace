@@ -44,7 +44,7 @@ describe('Operations must be commutative', () => {
     expect(response.status).toBe(200);
   });
 
-  test('insert operations should be commutative', async () => {
+  it('insert operations should be commutative', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -96,7 +96,7 @@ describe('Operations must be idempotent', () => {
     await new Promise(resolve => setTimeout(resolve, 100));
   });
 
-  test('delete operations should be idempotent', done => {
+  it('delete operations should be idempotent', done => {
     const delete1: DeleteOperation = {
       type: 'delete',
       id: { sender: 'B', counter: 0 },

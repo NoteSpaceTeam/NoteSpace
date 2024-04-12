@@ -54,7 +54,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
    * Handles ctrl + backspace
    */
   function onCtrlBackspace(cursor: Cursor) {
-    const operations = fugue.deleteWordLocal(cursor, true);
+    const operations = fugue.deleteWordByCursor(cursor, true);
     if (!operations) return;
     communication.emit('operation', operations);
   }
@@ -63,7 +63,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
    * Handles ctrl + delete
    */
   function onCtrlDelete(cursor: Cursor) {
-    const operations = fugue.deleteWordLocal(cursor, false);
+    const operations = fugue.deleteWordByCursor(cursor, false);
     if (!operations) return;
     communication.emit('operation', operations);
   }

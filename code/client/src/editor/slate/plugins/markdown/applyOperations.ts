@@ -44,7 +44,7 @@ export function createSetInlineApply(key: InlineStyle, triggerLength: number, fu
       start: { ...selection.start, column: selection.start.column - triggerLength },
       end: { ...selection.end, column: selection.end.column - triggerLength },
     };
-    const operations = fugue.updateInlineStyleLocal(updatedSelection, true, key as InlineStyle);
+    const operations = fugue.updateInlineStyleLocal(updatedSelection, key as InlineStyle);
 
     // apply styles in the editor
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });

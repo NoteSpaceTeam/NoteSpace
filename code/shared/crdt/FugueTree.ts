@@ -83,7 +83,7 @@ export class FugueTree<T> {
    * @param node the node whose ancestors' depths are to be updated.
    * @param delta the amount by which to update the depths.
    */
-  updateDepths(node: Node<T>, delta: number) {
+  private updateDepths(node: Node<T>, delta: number) {
     for (
       let anc: Node<T> | null = node;
       anc !== null;
