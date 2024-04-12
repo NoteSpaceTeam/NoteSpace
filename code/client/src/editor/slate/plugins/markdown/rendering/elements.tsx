@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { BlockStyles } from '../../../../../../../shared/types/styles.ts';
+import { BlockStyles } from '@notespace/shared/types/styles';
 import { RenderElementProps } from 'slate-react';
 import {
   Blockquote,
@@ -9,10 +9,11 @@ import {
   Heading3,
   Heading4,
   Heading5,
+  Heading6,
   LineBreak,
   ListItem,
   NumberedListItem,
-} from './components/components.ts';
+} from './components/components';
 
 export const ElementRenderers = {
   [BlockStyles.h1]: (props: RenderElementProps) => <Heading1 {...props} />,
@@ -20,6 +21,7 @@ export const ElementRenderers = {
   [BlockStyles.h3]: (props: RenderElementProps) => <Heading3 {...props} />,
   [BlockStyles.h4]: (props: RenderElementProps) => <Heading4 {...props} />,
   [BlockStyles.h5]: (props: RenderElementProps) => <Heading5 {...props} />,
+  [BlockStyles.h6]: (props: RenderElementProps) => <Heading6 {...props} />,
   [BlockStyles.blockquote]: (props: RenderElementProps) => <Blockquote {...props} />,
   [BlockStyles.li]: (props: RenderElementProps) => <ListItem {...props} />,
   [BlockStyles.num]: (props: RenderElementProps) => <NumberedListItem {...props} />,

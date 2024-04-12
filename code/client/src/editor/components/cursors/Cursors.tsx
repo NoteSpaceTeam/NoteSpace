@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import useSocketListeners from '../../../socket/useSocketListeners.ts';
-import { CursorData } from '@editor/components/cursors/CursorData.ts';
-import Cursor from '@editor/components/cursors/Cursor.tsx';
+import useSocketListeners from '@socket/useSocketListeners';
+import { CursorData } from '@editor/components/cursors/CursorData';
+import Cursor from '@editor/components/cursors/Cursor';
 import './Cursors.scss';
 
 function Cursors() {
@@ -18,7 +18,7 @@ function Cursors() {
     cursorChange: onCursorChange,
   });
 
-  return cursors.map(cursor => <Cursor key={cursor.id} color={cursor.color} selection={cursor.selection} />);
+  return cursors.map(cursor => <Cursor key={cursor.id} {...cursor} />);
 }
 
 export default Cursors;

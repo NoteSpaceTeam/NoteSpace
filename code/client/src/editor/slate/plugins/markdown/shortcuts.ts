@@ -1,5 +1,5 @@
 import { BlockStyles, InlineStyles } from '@notespace/shared/types/styles';
-import { blockRules, inlineRules } from '@editor/slate/plugins/markdown/rules.ts';
+import { blockRules, inlineRules } from '@editor/slate/plugins/markdown/rules';
 
 export const shortcuts = [
   blockRules(BlockStyles.h1, '#'),
@@ -7,6 +7,7 @@ export const shortcuts = [
   blockRules(BlockStyles.h3, '###'),
   blockRules(BlockStyles.h4, '####'),
   blockRules(BlockStyles.h5, '#####'),
+  blockRules(BlockStyles.h6, '######'),
   blockRules(BlockStyles.blockquote, '>'),
   blockRules(BlockStyles.li, '-'),
   blockRules(BlockStyles.li, '*'),

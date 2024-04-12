@@ -1,27 +1,25 @@
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue.ts';
-import { getSelection, isSelected } from '@editor/slate/utils/selection.ts';
-import { InlineStyle } from '@notespace/shared/types/styles.ts';
+import { Fugue } from '@editor/crdt/Fugue';
+import { getSelection, isSelected } from '@editor/slate/utils/selection';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 /**
- * Custom editor operations.
+ * Custom Editor for Inline Styles
  */
-const MarkUtils = {
+const CustomEditor = {
   isMarkActive(editor: Editor, format: string) {
     const marks = Editor.marks(editor) as Partial<Record<string, boolean>>;
     return marks ? marks[format] : false;
   },
 
-  toggleMark(editor: Editor, mark: string) {
-    const isActive = MarkUtils.isMarkActive(editor, mark);
+  toggleMark(editor: Editor, mark: string, fugue: Fugue) {
+    const isActive = CustomEditor.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
 
     const selected = isSelected(editor);
-    if (!selected) return;
-
-    const fugue = Fugue.getInstance();
+    if (!selected) return [];
     const selection = getSelection(editor);
-    fugue.updateInlineStyleLocal(selection, !isActive, mark as InlineStyle);
+    return fugue.updateInlineStyleLocal(selection, mark as InlineStyle, !isActive);
   },
 
   resetMarks(editor: Editor) {
@@ -35,4 +33,4 @@ const MarkUtils = {
   },
 };
 
-export default MarkUtils;
+export default CustomEditor;

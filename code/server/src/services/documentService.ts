@@ -1,4 +1,6 @@
-import { DocumentDatabase } from '@src/types';
+import { DocumentDatabase, DocumentService } from '@src/types';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import {
   DeleteOperation,
   InsertOperation,
@@ -6,41 +8,68 @@ import {
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
 
-export default function DocumentService(database: DocumentDatabase) {
-  async function getTree() {
-    return await database.getTree();
+export default function DocumentService(database: DocumentDatabase): DocumentService {
+  const tree = new FugueTree<string>();
+
+  async function getDocument() {
+    return await database.getDocument();
   }
 
-  function deleteTree() {
-    database.deleteTree();
+  function deleteDocument() {
+    database.deleteDocument();
   }
 
-  function insertCharacter(operation: InsertOperation) {
-    if (operation.type !== 'insert') throw new Error('Invalid operation type');
-    database.insertCharacter(operation);
+  async function insertCharacter(operation: InsertOperation) {
+    await updateDocument(() => {
+      const { id, value, parent, side, styles } = operation;
+      tree.addNode(id, value, parent, side, styles);
+    });
   }
 
-  function deleteCharacter(operation: DeleteOperation) {
-    if (operation.type !== 'delete') throw new Error('Invalid operation type');
-    database.deleteCharacter(operation);
+  async function deleteCharacter(operation: DeleteOperation) {
+    await updateDocument(() => {
+      const { id } = operation;
+      tree.deleteNode(id);
+    });
   }
 
-  function updateInlineStyle(operation: InlineStyleOperation) {
-    if (operation.type !== 'inline-style') throw new Error('Invalid operation type');
-    database.updateInlineStyle(operation);
+  async function updateInlineStyle(operation: InlineStyleOperation) {
+    await updateDocument(() => {
+      const { id, style, value } = operation;
+      tree.updateInlineStyle(id, style, value);
+    });
   }
 
-  function updateBlockStyle(operation: BlockStyleOperation) {
-    if (operation.type !== 'block-style') throw new Error('Invalid operation type');
-    database.updateBlockStyle(operation);
+  async function updateBlockStyle(operation: BlockStyleOperation) {
+    await updateDocument(() => {
+      const { style, line } = operation;
+      tree.updateBlockStyle(style, line);
+    });
+  }
+
+  function updateTitle(title: string) {
+    database.updateTitle(title);
+  }
+
+  async function updateDocument(update: () => void) {
+    const { nodes } = await database.getDocument();
+    tree.setTree(nodes);
+    update();
+    const updatedNodes = getNodes();
+    database.updateDocument(updatedNodes);
+  }
+
+  function getNodes(): Nodes<string> {
+    return Object.fromEntries(Array.from(tree.nodes.entries()));
   }
 
   return {
-    getTree,
-    deleteTree,
+    getDocument,
+    deleteDocument,
     insertCharacter,
     deleteCharacter,
     updateInlineStyle,
     updateBlockStyle,
+    updateTitle,
   };
 }

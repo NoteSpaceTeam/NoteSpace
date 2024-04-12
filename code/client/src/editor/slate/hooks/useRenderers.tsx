@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { type RenderElementProps, type RenderLeafProps } from 'slate-react';
-import { getElementRenderer, getLeafRenderer } from '@editor/slate/plugins/markdown/rendering/renderers.tsx';
+import { getElementRenderer, getLeafRenderer } from '@editor/slate/plugins/markdown/rendering/renderers';
 
 /**
  * Returns the renderers for the editor.
@@ -13,7 +13,7 @@ function useRenderers() {
     []
   );
 
-  return { renderElement, renderLeaf };
+  return { getElementRenderer: renderElement, getLeafRenderer: renderLeaf };
 }
 
 export default useRenderers;

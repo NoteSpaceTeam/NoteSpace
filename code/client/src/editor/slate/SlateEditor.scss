@@ -92,4 +92,8 @@ div [role='textbox'] {
   .editable {
     font-family: Ubuntu, monospace;
   }
+
+  * {
+    // caret-color: transparent; hide cursor
+  }
 }

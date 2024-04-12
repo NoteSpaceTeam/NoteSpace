@@ -1,4 +1,4 @@
-import { Id, Node } from "./types/nodes";
+import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
 import { isEmpty, isNull } from "lodash";
 import { rootNode, treeNode } from "./utils";
@@ -13,21 +13,22 @@ export class FugueTree<T> {
   }
 
   /**
-   * Sets the tree to the given nodes.
-   * @param nodesMap the nodes.
+   * Sets the tree to the given nodes
+   * @param nodes
    */
-  setTree(nodesMap: Map<string, Node<T>[]>) {
+  setTree(nodes: Nodes<T>) {
+    const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
     this._nodes = nodesMap;
     this._root = nodesMap.get("root")![0];
   }
 
   /**
-   * Adds a node to the tree.
-   * @param id the id of the node.
-   * @param value the value of the node.
-   * @param parent the id of the parent node.
-   * @param side the side of the parent node where this node is located.
-   * @param styles the styles of the node.
+   * Adds a node to the tree
+   * @param id the id of the node
+   * @param value the value of the node
+   * @param parent the id of the parent node
+   * @param side the side of the parent node where this node is located
+   * @param styles the styles of the node
    */
   addNode(
     id: Id,
@@ -82,7 +83,7 @@ export class FugueTree<T> {
    * @param node the node whose ancestors' depths are to be updated.
    * @param delta the amount by which to update the depths.
    */
-  updateDepths(node: Node<T>, delta: number) {
+  private updateDepths(node: Node<T>, delta: number) {
     for (
       let anc: Node<T> | null = node;
       anc !== null;
@@ -141,49 +142,6 @@ export class FugueTree<T> {
     const blockStyles = this._root.styles;
     blockStyles[line] = style;
     this._root.styles = blockStyles;
-  }
-
-  /**
-   * Traverses the tree by the given number of depth-first steps and returns the node at that position.
-   * @param node the root of the subtree.
-   * @param index the number of depth-first steps to take.
-   * @throws if the index is out of range.
-   */
-  getByIndex(node: Node<T>, index: number): Node<T> {
-    if (index < 0 || index >= node.depth)
-      throw new Error(`Invalid index: ${index}`);
-    let remaining = index;
-    let continueLoop = true;
-    while (continueLoop) {
-      continueLoop = false;
-      // 1 - Iterate over left children first
-      for (const childId of node.leftChildren) {
-        const child = this.getById(childId);
-        if (remaining < child.depth) {
-          node = child;
-          continueLoop = true;
-          break;
-        }
-        remaining -= child.depth;
-      }
-      if (continueLoop) continue;
-      // 2 - If no left children, visit the current node
-      if (!node.isDeleted) {
-        if (remaining === 0) return node;
-        remaining--;
-      }
-      // 3 - Iterate over right children
-      for (const childId of node.rightChildren) {
-        const child = this.getById(childId);
-        if (remaining < child.depth) {
-          node = child;
-          continueLoop = true;
-          break;
-        }
-        remaining -= child.depth;
-      }
-    }
-    throw new Error(`No node found at node: ${node.id} with index: ${index}`);
   }
 
   /**

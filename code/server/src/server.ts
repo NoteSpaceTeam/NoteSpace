@@ -1,38 +1,35 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
-import { config } from 'dotenv';
 import cors from 'cors';
+import databaseInit from '@database/memory/operations';
 import serviceInit from '@services/documentService';
-import eventsInit from '@controllers/websocket/events';
-import database from '@database/memory/operations';
+import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
-import onConnection from '@controllers/websocket/onConnection';
+import onConnection from '@controllers/ws/onConnection';
+import config from './config';
 
-config();
-const PORT = process.env.PORT || 8080;
+const database = databaseInit();
 const service = serviceInit(database);
 const events = eventsInit(service);
 const api = router(service);
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: process.env.ORIGIN },
-  connectionStateRecovery: {},
-});
+const io = new Server(server, config.SERVER_OPTIONS);
+const onConnectionHandler = onConnection(service, events);
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: config.ORIGIN }));
 app.use('/', api);
 
-io.on('connection', onConnection(service, events));
+io.on('connection', onConnectionHandler);
 
 // do not start the server if this file is being imported
 if (require.main === module) {
-  server.listen(PORT, () => {
-    console.log(`listening on http://localhost:${PORT}`);
+  server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
+    console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
   });
 }
 export default {
   app,
-  onConnection: onConnection(service, events),
+  onConnectionHandler,
 };

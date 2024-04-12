@@ -1,43 +1,33 @@
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import {
-  DeleteOperation,
-  InsertOperation,
-  InlineStyleOperation,
-  BlockStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
+import { DocumentDatabase } from '@src/types';
+import { Document } from '@notespace/shared/crdt/types/document';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
+import { emptyTree } from '@notespace/shared/crdt/utils';
 
-let tree = new FugueTree<string>();
+export default function DocumentDatabase(): DocumentDatabase {
+  let nodes: Nodes<string> = emptyTree();
+  let title = '';
 
-async function getTree(): Promise<Nodes<string>> {
-  return Object.fromEntries(Array.from(tree.nodes.entries()));
+  async function getDocument(): Promise<Document> {
+    return { title, nodes };
+  }
+
+  function updateDocument(newNodes: Nodes<string>) {
+    nodes = newNodes;
+  }
+
+  function updateTitle(newTitle: string) {
+    title = newTitle;
+  }
+
+  function deleteDocument() {
+    nodes = emptyTree();
+    title = '';
+  }
+
+  return {
+    getDocument,
+    deleteDocument,
+    updateDocument,
+    updateTitle,
+  };
 }
-
-function deleteTree(): void {
-  tree = new FugueTree();
-}
-
-function insertCharacter({ id, value, parent, side, styles }: InsertOperation): void {
-  tree.addNode(id, value, parent, side, styles);
-}
-
-function deleteCharacter({ id }: DeleteOperation): void {
-  tree.deleteNode(id);
-}
-
-function updateInlineStyle({ id, style, value }: InlineStyleOperation): void {
-  tree.updateInlineStyle(id, style, value);
-}
-
-function updateBlockStyle({ line, style }: BlockStyleOperation): void {
-  tree.updateBlockStyle(style, line);
-}
-
-export default {
-  getTree,
-  deleteTree,
-  insertCharacter,
-  deleteCharacter,
-  updateInlineStyle,
-  updateBlockStyle,
-};

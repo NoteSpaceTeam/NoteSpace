@@ -1,25 +1,26 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
-import { Node } from '@notespace/shared/crdt/types/nodes';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
 import server from '../../src/server';
 
-const { app, onConnection } = server;
+const { app, onConnectionHandler } = server;
 const PORT = process.env.PORT || 8080;
 const BASE_URL = `http://localhost:${PORT}`;
 let ioServer: Server;
 let httpServer: http.Server;
 let client1: Socket;
 let client2: Socket;
+const tree = new FugueTree();
 
 beforeAll(done => {
   httpServer = http.createServer(app);
   ioServer = new Server(httpServer);
 
-  ioServer.on('connection', onConnection);
+  ioServer.on('connection', onConnectionHandler);
   httpServer.listen(PORT, () => {
     client1 = io(BASE_URL);
     client2 = io(BASE_URL);
@@ -28,7 +29,7 @@ beforeAll(done => {
 });
 
 afterAll(done => {
-  ioServer.off('connection', onConnection);
+  ioServer.off('connection', onConnectionHandler);
   ioServer.close(() => {
     client1.close();
     client2.close();
@@ -43,7 +44,7 @@ describe('Operations must be commutative', () => {
     expect(response.status).toBe(200);
   });
 
-  test('insert operations should be commutative', async () => {
+  it('insert operations should be commutative', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -65,9 +66,8 @@ describe('Operations must be commutative', () => {
     await new Promise(resolve => setTimeout(resolve, 500));
     const response = await request(app).get('/document');
     expect(response.status).toBe(200);
-    const nodes = response.body as Record<string, Node<string>[]>;
-    const tree = new FugueTree<string>();
-    tree.setTree(new Map(Object.entries(nodes)));
+    const nodes = response.body.nodes as Nodes<string>;
+    tree.setTree(nodes);
     expect(tree.toString()).toBe('ab');
   });
 });
@@ -96,7 +96,7 @@ describe('Operations must be idempotent', () => {
     await new Promise(resolve => setTimeout(resolve, 100));
   });
 
-  test('delete operations should be idempotent', done => {
+  it('delete operations should be idempotent', done => {
     const delete1: DeleteOperation = {
       type: 'delete',
       id: { sender: 'B', counter: 0 },
@@ -107,9 +107,8 @@ describe('Operations must be idempotent', () => {
 
     setTimeout(async () => {
       const response = await request(app).get('/document');
-      const nodes = response.body as Record<string, Node<string>[]>;
-      const tree = new FugueTree();
-      tree.setTree(new Map(Object.entries(nodes)));
+      const nodes = response.body.nodes as Nodes<string>;
+      tree.setTree(nodes);
       expect(tree.toString()).toBe('a');
       done();
     }, 500);

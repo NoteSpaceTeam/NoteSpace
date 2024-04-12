@@ -1,48 +1,37 @@
-import {
-  type DeleteOperation,
-  type InsertOperation,
-  type InlineStyleOperation,
-  BlockStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
-import { type Node, type Id } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '../../../../shared/types/styles';
+import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
+import { BlockStyle, InlineStyle, Style } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { chunkData, generateReplicaId } from './utils';
-import { socket } from '@src/socket/socket';
-import { type InsertNode } from '@editor/crdt/types';
+import { generateReplicaId } from './utils';
+import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, isEqual } from 'lodash';
-
-const CHUNK_DATA_SIZE = 50;
+import { isEmpty, isEqual, last, range } from 'lodash';
+import {
+  BlockStyleOperation,
+  DeleteOperation,
+  InlineStyleOperation,
+  InsertOperation,
+} from '@notespace/shared/crdt/types/operations';
 
 /**
- * Singleton that represents a local replica of a FugueTree
+ * Class that represents a local replica of a FugueTree
  * @param T - the type of the values stored in the tree
  */
 export class Fugue {
-  private static instance: Fugue;
   private readonly replicaId: string;
   private counter = 0;
   private readonly tree: FugueTree<string>;
 
-  private constructor() {
+  constructor() {
     this.replicaId = generateReplicaId();
     this.tree = new FugueTree();
   }
 
-  static getInstance(): Fugue {
-    if (!Fugue.instance) {
-      Fugue.instance = new Fugue();
-    }
-    return Fugue.instance;
-  }
-
   /**
    * Builds the tree from the given nodes map.
-   * @param nodesMap
+   * @param nodes
    */
-  setTree(nodesMap: Map<string, Node<string>[]>): void {
-    this.tree.setTree(nodesMap);
+  init(nodes: Nodes<string>): void {
+    this.tree.setTree(nodes);
   }
 
   /**
@@ -50,15 +39,12 @@ export class Fugue {
    * @param start
    * @param values
    */
-  insertLocal(start: Cursor, ...values: InsertNode[]): void {
-    const operations = values.map((value, i) => {
-      const operation = this.getInsertOperation({ ...start, column: start.column + i }, value);
+  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]) {
+    return values.map((value, i) => {
+      const node = typeof value === 'string' ? { value, styles: [] } : value;
+      const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
       this.addNode(operation);
       return operation;
-    });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
     });
   }
 
@@ -75,7 +61,7 @@ export class Fugue {
    * @param cursor
    * @param insertNode
    */
-  private getInsertOperation({ line, column }: Cursor, { value, styles }: InsertNode): InsertOperation {
+  private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
     const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column });
@@ -102,23 +88,24 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal(selection: Selection): void {
+  deleteLocal(selection: Selection) {
     const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
       const { id } = node;
       this.removeNode(id);
       return { type: 'delete', id };
     });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+    return operations;
   }
 
-  deleteLocalById(id: Id): void {
-    this.removeNode(id);
-    const operation: DeleteOperation = { type: 'delete', id };
-    socket.emit('operation', [operation]);
-  }
+  /**
+   * Deletes the node based on the given operation
+   * @param ids
+   */
+  deleteLocalById = (...ids: Id[]): DeleteOperation[] =>
+    ids.map(id => {
+      this.removeNode(id);
+      return { type: 'delete', id };
+    });
 
   /**
    * Deletes the node based on the given operation
@@ -142,8 +129,9 @@ export class Fugue {
    * @param value
    * @param format
    */
-  updateInlineStyleLocal(selection: Selection, value: boolean, format: InlineStyle) {
-    const operations: InlineStyleOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
+  updateInlineStyleLocal(selection: Selection, format: InlineStyle, value: boolean = true) {
+    const iterator = this.traverseBySelection(selection);
+    const operations: InlineStyleOperation[] = Array.from(iterator).map(node => {
       const { id } = node;
       const style = format as InlineStyle;
       this.tree.updateInlineStyle(id, style, value);
@@ -154,10 +142,7 @@ export class Fugue {
         value,
       };
     });
-    // break data into data chunks - less network traffic
-    chunkData(operations, CHUNK_DATA_SIZE).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+    return operations;
   }
 
   /**
@@ -177,11 +162,19 @@ export class Fugue {
       line,
       style: type,
     };
-    socket.emit('operation', [operation]);
+    return operation;
+  }
+
+  updateBlockStylesLocalBySelection(selection: Selection, type: BlockStyle) {
+    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
   }
 
   updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
     this.tree.updateBlockStyle(style, line);
+  }
+
+  getBlockStyle(line: number): BlockStyle {
+    return (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
   }
 
   /**
@@ -194,7 +187,7 @@ export class Fugue {
    * Traverses the tree by the given selection
    * @param selection
    */
-  *traverseBySelection(selection: Selection): IterableIterator<Node<string>> {
+  *traverseBySelection(selection: Selection): IterableIterator<FugueNode> {
     const { start, end } = selection;
     let lineCounter = 0,
       columnCounter = 0,
@@ -225,12 +218,9 @@ export class Fugue {
     }
   }
 
-  *traverseBySeparator(
-    separator: string,
-    { line, column }: Cursor,
-    reverse: boolean = false
-  ): IterableIterator<Node<string>[]> {
-    const nodes: Node<string>[] = [];
+  *traverseBySeparator(separator: string, cursor: Cursor, reverse: boolean = false): IterableIterator<FugueNode[]> {
+    const { line, column } = cursor;
+    const nodes: FugueNode[] = [];
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line: line, column: column } }
       : { start: { line, column: column }, end: { line: line, column: Infinity } };
@@ -238,44 +228,44 @@ export class Fugue {
     const iterator = this.traverseBySelection(selection);
     const list = Array.from(iterator);
     const elements = reverse ? list.reverse() : list;
-
     for (const node of elements) {
-      if (node.value === separator || node.value === '\n') {
+      if (node.value === separator && last(nodes)?.value !== separator) {
         yield nodes;
         nodes.length = 0;
       }
       nodes.push(node);
     }
-    if (nodes.length > 0) {
-      yield nodes;
-    }
+    yield nodes;
   }
 
   /**
-   * Deletes the word at the given cursor
-   * @param line
-   * @param column
+   * Deletes the next word by the given cursor
+   * @param cursor
    * @param reverse - if true, deletes the word to the left of the cursor
    */
-  deleteWordLocal({ line, column }: Cursor, reverse: boolean) {
-    const iterator = this.traverseBySeparator(' ', { line, column }, reverse);
-    const operations: Node<string>[] = iterator.next().value;
-
-    chunkData(
-      operations.map(node => ({ type: 'delete', id: node.id })),
-      CHUNK_DATA_SIZE
-    ).forEach(chunk => {
-      socket.emit('operation', chunk);
-    });
+  deleteWordByCursor(cursor: Cursor, reverse: boolean = false) {
+    const iterator = this.traverseBySeparator(' ', cursor, reverse);
+    const nodes: FugueNode[] = iterator.next().value;
+    if (!nodes) return;
+    return this.deleteLocalById(...nodes.map(node => node.id));
   }
 
   /**
    * Returns the node at the given cursor
    * @param cursor
    */
-  getNodeByCursor(cursor: Cursor): Node<string> {
+  getNodeByCursor(cursor: Cursor): FugueNode {
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
+  }
+
+  /**
+   * Deletes the node at the given cursor
+   * @param cursor
+   */
+  deleteNodeByCursor(cursor: Cursor) {
+    const node = this.getNodeByCursor(cursor);
+    if (node) return this.deleteLocalById(node.id);
   }
 
   /**
@@ -283,7 +273,7 @@ export class Fugue {
    * @param value
    * @param skip
    */
-  private findNode(value: string, skip: number): Node<string> {
+  private findNode(value: string, skip: number): FugueNode {
     let lastMatch = this.tree.root;
     for (const node of this.traverseTree()) {
       if (node.value === value) {
@@ -302,9 +292,9 @@ export class Fugue {
   }
 
   /**
-   * Returns the root node of the tree
+   * Returns a node by id
    */
-  getRootNode(): Node<string> {
-    return this.tree.root!;
+  getNodeById(id: Id): FugueNode {
+    return this.tree.getById(id);
   }
 }

@@ -1,7 +1,12 @@
-import { Editor, Range, Point, Path, Node } from 'slate';
-import { Cursor, Selection, emptySelection } from '@notespace/shared/types/cursor';
+import { Editor, Node, Path, Point, Range } from 'slate';
+import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { first } from 'lodash';
+import { ReactEditor } from 'slate-react';
 
+/**
+ * Checks if the current selection is active
+ * @param editor
+ */
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
   const { anchor, focus } = editor.selection;
@@ -25,12 +30,10 @@ export function getSelection(editor: Editor): Selection {
  * @param start
  * @param end
  */
-function pointsToSelection(editor: Editor, start: Point, end: Point): Selection {
-  return {
-    start: pointToCursor(editor, start),
-    end: pointToCursor(editor, end),
-  };
-}
+const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection => ({
+  start: pointToCursor(editor, start),
+  end: pointToCursor(editor, end),
+});
 
 /**
  * Converts a slate point to a cursor
@@ -49,9 +52,33 @@ function pointToCursor(editor: Editor, point: Point): Cursor {
   return cursor;
 }
 
+/**
+ * Returns the selection by range
+ * @param editor
+ * @param range
+ * @param offset
+ */
 export function getSelectionByRange(editor: Editor, range: Range, offset: number = 0): Selection {
   const selection = pointsToSelection(editor, range.anchor, range.focus);
   selection.start.column += offset;
   selection.end.column += offset;
   return selection;
+}
+
+export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
+  const point: Point = { path, offset };
+  return pointsToSelection(editor, point, point);
+}
+
+/**
+ * Get the position of a range in the editor
+ * @param editor
+ * @param range
+ */
+export function toDomRange(editor: ReactEditor, range: Range | null) {
+  if (!range) return { top: 0, left: 0, size: undefined };
+  const domRange = ReactEditor.toDOMRange(editor, range);
+  const { top, left, width, height } = domRange.getBoundingClientRect();
+  const size = width > 0.1 ? { width, height } : undefined;
+  return { top, left, size };
 }

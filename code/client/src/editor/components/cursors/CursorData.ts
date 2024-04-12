@@ -1,7 +1,7 @@
-import { Selection } from '../../../../../shared/types/cursor.ts';
+import { Range } from 'slate';
 
 export type CursorData = {
   id: string;
-  selection: Selection;
+  range: Range | null;
   color: string;
 };

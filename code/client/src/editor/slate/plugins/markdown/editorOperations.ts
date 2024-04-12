@@ -1,12 +1,13 @@
-import { type BaseEditor, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@editor/slate/model/types.ts';
-import { shortcuts } from './shortcuts.ts';
-import { type ReactEditor } from 'slate-react';
-import { type HistoryEditor } from 'slate-history';
-import { Fugue } from '@editor/crdt/fugue.ts';
-import MarkUtils from '@editor/slate/model/MarkUtils.ts';
+import { Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
+import { type CustomElement } from '@editor/slate/model/types';
+import { shortcuts } from './shortcuts';
+import CustomEditor from '@editor/slate/CustomEditor';
+import { isMultiBlock } from '@editor/slate/utils/slate';
+import { Fugue } from '@editor/crdt/Fugue';
+import { BlockStyleOperation, DeleteOperation, InlineStyleOperation } from '@notespace/shared/crdt/types/operations';
+import { Communication } from '@socket/communication';
 
-type ApplyFunction = (editor: BaseEditor & ReactEditor & HistoryEditor, range: Range) => void;
+type ApplyFunction = (editor: Editor, range: Range) => (BlockStyleOperation | InlineStyleOperation | DeleteOperation)[];
 type InlineFunction = (n: unknown) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
 type InsertTextFunction = (text: string) => void;
@@ -32,33 +33,46 @@ function before(editor: Editor, at: Point, stringOffset: number): Point | undefi
  * @param editor
  * @param match
  * @param apply
+ * @param communication
  */
-const normalizeCallback = (editor: Editor, match: RegExpExecArray, apply: ApplyFunction) => {
+const normalizeDeferral = (
+  editor: Editor,
+  match: RegExpExecArray,
+  apply: ApplyFunction,
+  communication: Communication
+) => {
   const { selection } = editor;
-  const { anchor: matchEnd } = selection!;
+  const { anchor } = selection!;
   const [text, startText, endText] = match;
 
-  const offset = text.length - startText.length;
+  const matchEnd = anchor;
   const endMatchStart = endText && before(editor, matchEnd, endText.length);
-  const startMatchEnd = startText && before(editor, matchEnd, offset);
-
+  const startMatchEnd = startText && before(editor, matchEnd, text.length - startText.length);
   const matchStart = before(editor, matchEnd, text.length);
-
   if (!matchEnd || !matchStart) return;
 
-  const matchRangeRef = editor.rangeRef({ anchor: matchStart, focus: matchEnd });
+  const matchRangeRef = editor.rangeRef({
+    anchor: matchStart,
+    focus: matchEnd,
+  });
 
-  if (endMatchStart || startMatchEnd) {
+  if (endMatchStart) {
     Transforms.delete(editor, {
-      at: {
-        anchor: endMatchStart ? endMatchStart : matchStart,
-        focus: startMatchEnd ? startMatchEnd : matchEnd,
-      },
+      at: { anchor: endMatchStart, focus: matchEnd },
+    });
+  }
+
+  if (startMatchEnd) {
+    Transforms.delete(editor, {
+      at: { anchor: matchStart, focus: startMatchEnd },
     });
   }
 
   const applyRange = matchRangeRef.unref();
-  if (applyRange) apply(editor, applyRange);
+  if (applyRange) {
+    const operations = apply(editor, applyRange);
+    communication.emitChunked('operation', operations);
+  }
 };
 
 /**
@@ -66,8 +80,17 @@ const normalizeCallback = (editor: Editor, match: RegExpExecArray, apply: ApplyF
  * @param insertText
  * @param insert
  * @param editor
+ * @param fugue
+ * @param communication
  */
-const insertText = (editor: Editor, insertText: InsertTextFunction, insert: string): void => {
+const insertText = (
+  editor: Editor,
+  insert: string,
+  insertText: InsertTextFunction,
+  fugue: Fugue,
+  communication: Communication
+): void => {
+  // If the insert is not a space, or there is no selection, or the selection is not collapsed, insert the text
   const { selection } = editor;
   if (insert !== ' ' || !selection || !Range.isCollapsed(selection)) {
     insertText(insert);
@@ -77,7 +100,9 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
   // Check if the text before the selection ends with a trigger character
   const { anchor } = selection;
 
-  const block = editor.above({ match: (n: CustomElement) => editor.isBlock(n) });
+  const block = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
 
   const path = block ? block[1] : [];
   const blockRange = { anchor, focus: editor.start(path) };
@@ -89,7 +114,7 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
 
     const execArray = match.exec(beforeText);
     if (!execArray) continue;
-    editor.withoutNormalizing(() => normalizeCallback(editor, execArray, apply));
+    editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(fugue), communication));
     return;
   }
   insertText(insert);
@@ -101,27 +126,28 @@ const insertText = (editor: Editor, insertText: InsertTextFunction, insert: stri
  */
 const insertBreak = (editor: Editor): void => {
   const { selection } = editor;
-  if (selection) {
-    const block = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
-    });
-    const path = block ? block[1] : [];
-    const end = editor.end(path);
+  if (!selection) return;
+  const block = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
+  const path = block ? block[1] : [];
+  const end = editor.end(path);
+  Transforms.splitNodes(editor, { always: true });
 
-    Transforms.splitNodes(editor, { always: true });
+  const type = (block![0] as Descendant).type;
+  if (!isMultiBlock(type)) {
     Transforms.setNodes(editor, { type: 'paragraph' });
-    MarkUtils.resetMarks(editor);
-
-    // if selection was at the end of the block, unwrap the block
-    if (Point.equals(end, Range.end(selection))) {
-      Transforms.unwrapNodes(editor, {
-        match: (n: CustomElement) => editor.isInline(n),
-        mode: 'all',
-      });
-      const marks = editor.marks ?? {};
-      Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
-    }
+    CustomEditor.resetMarks(editor);
   }
+
+  // if selection was at the end of the block, unwrap the block
+  if (!Point.equals(end, Range.end(selection))) return;
+  Transforms.unwrapNodes(editor, {
+    match: (n: CustomElement) => editor.isInline(n),
+    mode: 'all',
+  });
+  const marks = editor.marks ?? {};
+  Transforms.unsetNodes(editor, Object.keys(marks), { match: Text.isText });
 };
 
 /**
@@ -132,30 +158,24 @@ const insertBreak = (editor: Editor): void => {
  */
 const deleteBackward = (editor: Editor, deleteBackward: DeleteBackwardFunction, ...args: [TextUnit]) => {
   const { selection } = editor;
-  if (selection && Range.isCollapsed(selection)) {
-    const match = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
-    });
-    if (match) {
-      const [block, path] = match;
-      const start = Editor.start(editor, path);
-
-      if (
-        !Editor.isEditor(block) &&
-        Element.isElement(block) &&
-        block.type !== 'paragraph' &&
-        Point.equals(selection.anchor, start)
-      ) {
-        // reset block style to paragraph
-        const fugue = Fugue.getInstance();
-        const line = selection.anchor.path[0];
-        fugue.updateBlockStyleLocal('paragraph', line);
-        Transforms.setNodes(editor, { type: 'paragraph' });
-        return;
-      }
+  if (!selection || !Range.isCollapsed(selection)) return;
+  const match = editor.above({
+    match: (n: CustomElement) => editor.isBlock(n),
+  });
+  if (match) {
+    const [block, path] = match;
+    const start = Editor.start(editor, path);
+    if (
+      !Editor.isEditor(block) &&
+      Element.isElement(block) &&
+      block.type !== 'paragraph' &&
+      Point.equals(selection.anchor, start)
+    ) {
+      Transforms.setNodes(editor, { type: 'paragraph' });
+      return;
     }
-    deleteBackward(...args);
   }
+  deleteBackward(...args);
 };
 
 /**

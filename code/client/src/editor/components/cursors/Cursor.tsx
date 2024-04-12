@@ -1,43 +1,37 @@
-import { Selection } from '@notespace/shared/types/cursor';
 import { useEffect, useRef } from 'react';
+import { toDomRange } from '@editor/slate/utils/selection';
+import { useSlate } from 'slate-react';
+import { CursorData } from '@editor/components/cursors/CursorData';
 
-type CursorProps = {
-  selection: Selection;
-  color: string;
-};
-
-function Cursor({ selection, color }: CursorProps) {
+/**
+ * Renders a cursor at the given range
+ * @param id
+ * @param range
+ * @param color
+ * @constructor
+ */
+function Cursor({ id, range, color }: CursorData) {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const editor = useSlate();
 
   useEffect(() => {
-    if (cursorRef.current) {
-      // TODO: fix cursor position and use selection.end to support selection ranges
-      // calculate the absolute position of the cursor in pixels
-      const start = selection.start;
-      const editor = document.querySelector('.editable')!;
-      const fontSize = parseFloat(getComputedStyle(editor).fontSize);
-      const editorRect = editor.getBoundingClientRect();
-      const lineHeight = fontSize * 2.5;
-      const charWidth = 8;
-      const top = start.line * lineHeight + editorRect.top + 'px';
-      const left = start.column * charWidth + editorRect.left + 'px';
-      cursorRef.current.style.top = top;
-      cursorRef.current.style.left = left;
-    }
-  }, [selection]);
+    if (!cursorRef.current) return;
+    cursorRef.current?.classList.remove('animate');
+    const { top, left, size } = toDomRange(editor, range);
 
-  return (
-    <div
-      ref={cursorRef}
-      className="cursor"
-      style={{
-        position: 'absolute',
-        width: '2px',
-        height: '1.5em',
-        backgroundColor: color,
-      }}
-    />
-  );
+    cursorRef.current.style.top = `${top - 1}px`;
+    cursorRef.current.style.left = `${left - 1}px`;
+    cursorRef.current.style.width = size ? `${size.width}px` : '2px';
+    cursorRef.current.style.height = size ? `${size.height}px` : '1.5em';
+
+    if (!size) {
+      setTimeout(() => {
+        cursorRef.current?.classList.add('animate');
+      }, 500);
+    }
+  }, [editor, range]);
+
+  return <div id={`cursor-${id}`} ref={cursorRef} className="cursor" style={{ backgroundColor: color }} />;
 }
 
 export default Cursor;
