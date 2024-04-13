@@ -138,7 +138,7 @@ export class FugueTree<T> {
     }
   }
 
-  updateBlockStyle(style: BlockStyle, line: number, append: boolean) {
+  updateBlockStyle(style: BlockStyle, line: number, append: boolean = false) {
     if (append) {
       this._root.styles.splice(line, 0, style);
     } else {

@@ -3,7 +3,7 @@ import inputEvents from '@editor/slate/events/inputEvents';
 import shortcutsEvents from '@editor/slate/events/shortcutEvents';
 import historyEvents from '@editor/slate/events/historyEvents';
 import useCommunication from '@editor/hooks/useCommunication';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 
 /**
  * Handles input events

@@ -1,6 +1,6 @@
 import { Editor, Node, Path, Point, Range } from 'slate';
-import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
-import { first } from 'lodash';
+import { Cursor, emptyCursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
+import { first, isEqual } from 'lodash';
 import { ReactEditor } from 'slate-react';
 
 /**
@@ -87,4 +87,14 @@ export function toDomRange(editor: ReactEditor, range: Range | null) {
   const { top, left, width, height } = domRange.getBoundingClientRect();
   const size = width > 0.1 ? { width, height } : undefined;
   return { top, left, size };
+}
+
+/**
+ * Checks if the selection is empty
+ * @param selection
+ */
+export function isSelectionEmpty(selection: Selection): boolean {
+  const { start, end } = selection;
+  const startCursor = emptyCursor();
+  return isEqual(startCursor, start) && isEqual(start, end);
 }

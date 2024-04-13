@@ -1,6 +1,6 @@
 import { getSelection } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
 import { Communication } from '@socket/communication';

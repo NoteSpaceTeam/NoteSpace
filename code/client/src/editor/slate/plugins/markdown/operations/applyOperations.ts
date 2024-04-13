@@ -27,7 +27,6 @@ export function createSetInlineApply(style: InlineStyle, triggerLength: number, 
     const key = style;
     Transforms.insertNodes(editor, { text: ' ' }, { match: Text.isText, at: Range.end(range), select: true });
     Transforms.setNodes(editor, { [key]: true }, { match: Text.isText, at: range, split: true });
-
     const selection = getSelectionByRange(editor, range, triggerLength);
     handler(key, triggerLength, selection);
   };

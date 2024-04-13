@@ -4,7 +4,7 @@ import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, isEqual, last, range } from 'lodash';
+import { isEmpty, last, range } from 'lodash';
 import {
   BlockStyleOperation,
   DeleteOperation,
@@ -64,7 +64,7 @@ export class Fugue {
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
-    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column });
+    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column })!;
     if (isEmpty(leftOrigin.rightChildren)) {
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     }
@@ -88,39 +88,41 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal(selection: Selection) {
-    const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
-      const { id } = node;
-      this.removeNode(id);
-      return { type: 'delete', id };
-    });
-    return operations;
+  deleteLocal(selection: Selection): DeleteOperation[] {
+    const iterator = this.traverseBySelection(selection);
+    return Array.from(iterator).map(node => this.removeNode(node.id));
+  }
+
+  /**
+   * Deletes the node at the given cursor
+   * @param cursor
+   */
+  deleteLocalByCursor(cursor: Cursor) {
+    const node = this.getNodeByCursor(cursor);
+    if (node) return this.deleteLocalById(node.id);
   }
 
   /**
    * Deletes the node based on the given operation
    * @param ids
    */
-  deleteLocalById = (...ids: Id[]): DeleteOperation[] =>
-    ids.map(id => {
-      this.removeNode(id);
-      return { type: 'delete', id };
-    });
+  deleteLocalById = (...ids: Id[]): DeleteOperation[] => ids.map(id => this.removeNode(id));
 
   /**
    * Deletes the node based on the given operation
    * @param operation
    */
   deleteRemote(operation: DeleteOperation): void {
-    this.removeNode(operation.id);
+    this.tree.deleteNode(operation.id);
   }
 
   /**
    * Deletes the node based on the given node id
    * @param id
    */
-  private removeNode(id: Id): void {
+  private removeNode(id: Id): DeleteOperation {
     this.tree.deleteNode(id);
+    return { type: 'delete', id };
   }
 
   /**
@@ -206,32 +208,29 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    let lineCounter = 0,
-      columnCounter = 0,
-      inBounds = false;
+    let lineCounter = 0;
+    let columnCounter = 0;
+    let inBounds = false;
     for (const node of this.traverseTree()) {
+      // new line
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      }
       // start condition
-      if (
-        lineCounter === start.line &&
-        (columnCounter === start.column || (isEqual(start, end) && columnCounter === start.column - 1))
-      ) {
+      if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
+      }
+      // yield node if in bounds
+      if (inBounds) {
+        yield node;
       }
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
         break;
       }
-      // yield node if in bounds
-      if (inBounds && node.value !== '\n') {
-        yield node;
-      }
-      // update counters
-      if (node.value === '\n') {
-        lineCounter++;
-        columnCounter = 0;
-      } else {
-        columnCounter++;
-      }
+      // increment column counter
+      columnCounter++;
     }
   }
 
@@ -281,18 +280,10 @@ export class Fugue {
    * Returns the node at the given cursor
    * @param cursor
    */
-  getNodeByCursor(cursor: Cursor): FugueNode {
+  getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
+    const cursor = { line, column: line === 0 ? column - 1 : column };
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
-  }
-
-  /**
-   * Deletes the node at the given cursor
-   * @param cursor
-   */
-  deleteNodeByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor);
-    if (node) return this.deleteLocalById(node.id);
   }
 
   /**

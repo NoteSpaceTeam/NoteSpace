@@ -4,7 +4,7 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 import useCommunication from '@editor/hooks/useCommunication';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 
 interface MarkOption {
   value: string;

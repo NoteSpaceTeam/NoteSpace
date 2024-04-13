@@ -1,22 +1,21 @@
 import { getClipboardEvent, getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
-import { getSelection } from '@editor/slate/utils/selection';
+import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { nodeInsert } from '@editor/crdt/utils';
 import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { InlineStyle } from '@notespace/shared/types/styles';
-import { Editor, Range } from 'slate';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Editor } from 'slate';
+import { Fugue } from '@editor/crdt/fugue';
 import { Selection } from '@notespace/shared/types/cursor';
 import { Communication } from '@socket/communication';
-import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
 
-    // Supports mobile paste events, such as autocorrect
+    // support for mobile paste events
     if (key === 'Paste') {
       const pasteEvent = getClipboardEvent(e);
       onPaste(pasteEvent);
@@ -32,8 +31,9 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onKeyPressed(e: KeyboardEvent) {
     const selection = getSelection(editor);
-    // if selection is not empty, delete the selected text
-    if (!isEqual(selection.start, selection.end)) onDeleteSelection(selection);
+    // if there is a selection, delete the selected text
+    if (isSelected(editor)) onDeleteSelection(selection);
+
     switch (e.key) {
       case 'Enter':
         onEnter(selection.start);
@@ -52,10 +52,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   }
 
   function onDeleteSelection(selection: Selection) {
-    const { start, end } = selection;
-    const startCursor = emptyCursor();
-    if ([startCursor, start, end].every(isEqual)) return;
-    const operations: Operation[] = fugue.deleteLocal(selection);
+    const operations = fugue.deleteLocal(selection);
     communication.emitChunked('operation', operations);
   }
 
@@ -66,7 +63,8 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onKey(key: string, selection: Selection) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    communication.emitChunked('operation', fugue.insertLocal(selection.start, nodeInsert(key, styles)));
+    const operations = fugue.insertLocal(selection.start, nodeInsert(key, styles));
+    communication.emitChunked('operation', operations);
   }
 
   /**
@@ -84,8 +82,8 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    * Deletes the character before the cursor
    */
   function onBackspace(cursor: Cursor) {
-    // if cursor is at the beginning of the document, reset the block style
-    const operations = fugue.deleteNodeByCursor(cursor);
+    if (isEqual(cursor, emptyCursor())) return;
+    const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
 
@@ -95,7 +93,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onDelete({ line, column }: Cursor) {
     const cursor = { line, column: column + 1 };
-    const operations = fugue.deleteNodeByCursor(cursor);
+    const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
 
@@ -106,8 +104,9 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    const nodes = clipboardData.split('').map(char => nodeInsert(char, []));
-    communication.emitChunked('operation', fugue.insertLocal(start, ...nodes));
+    const nodes = clipboardData.split('');
+    const operations = fugue.insertLocal(start, ...nodes);
+    communication.emitChunked('operation', operations);
   }
 
   /**
@@ -115,15 +114,15 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onCut() {
     const selection = getSelection(editor);
-    communication.emitChunked('operation', fugue.deleteLocal(selection));
+    const operations = fugue.deleteLocal(selection);
+    communication.emitChunked('operation', operations);
   }
 
   /**
    * Handles cursor selection
    */
   function onSelect() {
-    // let the selection update before sending it
-    const range: Range | null = editor.selection;
+    const range = editor.selection;
     communication.emit('cursorChange', range);
   }
 

@@ -14,6 +14,7 @@ import useCommunication from '@editor/hooks/useCommunication';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import markdownHandlers from '@editor/domain/markdown/handlers';
 import './SlateEditor.scss';
+import Header from '@src/components/header/Header';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
@@ -39,10 +40,7 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
 
   return (
     <div className="editor">
-      <header>
-        <span className="fa fa-bars"></span>
-        <h1>NoteSpace</h1>
-      </header>
+      <Header />
       <div className="container">
         <Slate editor={editor} initialValue={initialValue}>
           {/*<Cursors />*/}
@@ -57,8 +55,8 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
             onDOMBeforeInput={onInput}
-            onKeyDown={onKeyDown}
-            onPaste={onPaste}
+            onKeyDown={e => onKeyDown(e.nativeEvent)}
+            onPaste={e => onPaste(e.nativeEvent)}
             onCut={onCut}
             onSelect={onSelect}
           />

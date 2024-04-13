@@ -1,4 +1,4 @@
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import { DeleteOperation } from '@notespace/shared/crdt/types/operations';
 import { Id } from '@notespace/shared/crdt/types/nodes';
 import { Selection } from '@notespace/shared/types/cursor';
@@ -16,7 +16,8 @@ export function deleteAroundSelection(selection: Selection, amount: number, fugu
     const nodeBefore = fugue.getNodeByCursor(cursorBefore);
     const cursorAfter = { line: selection.end.line, column: selection.end.column + i };
     const nodeAfter = fugue.getNodeByCursor(cursorAfter);
-    idsToDelete.push(nodeBefore?.id, nodeAfter?.id);
+    if (!nodeBefore || !nodeAfter) break;
+    idsToDelete.push(nodeBefore.id, nodeAfter.id);
   }
   return idsToDelete.map(id => fugue.deleteLocalById(id)).flat();
 }

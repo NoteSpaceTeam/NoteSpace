@@ -1,6 +1,6 @@
 import { Editor } from 'slate';
 import { Operation as SlateOperation } from 'slate';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import { getSelectionBySlate } from '@editor/slate/utils/selection';
 import { last } from 'lodash';
 import { Communication } from '@socket/communication';

@@ -7,6 +7,7 @@ import { getSelection } from '@editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
 import { MarkdownHandlers } from '@editor/domain/markdown/types';
 import { RuleType } from '@editor/slate/plugins/markdown/rules';
+import { isSelectionEmpty } from '@editor/slate/utils/selection';
 
 type InlineFunction = (n: unknown) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
@@ -161,7 +162,6 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
       ) {
         const { line } = getSelection(editor).start;
         Transforms.setNodes(editor, { type: 'paragraph' });
-
         handlers.applyBlockStyleHandler('paragraph', line);
         return;
       }
@@ -171,6 +171,7 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
 
   const deleteOperation = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
+    if (isSelectionEmpty(selection)) return;
     handlers.deleteHandler(selection);
     deleteHandler(options);
   };

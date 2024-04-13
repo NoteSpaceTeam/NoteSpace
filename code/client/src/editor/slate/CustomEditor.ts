@@ -1,5 +1,5 @@
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { InlineStyle } from '@notespace/shared/types/styles';
 
