@@ -74,7 +74,9 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    * @param cursor
    */
   function onEnter(cursor: Cursor) {
-    communication.emitChunked('operation', fugue.insertLocal(cursor, '\n'));
+    const operations = fugue.insertLocal(cursor, '\n');
+    const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line, true);
+    communication.emitChunked('operation', [...operations, styleOperation]);
   }
 
   /**

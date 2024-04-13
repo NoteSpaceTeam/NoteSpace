@@ -36,13 +36,13 @@ export class Fugue {
 
   /**
    * Inserts the given values starting from the given index.
-   * @param start
+   * @param cursor
    * @param values
    */
-  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]) {
+  insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
     return values.map((value, i) => {
       const node = typeof value === 'string' ? { value, styles: [] } : value;
-      const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
+      const operation = this.getInsertOperation({ ...cursor, column: cursor.column + i }, node);
       this.addNode(operation);
       return operation;
     });
@@ -155,14 +155,20 @@ export class Fugue {
     this.tree.updateInlineStyle(id, style, value);
   }
 
-  updateBlockStyleLocal(style: BlockStyle, line: number) {
-    this.tree.updateBlockStyle(style, line);
-    const operation: BlockStyleOperation = {
+  /**
+   * Updates the style of the node based on the given operation
+   * @param style - the style to be updated
+   * @param line - the line number
+   * @param append - if true, appends the style to the existing styles, otherwise replaces them
+   */
+  updateBlockStyleLocal(style: BlockStyle, line: number, append: boolean = false): BlockStyleOperation {
+    this.tree.updateBlockStyle(style, line, append);
+    return {
       type: 'block-style',
       line,
       style,
+      append,
     };
-    return operation;
   }
 
   /**
@@ -178,9 +184,10 @@ export class Fugue {
    * Updates the style of the node based on the given operation
    * @param line
    * @param style
+   * @param append
    */
-  updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
-    this.tree.updateBlockStyle(style, line);
+  updateBlockStyleRemote({ line, style, append }: BlockStyleOperation) {
+    this.tree.updateBlockStyle(style, line, append);
   }
 
   getBlockStyle(line: number): BlockStyle {
