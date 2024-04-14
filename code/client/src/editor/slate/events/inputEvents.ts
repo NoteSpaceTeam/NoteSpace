@@ -26,6 +26,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
         onEnter(cursor);
         break;
       case 'Backspace':
+        if (isSelected(editor)) break;
         onBackspace(cursor);
         break;
       case 'Delete':
@@ -68,7 +69,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   function onEnter(cursor: Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
     const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line, true);
-    communication.emitChunked('operation', [...operations, styleOperation]);
+    communication.emitChunked('operation', [styleOperation, ...operations]);
   }
 
   /**

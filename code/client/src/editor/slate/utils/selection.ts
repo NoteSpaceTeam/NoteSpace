@@ -44,7 +44,6 @@ function pointToCursor(editor: Editor, point: Point): Cursor {
   const line = point.path[0];
   const children = Node.children(editor, [line]);
   const cursor: Cursor = { line, column: point.offset };
-
   for (const entry of children) {
     if (Path.equals(entry[1], point.path)) break;
     cursor.column += first(entry).text.length;

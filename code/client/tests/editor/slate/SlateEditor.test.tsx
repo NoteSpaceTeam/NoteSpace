@@ -20,10 +20,7 @@ describe('SlateEditor', () => {
   });
 
   it('should render the editor', async () => {
-    const h1Title = screen.getByText('NoteSpace');
     const documentTitle = screen.getByPlaceholderText('Untitled');
-
-    expect(h1Title).toBeInTheDocument();
     expect(documentTitle).toBeInTheDocument();
     expect(editor).toHaveTextContent(EDITOR_PLACEHOLDER);
   });

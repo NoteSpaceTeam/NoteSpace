@@ -14,7 +14,6 @@ import useCommunication from '@editor/hooks/useCommunication';
 import { withMarkdown } from '@editor/slate/plugins/markdown/withMarkdown';
 import markdownHandlers from '@editor/domain/markdown/handlers';
 import './SlateEditor.scss';
-import Header from '@src/components/header/Header';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
@@ -40,7 +39,6 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
 
   return (
     <div className="editor">
-      <Header />
       <div className="container">
         <Slate editor={editor} initialValue={initialValue}>
           {/*<Cursors />*/}
