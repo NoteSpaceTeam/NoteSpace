@@ -23,12 +23,11 @@ function Cursor({ id, range, color }: CursorData) {
     cursorRef.current.style.left = `${left - 1}px`;
     cursorRef.current.style.width = size ? `${size.width}px` : '2px';
     cursorRef.current.style.height = size ? `${size.height}px` : '1.5em';
-
-    if (!size) {
-      setTimeout(() => {
-        cursorRef.current?.classList.add('animate');
-      }, 500);
-    }
+    if (size) return;
+    const timeoutId = setTimeout(() => {
+      cursorRef.current?.classList.add('animate');
+    }, 500);
+    return () => clearTimeout(timeoutId);
   }, [editor, range]);
 
   return <div id={`cursor-${id}`} ref={cursorRef} className="cursor" style={{ backgroundColor: color }} />;

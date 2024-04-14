@@ -1,7 +1,4 @@
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
-import { getSelection, isSelected } from '@editor/slate/utils/selection';
-import { InlineStyle } from '@notespace/shared/types/styles';
 
 /**
  * Custom Editor for Inline Styles
@@ -12,14 +9,10 @@ const CustomEditor = {
     return marks ? marks[format] : false;
   },
 
-  toggleMark(editor: Editor, mark: string, fugue: Fugue) {
+  toggleMark(editor: Editor, mark: string) {
     const isActive = CustomEditor.isMarkActive(editor, mark);
     Editor.addMark(editor, mark, !isActive);
-
-    const selected = isSelected(editor);
-    if (!selected) return [];
-    const selection = getSelection(editor);
-    return fugue.updateInlineStyleLocal(selection, mark as InlineStyle, !isActive);
+    return !isActive;
   },
 
   resetMarks(editor: Editor) {

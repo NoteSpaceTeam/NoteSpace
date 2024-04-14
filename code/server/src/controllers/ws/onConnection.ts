@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { DocumentService, SocketHandler } from '@src/types';
+import onCursorChange from '@controllers/ws/document/onCursorChange';
 
 /**
  * Returns a connection handler for socket.io
@@ -21,13 +22,14 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
           // console.log(event);
           handler(socket, data);
         } catch (e) {
-          socket.emit('error');
+          // socket.emit('error');
           console.error(e);
         }
       });
     });
 
     socket.on('disconnect', reason => {
+      onCursorChange()(socket, null); // delete cursor
       console.log('a client disconnected', reason);
     });
   };

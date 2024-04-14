@@ -66,17 +66,6 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
 }
 
 /**
- * Returns the selection by slate
- * @param editor
- * @param path
- * @param offset
- */
-export function getSelectionBySlate(editor: Editor, path: Path, offset: number): Selection {
-  const point: Point = { path, offset };
-  return pointsToSelection(editor, point, point);
-}
-
-/**
  * Get the position of a range in the editor
  * @param editor
  * @param range
@@ -85,7 +74,8 @@ export function toDomRange(editor: ReactEditor, range: Range | null) {
   if (!range) return { top: 0, left: 0, size: undefined };
   const domRange = ReactEditor.toDOMRange(editor, range);
   const { top, left, width, height } = domRange.getBoundingClientRect();
-  const size = width > 0.1 ? { width, height } : undefined;
+  const isSelection = range.anchor.offset !== range.focus.offset;
+  const size = isSelection ? { width, height } : undefined;
   return { top, left, size };
 }
 

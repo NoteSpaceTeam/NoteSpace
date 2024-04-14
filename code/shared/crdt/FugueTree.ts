@@ -46,9 +46,6 @@ export class FugueTree<T> {
     this.insertChild(node);
     // Update sizes of ancestors
     this.updateDepths(node, 1);
-    if (value === "\n") {
-      this._root.styles.push("paragraph");
-    }
   }
 
   /**

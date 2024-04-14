@@ -5,6 +5,8 @@ import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 import useCommunication from '@editor/hooks/useCommunication';
 import { Fugue } from '@editor/crdt/fugue';
+import { InlineStyle } from '@notespace/shared/types/styles';
+import { formatMark } from '@editor/slate/utils/formatMark';
 
 interface MarkOption {
   value: string;
@@ -55,7 +57,8 @@ function Toolbar({ fugue }: ToolbarProps) {
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();
-    const operations = CustomEditor.toggleMark(editor, mark.value, fugue);
+    const value = CustomEditor.toggleMark(editor, mark.value);
+    const operations = formatMark(fugue, editor, mark.value as InlineStyle, value);
     emitChunked('operation', operations);
   };
 
@@ -71,15 +74,14 @@ function Toolbar({ fugue }: ToolbarProps) {
     ...position,
   };
 
-  const onMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) =>
-    handleMarkMouseDown(e, mark);
-
-  const getClassName = (mark: MarkOption) => (CustomEditor.isMarkActive(editor, mark.value) ? 'active item' : 'item');
-
   return (
     <div className="toolbar" style={toolbarStyle}>
       {markOptions.map(mark => (
-        <button key={mark.value} onMouseDown={e => onMouseDown(e, mark)} className={getClassName(mark)}>
+        <button
+          key={mark.value}
+          onMouseDown={e => handleMarkMouseDown(e, mark)}
+          className={CustomEditor.isMarkActive(editor, mark.value) ? 'active item' : 'item'}
+        >
           {mark.icon}
         </button>
       ))}

@@ -5,6 +5,8 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
 import { Communication } from '@socket/communication';
 import { Cursor } from '@notespace/shared/types/cursor';
+import { formatMark } from '@editor/slate/utils/formatMark';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -14,23 +16,11 @@ const hotkeys: Record<string, string> = {
 
 export default (editor: Editor, fugue: Fugue, communication: Communication, history: HistoryOperations) => {
   /**
-   * Handles key down events
-   * @param e
-   */
-  function onKeyDown(e: KeyboardEvent) {
-    if (e.ctrlKey) shortcutHandler(e);
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const { start: cursor } = getSelection(editor);
-      onTab(cursor);
-    }
-  }
-
-  /**
    * Handles keyboard shortcuts
    * @param event
    */
-  function shortcutHandler(event: KeyboardEvent) {
+  function onShortcut(event: KeyboardEvent) {
+    if (!event.ctrlKey) return;
     const { start: cursor } = getSelection(editor);
     switch (event.key) {
       case 'z':
@@ -75,19 +65,10 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
   function onFormat(key: string) {
     const mark = hotkeys[key];
     if (!mark) return;
-    const operations = CustomEditor.toggleMark(editor, mark, fugue);
+    const value = CustomEditor.toggleMark(editor, mark);
+    const operations = formatMark(fugue, editor, mark as InlineStyle, value);
     communication.emitChunked('operation', operations);
   }
 
-  /**
-   * Handles tab key press
-   */
-  function onTab(cursor: Cursor) {
-    const tab = '\t';
-    editor.insertText(tab);
-    const operations = fugue.insertLocal(cursor, tab);
-    communication.emit('operation', operations);
-  }
-
-  return { onKeyDown };
+  return { onShortcut };
 };

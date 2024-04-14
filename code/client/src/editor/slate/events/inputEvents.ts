@@ -1,4 +1,4 @@
-import { getClipboardEvent, getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
+import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { nodeInsert } from '@editor/crdt/utils';
@@ -9,44 +9,38 @@ import { Editor } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import { Selection } from '@notespace/shared/types/cursor';
 import { Communication } from '@socket/communication';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
 
-    // support for mobile paste events
-    if (key === 'Paste') {
-      const pasteEvent = getClipboardEvent(e);
-      onPaste(pasteEvent);
-      return;
-    }
-    const keyboardEvent = new KeyboardEvent('keydown', { key });
-    onKeyPressed(keyboardEvent);
-  }
-
-  /**
-   * Handles key press events
-   * @param e
-   */
-  function onKeyPressed(e: KeyboardEvent) {
     const selection = getSelection(editor);
+    const cursor = selection.start;
     // if there is a selection, delete the selected text
     if (isSelected(editor)) onDeleteSelection(selection);
 
-    switch (e.key) {
+    switch (key) {
       case 'Enter':
-        onEnter(selection.start);
+        onEnter(cursor);
         break;
       case 'Backspace':
-        onBackspace(selection.start);
+        onBackspace(cursor);
         break;
       case 'Delete':
-        onDelete(selection.start);
+        onDelete(cursor);
+        break;
+      case 'Paste':
+        onPaste(e.data || '');
+        break;
+      case 'Tab':
+        e.preventDefault();
+        onTab(cursor);
         break;
       default:
-        if (e.key.length !== 1) break;
-        onKey(e.key, selection);
+        if (key.length !== 1) break;
+        onKey(key, cursor);
         break;
     }
   }
@@ -59,11 +53,11 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   /**
    * Inserts text at the current cursor position
    * @param key
-   * @param selection
+   * @param cursor
    */
-  function onKey(key: string, selection: Selection) {
+  function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    const operations = fugue.insertLocal(selection.start, nodeInsert(key, styles));
+    const operations = fugue.insertLocal(cursor, nodeInsert(key, styles));
     communication.emitChunked('operation', operations);
   }
 
@@ -100,30 +94,44 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   /**
    * Handles paste events
    */
-  function onPaste(e: ClipboardEvent) {
-    const clipboardData = e.clipboardData?.getData('text');
+  function onPaste(clipboard: ClipboardEvent | string) {
+    const clipboardData = typeof clipboard === 'string' ? clipboard : clipboard.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    const nodes = clipboardData.split('');
-    const operations = fugue.insertLocal(start, ...nodes);
+    const chars = clipboardData.split('');
+    const operations: Operation[] = fugue.insertLocal(start, ...chars);
+    const lineNodes = chars.filter(char => char === '\n');
+    for (let i = 0; i < lineNodes.length; i++) {
+      const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
+      operations.push(styleOperation);
+    }
     communication.emitChunked('operation', operations);
   }
 
-  /**
-   * Handles cut events
-   */
   function onCut() {
     const selection = getSelection(editor);
-    const operations = fugue.deleteLocal(selection);
-    communication.emitChunked('operation', operations);
+    onDeleteSelection(selection);
+  }
+
+  /**
+   * Handles tab key press
+   */
+  function onTab(cursor: Cursor) {
+    const tab = '\t';
+    editor.insertText(tab);
+    const operations = fugue.insertLocal(cursor, tab);
+    communication.emit('operation', operations);
   }
 
   /**
    * Handles cursor selection
    */
   function onSelect() {
-    const range = editor.selection;
-    communication.emit('cursorChange', range);
+    // let the selection update first
+    setTimeout(() => {
+      const range = editor.selection;
+      communication.emit('cursorChange', range);
+    }, 10);
   }
 
   return { onInput, onPaste, onCut, onSelect };

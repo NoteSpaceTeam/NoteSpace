@@ -12,12 +12,10 @@ import { Fugue } from '@editor/crdt/fugue';
  */
 function useInputHandlers(editor: Editor, fugue: Fugue) {
   const communication = useCommunication();
-
   const history = historyEvents(editor, fugue, communication);
-  const { onInput, onPaste, onCut, onSelect } = inputEvents(editor, fugue, communication);
-  const { onKeyDown } = shortcutsEvents(editor, fugue, communication, history);
-
-  return { onInput, onKeyDown, onPaste, onCut, onSelect };
+  const { onInput, onCut, onPaste, onSelect } = inputEvents(editor, fugue, communication);
+  const { onShortcut } = shortcutsEvents(editor, fugue, communication, history);
+  return { onInput, onShortcut, onCut, onPaste, onSelect };
 }
 
 export default useInputHandlers;

@@ -31,7 +31,7 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
     return withMarkdown(editor, handlers);
   });
   const { getElementRenderer, getLeafRenderer } = useRenderers();
-  const { onInput, onKeyDown, onPaste, onCut, onSelect } = useInputHandlers(editor, fugue);
+  const { onInput, onShortcut, onCut, onPaste, onSelect } = useInputHandlers(editor, fugue);
 
   useEvents(fugue, () => {
     editor.children = toSlate(fugue);
@@ -55,9 +55,9 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
             onDOMBeforeInput={onInput}
-            onKeyDown={e => onKeyDown(e.nativeEvent)}
-            onPaste={e => onPaste(e.nativeEvent)}
             onCut={onCut}
+            onPaste={e => onPaste(e.nativeEvent)}
+            onKeyDown={e => onShortcut(e.nativeEvent)}
             onSelect={onSelect}
           />
         </Slate>

@@ -10,6 +10,7 @@ function Cursors() {
   const onCursorChange = (cursor: CursorData) => {
     setCursors(prevCursors => {
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
+      if (!cursor.range) return otherCursors;
       return [...otherCursors, cursor];
     });
   };

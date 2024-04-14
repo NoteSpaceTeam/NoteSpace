@@ -27,6 +27,7 @@ function EditorTitle(props: InputProps) {
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
+      e.preventDefault();
       onConfirm();
       ReactEditor.focus(editor);
     }

@@ -1,7 +1,7 @@
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { generateReplicaId } from './utils';
+import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, last, range } from 'lodash';
@@ -41,7 +41,7 @@ export class Fugue {
    */
   insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
     return values.map((value, i) => {
-      const node = typeof value === 'string' ? { value, styles: [] } : value;
+      const node = typeof value === 'string' ? nodeInsert(value, []) : value;
       const operation = this.getInsertOperation({ ...cursor, column: cursor.column + i }, node);
       this.addNode(operation);
       return operation;
