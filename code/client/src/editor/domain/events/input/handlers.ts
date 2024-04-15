@@ -1,13 +1,13 @@
-import { BaseSelection, Editor } from 'slate';
+import { BaseSelection } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import { Communication } from '@socket/communication';
-import { InputHandlers } from '@editor/domain/input/types';
+import { InputHandlers } from '@editor/domain/events/input/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { nodeInsert } from '@editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 
-export default (editor : Editor, fugue : Fugue, communication : Communication): InputHandlers => {
+export default (fugue : Fugue, communication : Communication): InputHandlers => {
 
   function onDeleteSelectionHandler(selection : Selection) {
     const operations = fugue.deleteLocal(selection);
@@ -53,4 +53,14 @@ export default (editor : Editor, fugue : Fugue, communication : Communication): 
     communication.emit('cursorChange', range);
   }
 
+  return {
+    onDeleteSelection : onDeleteSelectionHandler,
+    onKey : onKeyHandler,
+    onEnter : onEnterHandler,
+    onBackspace : onBackspaceHandler,
+    onDelete : onDeleteHandler,
+    onPaste : onPasteHandler,
+    onTab : onTabHandler,
+    onSelection : onSelectionHandler
+  }
 }

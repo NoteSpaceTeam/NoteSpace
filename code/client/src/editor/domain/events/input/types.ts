@@ -1,6 +1,7 @@
 import { InlineStyle } from '@notespace/shared/types/styles';
-import { Cursor } from '@notespace/shared/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { BaseSelection } from 'slate';
+
 
 export type InputHandlers = {
   onDeleteSelection : OnDeleteSelectionHandler;

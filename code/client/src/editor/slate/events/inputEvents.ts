@@ -1,17 +1,14 @@
 import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
-import { nodeInsert } from '@editor/crdt/utils';
 import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
 import { Selection } from '@notespace/shared/types/cursor';
-import { Communication } from '@socket/communication';
-import { Operation } from '@notespace/shared/crdt/types/operations';
+import { InputHandlers } from '@editor/domain/events/input/types';
 
-export default (editor: Editor, fugue: Fugue, communication: Communication) => {
+export default (editor: Editor, handlers : InputHandlers) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -46,10 +43,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     }
   }
 
-  function onDeleteSelection(selection: Selection) {
-    const operations = fugue.deleteLocal(selection);
-    communication.emitChunked('operation', operations);
-  }
+  const onDeleteSelection = (selection: Selection) => handlers.onDeleteSelection(selection);
 
   /**
    * Inserts text at the current cursor position
@@ -58,19 +52,15 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    const operations = fugue.insertLocal(cursor, nodeInsert(key, styles));
-    communication.emitChunked('operation', operations);
+    handlers.onKey(key, cursor, styles);
   }
 
   /**
    * Handles enter key press
    * @param cursor
    */
-  function onEnter(cursor: Cursor) {
-    const operations = fugue.insertLocal(cursor, '\n');
-    const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line, true);
-    communication.emitChunked('operation', [styleOperation, ...operations]);
-  }
+  const onEnter = (cursor: Cursor) => handlers.onEnter(cursor);
+
 
   /**
    * Handles backspace key press
@@ -78,8 +68,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onBackspace(cursor: Cursor) {
     if (isEqual(cursor, emptyCursor())) return;
-    const operations = fugue.deleteLocalByCursor(cursor);
-    if (operations) communication.emit('operation', operations);
+    handlers.onBackspace(cursor);
   }
 
   /**
@@ -88,8 +77,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
    */
   function onDelete({ line, column }: Cursor) {
     const cursor = { line, column: column + 1 };
-    const operations = fugue.deleteLocalByCursor(cursor);
-    if (operations) communication.emit('operation', operations);
+    handlers.onDelete(cursor);
   }
 
   /**
@@ -101,12 +89,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     const { start } = getSelection(editor);
     const chars = clipboardData.split('');
     const lineNodes = chars.filter(char => char === '\n');
-    const operations: Operation[] = fugue.insertLocal(start, ...chars);
-    for (let i = 0; i < lineNodes.length; i++) {
-      const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
-      operations.push(styleOperation);
-    }
-    communication.emitChunked('operation', operations);
+    handlers.onPaste(start, chars, lineNodes);
   }
 
   function onCut() {
@@ -120,8 +103,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
   function onTab(cursor: Cursor) {
     const tab = '\t';
     editor.insertText(tab);
-    const operations = fugue.insertLocal(cursor, tab);
-    communication.emit('operation', operations);
+    handlers.onTab(cursor, tab);
   }
 
   /**
@@ -131,7 +113,8 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     // let the selection update first
     setTimeout(() => {
       const range = editor.selection;
-      communication.emit('cursorChange', range);
+      if (!range) return;
+      handlers.onSelection(range);
     }, 10);
   }
 
