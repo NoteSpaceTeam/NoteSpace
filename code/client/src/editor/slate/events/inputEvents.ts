@@ -114,8 +114,19 @@ export default (editor: Editor, fugue: Fugue, communication: Communication) => {
     const clipboardData = e.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    const nodes = clipboardData.split('').map(char => nodeInsert(char, []));
-    communication.emitChunked('operation', fugue.insertLocal(start, ...nodes));
+    const chars = clipboardData.split('');
+    const lineNodes = chars.filter(char => char === '\n');
+    const operations: Operation[] = fugue.insertLocal(start, ...chars);
+    for (let i = 0; i < lineNodes.length; i++) {
+      const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
+      operations.push(styleOperation);
+    }
+    communication.emitChunked('operation', operations);
+  }
+
+  function onCut() {
+    const selection = getSelection(editor);
+    onDeleteSelection(selection);
   }
 
   /**

@@ -32,28 +32,33 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
     }
   }
 
-  /**
-   * Reverses the given operation
-   * @param operation
-   */
-  function reverseOperation(operation: SlateOperation) {
-    switch (operation.type) {
-      case 'insert_text': {
-        const selection = getSelectionBySlate(editor, operation.path, operation.offset);
-        const operations = fugue.deleteLocal(selection);
-        communication.emitChunked('operation', operations);
-        break;
-      }
-      case 'remove_text': {
-        const selection = getSelectionBySlate(editor, operation.path, operation.offset);
-        const operations = fugue.insertLocal(selection.start, ...operation.text.split(''));
-        communication.emitChunked('operation', operations);
-        break;
-      }
-      // other operation types
-      default:
-        throw new Error('Invalid operation type: ' + operation.type);
-    }
+  function reverseInsertText(operations: BaseInsertTextOperation[]): Operation[] {
+    const path = last(operations)!.path[0] - operations[0].path[0];
+    const offset = last(operations)!.offset - operations[0].offset;
+    const length = operations.map(operation => operation.text).length;
+    const selection = {
+      start: {
+        line: path,
+        column: offset - length + 1,
+      },
+      end: {
+        line: path,
+        column: offset + 1,
+      },
+    };
+
+
+
+    return fugue.deleteLocal(selection);
+  }
+
+  function reverseRemoveText(operations: BaseRemoveTextOperation[]): Operation[] {
+    const cursor = {
+      line: operations[0].path[0],
+      column: operations[0].offset,
+    };
+    const text = operations.map(operation => operation.text.split('')).flat();
+    return fugue.insertLocal(cursor, ...text);
   }
 
   return { undo, redo };
