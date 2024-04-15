@@ -28,5 +28,3 @@ export function generateReplicaId() {
 export function nodeInsert(value: string, styles: InlineStyle[]): NodeInsert {
   return { value, styles };
 }
-
-

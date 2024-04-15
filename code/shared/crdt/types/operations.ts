@@ -26,6 +26,7 @@ export type BlockStyleOperation = {
   type: "block-style";
   line: number;
   style: BlockStyle;
+  append: boolean;
 };
 
 export type Operation =

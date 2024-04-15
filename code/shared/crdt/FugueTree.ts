@@ -46,9 +46,6 @@ export class FugueTree<T> {
     this.insertChild(node);
     // Update sizes of ancestors
     this.updateDepths(node, 1);
-    if (value === "\n") {
-      this._root.styles.push("paragraph");
-    }
   }
 
   /**
@@ -138,10 +135,12 @@ export class FugueTree<T> {
     }
   }
 
-  updateBlockStyle(style: BlockStyle, line: number) {
-    const blockStyles = this._root.styles;
-    blockStyles[line] = style;
-    this._root.styles = blockStyles;
+  updateBlockStyle(style: BlockStyle, line: number, append: boolean = false) {
+    if (append) {
+      this._root.styles.splice(line, 0, style);
+    } else {
+      this._root.styles[line] = style;
+    }
   }
 
   /**

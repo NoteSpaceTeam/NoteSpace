@@ -1,10 +1,10 @@
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle, Style } from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { generateReplicaId } from './utils';
+import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, isEqual, last, range } from 'lodash';
+import { isEmpty, last, range } from 'lodash';
 import {
   BlockStyleOperation,
   DeleteOperation,
@@ -36,13 +36,13 @@ export class Fugue {
 
   /**
    * Inserts the given values starting from the given index.
-   * @param start
+   * @param cursor
    * @param values
    */
-  insertLocal(start: Cursor, ...values: NodeInsert[] | string[]) {
+  insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
     return values.map((value, i) => {
-      const node = typeof value === 'string' ? { value, styles: [] } : value;
-      const operation = this.getInsertOperation({ ...start, column: start.column + i }, node);
+      const node = typeof value === 'string' ? nodeInsert(value, []) : value;
+      const operation = this.getInsertOperation({ ...cursor, column: cursor.column + i }, node);
       this.addNode(operation);
       return operation;
     });
@@ -64,7 +64,7 @@ export class Fugue {
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
     const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
-    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column });
+    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column })!;
     if (isEmpty(leftOrigin.rightChildren)) {
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     }
@@ -88,39 +88,41 @@ export class Fugue {
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
-  deleteLocal(selection: Selection) {
-    const operations: DeleteOperation[] = Array.from(this.traverseBySelection(selection)).map(node => {
-      const { id } = node;
-      this.removeNode(id);
-      return { type: 'delete', id };
-    });
-    return operations;
+  deleteLocal(selection: Selection): DeleteOperation[] {
+    const iterator = this.traverseBySelection(selection);
+    return Array.from(iterator).map(node => this.removeNode(node.id));
+  }
+
+  /**
+   * Deletes the node at the given cursor
+   * @param cursor
+   */
+  deleteLocalByCursor(cursor: Cursor) {
+    const node = this.getNodeByCursor(cursor);
+    if (node) return this.deleteLocalById(node.id);
   }
 
   /**
    * Deletes the node based on the given operation
    * @param ids
    */
-  deleteLocalById = (...ids: Id[]): DeleteOperation[] =>
-    ids.map(id => {
-      this.removeNode(id);
-      return { type: 'delete', id };
-    });
+  deleteLocalById = (...ids: Id[]): DeleteOperation[] => ids.map(id => this.removeNode(id));
 
   /**
    * Deletes the node based on the given operation
    * @param operation
    */
   deleteRemote(operation: DeleteOperation): void {
-    this.removeNode(operation.id);
+    this.tree.deleteNode(operation.id);
   }
 
   /**
    * Deletes the node based on the given node id
    * @param id
    */
-  private removeNode(id: Id): void {
+  private removeNode(id: Id): DeleteOperation {
     this.tree.deleteNode(id);
+    return { type: 'delete', id };
   }
 
   /**
@@ -155,34 +157,39 @@ export class Fugue {
     this.tree.updateInlineStyle(id, style, value);
   }
 
-  updateBlockStyleLocal(type: BlockStyle, line: number) {
-    this.tree.updateBlockStyle(type, line);
-    const operation: BlockStyleOperation = {
+  /**
+   * Updates the style of the node based on the given operation
+   * @param style - the style to be updated
+   * @param line - the line number
+   * @param append - if true, appends the style to the existing styles, otherwise replaces them
+   */
+  updateBlockStyleLocal(style: BlockStyle, line: number, append: boolean = false): BlockStyleOperation {
+    this.tree.updateBlockStyle(style, line, append);
+    return {
       type: 'block-style',
       line,
-      style: type,
+      style,
+      append,
     };
-    return operation;
   }
-
 
   /**
    * Updates the style of the nodes by the given selection
-   * @param type
+   * @param style
    * @param selection
    */
-  updateBlockStylesLocalBySelection(type: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(type, line));
+  updateBlockStylesLocalBySelection(style: BlockStyle, selection: Selection) {
+    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(style, line));
   }
-
 
   /**
    * Updates the style of the node based on the given operation
    * @param line
    * @param style
+   * @param append
    */
-  updateBlockStyleRemote({ line, style }: BlockStyleOperation) {
-    this.tree.updateBlockStyle(style, line);
+  updateBlockStyleRemote({ line, style, append }: BlockStyleOperation) {
+    this.tree.updateBlockStyle(style, line, append);
   }
 
   getBlockStyle(line: number): BlockStyle {
@@ -201,32 +208,29 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    let lineCounter = 0,
-      columnCounter = 0,
-      inBounds = false;
+    let lineCounter = 0;
+    let columnCounter = 0;
+    let inBounds = false;
     for (const node of this.traverseTree()) {
+      // new line
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      }
       // start condition
-      if (
-        lineCounter === start.line &&
-        (columnCounter === start.column || (isEqual(start, end) && columnCounter === start.column - 1))
-      ) {
+      if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
+      }
+      // yield node if in bounds
+      if (inBounds) {
+        yield node;
       }
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
         break;
       }
-      // yield node if in bounds
-      if (inBounds && node.value !== '\n') {
-        yield node;
-      }
-      // update counters
-      if (node.value === '\n') {
-        lineCounter++;
-        columnCounter = 0;
-      } else {
-        columnCounter++;
-      }
+      // increment column counter
+      columnCounter++;
     }
   }
 
@@ -276,18 +280,10 @@ export class Fugue {
    * Returns the node at the given cursor
    * @param cursor
    */
-  getNodeByCursor(cursor: Cursor): FugueNode {
+  getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
+    const cursor = { line, column: line === 0 ? column - 1 : column };
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
-  }
-
-  /**
-   * Deletes the node at the given cursor
-   * @param cursor
-   */
-  deleteNodeByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor);
-    if (node) return this.deleteLocalById(node.id);
   }
 
   /**

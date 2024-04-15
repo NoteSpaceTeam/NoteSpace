@@ -1,9 +1,9 @@
-import { Editor } from 'slate';
+import { BaseInsertTextOperation, BaseRemoveTextOperation, Editor } from 'slate';
 import { Operation as SlateOperation } from 'slate';
-import { Fugue } from '@editor/crdt/Fugue';
-import { getSelectionBySlate } from '@editor/slate/utils/selection';
+import { Fugue } from '@editor/crdt/fugue';
 import { last } from 'lodash';
 import { Communication } from '@socket/communication';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export type HistoryOperations = {
   undo: () => void;
@@ -20,15 +20,30 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
   function undo() {
     const { history } = editor;
     const undo = last(history.undos);
-    if (undo) {
-      undo.operations.map(reverseOperation);
-    }
+    if (undo) applyOperation(undo.operations);
   }
+
   function redo() {
     const { history } = editor;
     const redo = last(history.redos);
-    if (redo) {
-      redo.operations.map(reverseOperation);
+    if (redo) applyOperation(redo.operations);
+  }
+
+  function applyOperation(slateOperations: SlateOperation[]) {
+    const operations = reverseOperations(slateOperations);
+    communication.emitChunked('operation', operations);
+  }
+
+  function reverseOperations(operations: SlateOperation[]): Operation[] {
+    switch (operations[0].type) {
+      case 'insert_text': {
+        return reverseInsertText(operations as BaseInsertTextOperation[]);
+      }
+      case 'remove_text': {
+        return reverseRemoveText(operations as BaseRemoveTextOperation[]);
+      }
+      default:
+        throw new Error('Invalid operation type: ' + operations[0].type);
     }
   }
 
@@ -46,9 +61,6 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
         column: offset + 1,
       },
     };
-
-
-
     return fugue.deleteLocal(selection);
   }
 

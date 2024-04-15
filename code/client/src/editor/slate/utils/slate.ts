@@ -2,7 +2,7 @@ import { createEditor, Descendant, Editor } from 'slate';
 import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import type { CustomText } from '@editor/slate/model/types';
 import { isEqual, last } from 'lodash';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import { BlockStyles } from '@notespace/shared/types/styles';
 
 /**
@@ -48,12 +48,12 @@ export function toSlate(fugue: Fugue): Descendant[] {
 
 /**
  * Creates a descendant object.
- * @param type
+ * @param style
  * @param children
  * @returns
  */
-export const descendant = (type: BlockStyle, ...children: string[]): Descendant => ({
-  type,
+export const descendant = (style: BlockStyle, ...children: string[]): Descendant => ({
+  type: style,
   children: children.map(text => ({ text })),
 });
 

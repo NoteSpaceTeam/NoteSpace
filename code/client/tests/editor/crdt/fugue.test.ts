@@ -1,4 +1,4 @@
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 import {
   InsertOperation,
   DeleteOperation,
@@ -100,7 +100,7 @@ describe('Fugue', () => {
     // then
     expect(operations).toHaveLength(1);
     expect(operations[0]).toEqual(expect.objectContaining({ type: 'inline-style', style: 'bold', value: true }));
-    expect(fugue.getNodeByCursor({ line: 0, column: 1 }).styles).toEqual(['bold']);
+    expect(fugue.getNodeByCursor({ line: 0, column: 1 })?.styles).toEqual(['bold']);
   });
 
   it('should update inline style of node remotely', () => {
@@ -142,7 +142,7 @@ describe('Fugue', () => {
 
   it('should update block style of node remotely', () => {
     // given
-    const operation: BlockStyleOperation = { type: 'block-style', line: 0, style: 'heading-one' };
+    const operation: BlockStyleOperation = { type: 'block-style', line: 0, style: 'heading-one', append: false };
 
     // when
     fugue.updateBlockStyleRemote(operation);
@@ -154,7 +154,7 @@ describe('Fugue', () => {
   it('should return the nodes in the given selection', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 2 } };
+    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c');

@@ -1,7 +1,7 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { Fugue } from '@editor/crdt/Fugue';
+import { Fugue } from '@editor/crdt/fugue';
 /**
  * Hook client socket listeners to events
  * @param fugue

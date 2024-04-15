@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Document } from '../../../../../shared/crdt/types/document';
+import { Document } from '@notespace/shared/crdt/types/document';
 import useSocketListeners from '@socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
 import useCommunication from '@editor/hooks/useCommunication';
@@ -27,6 +27,7 @@ function EditorTitle(props: InputProps) {
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
+      e.preventDefault();
       onConfirm();
       ReactEditor.focus(editor);
     }
