@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), qrcode(), react(), VitePWA(pwaConfig)],
+  plugins: [tsconfigPaths(), qrcode(), react(), /*VitePWA(pwaConfig)*/],
   test: {
     globals: true,
     alias: {

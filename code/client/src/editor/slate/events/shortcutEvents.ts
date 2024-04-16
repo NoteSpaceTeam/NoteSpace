@@ -1,9 +1,8 @@
 import { getSelection } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { HistoryOperations } from '@editor/slate/events/historyEvents';
 import { Cursor } from '@notespace/shared/types/cursor';
-import { ShortcutHandlers } from '@editor/domain/shortcut/types';
+import { ShortcutHandlers } from '@editor/domain/handlers/shortcut/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -11,7 +10,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (editor: Editor, handlers: ShortcutHandlers, history: HistoryOperations) => {
+export default (editor: Editor, handlers: ShortcutHandlers) => {
   /**
    * Handles keyboard shortcuts
    * @param event
@@ -20,12 +19,6 @@ export default (editor: Editor, handlers: ShortcutHandlers, history: HistoryOper
     if (!event.ctrlKey) return;
     const { start: cursor } = getSelection(editor);
     switch (event.key) {
-      case 'z':
-        history.undo();
-        break;
-      case 'y':
-        history.redo();
-        break;
       case 'Backspace':
         onCtrlBackspace(cursor);
         break;

@@ -9,11 +9,11 @@ import useRenderers from '@editor/slate/hooks/useRenderers';
 import Toolbar from '@editor/components/toolbar/Toolbar';
 import EditorTitle from '@editor/components/title/EditorTitle';
 import useEditor from '@editor/slate/hooks/useEditor';
-import useFugue from '../hooks/useFugue';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
 import useCommunication from '@editor/hooks/useCommunication';
-import markdownHandlers from '@editor/domain/markdown/handlers';
+import markdownHandlers from '@editor/domain/handlers/markdown/handlers';
 import './SlateEditor.scss';
+import useFugue from "@editor/hooks/useFugue";
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {

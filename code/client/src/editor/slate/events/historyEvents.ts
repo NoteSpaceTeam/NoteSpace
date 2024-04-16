@@ -1,7 +1,7 @@
 import { BaseInsertTextOperation, BaseRemoveTextOperation, Editor, Operation, Range } from 'slate';
 import { Operation as SlateOperation } from 'slate';
 import { last } from 'lodash';
-import { HistoryHandlers, HistoryOperation } from '@editor/domain/history/types';
+import { HistoryHandlers, HistoryOperation } from '@editor/domain/handlers/history/types';
 
 export type HistoryOperations = {
   undo: () => void;
@@ -18,32 +18,49 @@ interface Batch {
  * @param editor
  * @param handlers
  */
-function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperations {
+function historyEvents(editor : Editor, handlers: HistoryHandlers): HistoryOperations {
+  const {redo : _redo, undo : _undo} = editor;
   function undo() {
     const { history } = editor;
-    applyOperation(history.undos);
+    console.log(history.undos)
+    applyOperation(history.undos, true);
+    _undo();
   }
 
   function redo() {
     const { history } = editor;
-    applyOperation(history.redos);
+    console.log(history.redos)
+    applyOperation(history.redos, false); // redo should reverse the type of the last operation
+    _redo();
   }
 
-  function applyOperation(operations: Batch[]) {
+  /**
+   * Applies the operation to the editor
+   * @param operations
+   * @param matchType - if true, the reverse operation will be the same type as the last operation
+   */
+  function applyOperation(operations: Batch[], matchType : boolean) {
     const historyOperation = last(operations);
     if (historyOperation) {
-      const operation = reverseOperations(historyOperation.operations);
+      const operation = reverseOperations(historyOperation.operations, matchType);
       handlers.onHistoryOperation(operation);
     }
   }
 
-  function reverseOperations(operations: SlateOperation[]) {
-    switch (operations[0].type) {
+  function reverseOperations(operations: SlateOperation[], matchType : boolean) {
+    const type = operations[0].type;
+    switch (type) {
       case 'insert_text': {
-        return reverseInsertText(operations as BaseInsertTextOperation[]);
+        console.log("reverseInsertText")
+        return (matchType)
+            ? reverseInsertText(operations as BaseInsertTextOperation[])
+            : reverseRemoveText(operations as BaseRemoveTextOperation[]);
       }
       case 'remove_text': {
-        return reverseRemoveText(operations as BaseRemoveTextOperation[]);
+        console.log("reverseRemoveText")
+        return (matchType)
+            ? reverseRemoveText(operations as BaseRemoveTextOperation[])
+            : reverseInsertText(operations as BaseInsertTextOperation[]);
       }
       default:
         throw new Error('Invalid operation type: ' + operations[0].type);
@@ -75,7 +92,6 @@ function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperat
     const text = operations.map(operation => operation.text.split('')).flat();
     return { type: 'insert', cursor, text };
   }
-
   return { undo, redo };
 }
 

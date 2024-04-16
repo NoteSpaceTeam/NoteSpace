@@ -1,10 +1,10 @@
-import { Cursor } from '../../../../../shared/types/cursor';
+import { Cursor } from '../../../../../../shared/types/cursor';
 import { Fugue } from '@editor/crdt/fugue';
 import { Editor } from 'slate';
 import { Communication } from '@socket/communication';
-import { ShortcutHandlers } from '@editor/domain/shortcut/types';
+import { ShortcutHandlers } from '@editor/domain/handlers/shortcut/types';
 import { formatMark } from '@editor/slate/utils/formatMark';
-import { InlineStyle } from '../../../../../shared/types/styles';
+import { InlineStyle } from '../../../../../../shared/types/styles';
 
 export default (editor: Editor, fugue: Fugue, communication: Communication): ShortcutHandlers => {
   function onCtrlDeletion(cursor: Cursor, reverse: boolean) {

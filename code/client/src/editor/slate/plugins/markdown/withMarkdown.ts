@@ -1,6 +1,6 @@
 import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
-import { MarkdownHandlers } from '@editor/domain/markdown/types';
+import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
 
 /**
  * Adds markdown support to the editor.

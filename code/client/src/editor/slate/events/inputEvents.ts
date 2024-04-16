@@ -6,7 +6,7 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor } from 'slate';
 import { Selection } from '@notespace/shared/types/cursor';
-import { InputHandlers } from '@editor/domain/input/types';
+import { InputHandlers } from '@editor/domain/handlers/input/types';
 
 export default (editor: Editor, handlers: InputHandlers) => {
   function onInput(e: InputEvent) {

@@ -5,7 +5,7 @@ import {
   HistoryOperation,
   onInsertTextOperation,
   onRemoveTextOperation,
-} from '@editor/domain/history/types';
+} from '@editor/domain/handlers/history/types';
 
 export default (fugue: Fugue, communication: Communication): HistoryHandlers => {
   function onHistoryOperation(operation: HistoryOperation) {

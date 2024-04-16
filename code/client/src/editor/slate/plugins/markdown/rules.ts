@@ -1,6 +1,6 @@
 import { createSetBlockApply, createSetInlineApply } from '@editor/slate/plugins/markdown/operations/applyOperations';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { BlockHandler, InlineHandler } from '@editor/domain/markdown/types';
+import { BlockHandler, InlineHandler } from '@editor/domain/handlers/markdown/types';
 import { Editor, Range } from 'slate';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

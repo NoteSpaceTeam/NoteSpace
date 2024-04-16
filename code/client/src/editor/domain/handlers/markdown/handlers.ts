@@ -4,8 +4,8 @@ import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueNode } from '@editor/crdt/types';
 import { Selection } from '@notespace/shared/types/cursor';
 import { isSelectionEmpty } from '@editor/slate/utils/selection';
-import { MarkdownHandlers } from '@editor/domain/markdown/types';
-import { deleteAroundSelection } from '@editor/domain/markdown/utils';
+import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
+import { deleteAroundSelection } from '@editor/domain/handlers/markdown/utils';
 
 /**
  * Handlers for markdown operations

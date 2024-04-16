@@ -1,12 +1,13 @@
 import { type Editor } from 'slate';
 import inputEvents from '@editor/slate/events/inputEvents';
 import shortcutsEvents from '@editor/slate/events/shortcutEvents';
-import historyEvents from '@editor/slate/events/historyEvents';
-import useCommunication from '@editor/hooks/useCommunication';
 import { Fugue } from '@editor/crdt/fugue';
-import inputHandlers from '@editor/domain/input/handlers';
-import shortcutHandlers from '@editor/domain/shortcut/handlers';
-import historyHandlers from '@editor/domain/history/handlers';
+import inputHandlers from '@editor/domain/handlers/input/handlers';
+import shortcutHandlers from '@editor/domain/handlers/shortcut/handlers';
+import historyHandlers from '@editor/domain/handlers/history/handlers';
+import historyEvents from '@editor/slate/events/historyEvents';
+import {overrideHistoryMethods} from "@editor/slate/plugins/history/utils";
+import useCommunication from "@editor/hooks/useCommunication";
 
 /**
  * Handles input events
@@ -19,9 +20,13 @@ function useInputHandlers(editor: Editor, fugue: Fugue) {
   const handlersShortcut = shortcutHandlers(editor, fugue, communication);
   const handlersHistory = historyHandlers(fugue, communication);
 
-  const history = historyEvents(editor, handlersHistory);
+  // Overrides editor history methods
+  const eventsHistory = historyEvents(editor, handlersHistory);
+  overrideHistoryMethods(editor, eventsHistory);
+
+
   const { onInput, onCut, onPaste, onSelect } = inputEvents(editor, handlersInput);
-  const { onShortcut } = shortcutsEvents(editor, handlersShortcut, history);
+  const { onShortcut } = shortcutsEvents(editor, handlersShortcut);
 
   return { onInput, onShortcut, onCut, onPaste, onSelect };
 }

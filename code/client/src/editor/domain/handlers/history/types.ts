@@ -1,4 +1,4 @@
-import { Cursor, Selection } from '../../../../../shared/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 
 export type HistoryHandlers = {
   onHistoryOperation: HistoryHandler;

@@ -1,7 +1,7 @@
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { getSelectionByRange } from '@editor/slate/utils/selection';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { BlockHandler, InlineHandler } from '@editor/domain/markdown/types';
+import { BlockHandler, InlineHandler } from '@editor/domain/handlers/markdown/types';
 
 /**
  * Creates a function that applies a block element to the editor

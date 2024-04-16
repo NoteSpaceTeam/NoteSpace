@@ -1,4 +1,4 @@
-import { Cursor } from '../../../../../shared/types/cursor';
+import { Cursor } from '../../../../../../shared/types/cursor';
 
 export type ShortcutHandlers = {
   onCtrlDeletion: OnCtrlDeletionHandler;

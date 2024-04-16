@@ -1,11 +1,11 @@
 import { Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@editor/slate/model/types';
+import { type CustomElement } from '@editor/slate/types';
 import { shortcuts } from '../shortcuts';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import { getSelection } from '@editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownHandlers } from '@editor/domain/markdown/types';
+import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
 import { RuleType } from '@editor/slate/plugins/markdown/rules';
 import { isSelectionEmpty } from '@editor/slate/utils/selection';
 
