@@ -1,18 +1,17 @@
-import { InlineStyle } from '@notespace/shared/types/styles';
-import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { InlineStyle } from '../../../../../shared/types/styles';
+import { Cursor, Selection } from '../../../../../shared/types/cursor';
 import { BaseSelection } from 'slate';
 
-
 export type InputHandlers = {
-  onDeleteSelection : OnDeleteSelectionHandler;
-  onKey : OnKeyHandler;
-  onEnter : OnEnterHandler;
-  onBackspace : OnBackspaceHandler;
-  onDelete : OnDeleteHandler;
-  onPaste : OnPasteHandler;
-  onTab : OnTabHandler;
-  onSelection : OnSelectionHandler;
-}
+  onDeleteSelection: OnDeleteSelectionHandler;
+  onKey: OnKeyHandler;
+  onEnter: OnEnterHandler;
+  onBackspace: OnBackspaceHandler;
+  onDelete: OnDeleteHandler;
+  onPaste: OnPasteHandler;
+  onTab: OnTabHandler;
+  onSelection: OnSelectionHandler;
+};
 
 export type OnDeleteSelectionHandler = (selection: Selection) => void;
 export type OnKeyHandler = (key: string, cursor: Cursor, styles: InlineStyle[]) => void;

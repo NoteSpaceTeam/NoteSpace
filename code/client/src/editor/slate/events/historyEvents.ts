@@ -1,40 +1,43 @@
-import { BaseInsertTextOperation, BaseRemoveTextOperation, Editor } from 'slate';
+import { BaseInsertTextOperation, BaseRemoveTextOperation, Editor, Operation, Range } from 'slate';
 import { Operation as SlateOperation } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
 import { last } from 'lodash';
-import { Communication } from '@socket/communication';
-import { Operation } from '@notespace/shared/crdt/types/operations';
+import { HistoryHandlers, HistoryOperation } from '@editor/domain/history/types';
 
 export type HistoryOperations = {
   undo: () => void;
   redo: () => void;
 };
 
+interface Batch {
+  operations: Operation[];
+  selectionBefore: Range | null;
+}
+
 /**
  * Handles undo and redo operations
  * @param editor
- * @param fugue
- * @param communication
+ * @param handlers
  */
-function historyEvents(editor: Editor, fugue: Fugue, communication: Communication): HistoryOperations {
+function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperations {
   function undo() {
     const { history } = editor;
-    const undo = last(history.undos);
-    if (undo) applyOperation(undo.operations);
+    applyOperation(history.undos);
   }
 
   function redo() {
     const { history } = editor;
-    const redo = last(history.redos);
-    if (redo) applyOperation(redo.operations);
+    applyOperation(history.redos);
   }
 
-  function applyOperation(slateOperations: SlateOperation[]) {
-    const operations = reverseOperations(slateOperations);
-    communication.emitChunked('operation', operations);
+  function applyOperation(operations: Batch[]) {
+    const historyOperation = last(operations);
+    if (historyOperation) {
+      const operation = reverseOperations(historyOperation.operations);
+      handlers.onHistoryOperation(operation);
+    }
   }
 
-  function reverseOperations(operations: SlateOperation[]): Operation[] {
+  function reverseOperations(operations: SlateOperation[]) {
     switch (operations[0].type) {
       case 'insert_text': {
         return reverseInsertText(operations as BaseInsertTextOperation[]);
@@ -47,7 +50,7 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
     }
   }
 
-  function reverseInsertText(operations: BaseInsertTextOperation[]): Operation[] {
+  function reverseInsertText(operations: BaseInsertTextOperation[]): HistoryOperation {
     const path = last(operations)!.path[0] - operations[0].path[0];
     const offset = last(operations)!.offset - operations[0].offset;
     const length = operations.map(operation => operation.text).length;
@@ -61,16 +64,16 @@ function historyEvents(editor: Editor, fugue: Fugue, communication: Communicatio
         column: offset + 1,
       },
     };
-    return fugue.deleteLocal(selection);
+    return { type: 'remove', selection };
   }
 
-  function reverseRemoveText(operations: BaseRemoveTextOperation[]): Operation[] {
+  function reverseRemoveText(operations: BaseRemoveTextOperation[]): HistoryOperation {
     const cursor = {
       line: operations[0].path[0],
       column: operations[0].offset,
     };
     const text = operations.map(operation => operation.text.split('')).flat();
-    return fugue.insertLocal(cursor, ...text);
+    return { type: 'insert', cursor, text };
   }
 
   return { undo, redo };

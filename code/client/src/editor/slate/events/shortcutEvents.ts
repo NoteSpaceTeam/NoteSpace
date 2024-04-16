@@ -3,7 +3,7 @@ import { Editor } from 'slate';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
 import { Cursor } from '@notespace/shared/types/cursor';
-import { ShortcutHandlers } from '@editor/domain/events/shortcut/types';
+import { ShortcutHandlers } from '@editor/domain/shortcut/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -11,7 +11,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (editor: Editor, handlers : ShortcutHandlers, history: HistoryOperations) => {
+export default (editor: Editor, handlers: ShortcutHandlers, history: HistoryOperations) => {
   /**
    * Handles keyboard shortcuts
    * @param event

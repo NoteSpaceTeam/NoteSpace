@@ -9,8 +9,8 @@ import { Fugue } from '@editor/crdt/fugue';
  */
 function useEvents(fugue: Fugue, onDone: () => void) {
   /**
-   * Hook socket listeners to an edit event
-   * @param operations - Edit operations
+   * Hook socket listeners to an apply an event to the editor
+   * @param operations
    */
   function onOperation(operations: Operation[]) {
     for (const operation of operations) {

@@ -6,9 +6,9 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor } from 'slate';
 import { Selection } from '@notespace/shared/types/cursor';
-import { InputHandlers } from '@editor/domain/events/input/types';
+import { InputHandlers } from '@editor/domain/input/types';
 
-export default (editor: Editor, handlers : InputHandlers) => {
+export default (editor: Editor, handlers: InputHandlers) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -60,7 +60,6 @@ export default (editor: Editor, handlers : InputHandlers) => {
    * @param cursor
    */
   const onEnter = (cursor: Cursor) => handlers.onEnter(cursor);
-
 
   /**
    * Handles backspace key press
