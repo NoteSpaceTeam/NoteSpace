@@ -19,7 +19,7 @@ export default (fugue: Fugue, communication: Communication): MarkdownHandlers =>
    * @param line
    */
   const blockHandler = (style: BlockStyle, line: number) => {
-    const cursor = { line, column: 1 }; // not 0 or else it will delete the line root
+    const cursor = { line, column: line === 0 ? 0 : 1 };
     const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
     const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
     communication.emit('operation', deleteOperations);

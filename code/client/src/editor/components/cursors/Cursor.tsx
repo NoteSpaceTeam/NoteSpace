@@ -1,36 +1,28 @@
-import { useEffect, useRef } from 'react';
-import { toDomRange } from '@editor/slate/utils/selection';
-import { useSlate } from 'slate-react';
-import { CursorData } from '@editor/components/cursors/CursorData';
+import { ReactNode } from 'react';
 
-/**
- * Renders a cursor at the given range
- * @param id
- * @param range
- * @param color
- * @constructor
- */
-function Cursor({ id, range, color }: CursorData) {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const editor = useSlate();
+type CursorProps = {
+  children: ReactNode;
+  color: string;
+};
 
-  useEffect(() => {
-    if (!cursorRef.current) return;
-    cursorRef.current?.classList.remove('animate');
-    const { top, left, size } = toDomRange(editor, range);
-
-    cursorRef.current.style.top = `${top - 1}px`;
-    cursorRef.current.style.left = `${left - 1}px`;
-    cursorRef.current.style.width = size ? `${size.width}px` : '2px';
-    cursorRef.current.style.height = size ? `${size.height}px` : '1.5em';
-    if (size) return;
-    const timeoutId = setTimeout(() => {
-      cursorRef.current?.classList.add('animate');
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [editor, range]);
-
-  return <div id={`cursor-${id}`} ref={cursorRef} className="cursor" style={{ backgroundColor: color }} />;
+function Cursor({ children, color }: CursorProps) {
+  return (
+    <span style={{ position: 'relative' }}>
+      {children}
+      <span
+        style={{
+          position: 'absolute',
+          top: '-2px',
+          left: '1px',
+          height: '1.5em',
+          width: '2px',
+          backgroundColor: color,
+          transform: 'translateX(-100%)',
+          zIndex: -1,
+        }}
+      />
+    </span>
+  );
 }
 
 export default Cursor;

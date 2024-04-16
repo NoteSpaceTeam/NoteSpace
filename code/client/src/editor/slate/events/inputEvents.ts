@@ -108,14 +108,10 @@ export default (editor: Editor, handlers: InputHandlers) => {
   /**
    * Handles cursor selection
    */
-  function onSelect() {
-    // let the selection update first
-    setTimeout(() => {
-      const range = editor.selection;
-      if (!range) return;
-      handlers.onSelection(range);
-    }, 10);
+  function onCursorChange() {
+    const range = editor.selection;
+    handlers.onSelection(range);
   }
 
-  return { onInput, onPaste, onCut, onSelect };
+  return { onInput, onPaste, onCut, onCursorChange };
 };

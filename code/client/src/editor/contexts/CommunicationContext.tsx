@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createContext} from 'react';
+import { createContext } from 'react';
 import { Communication, EmitType, ListenType } from '@socket/communication';
 
 export const CommunicationContext = createContext<Communication>({
@@ -22,4 +22,3 @@ export function CommunicationProvider({ emit, emitChunked, on, off, children }: 
     <CommunicationContext.Provider value={{ emit, emitChunked, on, off }}>{children}</CommunicationContext.Provider>
   );
 }
-

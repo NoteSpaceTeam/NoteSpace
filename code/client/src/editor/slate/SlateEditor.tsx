@@ -12,8 +12,10 @@ import useEditor from '@editor/slate/hooks/useEditor';
 import useInputHandlers from '@editor/slate/hooks/useInputHandlers';
 import useCommunication from '@editor/hooks/useCommunication';
 import markdownHandlers from '@editor/domain/handlers/markdown/handlers';
+import useFugue from '@editor/hooks/useFugue';
+import useCursors from './hooks/useCursors';
 import './SlateEditor.scss';
-import useFugue from "@editor/hooks/useFugue";
+import useHistory from '@editor/slate/hooks/useHistory';
 
 // for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
@@ -29,9 +31,11 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
     const handlers = markdownHandlers(fugue, communication);
     return withMarkdown(editor, handlers);
   });
+  const { decorate } = useCursors(editor);
   const { getElementRenderer, getLeafRenderer } = useRenderers();
-  const { onInput, onShortcut, onCut, onPaste, onSelect } = useInputHandlers(editor, fugue);
+  const { onInput, onShortcut, onCut, onPaste, onCursorChange } = useInputHandlers(editor, fugue);
 
+  useHistory(editor, fugue);
   useEvents(fugue, () => {
     editor.children = toSlate(fugue);
     editor.onChange();
@@ -40,8 +44,7 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
   return (
     <div className="editor">
       <div className="container">
-        <Slate editor={editor} initialValue={initialValue}>
-          {/*<Cursors />*/}
+        <Slate editor={editor} initialValue={initialValue} onChange={onCursorChange}>
           <Toolbar fugue={fugue} />
           <EditorTitle placeholder={'Untitled'} />
           <Editable
@@ -49,6 +52,7 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
             data-testid={'editor'}
             renderElement={getElementRenderer}
             renderLeaf={getLeafRenderer}
+            decorate={decorate}
             spellCheck={false}
             onDragStart={e => e.preventDefault()}
             placeholder={'Start writing...'}
@@ -56,7 +60,6 @@ function SlateEditor({ editor: _editor }: SlateEditorProps) {
             onCut={onCut}
             onPaste={e => onPaste(e.nativeEvent)}
             onKeyDown={e => onShortcut(e.nativeEvent)}
-            onSelect={onSelect}
           />
         </Slate>
       </div>

@@ -2,10 +2,10 @@ import { BaseSelection } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
 import { Communication } from '@socket/communication';
 import { InputHandlers } from '@editor/domain/handlers/input/types';
-import { Cursor, Selection } from '../../../../../../shared/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { nodeInsert } from '@editor/crdt/utils';
-import { InlineStyle } from '../../../../../../shared/types/styles';
-import { Operation } from '../../../../../../shared/crdt/types/operations';
+import { InlineStyle } from '@notespace/shared/types/styles';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default (fugue: Fugue, communication: Communication): InputHandlers => {
   function onDeleteSelectionHandler(selection: Selection) {

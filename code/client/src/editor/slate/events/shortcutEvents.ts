@@ -1,4 +1,4 @@
-import { getSelection } from '@editor/slate/utils/selection';
+import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { Cursor } from '@notespace/shared/types/cursor';
@@ -48,7 +48,7 @@ export default (editor: Editor, handlers: ShortcutHandlers) => {
     const mark = hotkeys[key];
     if (!mark) return;
     const value = CustomEditor.toggleMark(editor, mark);
-    handlers.onFormat(mark, value);
+    if (isSelected(editor)) handlers.onFormat(mark, value);
   }
 
   return { onShortcut };

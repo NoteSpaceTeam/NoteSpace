@@ -3,6 +3,8 @@ import { ElementRenderers, LeafRenderers } from './elements';
 import { Paragraph } from './components/components';
 import { type CustomText } from '@editor/slate/types';
 import { type ReactNode } from 'react';
+import Cursor from '@editor/components/cursors/Cursor';
+import { Range } from 'slate';
 
 /**
  * Returns the renderer for a given element type
@@ -30,6 +32,13 @@ export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
     const renderer = LeafRenderers[key as keyof typeof LeafRenderers];
     if (!renderer) continue;
     children = renderer(children);
+  }
+  if (leaf.cursor) {
+    const { color, id, range } = leaf.cursor;
+    if (!Range.isCollapsed(range!)) {
+      children = <span style={{ backgroundColor: color }}>{children}</span>;
+    }
+    children = <Cursor children={children} color={color} key={id} />;
   }
   return children;
 };
