@@ -1,12 +1,9 @@
 import { getSelection } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
-import { Fugue } from '@editor/crdt/fugue';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { HistoryOperations } from '@editor/slate/events/historyEvents';
-import { Communication } from '@socket/communication';
 import { Cursor } from '@notespace/shared/types/cursor';
-import { formatMark } from '@editor/slate/utils/formatMark';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { ShortcutHandlers } from '@editor/domain/events/shortcut/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -14,7 +11,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (editor: Editor, fugue: Fugue, communication: Communication, history: HistoryOperations) => {
+export default (editor: Editor, handlers : ShortcutHandlers, history: HistoryOperations) => {
   /**
    * Handles keyboard shortcuts
    * @param event
@@ -43,20 +40,12 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
   /**
    * Handles ctrl + backspace
    */
-  function onCtrlBackspace(cursor: Cursor) {
-    const operations = fugue.deleteWordByCursor(cursor, true);
-    if (!operations) return;
-    communication.emit('operation', operations);
-  }
+  const onCtrlBackspace = (cursor: Cursor) => handlers.onCtrlDeletion(cursor, true);
 
   /**
    * Handles ctrl + delete
    */
-  function onCtrlDelete(cursor: Cursor) {
-    const operations = fugue.deleteWordByCursor(cursor, false);
-    if (!operations) return;
-    communication.emit('operation', operations);
-  }
+  const onCtrlDelete = (cursor: Cursor) => handlers.onCtrlDeletion(cursor, false);
 
   /**
    * Handles formatting
@@ -66,8 +55,7 @@ export default (editor: Editor, fugue: Fugue, communication: Communication, hist
     const mark = hotkeys[key];
     if (!mark) return;
     const value = CustomEditor.toggleMark(editor, mark);
-    const operations = formatMark(fugue, editor, mark as InlineStyle, value);
-    communication.emitChunked('operation', operations);
+    handlers.onFormat(mark, value);
   }
 
   return { onShortcut };

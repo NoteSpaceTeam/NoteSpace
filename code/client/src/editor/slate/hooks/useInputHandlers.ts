@@ -4,6 +4,8 @@ import shortcutsEvents from '@editor/slate/events/shortcutEvents';
 import historyEvents from '@editor/slate/events/historyEvents';
 import useCommunication from '@editor/hooks/useCommunication';
 import { Fugue } from '@editor/crdt/fugue';
+import inputHandlers from '@editor/domain/events/input/handlers';
+import shortcutHandlers from '@editor/domain/events/shortcut/handlers';
 
 /**
  * Handles input events
@@ -12,9 +14,16 @@ import { Fugue } from '@editor/crdt/fugue';
  */
 function useInputHandlers(editor: Editor, fugue: Fugue) {
   const communication = useCommunication();
-  const history = historyEvents(editor, fugue, communication);
-  const { onInput, onCut, onPaste, onSelect } = inputEvents(editor, fugue, communication);
-  const { onShortcut } = shortcutsEvents(editor, fugue, communication, history);
+
+  const handlersInput = inputHandlers(fugue, communication);
+  const handlersShortcut = shortcutHandlers(editor, fugue, communication);
+
+  const history = historyEvents(editor, fugue, communication); // TODO - see with Ricardo
+
+  const { onInput, onCut, onPaste, onSelect } = inputEvents(editor, handlersInput);
+
+  const { onShortcut } = shortcutsEvents(editor, handlersShortcut, history);
+
   return { onInput, onShortcut, onCut, onPaste, onSelect };
 }
 
