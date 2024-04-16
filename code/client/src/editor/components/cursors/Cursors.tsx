@@ -8,6 +8,7 @@ function Cursors() {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
+    console.log('cursor', cursor.range);
     setCursors(prevCursors => {
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
       if (!cursor.range) return otherCursors;
@@ -19,7 +20,9 @@ function Cursors() {
     cursorChange: onCursorChange,
   });
 
-  return cursors.map(cursor => <Cursor key={cursor.id} {...cursor} />);
+  return cursors.map(cursor =>
+    <Cursor key={cursor.id} {...cursor} />
+  );
 }
 
 export default Cursors;

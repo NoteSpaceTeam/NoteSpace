@@ -21,7 +21,7 @@ export default (fugue : Fugue, communication : Communication): InputHandlers => 
 
   function onEnterHandler(cursor : Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
-    const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line, true);
+    const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line + 1, true);
     communication.emitChunked('operation', [styleOperation, ...operations]);
   }
 
@@ -50,6 +50,7 @@ export default (fugue : Fugue, communication : Communication): InputHandlers => 
   }
 
   function onSelectionHandler(range : BaseSelection) {
+    console.log('selection', range);
     communication.emit('cursorChange', range);
   }
 
