@@ -7,7 +7,7 @@ import { Fugue } from '@editor/crdt/fugue';
  * @param fugue
  * @param onDone
  */
-function useEvents(fugue: Fugue, onDone: () => void) {
+function useEvents(fugue: Fugue, onDone: () => void) { // TODO - PASS IN CALLBACKS INSTEAD OF FUGUE
   /**
    * Hook socket listeners to an apply an event to the editor
    * @param operations

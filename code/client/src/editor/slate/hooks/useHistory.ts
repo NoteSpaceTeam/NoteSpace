@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import historyHandlers from '@editor/domain/handlers/history/handlers';
-import historyEvents from '@editor/slate/events/historyEvents';
+import historyHandlers from '@editor/domain/handlers/history/operations';
+import historyEvents from '@editor/slate/events/history/historyEvents';
 import { Editor } from 'slate';
 import useCommunication from '@editor/hooks/useCommunication';
 import { Fugue } from '@editor/crdt/fugue';

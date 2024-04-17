@@ -1,5 +1,5 @@
 import { setup } from '../../test-utils';
-import SlateEditor from '../../../src/editor/slate/SlateEditor';
+import DocumentEditor from '@editor/DocumentEditor';
 import { Editor } from 'slate';
 
 /**
@@ -7,8 +7,8 @@ import { Editor } from 'slate';
  * @param editor
  * @returns user and the slate editor
  */
-const setupEditor = async (editor?: Editor) => {
-  const { user, render } = setup(<SlateEditor editor={editor} />);
+const setupEditor = async (editor?: DocumentEditor) => {
+  const { user, render } = setup(<Editor editor={editor} />);
   const { findByTestId } = render;
   const editorElement = await findByTestId('editor'); // calls 'act' under the hood, but is more readable
   editorElement.focus();

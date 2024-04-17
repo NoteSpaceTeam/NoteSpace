@@ -10,10 +10,10 @@ import {
 export default (fugue: Fugue, communication: Communication): HistoryHandlers => {
   function onHistoryOperation(operation: HistoryOperation) {
     switch (operation.type) {
-      case 'insert':
+      case 'insert_text':
         onInsertTextOperation(operation);
         break;
-      case 'remove':
+      case 'remove_text':
         onRemoveTextOperation(operation);
         break;
       default:

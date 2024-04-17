@@ -18,23 +18,23 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
     communication.emitChunked('operation', operations);
   }
 
-  function onEnterHandler(cursor: Cursor) {
+  function onEnter(cursor: Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
     const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line + 1, true);
     communication.emitChunked('operation', [styleOperation, ...operations]);
   }
 
-  function onBackspaceHandler(cursor: Cursor) {
+  function onBackspace(cursor: Cursor) {
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
 
-  function onDeleteHandler(cursor: Cursor) {
+  function onDelete(cursor: Cursor) {
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
 
-  function onPasteHandler(start: Cursor, chars: string[], lineNodes: string[]) {
+  function onPaste(start: Cursor, chars: string[], lineNodes: string[]) {
     const operations: Operation[] = fugue.insertLocal(start, ...chars);
     for (let i = 0; i < lineNodes.length; i++) {
       const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
@@ -43,23 +43,23 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
     communication.emitChunked('operation', operations);
   }
 
-  function onTabHandler(cursor: Cursor, tab: string) {
+  function onTab(cursor: Cursor, tab: string) {
     const operations = fugue.insertLocal(cursor, tab);
     communication.emit('operation', operations);
   }
 
-  function onSelectionHandler(range: BaseSelection) {
+  function onSelection(range: BaseSelection) {
     communication.emit('cursorChange', range);
   }
 
   return {
     onDeleteSelection: onDeleteSelectionHandler,
     onKey: onKeyHandler,
-    onEnter: onEnterHandler,
-    onBackspace: onBackspaceHandler,
-    onDelete: onDeleteHandler,
-    onPaste: onPasteHandler,
-    onTab: onTabHandler,
-    onSelection: onSelectionHandler,
+    onEnter: onEnter,
+    onBackspace: onBackspace,
+    onDelete: onDelete,
+    onPaste: onPaste,
+    onTab,
+    onSelection
   };
 };

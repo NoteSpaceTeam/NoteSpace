@@ -9,6 +9,9 @@ export type CursorData = {
   color: string;
 };
 
+
+// Separate the logic into functions
+
 export function useCursors(editor: Editor) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 

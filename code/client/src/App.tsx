@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SlateEditor from '@editor/slate/SlateEditor';
+import DocumentEditor from '@editor/DocumentEditor';
 import Header from '@src/components/header/Header';
 import './App.scss';
 
@@ -9,7 +9,7 @@ function App() {
       <Header />
       <Router>
         <Routes>
-          <Route path={'/'} element={<SlateEditor />} />
+          <Route path={'/'} element={<DocumentEditor />} />
         </Routes>
       </Router>
     </div>
