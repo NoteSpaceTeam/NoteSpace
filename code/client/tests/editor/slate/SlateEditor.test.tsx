@@ -1,21 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '../../test-utils';
-import { CommunicationProvider } from '@editor/contexts/CommunicationContext';
-import DocumentEditor from '@editor/DocumentEditor';
+import { mockCommunication } from '../mocks/mockCommunication';
+import SlateEditor from '@editor/slate/SlateEditor';
 
 const EDITOR_PLACEHOLDER = 'Start writing...';
-const mockHandler = () => {};
 
 describe('SlateEditor', () => {
   let editor: HTMLElement;
 
   beforeEach(async () => {
-    const { findByTestId } = render(
-      <CommunicationProvider emit={mockHandler} emitChunked={mockHandler} on={mockHandler} off={mockHandler}>
-        <DocumentEditor />
-      </CommunicationProvider>
-    );
-    editor = await findByTestId('editor'); // calls 'act' under the hood, but is more readable
+    const { findByTestId } = render(<SlateEditor communication={mockCommunication()} />);
+    editor = await findByTestId('editor');
     editor.focus();
   });
 

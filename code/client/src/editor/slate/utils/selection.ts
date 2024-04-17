@@ -18,7 +18,9 @@ export function isSelected(editor: Editor) {
  */
 export function getSelection(editor: Editor): Selection {
   const { selection } = editor;
-  if (!selection) return emptySelection();
+  if (!selection) {
+    return emptySelection();
+  }
   const [start, end] = Range.edges(selection);
   return pointsToSelection(editor, start, end);
 }

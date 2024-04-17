@@ -5,7 +5,7 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import { getSelection } from '@editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
+import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
 import { RuleType } from '@editor/slate/plugins/markdown/rules';
 import { isSelectionEmpty } from '@editor/slate/utils/selection';
 
@@ -102,7 +102,7 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
       if (!match) continue;
       const execArray = match.exec(beforeText);
       if (!execArray) continue;
-      const handler = type === RuleType.Block ? handlers.blockHandler : handlers.inlineHandler;
+      const handler = type === RuleType.Block ? handlers.applyBlockStyle : handlers.applyInlineStyle;
       editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(handler)));
       return;
     }
@@ -128,7 +128,7 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
       CustomEditor.resetMarks(editor);
     } else {
       const { start } = getSelection(editor);
-      handlers.applyBlockStyleHandler(type, start.line);
+      handlers.applyBlockStyle(type, start.line);
     }
     // if selection was at the end of the block, unwrap the block
     if (!Point.equals(end, Range.end(selection))) return;
@@ -162,7 +162,7 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
       ) {
         const { line } = getSelection(editor).start;
         Transforms.setNodes(editor, { type: 'paragraph' });
-        handlers.applyBlockStyleHandler('paragraph', line);
+        handlers.applyBlockStyle('paragraph', line);
         return;
       }
     }
@@ -172,7 +172,7 @@ const operations = (editor: Editor, handlers: MarkdownHandlers) => {
   const deleteOperation = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
     if (isSelectionEmpty(selection)) return;
-    handlers.deleteHandler(selection);
+    handlers.deleteBlockStyles(selection);
     deleteHandler(options);
   };
 

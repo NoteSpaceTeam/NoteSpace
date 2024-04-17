@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Document } from '@notespace/shared/crdt/types/document';
 import useSocketListeners from '@socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
-import useCommunication from '@editor/hooks/useCommunication';
+import { Communication } from '@editor/domain/communication';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  communication: Communication;
+}
 
 function EditorTitle(props: InputProps) {
   const [title, setTitle] = useState('');
   const editor = useSlate();
-  const { emit } = useCommunication();
+  const { communication } = props;
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
@@ -18,7 +20,7 @@ function EditorTitle(props: InputProps) {
   }
 
   function onConfirm() {
-    emit('titleChange', title);
+    communication.emit('titleChange', title);
   }
 
   function onDocument({ title }: Document) {
@@ -33,7 +35,7 @@ function EditorTitle(props: InputProps) {
     }
   }
 
-  useSocketListeners({
+  useSocketListeners(communication, {
     document: onDocument,
     titleChange: setTitle,
   });

@@ -1,37 +1,37 @@
 import { Fugue } from '@editor/crdt/fugue';
-import { Communication } from '@socket/communication';
 import {
   HistoryHandlers,
   HistoryOperation,
   onInsertTextOperation,
   onRemoveTextOperation,
-} from '@editor/domain/handlers/history/types';
+} from '@editor/domain/document/history/types';
+import { Communication } from '@editor/domain/communication';
 
 export default (fugue: Fugue, communication: Communication): HistoryHandlers => {
-  function onHistoryOperation(operation: HistoryOperation) {
+  function applyHistoryOperation(operation: HistoryOperation) {
     switch (operation.type) {
       case 'insert_text':
-        onInsertTextOperation(operation);
+        insertText(operation);
         break;
       case 'remove_text':
-        onRemoveTextOperation(operation);
+        removeText(operation);
         break;
       default:
         throw new Error('Invalid operation type');
     }
   }
 
-  function onInsertTextOperation({ cursor, text }: onInsertTextOperation) {
+  function insertText({ cursor, text }: onInsertTextOperation) {
     const operations = fugue.insertLocal(cursor, ...text);
     communication.emitChunked('operation', operations);
   }
 
-  function onRemoveTextOperation({ selection }: onRemoveTextOperation) {
+  function removeText({ selection }: onRemoveTextOperation) {
     const operations = fugue.deleteLocal(selection);
     communication.emitChunked('operation', operations);
   }
 
   return {
-    onHistoryOperation,
+    applyHistoryOperation,
   };
 };

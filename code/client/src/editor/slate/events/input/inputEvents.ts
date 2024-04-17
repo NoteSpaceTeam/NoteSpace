@@ -1,12 +1,11 @@
 import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
-import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
+import { Cursor, emptyCursor } from '../../../../../../shared/types/cursor';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { InlineStyle } from '../../../../../../shared/types/styles';
 import { Editor } from 'slate';
-import { Selection } from '@notespace/shared/types/cursor';
-import { InputHandlers } from '@editor/domain/handlers/input/types';
+import { InputHandlers } from '@editor/domain/document/input/types';
 
 export default (editor: Editor, handlers: InputHandlers) => {
   function onInput(e: InputEvent) {
@@ -16,8 +15,7 @@ export default (editor: Editor, handlers: InputHandlers) => {
     const selection = getSelection(editor);
     const cursor = selection.start;
     // if there is a selection, delete the selected text
-    if (isSelected(editor)) onDeleteSelection(selection);
-
+    if (isSelected(editor)) handlers.deleteSelection(selection);
     switch (key) {
       case 'Enter':
         onEnter(cursor);
@@ -43,8 +41,6 @@ export default (editor: Editor, handlers: InputHandlers) => {
     }
   }
 
-  const onDeleteSelection = (selection: Selection) => handlers.onDeleteSelection(selection);
-
   /**
    * Inserts text at the current cursor position
    * @param key
@@ -52,14 +48,14 @@ export default (editor: Editor, handlers: InputHandlers) => {
    */
   function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    handlers.onKey(key, cursor, styles);
+    handlers.insertCharacter(key, cursor, styles);
   }
 
   /**
    * Handles enter key press
    * @param cursor
    */
-  const onEnter = (cursor: Cursor) => handlers.onEnter(cursor);
+  const onEnter = (cursor: Cursor) => handlers.insertLineBreak(cursor);
 
   /**
    * Handles backspace key press
@@ -67,7 +63,7 @@ export default (editor: Editor, handlers: InputHandlers) => {
    */
   function onBackspace(cursor: Cursor) {
     if (isEqual(cursor, emptyCursor())) return;
-    handlers.onBackspace(cursor);
+    handlers.deleteCharacter(cursor);
   }
 
   /**
@@ -76,7 +72,7 @@ export default (editor: Editor, handlers: InputHandlers) => {
    */
   function onDelete({ line, column }: Cursor) {
     const cursor = { line, column: column + 1 };
-    handlers.onDelete(cursor);
+    handlers.deleteCharacter(cursor);
   }
 
   /**
@@ -88,21 +84,21 @@ export default (editor: Editor, handlers: InputHandlers) => {
     const { start } = getSelection(editor);
     const chars = clipboardData.split('');
     const lineNodes = chars.filter(char => char === '\n');
-    handlers.onPaste(start, chars, lineNodes);
+    handlers.pasteText(start, chars, lineNodes);
   }
 
   function onCut() {
     const selection = getSelection(editor);
-    onDeleteSelection(selection);
+    handlers.deleteSelection(selection);
   }
 
   /**
    * Handles tab key press
    */
   function onTab(cursor: Cursor) {
-    const tab = '\t';
-    editor.insertText(tab);
-    handlers.onTab(cursor, tab);
+    const tabCharacter = '\t';
+    editor.insertText(tabCharacter);
+    handlers.insertCharacter(tabCharacter, cursor);
   }
 
   /**
@@ -110,7 +106,7 @@ export default (editor: Editor, handlers: InputHandlers) => {
    */
   function onCursorChange() {
     const range = editor.selection;
-    handlers.onSelection(range);
+    handlers.updateCursor(range);
   }
 
   return { onInput, onPaste, onCut, onCursorChange };

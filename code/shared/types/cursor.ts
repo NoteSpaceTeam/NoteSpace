@@ -19,4 +19,3 @@ export function emptyCursor(): Cursor {
 export function toCursor(line: number, column: number): Cursor {
   return { line, column };
 }
-

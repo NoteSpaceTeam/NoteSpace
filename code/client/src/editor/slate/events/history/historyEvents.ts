@@ -1,13 +1,13 @@
 import { BaseInsertTextOperation, BaseRemoveTextOperation, Editor, Operation, Range } from 'slate';
 import { Operation as SlateOperation } from 'slate';
 import { last } from 'lodash';
-import { HistoryHandlers, HistoryOperation } from '@editor/domain/handlers/history/types';
-import {Cursor, Selection} from "@notespace/shared/types/cursor";
-import {getReverseType} from "@editor/slate/events/history/utils";
+import { HistoryHandlers, HistoryOperation } from '@editor/domain/document/history/types';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { getReverseType } from '@editor/slate/events/history/utils';
 
 export type HistoryOperations = {
-  onUndo: () => void;
-  onRedo: () => void;
+  undoOperation: () => void;
+  redoOperation: () => void;
 };
 
 interface Batch {
@@ -21,15 +21,15 @@ interface Batch {
  * @param handlers
  */
 function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperations {
-  function onUndo() {
+  function undoOperation() {
     const { history } = editor;
-    console.log("history", history.undos);
+    console.log('history', history.undos);
     reverseOperations(history.undos, true);
   }
 
-  function onRedo() {
+  function redoOperation() {
     const { history } = editor;
-    console.log("history", history.redos);
+    console.log('history', history.redos);
     reverseOperations(history.redos, false); // redo should reverse the type of the last operation
   }
 
@@ -42,70 +42,72 @@ function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperat
     const historyOperation = last(operations);
     if (historyOperation) {
       const type = historyOperation.operations[0].type;
-      const operationType = (reverseType) ? getReverseType(type) : type
+      const operationType = reverseType ? getReverseType(type) : type;
       const operation = getHistoryOperation(historyOperation.operations, operationType);
-      handlers.onHistoryOperation(operation);
+      handlers.applyHistoryOperation(operation);
     }
   }
 
-
   function getHistoryOperation(operations: Operation[], type: string): HistoryOperation {
-    console.log("type", type);
+    console.log('type', type);
     switch (type) {
-      case 'insert_text': return insertTextOperation(operations as BaseInsertTextOperation[])
-      case 'remove_text': return removeTextOperation(operations as BaseRemoveTextOperation[])
-      case 'insert_node': return insertNodeOperation(operations as SlateOperation[])
-      case 'remove_node': return removeNodeOperation(operations as SlateOperation[])
-      case 'merge_node': return mergeNodeOperation(operations as SlateOperation[])
-      case 'split_node': return splitNodeOperation(operations as SlateOperation[])
-      case 'move_node': return moveNodeOperation(operations as SlateOperation[])
+      case 'insert_text':
+        return insertTextOperation(operations as BaseRemoveTextOperation[]);
+      case 'remove_text':
+        return removeTextOperation(operations as BaseInsertTextOperation[]);
+      case 'insert_node':
+        return insertNodeOperation(operations as SlateOperation[]);
+      case 'remove_node':
+        return removeNodeOperation(operations as SlateOperation[]);
+      case 'merge_node':
+        return mergeNodeOperation(operations as SlateOperation[]);
+      case 'split_node':
+        return splitNodeOperation(operations as SlateOperation[]);
+      case 'move_node':
+        return moveNodeOperation(operations as SlateOperation[]);
       default:
         throw new Error('Invalid operation type: ' + type);
     }
   }
 
-  /* OPERATIONS HANDLERS*/
-
   function insertTextOperation(operations: BaseRemoveTextOperation[]): HistoryOperation {
-    const cursor: Cursor = {line: operations[0].path[0], column: operations[0].offset}
+    const cursor: Cursor = { line: operations[0].path[0], column: operations[0].offset };
     const text = operations.map(operation => operation.text.split('')).flat();
-    return { type: 'insert', cursor, text };
+    return { type: 'insert_text', cursor, text };
   }
 
   function removeTextOperation(operations: BaseInsertTextOperation[]): HistoryOperation {
     const path = last(operations)!.path[0] - operations[0].path[0];
     const offset = last(operations)!.offset - operations[0].offset;
     const length = operations.map(operation => operation.text).length;
-    const selection : Selection = {
-      start: {line: path, column: offset - length + 1},
-      end: {line: path, column: offset + 1}
+    const selection: Selection = {
+      start: { line: path, column: offset - length + 1 },
+      end: { line: path, column: offset + 1 },
     };
-    return { type: 'remove', selection };
+    return { type: 'remove_text', selection };
   }
 
-
-
   function insertNodeOperation(operations: SlateOperation[]): HistoryOperation {
-    return { type: 'inser' };
+    throw new Error('Not implemented');
   }
 
   function removeNodeOperation(operations: SlateOperation[]): HistoryOperation {
-      return { type: 'insert_node' };
+    throw new Error('Not implemented');
   }
 
   function mergeNodeOperation(operations: SlateOperation[]): HistoryOperation {
-      return { type: 'split_node' };
+    throw new Error('Not implemented');
   }
 
   function splitNodeOperation(operations: SlateOperation[]): HistoryOperation {
-      return { type: 'merge_node' };
+    throw new Error('Not implemented');
   }
 
   function moveNodeOperation(operations: SlateOperation[]): HistoryOperation {
-      return { type: 'move_node' };
+    throw new Error('Not implemented');
   }
 
-  return { onUndo, onRedo };
+  return { undoOperation, redoOperation };
 }
 
 export default historyEvents;

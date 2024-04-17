@@ -1,45 +1,31 @@
 import useSocketListeners from '@src/socket/useSocketListeners';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { Fugue } from '@editor/crdt/fugue';
+import { Communication } from '@editor/domain/communication';
+import { FugueHandlers } from '@editor/domain/document/fugue/types';
+
 /**
  * Hook client socket listeners to events
- * @param fugue
+ * @param handlers
+ * @param communication
  * @param onDone
  */
-function useEvents(fugue: Fugue, onDone: () => void) { // TODO - PASS IN CALLBACKS INSTEAD OF FUGUE
+function useEvents(handlers: FugueHandlers, communication: Communication, onDone: () => void) {
   /**
    * Hook socket listeners to an apply an event to the editor
    * @param operations
    */
   function onOperation(operations: Operation[]) {
-    for (const operation of operations) {
-      switch (operation.type) {
-        case 'insert':
-          fugue.insertRemote(operation);
-          break;
-        case 'delete':
-          fugue.deleteRemote(operation);
-          break;
-        case 'inline-style':
-          fugue.updateInlineStyleRemote(operation);
-          break;
-        case 'block-style':
-          fugue.updateBlockStyleRemote(operation);
-          break;
-        default:
-          throw new Error('Invalid operation type');
-      }
-    }
+    handlers.applyOperations(operations);
     onDone();
   }
 
-  function onDocument({ nodes }: Document) {
-    fugue.init(nodes);
+  function onDocument(document: Document) {
+    handlers.initDocument(document);
     onDone();
   }
 
-  useSocketListeners({
+  useSocketListeners(communication, {
     operation: onOperation,
     document: onDocument,
   });

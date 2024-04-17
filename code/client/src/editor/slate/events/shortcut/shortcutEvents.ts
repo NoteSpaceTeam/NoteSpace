@@ -1,8 +1,8 @@
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { Cursor } from '@notespace/shared/types/cursor';
-import { ShortcutHandlers } from '@editor/domain/handlers/shortcut/types';
+import { Cursor } from '../../../../../../shared/types/cursor';
+import { ShortcutHandlers } from '@editor/domain/document/shortcut/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',

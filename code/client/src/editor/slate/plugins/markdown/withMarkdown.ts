@@ -1,6 +1,9 @@
 import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
-import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
+import markdownHandlers from '@editor/domain/document/markdown/operations';
+import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
+import { Fugue } from '@editor/crdt/fugue';
+import { Communication } from '@editor/domain/communication';
 
 /**
  * Adds markdown support to the editor.
@@ -25,4 +28,11 @@ export function withMarkdown(editor: Editor, handlers: MarkdownHandlers) {
   };
   editor.isInline = n => editorOperations.isInline(n, isInline);
   return editor;
+}
+
+export function getMarkdownPlugin(fugue: Fugue, communication: Communication) {
+  return (editor: Editor) => {
+    const handlers = markdownHandlers(fugue, communication);
+    return withMarkdown(editor, handlers);
+  };
 }

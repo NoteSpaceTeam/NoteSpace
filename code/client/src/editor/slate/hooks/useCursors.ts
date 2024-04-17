@@ -2,6 +2,7 @@ import { BaseRange, Editor, NodeEntry, Transforms } from 'slate';
 import { Range, Text } from 'slate';
 import { useCallback, useState } from 'react';
 import useSocketListeners from '@socket/useSocketListeners';
+import { Communication } from '@editor/domain/communication';
 
 export type CursorData = {
   id: string;
@@ -9,26 +10,25 @@ export type CursorData = {
   color: string;
 };
 
-
-// Separate the logic into functions
-
-export function useCursors(editor: Editor) {
+export function useCursors(editor: Editor, communication: Communication) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
+    console.log('Cursor change', cursor.range);
     setCursors(prevCursors => {
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
       if (!cursor.range) return otherCursors;
       return [...otherCursors, cursor];
     });
     if (!cursor.range) {
-      Transforms.unsetNodes(editor, 'cursor', { match: n => n.cursor.id === cursor.id });
+      Transforms.unsetNodes(editor, 'cursor', { match: n => n.cursor?.id === cursor.id });
       return;
     }
-    Transforms.setNodes(editor, { cursor }, { at: cursor.range, match: n => Text.isText(n) && !n.cursor!.id });
+
+    Transforms.setNodes(editor, { cursor }, { at: cursor.range, match: n => Text.isText(n) && !n.cursor?.id });
   };
 
-  useSocketListeners({
+  useSocketListeners(communication, {
     cursorChange: onCursorChange,
   });
 

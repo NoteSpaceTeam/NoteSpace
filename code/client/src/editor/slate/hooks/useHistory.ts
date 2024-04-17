@@ -1,26 +1,25 @@
 import { useEffect } from 'react';
-import historyHandlers from '@editor/domain/handlers/history/operations';
+import historyHandlers from '@editor/domain/document/history/operations';
 import historyEvents from '@editor/slate/events/history/historyEvents';
 import { Editor } from 'slate';
-import useCommunication from '@editor/hooks/useCommunication';
 import { Fugue } from '@editor/crdt/fugue';
+import { Communication } from '@editor/domain/communication';
 
-function useHistory(editor: Editor, fugue: Fugue) {
-  const communication = useCommunication();
+function useHistory(editor: Editor, fugue: Fugue, communication: Communication) {
   const handlersHistory = historyHandlers(fugue, communication);
-  const { onUndo, onRedo } = historyEvents(editor, handlersHistory);
+  const { undoOperation, redoOperation } = historyEvents(editor, handlersHistory);
   const { undo, redo } = editor;
 
   useEffect(() => {
     editor.undo = () => {
-      onUndo();
+      undoOperation();
       undo();
     };
     editor.redo = () => {
-      onRedo();
+      redoOperation();
       redo();
     };
-  }, [editor, onRedo, onUndo, redo, undo]);
+  }, [editor, undo, redo, undoOperation, redoOperation]);
 }
 
 export default useHistory;

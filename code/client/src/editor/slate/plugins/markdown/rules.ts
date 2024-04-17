@@ -1,6 +1,6 @@
 import { createSetBlockApply, createSetInlineApply } from '@editor/slate/plugins/markdown/operations/applyOperations';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { BlockHandler, InlineHandler } from '@editor/domain/handlers/markdown/types';
+import { ApplyBlockStyleHandler, ApplyInlineStyleHandler } from '@editor/domain/document/markdown/types';
 import { Editor, Range } from 'slate';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -16,11 +16,13 @@ export type Rule = {
   apply: ApplyFunction;
 };
 
-export type ApplyFunction = (handler: BlockHandler | InlineHandler) => (editor: Editor, range: Range) => void;
+export type ApplyFunction = (
+  handler: ApplyBlockStyleHandler | ApplyInlineStyleHandler
+) => (editor: Editor, range: Range) => void;
 
 export function blockRules(style: BlockStyle, ...triggerCharacters: string[]): Rule {
   const triggers = triggerCharacters.map(trigger => new RegExp(`^(${escapeRegExp(trigger)})$`));
-  const apply: ApplyFunction = handler => createSetBlockApply(style, handler as BlockHandler);
+  const apply: ApplyFunction = handler => createSetBlockApply(style, handler as ApplyBlockStyleHandler);
   return { type: RuleType.Block, triggers, apply };
 }
 
@@ -30,6 +32,7 @@ export function inlineRules(style: InlineStyle, ...triggerCharacters: string[]):
     return new RegExp(`(${escaped}).+?(${escaped})$`);
   });
   const triggerLength = triggerCharacters[0].length;
-  const apply: ApplyFunction = handler => createSetInlineApply(style, triggerLength, handler as InlineHandler);
+  const apply: ApplyFunction = handler =>
+    createSetInlineApply(style, triggerLength, handler as ApplyInlineStyleHandler);
   return { type: RuleType.Inline, triggers, apply };
 }

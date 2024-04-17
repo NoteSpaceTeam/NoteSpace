@@ -1,11 +1,12 @@
-import { Communication } from '@socket/communication';
 import { Fugue } from '@editor/crdt/fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueNode } from '@editor/crdt/types';
 import { Selection } from '@notespace/shared/types/cursor';
 import { isSelectionEmpty } from '@editor/slate/utils/selection';
-import { MarkdownHandlers } from '@editor/domain/handlers/markdown/types';
-import { deleteAroundSelection } from '@editor/domain/handlers/markdown/utils';
+import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
+import { deleteAroundSelection } from '@editor/domain/document/markdown/utils';
+import { Communication } from '@editor/domain/communication';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 /**
  * Handlers for markdown operations
@@ -17,23 +18,24 @@ export default (fugue: Fugue, communication: Communication): MarkdownHandlers =>
    * Applies a block style to the editor, and emits the operation to the server.
    * @param style
    * @param line
+   * @param deleteTriggerNodes
    */
-  const blockHandler = (style: BlockStyle, line: number) => {
-    const cursor = { line, column: line === 0 ? 0 : 1 };
-    const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
-    const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
-    communication.emit('operation', deleteOperations);
-    applyBlockStyleHandler(style, line);
-  };
+  const applyBlockStyle = (style: BlockStyle, line: number, deleteTriggerNodes: boolean = false) => {
+    const operations: Operation[] = [];
 
-  /**
-   * Applies a block style to the editor.
-   * @param style
-   * @param line
-   */
-  const applyBlockStyleHandler = (style: BlockStyle, line: number) => {
+    // delete trigger nodes
+    if (deleteTriggerNodes) {
+      const cursor = { line, column: line === 0 ? 0 : 1 };
+      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
+      const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
+      operations.push(...deleteOperations);
+    }
+    // apply block style
     const styleOperation = fugue.updateBlockStyleLocal(style, line);
-    communication.emit('operation', [styleOperation]);
+    operations.push(styleOperation);
+
+    // emit operations
+    communication.emit('operation', operations);
   };
 
   /**
@@ -42,29 +44,27 @@ export default (fugue: Fugue, communication: Communication): MarkdownHandlers =>
    * @param triggerLength
    * @param selection
    */
-  const inlineHandler = (style: InlineStyle, triggerLength: number, selection: Selection) => {
-    const deletions = deleteAroundSelection(selection, triggerLength, fugue);
-    communication.emit('operation', deletions);
+  const applyInlineStyle = (style: InlineStyle, selection: Selection, triggerLength: number = 0) => {
+    const operations: Operation[] = [];
 
-    // update styles in the tree
-    const updatedSelection: Selection = {
-      start: { ...selection.start, column: selection.start.column - triggerLength },
-      end: { ...selection.end, column: selection.end.column - triggerLength },
-    };
-    applyInlineStyleHandler(style, updatedSelection);
-  };
+    // delete trigger nodes
+    if (triggerLength > 0) {
+      const deleteOperations = deleteAroundSelection(selection, triggerLength, fugue);
+      operations.push(...deleteOperations);
+      selection = {
+        start: { ...selection.start, column: selection.start.column - triggerLength },
+        end: { ...selection.end, column: selection.end.column - triggerLength },
+      };
+    }
+    // apply inline style
+    const styleOperations = fugue.updateInlineStyleLocal(selection, style);
+    operations.push(...styleOperations);
 
-  /**
-   * Applies an inline style to the editor.
-   * @param style
-   * @param selection
-   */
-  const applyInlineStyleHandler = (style: InlineStyle, selection: Selection) => {
-    const operations = fugue.updateInlineStyleLocal(selection, style);
+    // emit operations
     communication.emit('operation', operations);
   };
 
-  const deleteHandler = (selection: Selection) => {
+  const deleteBlockStyles = (selection: Selection) => {
     if (isSelectionEmpty(selection)) return;
     const { start, end } = selection;
     if (start.column === 0 || start.line !== end.line) {
@@ -75,10 +75,8 @@ export default (fugue: Fugue, communication: Communication): MarkdownHandlers =>
   };
 
   return {
-    blockHandler,
-    inlineHandler,
-    deleteHandler,
-    applyBlockStyleHandler,
-    applyInlineStyleHandler,
+    applyBlockStyle,
+    applyInlineStyle,
+    deleteBlockStyles,
   };
 };

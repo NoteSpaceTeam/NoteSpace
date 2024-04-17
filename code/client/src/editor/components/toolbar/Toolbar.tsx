@@ -3,33 +3,15 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import useCommunication from '@editor/hooks/useCommunication';
-import { Fugue } from '@editor/crdt/fugue';
-import { InlineStyle } from '@notespace/shared/types/styles';
-import { formatMark } from '@editor/slate/utils/formatMark';
-
-interface MarkOption {
-  value: string;
-  icon: React.ReactElement;
-}
-
-const markOptions: MarkOption[] = [
-  { value: 'bold', icon: <FaBold /> },
-  { value: 'italic', icon: <FaItalic /> },
-  { value: 'underline', icon: <FaUnderline /> },
-  { value: 'strikethrough', icon: <FaStrikethrough /> },
-  { value: 'code', icon: <FaCode /> },
-];
 
 type ToolbarProps = {
-  fugue: Fugue;
+  onApplyMark: (mark: string) => void;
 };
 
-function Toolbar({ fugue }: ToolbarProps) {
+function Toolbar({ onApplyMark }: ToolbarProps) {
   const editor = useSlate();
   const focused = useFocused();
   const selected = isSelected(editor);
-  const { emitChunked } = useCommunication();
   const [selectionBounds, setSelectionBounds] = useState<DOMRect | null>(null);
 
   useEffect(() => {
@@ -57,9 +39,7 @@ function Toolbar({ fugue }: ToolbarProps) {
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();
-    const value = CustomEditor.toggleMark(editor, mark.value);
-    const operations = formatMark(fugue, editor, mark.value as InlineStyle, value);
-    emitChunked('operation', operations);
+    onApplyMark(mark.value);
   };
 
   if (!selectionBounds || !selected || !focused) return null;
@@ -88,5 +68,18 @@ function Toolbar({ fugue }: ToolbarProps) {
     </div>
   );
 }
+
+interface MarkOption {
+  value: string;
+  icon: React.ReactElement;
+}
+
+const markOptions: MarkOption[] = [
+  { value: 'bold', icon: <FaBold /> },
+  { value: 'italic', icon: <FaItalic /> },
+  { value: 'underline', icon: <FaUnderline /> },
+  { value: 'strikethrough', icon: <FaStrikethrough /> },
+  { value: 'code', icon: <FaCode /> },
+];
 
 export default Toolbar;

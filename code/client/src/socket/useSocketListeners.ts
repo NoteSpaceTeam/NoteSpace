@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import useCommunication from '@editor/hooks/useCommunication';
+import { Communication } from '@editor/domain/communication';
 
-function useSocketListeners(eventHandlers: Record<string, (...args: any[]) => void>) {
-  const { on, off } = useCommunication();
-
+function useSocketListeners({ on, off }: Communication, eventHandlers: Record<string, (...args: any[]) => void>) {
   useEffect(() => {
     on(eventHandlers);
     return () => off(eventHandlers);

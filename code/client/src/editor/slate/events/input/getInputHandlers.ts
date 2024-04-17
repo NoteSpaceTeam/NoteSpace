@@ -1,10 +1,10 @@
 import { type Editor } from 'slate';
-import inputEvents from '@editor/slate/events/inputEvents';
-import shortcutsEvents from '@editor/slate/events/shortcutEvents';
+import inputEvents from '@editor/slate/events/input/inputEvents';
+import shortcutsEvents from '@editor/slate/events/shortcut/shortcutEvents';
 import { Fugue } from '@editor/crdt/fugue';
-import inputHandlers from '@editor/domain/handlers/input/operations';
-import shortcutHandlers from '@editor/domain/handlers/shortcut/handlers';
-import {Communication} from "@socket/communication";
+import inputHandlers from '@editor/domain/document/input/operations';
+import shortcutHandlers from '@editor/domain/document/shortcut/handlers';
+import { Communication } from '@editor/domain/communication';
 
 /**
  * Handles input events

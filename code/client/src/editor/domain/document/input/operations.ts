@@ -1,41 +1,37 @@
 import { BaseSelection } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
-import { Communication } from '@socket/communication';
-import { InputHandlers } from '@editor/domain/handlers/input/types';
+import { InputHandlers } from '@editor/domain/document/input/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { nodeInsert } from '@editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Operation } from '@notespace/shared/crdt/types/operations';
+import { Communication } from '@editor/domain/communication';
 
 export default (fugue: Fugue, communication: Communication): InputHandlers => {
-  function onDeleteSelectionHandler(selection: Selection) {
-    const operations = fugue.deleteLocal(selection);
+  function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {
+    if (char.length !== 1) throw new Error('Invalid character');
+    const operations = fugue.insertLocal(cursor, nodeInsert(char, styles));
     communication.emitChunked('operation', operations);
   }
 
-  function onKeyHandler(key: string, cursor: Cursor, styles: InlineStyle[]) {
-    const operations = fugue.insertLocal(cursor, nodeInsert(key, styles));
-    communication.emitChunked('operation', operations);
-  }
-
-  function onEnter(cursor: Cursor) {
+  function insertLineBreak(cursor: Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
     const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line + 1, true);
     communication.emitChunked('operation', [styleOperation, ...operations]);
   }
 
-  function onBackspace(cursor: Cursor) {
+  function deleteCharacter(cursor: Cursor) {
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
 
-  function onDelete(cursor: Cursor) {
-    const operations = fugue.deleteLocalByCursor(cursor);
-    if (operations) communication.emit('operation', operations);
+  function deleteSelection(selection: Selection) {
+    const operations = fugue.deleteLocal(selection);
+    communication.emitChunked('operation', operations);
   }
 
-  function onPaste(start: Cursor, chars: string[], lineNodes: string[]) {
-    const operations: Operation[] = fugue.insertLocal(start, ...chars);
+  function pasteText(start: Cursor, text: string[], lineNodes: string[]) {
+    const operations: Operation[] = fugue.insertLocal(start, ...text);
     for (let i = 0; i < lineNodes.length; i++) {
       const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
       operations.push(styleOperation);
@@ -43,23 +39,18 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
     communication.emitChunked('operation', operations);
   }
 
-  function onTab(cursor: Cursor, tab: string) {
-    const operations = fugue.insertLocal(cursor, tab);
-    communication.emit('operation', operations);
-  }
-
-  function onSelection(range: BaseSelection) {
+  function updateCursor(range: BaseSelection) {
+    if (!range) return;
+    console.log('Cursor change', range);
     communication.emit('cursorChange', range);
   }
 
   return {
-    onDeleteSelection: onDeleteSelectionHandler,
-    onKey: onKeyHandler,
-    onEnter: onEnter,
-    onBackspace: onBackspace,
-    onDelete: onDelete,
-    onPaste: onPaste,
-    onTab,
-    onSelection
+    insertCharacter,
+    insertLineBreak,
+    deleteCharacter,
+    deleteSelection,
+    pasteText,
+    updateCursor,
   };
 };
