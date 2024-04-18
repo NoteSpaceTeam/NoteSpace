@@ -1,10 +1,10 @@
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { Editor } from 'slate';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
-import { InlineStyle } from '../../../../../../shared/types/styles';
+import { MarkdownDomainOperations } from '@editor/domain/document/markdown/types';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
-export default (editor: Editor, handlers: MarkdownHandlers) => {
+export default (editor: Editor, handlers: MarkdownDomainOperations) => {
   /**
    * Handles formatting
    * @param mark

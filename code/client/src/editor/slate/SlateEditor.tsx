@@ -9,7 +9,7 @@ import EditorTitle from '@editor/components/title/EditorTitle';
 import useEditor from '@editor/slate/hooks/useEditor';
 import useFugue from '@editor/hooks/useFugue';
 import useHistory from '@editor/slate/hooks/useHistory';
-import getEventHandlers from '@editor/slate/events/getEventHandlers';
+import getEventHandlers from '@editor/slate/handlers/getEventHandlers';
 import getFugueHandlers from '@editor/domain/document/fugue/operations';
 import { Communication } from '@editor/domain/communication';
 import { getMarkdownPlugin } from '@editor/slate/plugins/markdown/withMarkdown';

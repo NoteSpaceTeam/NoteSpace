@@ -1,11 +1,11 @@
 import { getKeyFromInputEvent } from '@editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@editor/slate/utils/selection';
 import { isEqual } from 'lodash';
-import { Cursor, emptyCursor } from '../../../../../../shared/types/cursor';
+import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
 import CustomEditor from '@editor/slate/CustomEditor';
-import { InlineStyle } from '../../../../../../shared/types/styles';
+import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor } from 'slate';
-import { InputHandlers } from '@editor/domain/document/input/types';
+import { InputDomainOperations } from '@editor/domain/document/input/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -13,7 +13,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: InlineStyle) => void) => {
+export default (editor: Editor, domainOperations: InputDomainOperations, onFormat: (mark: InlineStyle) => void) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -21,7 +21,7 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
     const selection = getSelection(editor);
     const cursor = selection.start;
     // if there is a selection, delete the selected text
-    if (isSelected(editor)) handlers.deleteSelection(selection);
+    if (isSelected(editor)) domainOperations.deleteSelection(selection);
     switch (key) {
       case 'Enter':
         onEnter(cursor);
@@ -76,14 +76,14 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
    */
   function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    handlers.insertCharacter(key, cursor, styles);
+    domainOperations.insertCharacter(key, cursor, styles);
   }
 
   /**
    * Handles enter key press
    * @param cursor
    */
-  const onEnter = (cursor: Cursor) => handlers.insertLineBreak(cursor);
+  const onEnter = (cursor: Cursor) => domainOperations.insertLineBreak(cursor);
 
   /**
    * Handles backspace key press
@@ -91,7 +91,7 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
    */
   function onBackspace(cursor: Cursor) {
     if (isEqual(cursor, emptyCursor())) return;
-    handlers.deleteCharacter(cursor);
+    domainOperations.deleteCharacter(cursor);
   }
 
   /**
@@ -100,18 +100,18 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
    */
   function onDelete({ line, column }: Cursor) {
     const cursor = { line, column: column + 1 };
-    handlers.deleteCharacter(cursor);
+    domainOperations.deleteCharacter(cursor);
   }
 
   /**
    * Handles ctrl + backspace
    */
-  const onCtrlBackspace = (cursor: Cursor) => handlers.deleteWord(cursor, true);
+  const onCtrlBackspace = (cursor: Cursor) => domainOperations.deleteWord(cursor, true);
 
   /**
    * Handles ctrl + delete
    */
-  const onCtrlDelete = (cursor: Cursor) => handlers.deleteWord(cursor, false);
+  const onCtrlDelete = (cursor: Cursor) => domainOperations.deleteWord(cursor, false);
 
   /**
    * Handles paste events
@@ -122,12 +122,12 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
     const { start } = getSelection(editor);
     const chars = clipboardData.split('');
     const lineNodes = chars.filter(char => char === '\n');
-    handlers.pasteText(start, chars, lineNodes);
+    domainOperations.pasteText(start, chars, lineNodes);
   }
 
   function onCut() {
     const selection = getSelection(editor);
-    handlers.deleteSelection(selection);
+    domainOperations.deleteSelection(selection);
   }
 
   /**
@@ -136,7 +136,7 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
   function onTab(cursor: Cursor) {
     const tabCharacter = '\t';
     editor.insertText(tabCharacter);
-    handlers.insertCharacter(tabCharacter, cursor);
+    domainOperations.insertCharacter(tabCharacter, cursor);
   }
 
   /**
@@ -144,7 +144,7 @@ export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: Inline
    */
   function onCursorChange() {
     const range = editor.selection;
-    handlers.updateCursor(range);
+    domainOperations.updateCursor(range);
   }
 
   return { onInput, onPaste, onCut, onCursorChange, onShortcut };

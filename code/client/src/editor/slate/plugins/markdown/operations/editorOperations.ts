@@ -5,7 +5,7 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { isMultiBlock } from '@editor/slate/utils/slate';
 import { getSelection } from '@editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
+import { MarkdownDomainOperations } from '@editor/domain/document/markdown/types';
 import { RuleType } from '@editor/slate/plugins/markdown/rules';
 import { isSelectionEmpty } from '@editor/slate/utils/selection';
 
@@ -75,7 +75,7 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: (edito
  * @param editor
  * @param handlers
  */
-const operations = (editor: Editor, handlers: MarkdownHandlers) => {
+const operations = (editor: Editor, handlers: MarkdownDomainOperations) => {
   /**
    * Inserts the given text into the editor.
    * @param insertText

@@ -1,7 +1,7 @@
 import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
 import markdownHandlers from '@editor/domain/document/markdown/operations';
-import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
+import { MarkdownDomainOperations } from '@editor/domain/document/markdown/types';
 import { Fugue } from '@editor/crdt/fugue';
 import { Communication } from '@editor/domain/communication';
 
@@ -10,7 +10,7 @@ import { Communication } from '@editor/domain/communication';
  * @param editor
  * @param handlers
  */
-export function withMarkdown(editor: Editor, handlers: MarkdownHandlers) {
+export function withMarkdown(editor: Editor, handlers: MarkdownDomainOperations) {
   const { deleteBackward, insertText, isInline, delete: deleteOperation } = editor;
   const editorOperations = operations(editor, handlers);
 

@@ -2,7 +2,7 @@ import { Fugue } from '@editor/crdt/fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueNode } from '@editor/crdt/types';
 import { Selection } from '@notespace/shared/types/cursor';
-import { MarkdownHandlers } from '@editor/domain/document/markdown/types';
+import { MarkdownDomainOperations } from '@editor/domain/document/markdown/types';
 import { deleteAroundSelection } from '@editor/domain/document/markdown/utils';
 import { Communication } from '@editor/domain/communication';
 import { Operation } from '@notespace/shared/crdt/types/operations';
@@ -13,7 +13,7 @@ import { isSelectionEmpty } from '@editor/slate/utils/selection';
  * @param fugue
  * @param communication
  */
-export default (fugue: Fugue, communication: Communication): MarkdownHandlers => {
+export default (fugue: Fugue, communication: Communication): MarkdownDomainOperations => {
   /**
    * Applies a block style to the editor, and emits the operation to the server.
    * @param style

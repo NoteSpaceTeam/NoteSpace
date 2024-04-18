@@ -1,17 +1,19 @@
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { Selection } from '@notespace/shared/types/cursor';
 
-export type MarkdownHandlers = {
-  applyBlockStyle: ApplyBlockStyleHandler;
-  applyInlineStyle: ApplyInlineStyleHandler;
-  deleteBlockStyles: DeleteBlockStylesHandler;
+export type MarkdownDomainOperations = {
+  applyBlockStyle: ApplyBlockStyle;
+  applyInlineStyle: ApplyInlineStyle;
+  deleteBlockStyles: DeleteBlockStyles;
 };
 
-export type ApplyBlockStyleHandler = (style: BlockStyle, line: number, deleteTriggerNodes?: boolean) => void;
-export type ApplyInlineStyleHandler = (
+export type ApplyBlockStyle = (style: BlockStyle, line: number, deleteTriggerNodes?: boolean) => void;
+
+export type ApplyInlineStyle = (
   style: InlineStyle,
   selection: Selection,
   value: boolean,
   triggerLength?: number
 ) => void;
-export type DeleteBlockStylesHandler = (selection: Selection) => void;
+
+export type DeleteBlockStyles = (selection: Selection) => void;

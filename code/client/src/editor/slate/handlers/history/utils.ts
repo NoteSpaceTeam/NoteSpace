@@ -8,6 +8,7 @@ const reverseTypes: { [key: string]: BaseOperation['type'] } = {
   merge_node: 'split_node',
   split_node: 'merge_node',
   move_node: 'move_node',
+  set_node: 'set_node',
 };
 
 export const getReverseType = (type: BaseOperation['type']) => reverseTypes[type] || type;

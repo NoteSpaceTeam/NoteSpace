@@ -1,13 +1,13 @@
 import { BaseSelection } from 'slate';
 import { Fugue } from '@editor/crdt/fugue';
-import { InputHandlers } from '@editor/domain/document/input/types';
+import { InputDomainOperations } from '@editor/domain/document/input/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { nodeInsert } from '@editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { Communication } from '@editor/domain/communication';
 
-export default (fugue: Fugue, communication: Communication): InputHandlers => {
+export default (fugue: Fugue, communication: Communication): InputDomainOperations => {
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {
     if (char.length !== 1) throw new Error('Invalid character');
     const operations = fugue.insertLocal(cursor, nodeInsert(char, styles));

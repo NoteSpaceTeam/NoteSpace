@@ -2,7 +2,7 @@ import { InlineStyle } from '@notespace/shared/types/styles';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { BaseSelection } from 'slate';
 
-export type InputHandlers = {
+export type InputDomainOperations = {
   insertCharacter: InsertCharacterHandler;
   insertLineBreak: InsertLineBreakHandler;
   deleteCharacter: DeleteCharacterHandler;

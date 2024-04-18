@@ -1,36 +1,71 @@
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { BaseInsertNodeOperation, BaseInsertTextOperation, BaseRemoveTextOperation } from 'slate';
+import {
+    BaseInsertNodeOperation,
+    BaseInsertTextOperation, BaseMergeNodeOperation, BaseMoveNodeOperation,
+    BaseRemoveNodeOperation,
+    BaseRemoveTextOperation, BaseSetNodeOperation, BaseSetSelectionOperation,
+    BaseSplitNodeOperation,
+} from 'slate';
 
-export type HistoryHandlers = {
-  applyHistoryOperation: HistoryHandler;
+export type HistoryDomainOperations = {
+  applyHistoryOperation: ApplyHistory;
 };
 
-export type HistoryHandler = (operation: HistoryOperation) => void;
+export type ApplyHistory = (operations: HistoryOperation[]) => void;
 
-export type HistoryOperation = onInsertTextOperation | onRemoveTextOperation;
+export type HistoryOperation =
+    InsertTextOperation
+    | RemoveTextOperation | InsertNodeOperation
+    | RemoveNodeOperation | SplitNodeOperation
+    | MergeNodeOperation  | MoveNodeOperation
+    | SetNodeOperation | SetSelectionOperation;
 
-export type onInsertTextOperation = {
+export type InsertTextOperation = {
   type: BaseInsertTextOperation['type'];
   cursor: Cursor;
   text: string[];
 };
 
-export type onRemoveTextOperation = {
+export type RemoveTextOperation = {
   type: BaseRemoveTextOperation['type'];
   selection: Selection;
 };
 
-export type onInsertNodeOperation = {
+export type InsertNodeOperation = {
   type: BaseInsertNodeOperation['type'];
   cursor: Cursor;
 };
 
-export type onRemoveNodeOperation = {
-  type: BaseInsertNodeOperation['type'];
+export type RemoveNodeOperation = {
+  type: BaseRemoveNodeOperation['type'];
   cursor: Cursor;
 };
 
-export type onMergeNodeOperation = {
-  type: BaseInsertNodeOperation['type'];
+export type SplitNodeOperation = {
+    type: BaseSplitNodeOperation['type'];
+    cursor: Cursor;
+}
+
+export type MergeNodeOperation = {
+  type: BaseMergeNodeOperation['type'];
   cursor: Cursor;
+};
+
+export type MoveNodeOperation = {
+    type: BaseMoveNodeOperation['type'];
+    cursor: Cursor;
+    target: Cursor;
+};
+
+export type SetNodeOperation = {
+    type: BaseSetNodeOperation['type'];
+    cursor: Cursor;
+    properties: Partial<Node>;
+    newProperties: Partial<Node>;
+};
+
+export type SetSelectionOperation = {
+    type: BaseSetSelectionOperation['type'];
+    properties: Partial<Range>;
+    newProperties: Partial<Range>;
 };
