@@ -21,6 +21,8 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
   }
 
   function deleteCharacter(cursor: Cursor) {
+    // don't delete line if it's not a paragraph
+    if (cursor.column === 0 && fugue.getBlockStyle(cursor.line) !== 'paragraph') return;
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) communication.emit('operation', operations);
   }
@@ -28,6 +30,12 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
   function deleteSelection(selection: Selection) {
     const operations = fugue.deleteLocal(selection);
     communication.emitChunked('operation', operations);
+  }
+
+  function deleteWord(cursor: Cursor, reverse: boolean) {
+    const operations = fugue.deleteWordByCursor(cursor, reverse);
+    if (!operations) return;
+    communication.emit('operation', operations);
   }
 
   function pasteText(start: Cursor, text: string[], lineNodes: string[]) {
@@ -41,7 +49,6 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
 
   function updateCursor(range: BaseSelection) {
     if (!range) return;
-    console.log('Cursor change', range);
     communication.emit('cursorChange', range);
   }
 
@@ -50,6 +57,7 @@ export default (fugue: Fugue, communication: Communication): InputHandlers => {
     insertLineBreak,
     deleteCharacter,
     deleteSelection,
+    deleteWord,
     pasteText,
     updateCursor,
   };

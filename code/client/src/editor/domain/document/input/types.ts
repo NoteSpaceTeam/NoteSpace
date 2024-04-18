@@ -7,6 +7,7 @@ export type InputHandlers = {
   insertLineBreak: InsertLineBreakHandler;
   deleteCharacter: DeleteCharacterHandler;
   deleteSelection: DeleteSelectionHandler;
+  deleteWord: DeleteWordHandler;
   pasteText: PasteTextHandler;
   updateCursor: UpdateCursorHandler;
 };
@@ -15,5 +16,6 @@ export type InsertCharacterHandler = (char: string, cursor: Cursor, styles?: Inl
 export type InsertLineBreakHandler = (cursor: Cursor) => void;
 export type DeleteCharacterHandler = (cursor: Cursor) => void;
 export type DeleteSelectionHandler = (selection: Selection) => void;
+export type DeleteWordHandler = (cursor: Cursor, reverse: boolean) => void;
 export type PasteTextHandler = (start: Cursor, text: string[], lineNodes: string[]) => void;
 export type UpdateCursorHandler = (range: BaseSelection) => void;

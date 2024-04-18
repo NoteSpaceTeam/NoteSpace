@@ -7,7 +7,13 @@ import { InlineStyle } from '../../../../../../shared/types/styles';
 import { Editor } from 'slate';
 import { InputHandlers } from '@editor/domain/document/input/types';
 
-export default (editor: Editor, handlers: InputHandlers) => {
+const hotkeys: Record<string, string> = {
+  b: 'bold',
+  i: 'italic',
+  u: 'underline',
+};
+
+export default (editor: Editor, handlers: InputHandlers, onFormat: (mark: InlineStyle) => void) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -38,6 +44,28 @@ export default (editor: Editor, handlers: InputHandlers) => {
         if (key.length !== 1) break;
         onKey(key, cursor);
         break;
+    }
+  }
+
+  /**
+   * Handles keyboard shortcuts
+   * @param event
+   */
+  function onShortcut(event: KeyboardEvent) {
+    if (!event.ctrlKey) return;
+    const { start: cursor } = getSelection(editor);
+    switch (event.key) {
+      case 'Backspace':
+        onCtrlBackspace(cursor);
+        break;
+      case 'Delete':
+        onCtrlDelete(cursor);
+        break;
+      default: {
+        const mark = hotkeys[event.key] as InlineStyle;
+        if (!mark) break;
+        onFormat(mark);
+      }
     }
   }
 
@@ -76,6 +104,16 @@ export default (editor: Editor, handlers: InputHandlers) => {
   }
 
   /**
+   * Handles ctrl + backspace
+   */
+  const onCtrlBackspace = (cursor: Cursor) => handlers.deleteWord(cursor, true);
+
+  /**
+   * Handles ctrl + delete
+   */
+  const onCtrlDelete = (cursor: Cursor) => handlers.deleteWord(cursor, false);
+
+  /**
    * Handles paste events
    */
   function onPaste(clipboard: ClipboardEvent | string) {
@@ -109,5 +147,5 @@ export default (editor: Editor, handlers: InputHandlers) => {
     handlers.updateCursor(range);
   }
 
-  return { onInput, onPaste, onCut, onCursorChange };
+  return { onInput, onPaste, onCut, onCursorChange, onShortcut };
 };

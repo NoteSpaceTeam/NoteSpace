@@ -32,7 +32,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
     if (node.value === '\n') {
       const lineStyle = fugue.getBlockStyle(lineCounter++);
       descendants.push(descendant(lineStyle, ''));
-      lastStyles = node.styles as InlineStyle[];
+      lastStyles = [];
       continue;
     }
     const lastDescendant = last(descendants);

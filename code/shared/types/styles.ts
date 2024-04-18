@@ -18,7 +18,7 @@ export const InlineStyles = {
   italic: "italic",
   underline: "underline",
   strikethrough: "strikethrough",
-  code: "inline-code",
+  code: "code",
   a: "link",
 } as const;
 

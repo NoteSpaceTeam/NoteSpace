@@ -9,8 +9,7 @@ import EditorTitle from '@editor/components/title/EditorTitle';
 import useEditor from '@editor/slate/hooks/useEditor';
 import useFugue from '@editor/hooks/useFugue';
 import useHistory from '@editor/slate/hooks/useHistory';
-import getInputHandlers from '@editor/slate/events/input/getInputHandlers';
-import getMarkdownHandlers from '@editor/slate/events/markdown/getMarkdownHandlers';
+import getEventHandlers from '@editor/slate/events/getEventHandlers';
 import getFugueHandlers from '@editor/domain/document/fugue/operations';
 import { Communication } from '@editor/domain/communication';
 import { getMarkdownPlugin } from '@editor/slate/plugins/markdown/withMarkdown';
@@ -27,9 +26,12 @@ function SlateEditor({ communication }: SlateEditorProps) {
   const fugue = useFugue();
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   // const { decorate } = useCursors(editor, communication);
-  const { getElementRenderer, getLeafRenderer } = useRenderers();
-  const { onInput, onShortcut, onCut, onPaste, onCursorChange } = getInputHandlers(editor, fugue, communication);
-  const { applyMark } = getMarkdownHandlers(editor, fugue, communication);
+  const { renderElement, renderLeaf } = useRenderers();
+  const { onInput, onShortcut, onCut, onPaste, onCursorChange, onFormat } = getEventHandlers(
+    editor,
+    fugue,
+    communication
+  );
   const fugueHandlers = getFugueHandlers(fugue);
 
   useHistory(editor, fugue, communication);
@@ -42,15 +44,15 @@ function SlateEditor({ communication }: SlateEditorProps) {
     <div className="editor">
       <div className="container">
         <Slate editor={editor} initialValue={initialValue} onChange={onCursorChange}>
-          <Toolbar onApplyMark={applyMark} />
+          <Toolbar onApplyMark={onFormat} />
           <EditorTitle placeholder={'Untitled'} communication={communication} />
           <Editable
             className="editable"
             data-testid={'editor'}
             placeholder={'Start writing...'}
             spellCheck={false}
-            renderElement={getElementRenderer}
-            renderLeaf={getLeafRenderer}
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
             // decorate={decorate}
             onDragStart={e => e.preventDefault()}
             onDOMBeforeInput={onInput}

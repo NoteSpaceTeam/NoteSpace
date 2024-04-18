@@ -3,7 +3,7 @@ import { Operation as SlateOperation } from 'slate';
 import { last } from 'lodash';
 import { HistoryHandlers, HistoryOperation } from '@editor/domain/document/history/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { getReverseType } from '@editor/slate/events/history/utils'
+import { getReverseType } from '@editor/slate/events/history/utils';
 
 export type HistoryOperations = {
   undoOperation: () => void;
@@ -77,17 +77,17 @@ function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperat
   }
 
   function removeTextOperation(operations: BaseRemoveTextOperation[]): HistoryOperation {
-    const offset = (line : number) => (line === 0) ? 0 : 1;
+    const offset = (line: number) => (line === 0 ? 0 : 1);
 
     const startLine = operations[0].path[0];
-    const startColumn = operations[0].offset + offset(startLine)
-    const start = { line: startLine, column: startColumn}
+    const startColumn = operations[0].offset + offset(startLine);
+    const start = { line: startLine, column: startColumn };
 
     const endLine = last(operations)?.path[0] || start.line;
     const endColumn = (last(operations)?.offset || start.column) + offset(endLine);
-    const end = {line: endLine, column: endColumn}
+    const end = { line: endLine, column: endColumn };
 
-    const selection: Selection = {start, end};
+    const selection: Selection = { start, end };
     return { type: 'remove_text', selection };
   }
 

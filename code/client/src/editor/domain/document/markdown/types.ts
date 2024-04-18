@@ -8,5 +8,10 @@ export type MarkdownHandlers = {
 };
 
 export type ApplyBlockStyleHandler = (style: BlockStyle, line: number, deleteTriggerNodes?: boolean) => void;
-export type ApplyInlineStyleHandler = (style: InlineStyle, selection: Selection, triggerLength?: number) => void;
+export type ApplyInlineStyleHandler = (
+  style: InlineStyle,
+  selection: Selection,
+  value: boolean,
+  triggerLength?: number
+) => void;
 export type DeleteBlockStylesHandler = (selection: Selection) => void;

@@ -3,9 +3,10 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
+import { InlineStyle } from '../../../../../shared/types/styles';
 
 type ToolbarProps = {
-  onApplyMark: (mark: string) => void;
+  onApplyMark: (mark: InlineStyle) => void;
 };
 
 function Toolbar({ onApplyMark }: ToolbarProps) {
@@ -70,7 +71,7 @@ function Toolbar({ onApplyMark }: ToolbarProps) {
 }
 
 interface MarkOption {
-  value: string;
+  value: InlineStyle;
   icon: React.ReactElement;
 }
 

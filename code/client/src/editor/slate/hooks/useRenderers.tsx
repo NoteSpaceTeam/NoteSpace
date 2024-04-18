@@ -13,7 +13,7 @@ function useRenderers() {
     []
   );
 
-  return { getElementRenderer: renderElement, getLeafRenderer: renderLeaf };
+  return { renderElement, renderLeaf };
 }
 
 export default useRenderers;
