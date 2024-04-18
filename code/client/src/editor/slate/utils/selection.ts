@@ -41,7 +41,7 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  * @param editor
  * @param point
  */
-function pointToCursor(editor: Editor, point: Point): Cursor {
+export function pointToCursor(editor: Editor, point: Point): Cursor {
   const line = point.path[0];
   const children = Node.children(editor, [line]);
   const cursor: Cursor = { line, column: point.offset };

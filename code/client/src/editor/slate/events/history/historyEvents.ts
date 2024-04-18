@@ -3,7 +3,7 @@ import { Operation as SlateOperation } from 'slate';
 import { last } from 'lodash';
 import { HistoryHandlers, HistoryOperation } from '@editor/domain/document/history/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { getReverseType } from '@editor/slate/events/history/utils';
+import { getReverseType } from '@editor/slate/events/history/utils'
 
 export type HistoryOperations = {
   undoOperation: () => void;
@@ -52,9 +52,9 @@ function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperat
     console.log('type', type);
     switch (type) {
       case 'insert_text':
-        return insertTextOperation(operations as BaseRemoveTextOperation[]);
+        return insertTextOperation(operations as BaseInsertTextOperation[]);
       case 'remove_text':
-        return removeTextOperation(operations as BaseInsertTextOperation[]);
+        return removeTextOperation(operations as BaseRemoveTextOperation[]);
       case 'insert_node':
         return insertNodeOperation(operations as SlateOperation[]);
       case 'remove_node':
@@ -70,20 +70,24 @@ function historyEvents(editor: Editor, handlers: HistoryHandlers): HistoryOperat
     }
   }
 
-  function insertTextOperation(operations: BaseRemoveTextOperation[]): HistoryOperation {
+  function insertTextOperation(operations: BaseInsertTextOperation[]): HistoryOperation {
     const cursor: Cursor = { line: operations[0].path[0], column: operations[0].offset };
     const text = operations.map(operation => operation.text.split('')).flat();
     return { type: 'insert_text', cursor, text };
   }
 
-  function removeTextOperation(operations: BaseInsertTextOperation[]): HistoryOperation {
-    const path = last(operations)!.path[0] - operations[0].path[0];
-    const offset = last(operations)!.offset - operations[0].offset;
-    const length = operations.map(operation => operation.text).length;
-    const selection: Selection = {
-      start: { line: path, column: offset - length + 1 },
-      end: { line: path, column: offset + 1 },
-    };
+  function removeTextOperation(operations: BaseRemoveTextOperation[]): HistoryOperation {
+    const offset = (line : number) => (line === 0) ? 0 : 1;
+
+    const startLine = operations[0].path[0];
+    const startColumn = operations[0].offset + offset(startLine)
+    const start = { line: startLine, column: startColumn}
+
+    const endLine = last(operations)?.path[0] || start.line;
+    const endColumn = (last(operations)?.offset || start.column) + offset(endLine);
+    const end = {line: endLine, column: endColumn}
+
+    const selection: Selection = {start, end};
     return { type: 'remove_text', selection };
   }
 
