@@ -16,9 +16,7 @@ export type Rule = {
   apply: ApplyFunction;
 };
 
-export type ApplyFunction = (
-  handler: ApplyBlockStyle | ApplyInlineStyle
-) => (editor: Editor, range: Range) => void;
+export type ApplyFunction = (handler: ApplyBlockStyle | ApplyInlineStyle) => (editor: Editor, range: Range) => void;
 
 export function blockRules(style: BlockStyle, ...triggerCharacters: string[]): Rule {
   const triggers = triggerCharacters.map(trigger => new RegExp(`^(${escapeRegExp(trigger)})$`));
@@ -32,7 +30,6 @@ export function inlineRules(style: InlineStyle, ...triggerCharacters: string[]):
     return new RegExp(`(${escaped}).+?(${escaped})$`);
   });
   const triggerLength = triggerCharacters[0].length;
-  const apply: ApplyFunction = handler =>
-    createSetInlineApply(style, triggerLength, handler as ApplyInlineStyle);
+  const apply: ApplyFunction = handler => createSetInlineApply(style, triggerLength, handler as ApplyInlineStyle);
   return { type: RuleType.Inline, triggers, apply };
 }

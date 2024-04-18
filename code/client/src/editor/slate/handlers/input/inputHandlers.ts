@@ -142,10 +142,10 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
   /**
    * Handles cursor selection
    */
-  function onCursorChange() {
+  function onSelectionChange() {
     const range = editor.selection;
-    domainOperations.updateCursor(range);
+    domainOperations.updateSelection(range);
   }
 
-  return { onInput, onPaste, onCut, onCursorChange, onShortcut };
+  return { onInput, onPaste, onCut, onSelectionChange, onShortcut };
 };

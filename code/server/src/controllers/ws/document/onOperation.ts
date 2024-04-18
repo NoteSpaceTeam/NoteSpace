@@ -4,7 +4,6 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 
 function onOperation(service: DocumentService) {
   return (socket: Socket, operations: Operation[]) => {
-    console.log('operations', operations);
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':

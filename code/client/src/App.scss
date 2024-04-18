@@ -4,7 +4,11 @@
 }
 
 :root {
-  font-family: Poppins monospace;
+  font-family:
+    DIN Next,
+    system-ui,
+    sans-serif;
+  font-weight: 400;
 }
 
 .app {

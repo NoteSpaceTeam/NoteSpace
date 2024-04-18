@@ -9,7 +9,7 @@ export type InputDomainOperations = {
   deleteSelection: DeleteSelectionHandler;
   deleteWord: DeleteWordHandler;
   pasteText: PasteTextHandler;
-  updateCursor: UpdateCursorHandler;
+  updateSelection: UpdateSelectionHandler;
 };
 
 export type InsertCharacterHandler = (char: string, cursor: Cursor, styles?: InlineStyle[]) => void;
@@ -18,4 +18,4 @@ export type DeleteCharacterHandler = (cursor: Cursor) => void;
 export type DeleteSelectionHandler = (selection: Selection) => void;
 export type DeleteWordHandler = (cursor: Cursor, reverse: boolean) => void;
 export type PasteTextHandler = (start: Cursor, text: string[], lineNodes: string[]) => void;
-export type UpdateCursorHandler = (range: BaseSelection) => void;
+export type UpdateSelectionHandler = (range: BaseSelection) => void;

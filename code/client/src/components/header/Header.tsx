@@ -1,9 +1,10 @@
 import './Header.scss';
+import { FaBars } from 'react-icons/fa';
 
 function Header() {
   return (
     <header>
-      <span className="fa fa-bars"></span>
+      <FaBars />
       <h1>NoteSpace</h1>
     </header>
   );

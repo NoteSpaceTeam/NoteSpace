@@ -1,10 +1,14 @@
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import {
-    BaseInsertNodeOperation,
-    BaseInsertTextOperation, BaseMergeNodeOperation, BaseMoveNodeOperation,
-    BaseRemoveNodeOperation,
-    BaseRemoveTextOperation, BaseSetNodeOperation, BaseSetSelectionOperation,
-    BaseSplitNodeOperation,
+  BaseInsertNodeOperation,
+  BaseInsertTextOperation,
+  BaseMergeNodeOperation,
+  BaseMoveNodeOperation,
+  BaseRemoveNodeOperation,
+  BaseRemoveTextOperation,
+  BaseSetNodeOperation,
+  BaseSetSelectionOperation,
+  BaseSplitNodeOperation,
 } from 'slate';
 
 export type HistoryDomainOperations = {
@@ -14,11 +18,15 @@ export type HistoryDomainOperations = {
 export type ApplyHistory = (operations: HistoryOperation[]) => void;
 
 export type HistoryOperation =
-    InsertTextOperation
-    | RemoveTextOperation | InsertNodeOperation
-    | RemoveNodeOperation | SplitNodeOperation
-    | MergeNodeOperation  | MoveNodeOperation
-    | SetNodeOperation | SetSelectionOperation;
+  | InsertTextOperation
+  | RemoveTextOperation
+  | InsertNodeOperation
+  | RemoveNodeOperation
+  | SplitNodeOperation
+  | MergeNodeOperation
+  | MoveNodeOperation
+  | SetNodeOperation
+  | SetSelectionOperation;
 
 export type InsertTextOperation = {
   type: BaseInsertTextOperation['type'];
@@ -42,9 +50,9 @@ export type RemoveNodeOperation = {
 };
 
 export type SplitNodeOperation = {
-    type: BaseSplitNodeOperation['type'];
-    cursor: Cursor;
-}
+  type: BaseSplitNodeOperation['type'];
+  cursor: Cursor;
+};
 
 export type MergeNodeOperation = {
   type: BaseMergeNodeOperation['type'];
@@ -52,20 +60,20 @@ export type MergeNodeOperation = {
 };
 
 export type MoveNodeOperation = {
-    type: BaseMoveNodeOperation['type'];
-    cursor: Cursor;
-    target: Cursor;
+  type: BaseMoveNodeOperation['type'];
+  cursor: Cursor;
+  target: Cursor;
 };
 
 export type SetNodeOperation = {
-    type: BaseSetNodeOperation['type'];
-    cursor: Cursor;
-    properties: Partial<Node>;
-    newProperties: Partial<Node>;
+  type: BaseSetNodeOperation['type'];
+  cursor: Cursor;
+  properties: Partial<Node>;
+  newProperties: Partial<Node>;
 };
 
 export type SetSelectionOperation = {
-    type: BaseSetSelectionOperation['type'];
-    properties: Partial<Range>;
-    newProperties: Partial<Range>;
+  type: BaseSetSelectionOperation['type'];
+  properties: Partial<Range>;
+  newProperties: Partial<Range>;
 };

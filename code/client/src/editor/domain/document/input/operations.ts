@@ -47,7 +47,7 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
     communication.emitChunked('operation', operations);
   }
 
-  function updateCursor(range: BaseSelection) {
+  function updateSelection(range: BaseSelection) {
     if (!range) return;
     communication.emit('cursorChange', range);
   }
@@ -59,6 +59,6 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
     deleteSelection,
     deleteWord,
     pasteText,
-    updateCursor,
+    updateSelection,
   };
 };

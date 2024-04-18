@@ -1,14 +1,19 @@
 import {
   BaseInsertNodeOperation,
-  BaseInsertTextOperation, BaseMergeNodeOperation, BaseMoveNodeOperation,
-  BaseOperation, BaseRemoveNodeOperation,
-  BaseRemoveTextOperation, BaseSetNodeOperation, BaseSetSelectionOperation,
+  BaseInsertTextOperation,
+  BaseMergeNodeOperation,
+  BaseMoveNodeOperation,
+  BaseOperation,
+  BaseRemoveNodeOperation,
+  BaseRemoveTextOperation,
+  BaseSetNodeOperation,
+  BaseSetSelectionOperation,
   BaseSplitNodeOperation,
   Editor,
-  Range
+  Range,
 } from 'slate';
-import {last} from 'lodash';
-import {HistoryDomainOperations, HistoryOperation} from '@editor/domain/document/history/types';
+import { last } from 'lodash';
+import { HistoryDomainOperations, HistoryOperation } from '@editor/domain/document/history/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { getReverseType } from '@editor/slate/handlers/history/utils';
 
@@ -29,13 +34,11 @@ interface Batch {
  */
 function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperations): HistoryHandlers {
   function undoOperation() {
-    console.log("Undoing...")
     const { history } = editor;
     applyOperations(last(history.undos), true);
   }
 
   function redoOperation() {
-    console.log("Redoing...")
     const { history } = editor;
     applyOperations(last(history.redos), false); // redo should reverse the type of the last operation
   }
@@ -46,19 +49,18 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * @param reverseType - if true, the reverse operation will be the same type as the last operation
    */
   function applyOperations(operations: Batch | undefined, reverseType: boolean) {
-    if(!operations) return;
+    if (!operations) return;
 
     // Get each operation needed to be applied, as a batch can contain operations that are not in the same type
     const applyOperations = operations.operations.map(operation => {
-        const type : BaseOperation["type"] = operation.type;
-        const operationType = reverseType ? getReverseType(type) : type;
-        return getHistoryOperation(operation, operationType);
-    })
+      const type: BaseOperation['type'] = operation.type;
+      const operationType = reverseType ? getReverseType(type) : type;
+      return getHistoryOperation(operation, operationType);
+    });
     domainOperations.applyHistoryOperation(applyOperations);
   }
 
-  function getHistoryOperation(operation: BaseOperation, type: BaseOperation["type"]): HistoryOperation {
-    console.log('type', type);
+  function getHistoryOperation(operation: BaseOperation, type: BaseOperation['type']): HistoryOperation {
     switch (type) {
       case 'insert_text':
         return insertTextOperation(operation as BaseInsertTextOperation);
@@ -74,9 +76,9 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
         return splitNodeOperation(operation as BaseSplitNodeOperation);
       case 'move_node':
         return moveNodeOperation(operation as BaseMoveNodeOperation);
-      case "set_node":
+      case 'set_node':
         return setNode(operation as BaseSetNodeOperation);
-      case "set_selection":
+      case 'set_selection':
         return setSelection(operation as BaseSetSelectionOperation);
     }
   }
@@ -104,37 +106,37 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
 
   function insertNodeOperation(operation: BaseInsertNodeOperation): HistoryOperation {
     console.log('insertNodeOperation', operation);
-    return { type: 'insert_node', cursor: { line: 0, column: 0 }};
+    return { type: 'insert_node', cursor: { line: 0, column: 0 } };
   }
 
   function removeNodeOperation(operation: BaseRemoveNodeOperation): HistoryOperation {
     console.log('removeNodeOperation', operation);
-    return { type: 'remove_node', cursor: { line: 0, column: 0 }};
+    return { type: 'remove_node', cursor: { line: 0, column: 0 } };
   }
 
   function mergeNodeOperation(operation: BaseMergeNodeOperation): HistoryOperation {
     console.log('mergeNodeOperation', operation);
-    return { type: 'merge_node', cursor: { line: 0, column: 0 }};
+    return { type: 'merge_node', cursor: { line: 0, column: 0 } };
   }
 
   function splitNodeOperation(operation: BaseSplitNodeOperation): HistoryOperation {
     console.log('splitNodeOperation', operation);
-    return { type: 'split_node', cursor: { line: 0, column: 0 }};
+    return { type: 'split_node', cursor: { line: 0, column: 0 } };
   }
 
-  function moveNodeOperation(operation : BaseMoveNodeOperation): HistoryOperation {
+  function moveNodeOperation(operation: BaseMoveNodeOperation): HistoryOperation {
     console.log('moveNodeOperation', operation);
-    return { type: 'move_node', cursor: { line: 0, column: 0 }, target: { line: 0, column: 0 }};
+    return { type: 'move_node', cursor: { line: 0, column: 0 }, target: { line: 0, column: 0 } };
   }
 
   function setNode(operation: BaseSetNodeOperation): HistoryOperation {
-      console.log('setNode', operation);
-      return { type: 'set_node', cursor: { line: 0, column: 0 }, properties: {}, newProperties: operation.properties };
+    console.log('setNode', operation);
+    return { type: 'set_node', cursor: { line: 0, column: 0 }, properties: {}, newProperties: operation.properties };
   }
 
   function setSelection(operation: BaseSetSelectionOperation): HistoryOperation {
-      console.log('setSelection', operation);
-      return { type: 'set_selection', properties: {}, newProperties: {} };
+    console.log('setSelection', operation);
+    return { type: 'set_selection', properties: {}, newProperties: {} };
   }
 
   return { undoOperation, redoOperation };
