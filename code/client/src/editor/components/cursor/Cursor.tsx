@@ -7,14 +7,19 @@ type CursorProps = {
 
 function Cursor({ children, color }: CursorProps) {
   return (
-    <span style={{ position: 'relative' }}>
+    <span
+      style={{
+        position: 'relative',
+        whiteSpace: 'nowrap',
+      }}
+    >
       {children}
       <span
         style={{
           position: 'absolute',
-          top: '-2px',
+          top: '0',
           left: '1px',
-          height: '1.5em',
+          height: '100%',
           width: '2px',
           backgroundColor: color,
           transform: 'translateX(-100%)',
