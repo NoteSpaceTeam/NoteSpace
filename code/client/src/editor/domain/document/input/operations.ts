@@ -16,7 +16,7 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
 
   function insertLineBreak(cursor: Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
-    const styleOperation = fugue.updateBlockStyleLocal('paragraph', cursor.line + 1, true);
+    const styleOperation = fugue.updateBlockStyleLocal(cursor.line + 1, 'paragraph', true);
     communication.emitChunked('operation', [styleOperation, ...operations]);
   }
 
@@ -41,7 +41,7 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
   function pasteText(start: Cursor, text: string[], lineNodes: string[]) {
     const operations: Operation[] = fugue.insertLocal(start, ...text);
     for (let i = 0; i < lineNodes.length; i++) {
-      const styleOperation = fugue.updateBlockStyleLocal('paragraph', start.line + i, true);
+      const styleOperation = fugue.updateBlockStyleLocal(start.line + i, 'paragraph', true);
       operations.push(styleOperation);
     }
     communication.emitChunked('operation', operations);

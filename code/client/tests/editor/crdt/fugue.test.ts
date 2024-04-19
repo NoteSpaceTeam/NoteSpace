@@ -130,8 +130,8 @@ describe('Fugue', () => {
 
   it('should update block style of node locally', () => {
     // when
-    const operationHeading1 = fugue.updateBlockStyleLocal('heading-one', 0);
-    const operationListItem = fugue.updateBlockStyleLocal('list-item', 1);
+    const operationHeading1 = fugue.updateBlockStyleLocal(0, 'heading-one');
+    const operationListItem = fugue.updateBlockStyleLocal(1, 'list-item');
 
     // then
     expect(operationHeading1).toEqual(expect.objectContaining({ type: 'block-style', line: 0, style: 'heading-one' }));

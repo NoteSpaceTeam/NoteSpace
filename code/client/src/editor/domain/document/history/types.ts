@@ -67,7 +67,7 @@ export type MoveNodeOperation = {
 
 export type SetNodeOperation = {
   type: BaseSetNodeOperation['type'];
-  cursor: Cursor;
+  selection: Selection;
   properties: Partial<Node>;
   newProperties: Partial<Node>;
 };

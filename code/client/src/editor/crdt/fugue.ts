@@ -159,11 +159,11 @@ export class Fugue {
 
   /**
    * Updates the style of the node based on the given operation
-   * @param style - the style to be updated
    * @param line - the line number
+   * @param style - the style to be updated
    * @param append - if true, appends the style to the existing styles, otherwise replaces them
    */
-  updateBlockStyleLocal(style: BlockStyle, line: number, append: boolean = false): BlockStyleOperation {
+  updateBlockStyleLocal(line: number, style: BlockStyle, append: boolean = false): BlockStyleOperation {
     this.tree.updateBlockStyle(style, line, append);
     return {
       type: 'block-style',
@@ -179,7 +179,7 @@ export class Fugue {
    * @param selection
    */
   updateBlockStylesLocalBySelection(style: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(style, line));
+    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(line, style));
   }
 
   /**

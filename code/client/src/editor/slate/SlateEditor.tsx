@@ -55,6 +55,7 @@ function SlateEditor({ communication }: SlateEditorProps) {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             decorate={decorate}
+            dra
             onDragStart={e => e.preventDefault()}
             onDOMBeforeInput={onInput}
             onCut={onCut}

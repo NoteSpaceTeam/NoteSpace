@@ -31,7 +31,7 @@ export default (fugue: Fugue, communication: Communication): MarkdownDomainOpera
       operations.push(...deleteOperations);
     }
     // apply block style
-    const styleOperation = fugue.updateBlockStyleLocal(style, line);
+    const styleOperation = fugue.updateBlockStyleLocal(line, style);
     operations.push(styleOperation);
 
     // emit operations
