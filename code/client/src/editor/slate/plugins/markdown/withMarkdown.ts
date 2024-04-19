@@ -21,7 +21,7 @@ export function withMarkdown(editor: Editor, handlers: MarkdownDomainOperations)
     editorOperations.insertBreak();
   };
   editor.delete = options => {
-    editorOperations.delete(deleteOperation, options);
+    editorOperations.deleteSelection(deleteOperation, options);
   };
   editor.deleteBackward = (...args) => {
     editorOperations.deleteBackward(deleteBackward, ...args);

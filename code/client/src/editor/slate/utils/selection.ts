@@ -8,8 +8,7 @@ import { first, isEqual } from 'lodash';
  */
 export function isSelected(editor: Editor) {
   if (!editor.selection) return false;
-  const { anchor, focus } = editor.selection;
-  return !Point.equals(anchor, focus);
+  return !Range.isCollapsed(editor.selection);
 }
 
 /**

@@ -14,7 +14,6 @@ export function useCursors(editor: Editor, communication: Communication) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
-    console.log('cursor', cursor.range?.anchor.offset, cursor.range?.focus.offset);
     setCursors(prevCursors => {
       if (!cursor.range) return prevCursors;
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);

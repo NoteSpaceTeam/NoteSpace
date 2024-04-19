@@ -75,7 +75,7 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: (edito
  * @param editor
  * @param handlers
  */
-const operations = (editor: Editor, handlers: MarkdownDomainOperations) => {
+export default (editor: Editor, handlers: MarkdownDomainOperations) => {
   /**
    * Inserts the given text into the editor.
    * @param insertText
@@ -169,7 +169,7 @@ const operations = (editor: Editor, handlers: MarkdownDomainOperations) => {
     deleteBackward(...args);
   };
 
-  const deleteOperation = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
+  const deleteSelection = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
     if (isSelectionEmpty(selection)) return;
     handlers.deleteBlockStyles(selection);
@@ -184,6 +184,5 @@ const operations = (editor: Editor, handlers: MarkdownDomainOperations) => {
   const isInline = (n: unknown, isInline: InlineFunction) =>
     (Element.isElement(n) && n.type === 'inline-code') || isInline(n);
 
-  return { insertText, insertBreak, deleteBackward, delete: deleteOperation, isInline };
+  return { insertText, insertBreak, deleteBackward, deleteSelection, isInline };
 };
-export default operations;

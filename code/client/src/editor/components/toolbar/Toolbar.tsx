@@ -28,7 +28,7 @@ function Toolbar({ onApplyMark }: ToolbarProps) {
       }
 
       const range = selection.getRangeAt(0);
-      if (!range.getBoundingClientRect) return; // tests fail without this check
+      if (!range.getBoundingClientRect) return;
       const rect = range.getBoundingClientRect();
       setSelectionBounds(rect);
     };

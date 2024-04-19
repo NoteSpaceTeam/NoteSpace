@@ -15,11 +15,18 @@ import {
 import { last } from 'lodash';
 import {
   HistoryDomainOperations,
-  HistoryOperation, InsertNodeOperation,
-  InsertTextOperation, MergeNodeOperation, MoveNodeOperation, RemoveNodeOperation,
-  RemoveTextOperation, SetNodeOperation, SetSelectionOperation, SplitNodeOperation
+  HistoryOperation,
+  InsertNodeOperation,
+  InsertTextOperation,
+  MergeNodeOperation,
+  MoveNodeOperation,
+  RemoveNodeOperation,
+  RemoveTextOperation,
+  SetNodeOperation,
+  SetSelectionOperation,
+  SplitNodeOperation,
 } from '@editor/domain/document/history/types';
-import {Cursor, emptySelection, Selection} from '@notespace/shared/types/cursor';
+import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { getReverseType } from '@editor/slate/handlers/history/utils';
 
 export type HistoryHandlers = {
@@ -60,7 +67,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
     // Get each operation needed to be applied, as a batch can contain operations that are not in the same type
     const applyOperations = operations.operations.map(operation => {
       const type: BaseOperation['type'] = operation.type;
-      const operationType = (reverseType) ? getReverseType(type) : type;
+      const operationType = reverseType ? getReverseType(type) : type;
       return toHistoryOperation(operationType, operation, selectionBefore);
     });
 
@@ -74,9 +81,9 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * @param selectionBefore
    */
   function toHistoryOperation(
-      type: BaseOperation['type'],
-      operation: BaseOperation,
-      selectionBefore: Range | null,
+    type: BaseOperation['type'],
+    operation: BaseOperation,
+    selectionBefore: Range | null
   ): HistoryOperation {
     switch (type) {
       case 'insert_text':
@@ -179,9 +186,9 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * @param operation
    * @param selectionBefore
    */
-  function setNode(operation: BaseSetNodeOperation, selectionBefore : Range | null): SetNodeOperation {
+  function setNode(operation: BaseSetNodeOperation, selectionBefore: Range | null): SetNodeOperation {
     const selection = emptySelection();
-    return { type: 'set_node' , selection, properties: {}, newProperties: operation.properties };
+    return { type: 'set_node', selection, properties: {}, newProperties: operation.properties };
   }
 
   /**
