@@ -3,25 +3,26 @@ import { DocumentService } from '@src/types';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 
 function onOperation(service: DocumentService) {
-  return (socket: Socket, operations: Operation[]) => {
+  return async (socket: Socket, operations: Operation[]) => {
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
-          service.insertCharacter(operation);
+          await service.insertCharacter(operation);
           break;
         case 'delete':
-          service.deleteCharacter(operation);
+          await service.deleteCharacter(operation);
           break;
         case 'inline-style':
-          service.updateInlineStyle(operation);
+          await service.updateInlineStyle(operation);
           break;
         case 'block-style':
-          service.updateBlockStyle(operation);
+          await service.updateBlockStyle(operation);
           break;
         default:
           throw new Error('Invalid operation type');
       }
     }
+    socket.emit('ack');
     socket.broadcast.emit('operation', operations);
   };
 }

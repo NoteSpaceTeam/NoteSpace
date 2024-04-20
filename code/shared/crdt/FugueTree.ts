@@ -37,14 +37,18 @@ export class FugueTree<T> {
     side: "L" | "R",
     styles?: InlineStyle[],
   ) {
+    // create node
     const node = treeNode(id, value, parent, side, 0, styles);
-    // Add to nodes map
+
+    // add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
     if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
     senderNodes.push(node);
-    // Insert into parent's siblings.
+
+    // insert into parent's siblings
     this.insertChild(node);
-    // Update sizes of ancestors
+
+    // update depths of ancestors
     this.updateDepths(node, 1);
   }
 
@@ -100,7 +104,7 @@ export class FugueTree<T> {
     const bySender = this.nodes.get(id.sender);
     if (bySender !== undefined) {
       const node = bySender[id.counter];
-      if (node !== undefined) return node;
+      if (node) return node;
     }
     throw new Error("Unknown ID: " + JSON.stringify(id));
   }

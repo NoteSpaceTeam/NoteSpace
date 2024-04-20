@@ -11,15 +11,15 @@ export default function DocumentDatabase(): DocumentDatabase {
     return { title, nodes };
   }
 
-  function updateDocument(newNodes: Nodes<string>) {
+  async function updateDocument(newNodes: Nodes<string>) {
     nodes = newNodes;
   }
 
-  function updateTitle(newTitle: string) {
+  async function updateTitle(newTitle: string) {
     title = newTitle;
   }
 
-  function deleteDocument() {
+  async function deleteDocument() {
     nodes = emptyTree();
     title = '';
   }

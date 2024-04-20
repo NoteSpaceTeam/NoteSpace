@@ -15,8 +15,8 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     return await database.getDocument();
   }
 
-  function deleteDocument() {
-    database.deleteDocument();
+  async function deleteDocument() {
+    await database.deleteDocument();
   }
 
   async function insertCharacter(operation: InsertOperation) {
@@ -47,8 +47,8 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     });
   }
 
-  function updateTitle(title: string) {
-    database.updateTitle(title);
+  async function updateTitle(title: string) {
+    await database.updateTitle(title);
   }
 
   async function updateDocument(update: () => void) {
@@ -56,7 +56,7 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     tree.setTree(nodes);
     update();
     const updatedNodes = getNodes();
-    database.updateDocument(updatedNodes);
+    await database.updateDocument(updatedNodes);
   }
 
   function getNodes(): Nodes<string> {

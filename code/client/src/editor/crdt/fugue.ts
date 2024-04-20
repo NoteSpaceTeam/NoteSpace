@@ -40,9 +40,17 @@ export class Fugue {
    * @param values
    */
   insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
-    return values.map((value, i) => {
+    let line = cursor.line;
+    let column = cursor.column;
+    return values.map(value => {
       const node = typeof value === 'string' ? nodeInsert(value, []) : value;
-      const operation = this.getInsertOperation({ ...cursor, column: cursor.column + i }, node);
+      const operation = this.getInsertOperation({ line, column }, node);
+      if (node.value === '\n') {
+        line++;
+        column = 0;
+      } else {
+        column++;
+      }
       this.addNode(operation);
       return operation;
     });

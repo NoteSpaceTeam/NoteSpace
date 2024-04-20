@@ -51,6 +51,20 @@ describe('Fugue', () => {
     expect(fugue.toString()).toContain('a');
   });
 
+  it('should insert multiple lines locally', () => {
+    // given
+    const cursor: Cursor = { line: 0, column: 0 };
+    const input = 'abc\ndef';
+
+    // when
+    const operations = fugue.insertLocal(cursor, ...input.split(''));
+
+    // then
+    expect(operations).toHaveLength(7);
+    expect(operations.map(op => op.value).join('')).toEqual('abc\ndef');
+    expect(fugue.toString()).toEqual('abc\ndef');
+  });
+
   it('should delete values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
@@ -166,22 +180,24 @@ describe('Fugue', () => {
   });
 
   it('should return the nodes in the given selections', () => {
+    // given
     const cursor: Cursor = { line: 0, column: 0 };
     const line1 = 'abcdef';
     const line2 = 'ghijkl';
-
-    fugue.insertLocal(cursor, ...line1.split(''));
-    fugue.insertLocal({ ...cursor, column: line1.length }, '\n');
-    fugue.insertLocal({ ...cursor, column: 0, line: 1 }, ...line2.split(''));
-
     const selection1: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
     const selection2: Selection = { start: { line: 0, column: 3 }, end: { line: 0, column: 5 } };
     const selection3: Selection = { start: { line: 0, column: 3 }, end: { line: 1, column: 4 } };
+
+    // when
+    fugue.insertLocal(cursor, ...line1.split(''));
+    fugue.insertLocal({ ...cursor, column: line1.length }, '\n');
+    fugue.insertLocal({ ...cursor, column: 0, line: 1 }, ...line2.split(''));
 
     const nodes1 = Array.from(fugue.traverseBySelection(selection1));
     const nodes2 = Array.from(fugue.traverseBySelection(selection2));
     const nodes3 = Array.from(fugue.traverseBySelection(selection3));
 
+    // then
     expect(nodes1.map(node => node.value).join('')).toEqual('bcd');
     expect(nodes2.map(node => node.value).join('')).toEqual('def');
     expect(nodes3.map(node => node.value).join('')).toEqual('def\nghij');

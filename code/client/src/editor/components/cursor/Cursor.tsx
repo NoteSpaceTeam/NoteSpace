@@ -9,23 +9,11 @@ function Cursor({ children, color }: CursorProps) {
   return (
     <span
       style={{
-        position: 'relative',
-        whiteSpace: 'nowrap',
+        zIndex: -1,
+        outline: `1px solid ${color}`,
       }}
     >
       {children}
-      <span
-        style={{
-          position: 'absolute',
-          top: '0',
-          left: '1px',
-          height: '100%',
-          width: '2px',
-          backgroundColor: color,
-          transform: 'translateX(-100%)',
-          zIndex: -1,
-        }}
-      />
     </span>
   );
 }

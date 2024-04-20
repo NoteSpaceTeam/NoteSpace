@@ -16,10 +16,10 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
     }
 
     Object.entries(events).forEach(([event, handler]) => {
-      socket.on(event, data => {
+      socket.on(event, async data => {
         try {
           console.log(event);
-          handler(socket, data);
+          await handler(socket, data);
         } catch (e) {
           // socket.emit('error');
           console.error(e);
@@ -28,7 +28,7 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
     });
 
     socket.on('disconnect', reason => {
-      // onCursorChange()(socket, null); // delete cursor
+      // onCursorChange()(socket, null); // this causes a bug, TODO: check later
       console.log('a client disconnected', reason);
     });
   };

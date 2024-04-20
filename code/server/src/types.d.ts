@@ -9,19 +9,19 @@ import {
 
 type DocumentDatabase = {
   getDocument: () => Promise<Document>;
-  updateDocument: (nodes: Nodes<string>) => void;
-  updateTitle: (title: string) => void;
-  deleteDocument: () => void;
+  updateDocument: (nodes: Nodes<string>) => Promise<void>;
+  updateTitle: (title: string) => Promise<void>;
+  deleteDocument: () => Promise<void>;
 };
 
 type DocumentService = {
   getDocument: () => Promise<Document>;
   deleteDocument: () => void;
-  insertCharacter: (operation: InsertOperation) => void;
-  deleteCharacter: (operation: DeleteOperation) => void;
-  updateInlineStyle: (operation: InlineStyleOperation) => void;
-  updateBlockStyle: (operation: BlockStyleOperation) => void;
-  updateTitle: (title: string) => void;
+  insertCharacter: (operation: InsertOperation) => Promise<void>;
+  deleteCharacter: (operation: DeleteOperation) => Promise<void>;
+  updateInlineStyle: (operation: InlineStyleOperation) => Promise<void>;
+  updateBlockStyle: (operation: BlockStyleOperation) => Promise<void>;
+  updateTitle: (title: string) => Promise<void>;
 };
 
-type SocketHandler = (socket: Socket, data: any) => void;
+type SocketHandler = (socket: Socket, data: any) => Promise<void> | void;

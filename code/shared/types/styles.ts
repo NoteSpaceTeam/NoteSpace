@@ -26,13 +26,13 @@ export type BlockStyle = (typeof BlockStyles)[keyof typeof BlockStyles];
 export type InlineStyle = (typeof InlineStyles)[keyof typeof InlineStyles];
 export type Style = BlockStyle | InlineStyle;
 
-export function getStyleType(type: string): 'block' | 'inline' {
-  for (const [,value] of Object.entries(BlockStyles)) {
-    if (value === type) return "block"
+export function getStyleType(type: string): "block" | "inline" {
+  for (const [, value] of Object.entries(BlockStyles)) {
+    if (value === type) return "block";
   }
 
-  for (const [,value] of Object.entries(InlineStyles)) {
-      if (value === type) return "inline"
+  for (const [, value] of Object.entries(InlineStyles)) {
+    if (value === type) return "inline";
   }
-    throw new Error(`Unknown style type: ${type}`);
+  throw new Error(`Unknown style type: ${type}`);
 }

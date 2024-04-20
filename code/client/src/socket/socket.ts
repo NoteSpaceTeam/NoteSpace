@@ -11,8 +11,13 @@ declare module 'socket.io-client' {
   }
 }
 
-socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA_SIZE) =>
-  range(0, data.length, chunkSize).forEach(i => {
-    const chunk = data.slice(i, i + chunkSize);
-    socket.emit(event, chunk);
+socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA_SIZE) => {
+  const chunks: any[] = range(0, data.length, chunkSize).map(start => data.slice(start, start + chunkSize));
+  let chunkIndex = 0;
+  socket.emit(event, chunks[chunkIndex++]);
+  socket.on('ack', () => {
+    if (chunkIndex < chunks.length) {
+      socket.emit(event, chunks[chunkIndex++]);
+    }
   });
+};
