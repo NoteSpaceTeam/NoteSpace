@@ -11,12 +11,12 @@ import EditorTitle from '@editor/components/title/EditorTitle';
 import useEditor from '@editor/slate/hooks/useEditor';
 import useFugue from '@editor/hooks/useFugue';
 import useHistory from '@editor/slate/hooks/useHistory';
+import useDecorate from '@editor/slate/hooks/useDecorate';
+import useCursors from '@editor/slate/hooks/useCursors';
 import getEventHandlers from '@editor/slate/handlers/getEventHandlers';
 import getFugueHandlers from '@editor/domain/document/fugue/operations';
-import useCursors from '@editor/slate/hooks/useCursors';
 import './SlateEditor.scss';
 
-// for testing purposes, we need to be able to pass in an editor
 type SlateEditorProps = {
   communication: Communication;
 };
@@ -27,8 +27,9 @@ function SlateEditor({ communication }: SlateEditorProps) {
   const fugue = useFugue();
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   const fugueHandlers = getFugueHandlers(fugue);
-  const { decorate } = useCursors(editor, communication);
+  const { cursors } = useCursors(communication);
   const { renderElement, renderLeaf } = useRenderers();
+  const decorate = useDecorate(editor, cursors);
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat } = getEventHandlers(
     editor,
     fugue,

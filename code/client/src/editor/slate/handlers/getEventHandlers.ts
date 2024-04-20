@@ -13,7 +13,7 @@ import markdownHandlers from '@editor/slate/handlers/markdown/markdownHandlers';
  * @param communication
  */
 function getEventHandlers(editor: Editor, fugue: Fugue, communication: Communication) {
-  // operation handlers
+  // domain operations
   const markdownOperations = markdownDomainOperations(fugue, communication);
   const inputOperations = inputDomainOperations(fugue, communication);
 

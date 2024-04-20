@@ -48,7 +48,6 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
   }
 
   function updateSelection(range: BaseSelection) {
-    if (!range) return;
     communication.emit('cursorChange', range);
   }
 
