@@ -14,10 +14,14 @@ declare module 'socket.io-client' {
 socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA_SIZE) => {
   const chunks: any[] = range(0, data.length, chunkSize).map(start => data.slice(start, start + chunkSize));
   let chunkIndex = 0;
-  socket.emit(event, chunks[chunkIndex++]);
-  socket.on('ack', () => {
+
+  const onAcknowledge = () => {
     if (chunkIndex < chunks.length) {
       socket.emit(event, chunks[chunkIndex++]);
+    } else {
+      socket.off('ack', onAcknowledge);
     }
-  });
+  };
+  socket.emit(event, chunks[chunkIndex++]);
+  socket.on('ack', () => onAcknowledge);
 };

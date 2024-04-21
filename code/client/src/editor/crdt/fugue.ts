@@ -45,13 +45,13 @@ export class Fugue {
     return values.map(value => {
       const node = typeof value === 'string' ? nodeInsert(value, []) : value;
       const operation = this.getInsertOperation({ line, column }, node);
+      this.addNode(operation);
       if (node.value === '\n') {
         line++;
         column = 0;
       } else {
         column++;
       }
-      this.addNode(operation);
       return operation;
     });
   }
@@ -220,11 +220,6 @@ export class Fugue {
     let columnCounter = 0;
     let inBounds = false;
     for (const node of this.traverseTree()) {
-      // new line
-      if (node.value === '\n') {
-        lineCounter++;
-        columnCounter = 0;
-      }
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
@@ -233,12 +228,17 @@ export class Fugue {
       if (inBounds) {
         yield node;
       }
+      // update counters
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      } else {
+        columnCounter++;
+      }
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
-        break;
+        inBounds = false;
       }
-      // increment column counter
-      columnCounter++;
     }
   }
 
@@ -289,7 +289,7 @@ export class Fugue {
    * @param cursor
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
-    const cursor = { line, column: line === 0 ? column - 1 : column };
+    const cursor = { line, column: column - 1 };
     const iterator = this.traverseBySelection({ start: cursor, end: cursor });
     return iterator.next().value;
   }

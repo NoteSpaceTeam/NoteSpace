@@ -168,7 +168,7 @@ describe('Fugue', () => {
   it('should return the nodes in the given selection', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
+    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 2 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c');
@@ -198,8 +198,8 @@ describe('Fugue', () => {
     const nodes3 = Array.from(fugue.traverseBySelection(selection3));
 
     // then
-    expect(nodes1.map(node => node.value).join('')).toEqual('bcd');
-    expect(nodes2.map(node => node.value).join('')).toEqual('def');
+    expect(nodes1.map(node => node.value).join('')).toEqual('bc');
+    expect(nodes2.map(node => node.value).join('')).toEqual('de');
     expect(nodes3.map(node => node.value).join('')).toEqual('def\nghij');
   });
 
