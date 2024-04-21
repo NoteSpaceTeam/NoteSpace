@@ -1,4 +1,10 @@
 import { Socket } from 'socket.io';
+import { InlineStyle } from '@notespace/shared/types/styles';
+
+type CursorData = {
+  range: any;
+  styles: InlineStyle[];
+};
 
 const cursorColorsMap = new Map<string, string>();
 
@@ -17,9 +23,9 @@ function deleteCursor(socket: Socket) {
   socket.broadcast.emit('cursorChange', { id: socket.id });
 }
 
-function updateCursor(socket: Socket, range: any) {
+function updateCursor(socket: Socket, data: CursorData) {
   const color = getColor(socket);
-  socket.broadcast.emit('cursorChange', { range, id: socket.id, color });
+  socket.broadcast.emit('cursorChange', { ...data, id: socket.id, color });
 }
 
 function getColor(socket: Socket) {

@@ -2,11 +2,13 @@ import { Range } from 'slate';
 import { useState } from 'react';
 import useSocketListeners from '@socket/useSocketListeners';
 import { Communication } from '@editor/domain/communication';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 export type CursorData = {
   id: string;
   range: Range | null;
   color: string;
+  styles: InlineStyle[];
 };
 
 export function useCursors(communication: Communication) {

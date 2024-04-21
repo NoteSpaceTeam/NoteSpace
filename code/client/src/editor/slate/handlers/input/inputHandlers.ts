@@ -99,7 +99,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * Deletes the character after the cursor
    */
   function onDelete({ line, column }: Cursor) {
-    const cursor = { line, column: column + 1 };
+    const cursor = { line, column };
     domainOperations.deleteCharacter(cursor);
   }
 
@@ -143,7 +143,8 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * Handles cursor selection
    */
   function onSelectionChange() {
-    domainOperations.updateSelection(editor.selection);
+    const styles = CustomEditor.getMarks(editor) as InlineStyle[];
+    domainOperations.updateSelection(editor.selection, styles);
   }
 
   return { onInput, onPaste, onCut, onSelectionChange, onShortcut };

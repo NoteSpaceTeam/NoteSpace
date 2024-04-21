@@ -30,7 +30,6 @@ export function getStyleType(type: string): "block" | "inline" {
   for (const [, value] of Object.entries(BlockStyles)) {
     if (value === type) return "block";
   }
-
   for (const [, value] of Object.entries(InlineStyles)) {
     if (value === type) return "inline";
   }

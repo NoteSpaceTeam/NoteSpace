@@ -243,7 +243,7 @@ export class Fugue {
   }
 
   /**
-   * Traverses the tree until the given separator is found
+   * Traverses the tree until the given separator is found by cursor position
    * @param separator
    * @param line
    * @param column
@@ -254,14 +254,13 @@ export class Fugue {
     { line, column }: Cursor,
     reverse: boolean = false
   ): IterableIterator<FugueNode[]> {
-    const nodes: FugueNode[] = [];
     const selection = reverse
-      ? { start: { line, column: 0 }, end: { line: line, column: column } }
-      : { start: { line, column: column }, end: { line: line, column: Infinity } };
+      ? { start: { line, column: 0 }, end: { line, column } }
+      : { start: { line, column }, end: { line, column: Infinity } };
 
-    const iterator = this.traverseBySelection(selection);
-    const list = Array.from(iterator);
-    const elements = reverse ? list.reverse() : list;
+    const nodesInSelection = Array.from(this.traverseBySelection(selection));
+    const elements = reverse ? nodesInSelection.reverse() : nodesInSelection;
+    const nodes: FugueNode[] = [];
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
         yield nodes;

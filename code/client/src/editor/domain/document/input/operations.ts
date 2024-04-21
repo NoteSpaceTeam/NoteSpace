@@ -47,8 +47,8 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
     communication.emitChunked('operation', operations);
   }
 
-  function updateSelection(range: BaseSelection) {
-    communication.emit('cursorChange', range);
+  function updateSelection(range: BaseSelection, styles: InlineStyle[]) {
+    communication.emit('cursorChange', { range, styles });
   }
 
   return {

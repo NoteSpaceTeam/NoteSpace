@@ -19,6 +19,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
 
   for (const node of fugue.traverseTree()) {
     if (!node.value) continue;
+
     // create a text node with the given styles
     const textNode: CustomText = {
       text: node.value as string,
@@ -28,16 +29,20 @@ export function toSlate(fugue: Fugue): Descendant[] {
       strikethrough: node.styles.includes('strikethrough'),
       code: node.styles.includes('code'),
     };
-    // new line
+
+    // new line - create a new paragraph
     if (node.value === '\n') {
       const lineStyle = fugue.getBlockStyle(lineCounter++);
       descendants.push(descendant(lineStyle, ''));
       lastStyles = [];
       continue;
     }
+
     const lastDescendant = last(descendants);
-    if (!isEqual(lastStyles, node.styles)) lastDescendant.children.push(textNode);
-    else {
+    if (!isEqual(lastStyles, node.styles.filter(Boolean))) {
+      lastDescendant.children.push(textNode);
+    } else {
+      // merge text nodes with the same styles
       const lastTextNode = last(lastDescendant.children) as CustomText;
       lastTextNode.text += textNode.text;
     }

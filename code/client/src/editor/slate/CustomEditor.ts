@@ -11,7 +11,11 @@ const CustomEditor = {
 
   toggleMark(editor: Editor, mark: string) {
     const isActive = CustomEditor.isMarkActive(editor, mark);
-    Editor.addMark(editor, mark, !isActive);
+    if (isActive) {
+      Editor.removeMark(editor, mark);
+    } else {
+      Editor.addMark(editor, mark, true);
+    }
     return !isActive;
   },
 

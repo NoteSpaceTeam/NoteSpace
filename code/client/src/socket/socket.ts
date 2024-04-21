@@ -23,5 +23,5 @@ socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA
     }
   };
   socket.emit(event, chunks[chunkIndex++]);
-  socket.on('ack', () => onAcknowledge);
+  socket.on('ack', onAcknowledge);
 };

@@ -1,16 +1,19 @@
 import { ReactNode } from 'react';
+import { InlineStyle } from '../../../../../shared/types/styles';
 
 type CursorProps = {
   children: ReactNode;
   color: string;
+  styles: InlineStyle[];
 };
 
-function Cursor({ children, color }: CursorProps) {
+function Cursor({ children, color, styles }: CursorProps) {
+  const width = styles.includes('bold') ? '2px' : '1px';
   return (
     <span
       style={{
         zIndex: -1,
-        outline: `1px solid ${color}`,
+        outline: `${width} solid ${color}`,
       }}
     >
       {children}

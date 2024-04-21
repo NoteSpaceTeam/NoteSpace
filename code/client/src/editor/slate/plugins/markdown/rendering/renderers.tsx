@@ -35,9 +35,9 @@ export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
     children = renderer(children);
   }
   if (leaf.cursor) {
-    const { color, id, range } = leaf.cursor;
+    const { color, id, range, styles } = leaf.cursor;
     if (Range.isCollapsed(range!)) {
-      children = <Cursor color={color} key={id} children={children} />;
+      children = <Cursor color={color} styles={styles} key={id} children={children} />;
     } else {
       children = <Selection color={color} children={children} />;
     }
