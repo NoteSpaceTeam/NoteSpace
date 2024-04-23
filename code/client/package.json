@@ -19,7 +19,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "file:..\shared",
+    "@notespace/shared": "file:..\\shared",
     "@testing-library/jest-dom": "^6.4.2",
     "dotenv": "^16.4.5",
     "eslint-plugin-playwright": "^1.6.0",
