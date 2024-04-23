@@ -26,7 +26,7 @@ export default (fugue: Fugue, communication: Communication): MarkdownDomainOpera
     // delete trigger nodes
     if (deleteTriggerNodes) {
       const cursor = { line, column: 0 };
-      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
+      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
       const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
       operations.push(...deleteOperations);
     }

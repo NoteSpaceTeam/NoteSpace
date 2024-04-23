@@ -6,6 +6,7 @@ import CustomEditor from '@editor/slate/CustomEditor';
 import { InlineStyle } from '@notespace/shared/types/styles';
 import { Editor } from 'slate';
 import { InputDomainOperations } from '@editor/domain/document/input/types';
+import { ReactEditor } from 'slate-react';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -147,5 +148,10 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
     domainOperations.updateSelection(editor.selection, styles);
   }
 
-  return { onInput, onPaste, onCut, onSelectionChange, onShortcut };
+  function onBlur() {
+    ReactEditor.deselect(editor);
+    onSelectionChange();
+  }
+
+  return { onInput, onPaste, onCut, onSelectionChange, onShortcut, onBlur };
 };

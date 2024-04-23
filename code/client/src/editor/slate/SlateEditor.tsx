@@ -30,7 +30,7 @@ function SlateEditor({ communication }: SlateEditorProps) {
   const { cursors } = useCursors(communication);
   const { renderElement, renderLeaf } = useRenderers();
   const decorate = useDecorate(editor, cursors);
-  const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat } = getEventHandlers(
+  const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
     editor,
     fugue,
     communication
@@ -61,6 +61,7 @@ function SlateEditor({ communication }: SlateEditorProps) {
             onCut={onCut}
             onPaste={e => onPaste(e.nativeEvent)}
             onKeyDown={e => onShortcut(e.nativeEvent)}
+            onBlur={onBlur}
           />
         </Slate>
       </div>

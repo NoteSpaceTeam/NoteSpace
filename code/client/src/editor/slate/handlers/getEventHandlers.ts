@@ -19,9 +19,14 @@ function getEventHandlers(editor: Editor, fugue: Fugue, communication: Communica
 
   // event handlers
   const { onFormat } = markdownHandlers(editor, markdownOperations);
-  const { onInput, onCut, onPaste, onSelectionChange, onShortcut } = inputHandlers(editor, inputOperations, onFormat);
+  const { onInput, onCut, onPaste, onSelectionChange, onBlur, onShortcut } = inputHandlers(
+    editor,
+    inputOperations,
+    onFormat
+  );
 
-  return { onInput, onCut, onPaste, onSelectionChange, onShortcut, onFormat };
+  // return event handlers
+  return { onInput, onCut, onPaste, onSelectionChange, onBlur, onShortcut, onFormat };
 }
 
 export default getEventHandlers;

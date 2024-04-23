@@ -16,8 +16,8 @@ export function useCursors(communication: Communication) {
 
   const onCursorChange = (cursor: CursorData) => {
     setCursors(prevCursors => {
-      if (!cursor.range) return prevCursors;
       const otherCursors = prevCursors.filter(c => c.id !== cursor.id);
+      if (!cursor.range) return otherCursors;
       return [...otherCursors, cursor];
     });
   };

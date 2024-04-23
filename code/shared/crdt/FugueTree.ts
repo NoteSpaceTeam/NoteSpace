@@ -132,7 +132,7 @@ export class FugueTree<T> {
   updateInlineStyle(id: Id, style: InlineStyle, value: boolean) {
     const node = this.getById(id);
     if (value) {
-      node.styles.push(style);
+      if (!node.styles.includes(style)) node.styles.push(style);
     } else {
       const index = node.styles.indexOf(style);
       if (index !== -1) node.styles.splice(index, 1);

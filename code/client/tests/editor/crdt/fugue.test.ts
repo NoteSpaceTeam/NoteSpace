@@ -209,11 +209,11 @@ describe('Fugue', () => {
 
     // when
     fugue.insertLocal(cursor, '#', '#', '#', ' ', 'a');
-    const nodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
+    const nodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
 
     // then
-    expect(nodes).toHaveLength(3);
-    expect(nodes.map(node => node.value).join('')).toEqual('###');
+    expect(nodes).toHaveLength(4);
+    expect(nodes.map(node => node.value).join('')).toEqual('### ');
 
     // when
     const endCursor: Cursor = { line: 0, column: 5 };

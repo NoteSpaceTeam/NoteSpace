@@ -248,11 +248,13 @@ export class Fugue {
    * @param line
    * @param column
    * @param reverse
+   * @param inclusive
    */
   *traverseBySeparator(
     separator: string,
     { line, column }: Cursor,
-    reverse: boolean = false
+    reverse: boolean = false,
+    inclusive: boolean = false
   ): IterableIterator<FugueNode[]> {
     const selection = reverse
       ? { start: { line, column: 0 }, end: { line, column } }
@@ -263,6 +265,7 @@ export class Fugue {
     const nodes: FugueNode[] = [];
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
+        if (inclusive) nodes.push(node);
         yield nodes;
         nodes.length = 0;
       }
