@@ -32,7 +32,7 @@ export type BlockStyleOperation = {
 export type ReviveOperation = {
   type: "revive";
   id: Id;
-}
+};
 
 export type Operation =
   | InsertOperation

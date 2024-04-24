@@ -7,6 +7,7 @@ import { DocumentService, SocketHandler } from '@src/types';
  * @param events
  */
 function onConnection(service: DocumentService, events: Record<string, SocketHandler>) {
+  const onCursorChange = events['cursorChange'];
   return async (socket: Socket) => {
     console.log('a client connected');
 
@@ -28,7 +29,7 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
     });
 
     socket.on('disconnect', reason => {
-      // onCursorChange()(socket, null); // this causes a bug, TODO: check later
+      onCursorChange(socket, null); // delete cursor
       console.log('a client disconnected', reason);
     });
   };

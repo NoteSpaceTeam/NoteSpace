@@ -7,7 +7,6 @@ import { getSelection } from '@editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
 import { MarkdownDomainOperations } from '@editor/domain/document/markdown/types';
 import { RuleType } from '@editor/slate/plugins/markdown/rules';
-import { isSelectionEmpty } from '@editor/slate/utils/selection';
 
 type InlineFunction = (n: unknown) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
@@ -171,7 +170,6 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
 
   const deleteSelection = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
-    if (isSelectionEmpty(selection)) return;
     handlers.deleteBlockStyles(selection);
     deleteHandler(options);
   };
