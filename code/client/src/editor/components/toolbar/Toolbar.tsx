@@ -38,8 +38,8 @@ function Toolbar({ onApplyMark }: ToolbarProps) {
   }, []);
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
-    //e.preventDefault();
-    //e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     onApplyMark(mark.value);
   };
 

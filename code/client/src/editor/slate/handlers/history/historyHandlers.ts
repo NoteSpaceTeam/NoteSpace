@@ -136,7 +136,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function insertNodeOperation(operation: BaseInsertNodeOperation): InsertNodeOperation {
     console.log('insertNodeOperation', operation);
-    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node : operation.node };
+    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node: operation.node };
   }
 
   /**

@@ -20,7 +20,7 @@ function onOperation(service: DocumentService) {
         case 'block-style':
           await service.updateBlockStyle(operation);
           break;
-        case "revive":
+        case 'revive':
           await service.reviveLocal(operation);
           break;
         default:

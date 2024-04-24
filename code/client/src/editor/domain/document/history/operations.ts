@@ -2,9 +2,15 @@ import { Fugue } from '@editor/crdt/fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,
-  HistoryOperation, InsertNodeOperation,
-  InsertTextOperation, MergeNodeOperation, RemoveNodeOperation,
-  RemoveTextOperation, SetNodeOperation, SetSelectionOperation, SplitNodeOperation,
+  HistoryOperation,
+  InsertNodeOperation,
+  InsertTextOperation,
+  MergeNodeOperation,
+  RemoveNodeOperation,
+  RemoveTextOperation,
+  SetNodeOperation,
+  SetSelectionOperation,
+  SplitNodeOperation,
 } from '@editor/domain/document/history/types';
 import { Communication } from '@editor/domain/communication';
 import { Node } from 'slate';
@@ -45,34 +51,34 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
   function insertText({ cursor, text }: InsertTextOperation) {
     //return fugue.insertLocal(cursor, ...text);
     // Enable nodes instead of creating new ones
-    return fugue.reviveLocal(cursor, text.length)
+    return fugue.reviveLocal(cursor, text.length);
   }
 
   function removeText({ selection }: RemoveTextOperation) {
     return fugue.deleteLocal(selection);
   }
 
-  function insertNode({cursor} : InsertNodeOperation) {
+  function insertNode({ cursor }: InsertNodeOperation) {
     // const operations = fugue.insertNodeLocal(cursor, node);
     // communication.emitChunked('operation', operations);
   }
 
-  function removeNode({cursor} : RemoveNodeOperation ) {
+  function removeNode({ cursor }: RemoveNodeOperation) {
     // const operations = fugue.removeNodeLocal(cursor);
     // communication.emitChunked('operation', operations);
   }
 
-  function splitNode({cursor} : SplitNodeOperation) {
+  function splitNode({ cursor }: SplitNodeOperation) {
     // const operations = fugue.splitNodeLocal(cursor);
     // communication.emitChunked('operation', operations);
   }
 
-  function mergeNode({cursor} : MergeNodeOperation) {
+  function mergeNode({ cursor }: MergeNodeOperation) {
     const operations = fugue.removeLine(cursor.line);
     // communication.emitChunked('operation', operations);
   }
 
-  function setNode({selection} : SetNodeOperation, newProperties: Partial<Node>) {
+  function setNode({ selection }: SetNodeOperation, newProperties: Partial<Node>) {
     const type = newProperties.type;
     const styleType = getStyleType(type);
     if (styleType === 'block') {
@@ -84,7 +90,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
     }
   }
 
-  function setSelection({properties, newProperties} : SetSelectionOperation) {
+  function setSelection({ properties, newProperties }: SetSelectionOperation) {
     // const operations = fugue.setSelectionLocal(properties, newProperties);
     // communication.emitChunked('operation', operations);
   }

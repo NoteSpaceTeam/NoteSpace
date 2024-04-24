@@ -8,7 +8,7 @@ import {
   BaseSetNodeOperation,
   BaseSetSelectionOperation,
   BaseSplitNodeOperation,
-  Node
+  Node,
 } from 'slate';
 
 export type HistoryDomainOperations = {
@@ -61,7 +61,6 @@ export type MergeNodeOperation = {
   properties: Partial<Node>;
   cursor: Cursor;
 };
-
 
 export type SetNodeOperation = {
   type: BaseSetNodeOperation['type'];
