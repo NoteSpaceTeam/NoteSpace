@@ -4,7 +4,8 @@ import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
-  BlockStyleOperation, ReviveOperation,
+  BlockStyleOperation,
+  ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
 type DocumentDatabase = {

@@ -2,12 +2,18 @@ import { Fugue } from '@editor/crdt/fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,
-  HistoryOperation, InsertNodeOperation,
-  InsertTextOperation, MergeNodeOperation, RemoveNodeOperation,
-  RemoveTextOperation, SetNodeOperation, SetSelectionOperation, SplitNodeOperation,
+  HistoryOperation,
+  InsertNodeOperation,
+  InsertTextOperation,
+  MergeNodeOperation,
+  RemoveNodeOperation,
+  RemoveTextOperation,
+  SetNodeOperation,
+  SetSelectionOperation,
+  SplitNodeOperation,
+  UnsetNodeOperation,
 } from '@editor/domain/document/history/types';
 import { Communication } from '@editor/domain/communication';
-import { Node } from 'slate';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { getStyleType } from '@notespace/shared/types/styles';
 
@@ -36,7 +42,9 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
       case 'merge_node':
         return mergeNode(operation as MergeNodeOperation);
       case 'set_node':
-        return setNode(operation as SetNodeOperation, (operation as SetNodeOperation).newProperties);
+        return setNode(operation as SetNodeOperation);
+      case 'unset_node':
+        return unsetNode(operation as UnsetNodeOperation);
       case 'set_selection':
         return setSelection(operation as SetSelectionOperation);
     }
@@ -45,46 +53,54 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
   function insertText({ cursor, text }: InsertTextOperation) {
     //return fugue.insertLocal(cursor, ...text);
     // Enable nodes instead of creating new ones
-    return fugue.reviveLocal(cursor, text.length)
+    return fugue.reviveLocal(cursor, text.length);
   }
 
   function removeText({ selection }: RemoveTextOperation) {
     return fugue.deleteLocal(selection);
   }
 
-  function insertNode({cursor} : InsertNodeOperation) {
+  function insertNode({ cursor }: InsertNodeOperation) {
     // const operations = fugue.insertNodeLocal(cursor, node);
-    // communication.emitChunked('operation', operations);
   }
 
-  function removeNode({cursor} : RemoveNodeOperation ) {
-    // const operations = fugue.removeNodeLocal(cursor);
-    // communication.emitChunked('operation', operations);
+  function removeNode({ selection }: RemoveNodeOperation) {
+    return fugue.deleteLocal(selection);
   }
 
-  function splitNode({cursor} : SplitNodeOperation) {
+  function splitNode({ cursor }: SplitNodeOperation) {
     // const operations = fugue.splitNodeLocal(cursor);
-    // communication.emitChunked('operation', operations);
   }
 
-  function mergeNode({cursor} : MergeNodeOperation) {
-    const operations = fugue.removeLine(cursor.line);
-    // communication.emitChunked('operation', operations);
+  function mergeNode({ cursor }: MergeNodeOperation) {
+    return fugue.deleteLocal({ start: cursor, end: cursor });
   }
 
-  function setNode({selection} : SetNodeOperation, newProperties: Partial<Node>) {
-    const type = newProperties.type;
+  function setNode({ selection, newProperties }: SetNodeOperation) {
+    const type = Object.keys(newProperties)[0];
     const styleType = getStyleType(type);
     if (styleType === 'block') {
       return fugue.updateBlockStyleLocal(selection.start.line, type as BlockStyle);
     }
 
     if (styleType === 'inline') {
-      return fugue.updateInlineStyleLocal(selection, type as InlineStyle);
+      return fugue.updateInlineStyleLocal(selection, type as InlineStyle, true);
     }
   }
 
-  function setSelection({properties, newProperties} : SetSelectionOperation) {
+  function unsetNode({ selection, newProperties }: UnsetNodeOperation) {
+    const type = Object.keys(newProperties)[0];
+    const styleType = getStyleType(type);
+    if (styleType === 'block') {
+      return fugue.updateBlockStyleLocal(selection.start.line, type as BlockStyle);
+    }
+
+    if (styleType === 'inline') {
+      return fugue.updateInlineStyleLocal(selection, type as InlineStyle, false);
+    }
+  }
+
+  function setSelection({ properties, newProperties }: SetSelectionOperation) {
     // const operations = fugue.setSelectionLocal(properties, newProperties);
     // communication.emitChunked('operation', operations);
   }

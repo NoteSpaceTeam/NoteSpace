@@ -8,7 +8,7 @@ import {
   BaseSetNodeOperation,
   BaseSetSelectionOperation,
   BaseSplitNodeOperation,
-  Node
+  Node,
 } from 'slate';
 
 export type HistoryDomainOperations = {
@@ -25,6 +25,7 @@ export type HistoryOperation =
   | SplitNodeOperation
   | MergeNodeOperation
   | SetNodeOperation
+  | UnsetNodeOperation
   | SetSelectionOperation;
 
 export type InsertTextOperation = {
@@ -47,7 +48,7 @@ export type InsertNodeOperation = {
 export type RemoveNodeOperation = {
   type: BaseRemoveNodeOperation['type'];
   node: Node;
-  cursor: Cursor;
+  selection: Selection;
 };
 
 export type SplitNodeOperation = {
@@ -62,9 +63,15 @@ export type MergeNodeOperation = {
   cursor: Cursor;
 };
 
-
 export type SetNodeOperation = {
   type: BaseSetNodeOperation['type'];
+  selection: Selection;
+  properties: Partial<Node>;
+  newProperties: Partial<Node>;
+};
+
+export type UnsetNodeOperation = {
+  type: 'unset_node';
   selection: Selection;
   properties: Partial<Node>;
   newProperties: Partial<Node>;

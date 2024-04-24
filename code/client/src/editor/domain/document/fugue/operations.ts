@@ -19,7 +19,7 @@ export default (fugue: Fugue): FugueDomainOperations => {
         case 'block-style':
           fugue.updateBlockStyleRemote(operation);
           break;
-        case "revive":
+        case 'revive':
           fugue.reviveRemote(operation);
           break;
         default:

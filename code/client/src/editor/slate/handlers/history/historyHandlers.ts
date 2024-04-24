@@ -23,9 +23,11 @@ import {
   SetNodeOperation,
   SetSelectionOperation,
   SplitNodeOperation,
+  UnsetNodeOperation,
 } from '@editor/domain/document/history/types';
 import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { getReverseType } from '@editor/slate/handlers/history/utils';
+import { pointToCursor } from '@editor/slate/utils/selection';
 
 export type HistoryHandlers = {
   undoOperation: () => void;
@@ -64,10 +66,15 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
     // Get each operation needed to be applied, as a batch can contain operations that are not in the same type
     const applyOperations = operations.operations.map(operation => {
       const type: BaseOperation['type'] = operation.type;
-      const operationType = reverseType ? getReverseType(type) : type;
+      const operationType = reverseType ? getReverseType(type) : (type as HistoryOperation['type']);
       return toHistoryOperation(operationType, operation);
     });
 
+    // Skip reapplying split_node and merge_node operations
+    if (applyOperations.every(operation => operation.type === 'split_node' || operation.type === 'merge_node')) {
+      domainOperations.applyHistoryOperation([applyOperations[0]]);
+      return;
+    }
     domainOperations.applyHistoryOperation(applyOperations);
   }
 
@@ -76,7 +83,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * @param type
    * @param operation
    */
-  function toHistoryOperation(type: BaseOperation['type'], operation: BaseOperation): HistoryOperation {
+  function toHistoryOperation(type: HistoryOperation['type'], operation: BaseOperation): HistoryOperation {
     switch (type) {
       case 'insert_text':
         return insertTextOperation(operation as BaseInsertTextOperation);
@@ -90,10 +97,10 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
         return mergeNodeOperation(operation as BaseMergeNodeOperation);
       case 'split_node':
         return splitNodeOperation(operation as BaseSplitNodeOperation);
-      case 'move_node':
-        throw new Error('Not implemented');
       case 'set_node':
         return setNode(operation as BaseSetNodeOperation);
+      case 'unset_node':
+        return unsetNode(operation as BaseSetNodeOperation);
       case 'set_selection':
         return setSelection(operation as BaseSetSelectionOperation);
       default:
@@ -136,7 +143,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function insertNodeOperation(operation: BaseInsertNodeOperation): InsertNodeOperation {
     console.log('insertNodeOperation', operation);
-    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node : operation.node };
+    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node: operation.node };
   }
 
   /**
@@ -145,7 +152,11 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function removeNodeOperation(operation: BaseRemoveNodeOperation): RemoveNodeOperation {
     console.log('removeNodeOperation', operation);
-    return { type: 'remove_node', cursor: { line: 0, column: 0 }, node: operation.node };
+    const selection = {
+      start: pointToCursor(editor, { path: operation.path, offset: 0 }),
+      end: pointToCursor(editor, { path: operation.path, offset: operation.node.text.length }),
+    };
+    return { type: 'remove_node', selection, node: operation.node };
   }
 
   /**
@@ -172,7 +183,12 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function setNode(operation: BaseSetNodeOperation): SetNodeOperation {
     const selection = emptySelection();
-    return { type: 'set_node', selection, properties: {}, newProperties: operation.properties };
+    return { type: 'set_node', selection, properties: {}, newProperties: operation.newProperties };
+  }
+
+  function unsetNode(operation: BaseSetNodeOperation): UnsetNodeOperation {
+    const selection = emptySelection();
+    return { type: 'unset_node', selection, properties: operation.properties, newProperties: operation.newProperties };
   }
 
   /**
