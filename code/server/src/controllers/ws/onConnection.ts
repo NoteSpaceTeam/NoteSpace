@@ -18,7 +18,7 @@ function onConnection(service: DocumentService, events: Record<string, SocketHan
     Object.entries(events).forEach(([event, handler]) => {
       socket.on(event, async data => {
         try {
-          console.log(event);
+          console.log("Event:", event);
           await handler(socket, data);
         } catch (e) {
           // socket.emit('error');

@@ -4,7 +4,7 @@ import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
-  BlockStyleOperation,
+  BlockStyleOperation, ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
 type DocumentDatabase = {
@@ -21,6 +21,7 @@ type DocumentService = {
   deleteCharacter: (operation: DeleteOperation) => Promise<void>;
   updateInlineStyle: (operation: InlineStyleOperation) => Promise<void>;
   updateBlockStyle: (operation: BlockStyleOperation) => Promise<void>;
+  reviveLocal: (operation: ReviveOperation) => Promise<void>;
   updateTitle: (title: string) => Promise<void>;
 };
 

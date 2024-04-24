@@ -70,14 +70,29 @@ export class FugueTree<T> {
     siblings.splice(i, 0, id);
   }
 
+  /**
+   * Deletes the node with the given id.
+   * @param id
+   */
   deleteNode(id: Id) {
     const node = this.getById(id);
     if (!node.isDeleted) {
-      node.value = null;
       node.isDeleted = true;
-      this.updateDepths(node, -1);
+      //this.updateDepths(node, -1);
     }
   }
+
+  /**
+   * Re-enables the node with the given id.
+   * @param id
+   */
+    reviveNode(id: Id) {
+        const node = this.getById(id);
+        if (node.isDeleted) {
+          node.isDeleted = false;
+          //this.updateDepths(node, 1);
+        }
+    }
 
   /**
    * Updates the depth of the ancestors of the given node by delta.
@@ -150,9 +165,10 @@ export class FugueTree<T> {
   /**
    * Traverses the tree in in-order traversal
    * @param root the root of the subtree.
+   * @param returnDeleted
    * @returns an iterator over the nodes in the subtree.
    */
-  *traverse(root: Node<T>): IterableIterator<Node<T>> {
+  *traverse(root: Node<T>, returnDeleted : boolean = false): IterableIterator<Node<T>> {
     let current = root;
     const stack: { side: "L" | "R"; childIndex: number }[] = [
       { side: "L", childIndex: 0 },
@@ -165,7 +181,7 @@ export class FugueTree<T> {
         // We are done with the children on top.side.
         if (top.side === "L") {
           // Visit node then move to right children.
-          if (!current.isDeleted) yield current;
+          if(current.id !== root.id && (returnDeleted || !current.isDeleted)) yield current;
           top.side = "R";
           top.childIndex = 0;
           continue;

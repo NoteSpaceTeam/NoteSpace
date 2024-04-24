@@ -1,16 +1,18 @@
-import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { generateReplicaId, nodeInsert } from './utils';
-import { type FugueNode, type NodeInsert } from '@editor/crdt/types';
-import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { isEmpty, last, range } from 'lodash';
+import {type Id, Nodes} from '@notespace/shared/crdt/types/nodes';
+import {BlockStyle, InlineStyle} from '@notespace/shared/types/styles';
+import {FugueTree} from '@notespace/shared/crdt/FugueTree';
+import {generateReplicaId, nodeInsert} from './utils';
+import {type FugueNode, type NodeInsert} from '@editor/crdt/types';
+import {Cursor, Selection} from '@notespace/shared/types/cursor';
+import {isEmpty, last, range} from 'lodash';
 import {
   BlockStyleOperation,
   DeleteOperation,
   InlineStyleOperation,
   InsertOperation,
+  ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
+import cursor from "@editor/components/cursor/Cursor";
 
 /**
  * Class that represents a local replica of a FugueTree
@@ -93,6 +95,35 @@ export class Fugue {
   }
 
   /**
+   * Relives the nodes from the given start index and given length.
+   * @param cursor - the cursor where the revival starts
+   * @param length - the length of the revival
+  */
+  reviveLocal(cursor: Cursor, length: number): ReviveOperation[] {
+    const endCursor = { line: cursor.line, column: cursor.column + length };
+    const iterator = this.traverseBySelection({ start: cursor, end: endCursor }, true);
+    const nodes = Array.from(iterator).slice(0, length);
+    return nodes.map(node => this.reviveNode(node.id));
+  }
+
+  /**
+   * Revives a node based on the given id
+   * @param id
+   */
+  reviveNode(id: Id): ReviveOperation {
+    this.tree.reviveNode(id);
+    return { type: 'revive', id };
+  }
+
+  /**
+   * Revives a node based on the given operation
+   * @param operation
+   */
+  reviveRemote(operation: ReviveOperation): void {
+    this.tree.reviveNode(operation.id);
+  }
+
+  /**
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
@@ -115,6 +146,20 @@ export class Fugue {
    * @param ids
    */
   deleteLocalById = (...ids: Id[]): DeleteOperation[] => ids.map(id => this.removeNode(id));
+
+  /**
+   * Deletes the line based on the given line number
+   * @param line
+   */
+  deleteLineNode(line: number) {
+    const cursor = { line, column: 0 };
+    const iterator = this.traverseBySelection({ start: cursor, end: cursor});
+    const nodes = Array.from(iterator);
+    if (nodes.length === 0) return;
+    return this.deleteLocalById(nodes[0].id);
+  }
+
+
 
   /**
    * Deletes the node based on the given operation
@@ -208,18 +253,19 @@ export class Fugue {
    * Traverses the tree in in-order traversal
    * @returns iterator of nodes
    */
-  traverseTree = () => this.tree.traverse(this.tree.root);
+  traverseTree = (returnDeleted : boolean = false) => this.tree.traverse(this.tree.root, returnDeleted);
 
   /**
    * Traverses the tree by the given selection
    * @param selection
+   * @param returnDeleted
    */
-  *traverseBySelection(selection: Selection): IterableIterator<FugueNode> {
+  *traverseBySelection(selection: Selection, returnDeleted : boolean = false): IterableIterator<FugueNode> {
     const { start, end } = selection;
     let lineCounter = 0;
     let columnCounter = 0;
     let inBounds = false;
-    for (const node of this.traverseTree()) {
+    for (const node of this.traverseTree(returnDeleted)) {
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;

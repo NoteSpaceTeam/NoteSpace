@@ -2,7 +2,7 @@ import useSocketListeners from '@src/socket/useSocketListeners';
 import { type Operation } from '@notespace/shared/crdt/types/operations';
 import { Document } from '@notespace/shared/crdt/types/document';
 import { Communication } from '@editor/domain/communication';
-import { FugueHandlers } from '@editor/domain/document/fugue/types';
+import { FugueDomainOperations } from '@editor/domain/document/fugue/types';
 
 /**
  * Hook client socket listeners to events
@@ -10,7 +10,7 @@ import { FugueHandlers } from '@editor/domain/document/fugue/types';
  * @param communication
  * @param onDone
  */
-function useEvents(handlers: FugueHandlers, communication: Communication, onDone: () => void) {
+function useEvents(handlers: FugueDomainOperations, communication: Communication, onDone: () => void) {
   /**
    * Hook socket listeners to an apply an event to the editor
    * @param operations

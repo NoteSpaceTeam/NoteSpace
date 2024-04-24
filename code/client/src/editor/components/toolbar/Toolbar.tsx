@@ -3,7 +3,7 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@editor/slate/CustomEditor';
 import { isSelected } from '@editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import { InlineStyle } from '../../../../../shared/types/styles';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 type ToolbarProps = {
   onApplyMark: (mark: InlineStyle) => void;
@@ -38,8 +38,8 @@ function Toolbar({ onApplyMark }: ToolbarProps) {
   }, []);
 
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
-    e.preventDefault();
-    e.stopPropagation();
+    //e.preventDefault();
+    //e.stopPropagation();
     onApplyMark(mark.value);
   };
 

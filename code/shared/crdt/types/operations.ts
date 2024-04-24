@@ -29,8 +29,14 @@ export type BlockStyleOperation = {
   append: boolean;
 };
 
+export type ReviveOperation = {
+  type: "revive";
+  id: Id;
+}
+
 export type Operation =
   | InsertOperation
   | DeleteOperation
   | InlineStyleOperation
-  | BlockStyleOperation;
+  | BlockStyleOperation
+  | ReviveOperation;

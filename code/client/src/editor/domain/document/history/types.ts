@@ -3,12 +3,12 @@ import {
   BaseInsertNodeOperation,
   BaseInsertTextOperation,
   BaseMergeNodeOperation,
-  BaseMoveNodeOperation,
   BaseRemoveNodeOperation,
   BaseRemoveTextOperation,
   BaseSetNodeOperation,
   BaseSetSelectionOperation,
   BaseSplitNodeOperation,
+  Node
 } from 'slate';
 
 export type HistoryDomainOperations = {
@@ -24,7 +24,6 @@ export type HistoryOperation =
   | RemoveNodeOperation
   | SplitNodeOperation
   | MergeNodeOperation
-  | MoveNodeOperation
   | SetNodeOperation
   | SetSelectionOperation;
 
@@ -41,29 +40,28 @@ export type RemoveTextOperation = {
 
 export type InsertNodeOperation = {
   type: BaseInsertNodeOperation['type'];
+  node: Node;
   cursor: Cursor;
 };
 
 export type RemoveNodeOperation = {
   type: BaseRemoveNodeOperation['type'];
+  node: Node;
   cursor: Cursor;
 };
 
 export type SplitNodeOperation = {
   type: BaseSplitNodeOperation['type'];
+  properties: Partial<Node>;
   cursor: Cursor;
 };
 
 export type MergeNodeOperation = {
   type: BaseMergeNodeOperation['type'];
+  properties: Partial<Node>;
   cursor: Cursor;
 };
 
-export type MoveNodeOperation = {
-  type: BaseMoveNodeOperation['type'];
-  cursor: Cursor;
-  target: Cursor;
-};
 
 export type SetNodeOperation = {
   type: BaseSetNodeOperation['type'];

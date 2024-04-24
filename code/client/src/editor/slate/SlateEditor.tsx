@@ -16,12 +16,13 @@ import useCursors from '@editor/slate/hooks/useCursors';
 import getEventHandlers from '@editor/slate/handlers/getEventHandlers';
 import getFugueHandlers from '@editor/domain/document/fugue/operations';
 import './SlateEditor.scss';
+import {Descendant} from "slate";
 
 type SlateEditorProps = {
   communication: Communication;
 };
 
-const initialValue = [descendant('paragraph', '')];
+const initialValue: Descendant[] = [descendant('paragraph', '')];
 
 function SlateEditor({ communication }: SlateEditorProps) {
   const fugue = useFugue();

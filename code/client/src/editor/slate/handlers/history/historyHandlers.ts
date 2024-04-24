@@ -2,7 +2,6 @@ import {
   BaseInsertNodeOperation,
   BaseInsertTextOperation,
   BaseMergeNodeOperation,
-  BaseMoveNodeOperation,
   BaseOperation,
   BaseRemoveNodeOperation,
   BaseRemoveTextOperation,
@@ -19,7 +18,6 @@ import {
   InsertNodeOperation,
   InsertTextOperation,
   MergeNodeOperation,
-  MoveNodeOperation,
   RemoveNodeOperation,
   RemoveTextOperation,
   SetNodeOperation,
@@ -62,13 +60,12 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function applyOperations(operations: Batch | undefined, reverseType: boolean) {
     if (!operations) return;
-    const selectionBefore = operations.selectionBefore;
 
     // Get each operation needed to be applied, as a batch can contain operations that are not in the same type
     const applyOperations = operations.operations.map(operation => {
       const type: BaseOperation['type'] = operation.type;
       const operationType = reverseType ? getReverseType(type) : type;
-      return toHistoryOperation(operationType, operation, selectionBefore);
+      return toHistoryOperation(operationType, operation);
     });
 
     domainOperations.applyHistoryOperation(applyOperations);
@@ -78,13 +75,8 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * Converts a slate operation to a history operation
    * @param type
    * @param operation
-   * @param selectionBefore
    */
-  function toHistoryOperation(
-    type: BaseOperation['type'],
-    operation: BaseOperation,
-    selectionBefore: Range | null
-  ): HistoryOperation {
+  function toHistoryOperation(type: BaseOperation['type'], operation: BaseOperation): HistoryOperation {
     switch (type) {
       case 'insert_text':
         return insertTextOperation(operation as BaseInsertTextOperation);
@@ -99,11 +91,13 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
       case 'split_node':
         return splitNodeOperation(operation as BaseSplitNodeOperation);
       case 'move_node':
-        return moveNodeOperation(operation as BaseMoveNodeOperation);
+        throw new Error('Not implemented');
       case 'set_node':
-        return setNode(operation as BaseSetNodeOperation, selectionBefore);
+        return setNode(operation as BaseSetNodeOperation);
       case 'set_selection':
         return setSelection(operation as BaseSetSelectionOperation);
+      default:
+        throw new Error(`Invalid operation type: ${type}`);
     }
   }
 
@@ -129,7 +123,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
     const start = { line: startLine, column: startColumn };
 
     const endLine = operation?.path[0] || start.line;
-    const endColumn = (operation?.offset || start.column) + offset(endLine);
+    const endColumn = operation.text.length + offset(endLine);
     const end = { line: endLine, column: endColumn };
 
     const selection: Selection = { start, end };
@@ -142,7 +136,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function insertNodeOperation(operation: BaseInsertNodeOperation): InsertNodeOperation {
     console.log('insertNodeOperation', operation);
-    return { type: 'insert_node', cursor: { line: 0, column: 0 } };
+    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node : operation.node };
   }
 
   /**
@@ -151,7 +145,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function removeNodeOperation(operation: BaseRemoveNodeOperation): RemoveNodeOperation {
     console.log('removeNodeOperation', operation);
-    return { type: 'remove_node', cursor: { line: 0, column: 0 } };
+    return { type: 'remove_node', cursor: { line: 0, column: 0 }, node: operation.node };
   }
 
   /**
@@ -160,7 +154,7 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function mergeNodeOperation(operation: BaseMergeNodeOperation): MergeNodeOperation {
     console.log('mergeNodeOperation', operation);
-    return { type: 'merge_node', cursor: { line: 0, column: 0 } };
+    return { type: 'merge_node', cursor: { line: operation.path[0], column: 0 }, properties: operation.properties };
   }
 
   /**
@@ -169,24 +163,14 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    */
   function splitNodeOperation(operation: BaseSplitNodeOperation): SplitNodeOperation {
     console.log('splitNodeOperation', operation);
-    return { type: 'split_node', cursor: { line: 0, column: 0 } };
-  }
-
-  /**
-   * Converts a slate move node operation to a history move node operation
-   * @param operation
-   */
-  function moveNodeOperation(operation: BaseMoveNodeOperation): MoveNodeOperation {
-    console.log('moveNodeOperation', operation);
-    return { type: 'move_node', cursor: { line: 0, column: 0 }, target: { line: 0, column: 0 } };
+    return { type: 'split_node', cursor: { line: 0, column: 0 }, properties: operation.properties };
   }
 
   /**
    * Converts a slate set node operation to a history set node operation
    * @param operation
-   * @param selectionBefore
    */
-  function setNode(operation: BaseSetNodeOperation, selectionBefore: Range | null): SetNodeOperation {
+  function setNode(operation: BaseSetNodeOperation): SetNodeOperation {
     const selection = emptySelection();
     return { type: 'set_node', selection, properties: {}, newProperties: operation.properties };
   }

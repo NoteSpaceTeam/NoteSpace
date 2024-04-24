@@ -7,6 +7,7 @@ import {
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
+import { ReviveOperation } from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
   const tree = new FugueTree<string>();
@@ -47,6 +48,13 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     });
   }
 
+    async function reviveLocal(operation: ReviveOperation) {
+        await updateDocument(() => {
+          const { id} = operation;
+          tree.reviveNode(id);
+        });
+    }
+
   async function updateTitle(title: string) {
     await database.updateTitle(title);
   }
@@ -71,5 +79,6 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     updateInlineStyle,
     updateBlockStyle,
     updateTitle,
+    reviveLocal
   };
 }

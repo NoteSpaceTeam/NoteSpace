@@ -1,9 +1,9 @@
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { Fugue } from '@editor/crdt/fugue';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { FugueHandlers } from '@editor/domain/document/fugue/types';
+import { FugueDomainOperations } from '@editor/domain/document/fugue/types';
 
-export default (fugue: Fugue): FugueHandlers => {
+export default (fugue: Fugue): FugueDomainOperations => {
   function applyOperations(operations: Operation[]) {
     for (const operation of operations) {
       switch (operation.type) {
@@ -18,6 +18,9 @@ export default (fugue: Fugue): FugueHandlers => {
           break;
         case 'block-style':
           fugue.updateBlockStyleRemote(operation);
+          break;
+        case "revive":
+          fugue.reviveRemote(operation);
           break;
         default:
           throw new Error('Invalid operation type');
