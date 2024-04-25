@@ -103,7 +103,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
    * @param cursor
    */
   function splitNode({ cursor }: SplitNodeOperation) {
-    return fugue.reviveLocal({ start: cursor, end: cursor });
+    return fugue.reviveLocal({ start: cursor, end: cursor }, { returnLineBreaks: true });
   }
 
   /**
@@ -121,7 +121,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
    * @param set_mode
    */
   function setNode({ selection, properties }: SetNodeOperation | UnsetNodeOperation, set_mode: boolean) {
-    const type = Object.keys(properties)[0];
+    const type = properties.type;
     const styleType = getStyleType(type);
 
     return styleType === 'block'

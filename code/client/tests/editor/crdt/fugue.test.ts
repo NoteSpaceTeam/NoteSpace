@@ -175,8 +175,8 @@ describe('Fugue', () => {
     const nodes = Array.from(fugue.traverseBySelection(selection));
 
     // then
-    expect(nodes).toHaveLength(2);
-    expect(nodes.map(node => node.value).join('')).toEqual('ab');
+    expect(nodes).toHaveLength(3);
+    expect(nodes.map(node => node.value).join('')).toEqual('abc');
   });
 
   it('should return the nodes in the given selections', () => {
@@ -184,9 +184,9 @@ describe('Fugue', () => {
     const cursor: Cursor = { line: 0, column: 0 };
     const line1 = 'abcdef';
     const line2 = 'ghijkl';
-    const selection1: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
-    const selection2: Selection = { start: { line: 0, column: 3 }, end: { line: 0, column: 5 } };
-    const selection3: Selection = { start: { line: 0, column: 3 }, end: { line: 1, column: 4 } };
+    const selection1: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 2 } };
+    const selection2: Selection = { start: { line: 0, column: 3 }, end: { line: 0, column: 4 } };
+    const selection3: Selection = { start: { line: 0, column: 3 }, end: { line: 1, column: 3 } };
 
     // when
     fugue.insertLocal(cursor, ...line1.split(''));
@@ -200,7 +200,7 @@ describe('Fugue', () => {
     // then
     expect(nodes1.map(node => node.value).join('')).toEqual('bc');
     expect(nodes2.map(node => node.value).join('')).toEqual('de');
-    expect(nodes3.map(node => node.value).join('')).toEqual('def\nghij');
+    expect(nodes3.map(node => node.value).join('')).toEqual('defghij');
   });
 
   it('should return all nodes until the given separator', () => {

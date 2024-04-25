@@ -15,6 +15,7 @@ import {
 
 type TraverseOptions = {
   returnDeleted?: boolean;
+  returnLineBreaks?: boolean;
 };
 
 /**
@@ -45,8 +46,7 @@ export class Fugue {
    * @param values
    */
   insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
-    let line = cursor.line;
-    let column = cursor.column;
+    let { line, column } = cursor;
     return values.map(value => {
       const node = typeof value === 'string' ? nodeInsert(value, []) : value;
       const operation = this.getInsertOperation({ line, column }, node);
@@ -100,9 +100,10 @@ export class Fugue {
   /**
    * Relives the nodes from the given start index and given length.
    * @param selection
+   * @param options
    */
-  reviveLocal(selection: Selection): ReviveOperation[] {
-    const nodes = Array.from(this.traverseBySelection(selection, { returnDeleted: true }));
+  reviveLocal(selection: Selection, options?: TraverseOptions): ReviveOperation[] {
+    const nodes = Array.from(this.traverseBySelection(selection, { ...options, returnDeleted: true }));
     return nodes.map(node => this.reviveNode(node.id));
   }
 
@@ -248,15 +249,15 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection, options?: TraverseOptions): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    const { returnDeleted } = options || { returnDeleted: false };
-    let lineCounter = 0;
-    let columnCounter = 0;
-    let inBounds = false;
-    let finished = false;
+    const { returnDeleted, returnLineBreaks } = {
+      returnDeleted: options?.returnDeleted || false,
+      returnLineBreaks: options?.returnLineBreaks || false,
+    };
+    let lineCounter = 0,
+      columnCounter = 0;
+    let inBounds = false,
+      finished = false;
     for (const node of this.traverseTree(returnDeleted)) {
-      if (finished) break;
-
-      // update counters
       if (node.value === '\n') {
         lineCounter++;
         columnCounter = 0;
@@ -268,16 +269,24 @@ export class Fugue {
       }
 
       // yield node if in bounds
-      if (inBounds) {
+      if (inBounds && (returnLineBreaks || (!returnLineBreaks && node.value !== '\n'))) {
         yield node;
       }
 
-      // end condition
-      if (lineCounter === end.line && columnCounter === end.column) {
-        finished = true;
-      }
+      finished =
+        lineCounter === end.line &&
+        columnCounter === end.column &&
+        ((!returnLineBreaks && node.value !== '\n') || returnLineBreaks);
 
-      columnCounter++;
+      if (finished) break;
+
+      // increment column counter
+      if (node.value !== '\n') {
+        columnCounter++;
+      } else if (returnLineBreaks) {
+        // don't ignore line breaks
+        columnCounter++;
+      }
     }
   }
 
