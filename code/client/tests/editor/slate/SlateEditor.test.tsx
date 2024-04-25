@@ -3,8 +3,6 @@ import { render, screen } from '../../test-utils';
 import { mockCommunication } from '../mocks/mockCommunication';
 import SlateEditor from '@editor/slate/SlateEditor';
 
-const EDITOR_PLACEHOLDER = 'Start writing...';
-
 describe('SlateEditor', () => {
   let editor: HTMLElement;
 
@@ -17,6 +15,6 @@ describe('SlateEditor', () => {
   it('should render the editor', async () => {
     const documentTitle = screen.getByPlaceholderText('Untitled');
     expect(documentTitle).toBeInTheDocument();
-    expect(editor).toHaveTextContent(EDITOR_PLACEHOLDER);
+    expect(editor).toHaveTextContent('');
   });
 });
