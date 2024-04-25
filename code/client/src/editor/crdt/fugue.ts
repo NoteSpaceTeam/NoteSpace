@@ -13,6 +13,10 @@ import {
   ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
+type TraverseOptions = {
+  returnDeleted?: boolean;
+};
+
 /**
  * Class that represents a local replica of a FugueTree
  * @param T - the type of the values stored in the tree
@@ -95,13 +99,10 @@ export class Fugue {
 
   /**
    * Relives the nodes from the given start index and given length.
-   * @param cursor - the cursor where the revival starts
-   * @param length - the length of the revival
+   * @param selection
    */
-  reviveLocal(cursor: Cursor, length: number): ReviveOperation[] {
-    const endCursor = { line: cursor.line, column: cursor.column + length };
-    const iterator = this.traverseBySelection({ start: cursor, end: endCursor }, true);
-    const nodes = Array.from(iterator).slice(0, length);
+  reviveLocal(selection: Selection): ReviveOperation[] {
+    const nodes = Array.from(this.traverseBySelection(selection, { returnDeleted: true }));
     return nodes.map(node => this.reviveNode(node.id));
   }
 
@@ -127,8 +128,8 @@ export class Fugue {
    * @param selection
    */
   deleteLocal(selection: Selection): DeleteOperation[] {
-    const iterator = this.traverseBySelection(selection);
-    return Array.from(iterator).map(node => this.removeNode(node.id));
+    const nodes = Array.from(this.traverseBySelection(selection));
+    return nodes.map(node => this.removeNode(node.id));
   }
 
   /**
@@ -170,8 +171,8 @@ export class Fugue {
    * @param format
    */
   updateInlineStyleLocal(selection: Selection, format: InlineStyle, value: boolean = true) {
-    const iterator = this.traverseBySelection(selection);
-    const operations: InlineStyleOperation[] = Array.from(iterator).map(node => {
+    const nodes = Array.from(this.traverseBySelection(selection));
+    const operations: InlineStyleOperation[] = nodes.map(node => {
       const { id } = node;
       const style = format as InlineStyle;
       this.tree.updateInlineStyle(id, style, value);
@@ -243,33 +244,40 @@ export class Fugue {
   /**
    * Traverses the tree by the given selection
    * @param selection
-   * @param returnDeleted
+   * @param options
    */
-  *traverseBySelection(selection: Selection, returnDeleted: boolean = false): IterableIterator<FugueNode> {
+  *traverseBySelection(selection: Selection, options?: TraverseOptions): IterableIterator<FugueNode> {
     const { start, end } = selection;
+    const { returnDeleted } = options || { returnDeleted: false };
     let lineCounter = 0;
     let columnCounter = 0;
     let inBounds = false;
+    let finished = false;
     for (const node of this.traverseTree(returnDeleted)) {
-      // start condition
-      if (lineCounter === start.line && columnCounter === start.column) {
-        inBounds = true;
-      }
-      // yield node if in bounds
-      if (inBounds) {
-        yield node;
-      }
+      if (finished) break;
+
       // update counters
       if (node.value === '\n') {
         lineCounter++;
         columnCounter = 0;
-      } else {
-        columnCounter++;
       }
+
+      // check condition
+      if (lineCounter === start.line && columnCounter === start.column) {
+        inBounds = true;
+      }
+
+      // yield node if in bounds
+      if (inBounds) {
+        yield node;
+      }
+
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
-        inBounds = false;
+        finished = true;
       }
+
+      columnCounter++;
     }
   }
 

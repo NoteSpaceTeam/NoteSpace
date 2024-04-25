@@ -9,7 +9,6 @@ import {
   RemoveNodeOperation,
   RemoveTextOperation,
   SetNodeOperation,
-  SetSelectionOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
 } from '@editor/domain/document/history/types';
@@ -22,7 +21,8 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
     const communicationOperations = operations
       .reverse()
       .map(operation => getOperation(operation))
-      .flat();
+      .flat()
+      .filter(operation => operation !== undefined && operation !== null);
 
     communication.emitChunked('operation', communicationOperations);
   };
@@ -42,67 +42,91 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
       case 'merge_node':
         return mergeNode(operation as MergeNodeOperation);
       case 'set_node':
-        return setNode(operation as SetNodeOperation);
+        return setNode(operation as SetNodeOperation, true);
       case 'unset_node':
-        return unsetNode(operation as UnsetNodeOperation);
-      case 'set_selection':
-        return setSelection(operation as SetSelectionOperation);
+        return setNode(operation as UnsetNodeOperation, false);
     }
   }
 
+  /**
+   * Inserts text
+   * @param cursor
+   * @param text
+   */
   function insertText({ cursor, text }: InsertTextOperation) {
-    //return fugue.insertLocal(cursor, ...text);
-    // Enable nodes instead of creating new ones
-    return fugue.reviveLocal(cursor, text.length);
+    const selection = {
+      start: cursor,
+      end: {
+        ...cursor,
+        column: cursor.column + (text.length > 1 ? text.length - 1 : 0),
+      },
+    };
+    return fugue.reviveLocal(selection);
   }
 
+  /**
+   * Removes text
+   * @param selection
+   */
   function removeText({ selection }: RemoveTextOperation) {
     return fugue.deleteLocal(selection);
   }
 
-  function insertNode({ cursor }: InsertNodeOperation) {
-    // const operations = fugue.insertNodeLocal(cursor, node);
+  /**
+   * Inserts a node
+   * @param selection
+   * @param node
+   */
+  function insertNode({ selection, node }: InsertNodeOperation) {
+    const styles = Object.keys(node).filter(key => key !== 'text');
+    if (!node.text) return;
+    const reviveOperations = fugue.reviveLocal(selection);
+    const styleOperations = styles.map(style => {
+      const styleType = getStyleType(style);
+      return styleType === 'block'
+        ? fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle)
+        : fugue.updateInlineStyleLocal(selection, style as InlineStyle, true);
+    });
+    return [...reviveOperations, styleOperations];
   }
 
+  /**
+   * Removes a node
+   * @param selection
+   */
   function removeNode({ selection }: RemoveNodeOperation) {
     return fugue.deleteLocal(selection);
   }
 
+  /**
+   * Splits a node
+   * @param cursor
+   */
   function splitNode({ cursor }: SplitNodeOperation) {
-    // const operations = fugue.splitNodeLocal(cursor);
+    return fugue.reviveLocal({ start: cursor, end: cursor });
   }
 
+  /**
+   * Merges a node
+   * @param cursor
+   */
   function mergeNode({ cursor }: MergeNodeOperation) {
     return fugue.deleteLocal({ start: cursor, end: cursor });
   }
 
-  function setNode({ selection, newProperties }: SetNodeOperation) {
-    const type = Object.keys(newProperties)[0];
+  /**
+   * Sets a node
+   * @param selection
+   * @param properties
+   * @param set_mode
+   */
+  function setNode({ selection, properties }: SetNodeOperation | UnsetNodeOperation, set_mode: boolean) {
+    const type = Object.keys(properties)[0];
     const styleType = getStyleType(type);
-    if (styleType === 'block') {
-      return fugue.updateBlockStyleLocal(selection.start.line, type as BlockStyle);
-    }
 
-    if (styleType === 'inline') {
-      return fugue.updateInlineStyleLocal(selection, type as InlineStyle, true);
-    }
-  }
-
-  function unsetNode({ selection, newProperties }: UnsetNodeOperation) {
-    const type = Object.keys(newProperties)[0];
-    const styleType = getStyleType(type);
-    if (styleType === 'block') {
-      return fugue.updateBlockStyleLocal(selection.start.line, type as BlockStyle);
-    }
-
-    if (styleType === 'inline') {
-      return fugue.updateInlineStyleLocal(selection, type as InlineStyle, false);
-    }
-  }
-
-  function setSelection({ properties, newProperties }: SetSelectionOperation) {
-    // const operations = fugue.setSelectionLocal(properties, newProperties);
-    // communication.emitChunked('operation', operations);
+    return styleType === 'block'
+      ? fugue.updateBlockStyleLocal(selection.start.line, type as BlockStyle)
+      : fugue.updateInlineStyleLocal(selection, type as InlineStyle, set_mode);
   }
 
   return {

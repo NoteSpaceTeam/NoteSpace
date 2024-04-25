@@ -3,10 +3,10 @@ import {
   BaseInsertTextOperation,
   BaseMergeNodeOperation,
   BaseOperation,
+  BaseRange,
   BaseRemoveNodeOperation,
   BaseRemoveTextOperation,
   BaseSetNodeOperation,
-  BaseSetSelectionOperation,
   BaseSplitNodeOperation,
   Editor,
   Range,
@@ -21,11 +21,9 @@ import {
   RemoveNodeOperation,
   RemoveTextOperation,
   SetNodeOperation,
-  SetSelectionOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
 } from '@editor/domain/document/history/types';
-import { Cursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { getReverseType } from '@editor/slate/handlers/history/utils';
 import { pointToCursor } from '@editor/slate/utils/selection';
 
@@ -64,17 +62,14 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
     if (!operations) return;
 
     // Get each operation needed to be applied, as a batch can contain operations that are not in the same type
-    const applyOperations = operations.operations.map(operation => {
-      const type: BaseOperation['type'] = operation.type;
-      const operationType = reverseType ? getReverseType(type) : (type as HistoryOperation['type']);
-      return toHistoryOperation(operationType, operation);
-    });
+    const applyOperations = operations.operations
+      .map(operation => {
+        const type: BaseOperation['type'] = operation.type;
+        const operationType = reverseType ? getReverseType(type) : (type as HistoryOperation['type']);
+        return toHistoryOperation(operationType, operation, operations.selectionBefore);
+      })
+      .filter(operation => operation !== undefined) as HistoryOperation[];
 
-    // Skip reapplying split_node and merge_node operations
-    if (applyOperations.every(operation => operation.type === 'split_node' || operation.type === 'merge_node')) {
-      domainOperations.applyHistoryOperation([applyOperations[0]]);
-      return;
-    }
     domainOperations.applyHistoryOperation(applyOperations);
   }
 
@@ -82,27 +77,30 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
    * Converts a slate operation to a history operation
    * @param type
    * @param operation
+   * @param selectionBefore
    */
-  function toHistoryOperation(type: HistoryOperation['type'], operation: BaseOperation): HistoryOperation {
+  function toHistoryOperation(
+    type: HistoryOperation['type'],
+    operation: BaseOperation,
+    selectionBefore: BaseRange | null
+  ): HistoryOperation | undefined {
     switch (type) {
       case 'insert_text':
-        return insertTextOperation(operation as BaseInsertTextOperation);
+        return insertTextOperation(operation as BaseInsertTextOperation, selectionBefore?.focus.offset);
       case 'remove_text':
         return removeTextOperation(operation as BaseRemoveTextOperation);
       case 'insert_node':
-        return insertNodeOperation(operation as BaseInsertNodeOperation);
+        return nodeOperation(operation as BaseInsertNodeOperation, selectionBefore?.focus.offset, true);
       case 'remove_node':
-        return removeNodeOperation(operation as BaseRemoveNodeOperation);
+        return nodeOperation(operation as BaseRemoveNodeOperation, selectionBefore?.focus.offset, false);
       case 'merge_node':
-        return mergeNodeOperation(operation as BaseMergeNodeOperation);
+        return handleNodeOperation(operation as BaseMergeNodeOperation, true);
       case 'split_node':
-        return splitNodeOperation(operation as BaseSplitNodeOperation);
+        return handleNodeOperation(operation as BaseSplitNodeOperation, false);
       case 'set_node':
-        return setNode(operation as BaseSetNodeOperation);
+        return setNodeOperation(operation as BaseSetNodeOperation, selectionBefore?.anchor.offset, true);
       case 'unset_node':
-        return unsetNode(operation as BaseSetNodeOperation);
-      case 'set_selection':
-        return setSelection(operation as BaseSetSelectionOperation);
+        return setNodeOperation(operation as BaseSetNodeOperation, selectionBefore?.anchor.offset, false);
       default:
         throw new Error(`Invalid operation type: ${type}`);
     }
@@ -111,93 +109,125 @@ function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperatio
   /**
    * Converts a slate insert text operation to a history insert text operation
    * @param operation
+   * @param focus_offset
    */
-  function insertTextOperation(operation: BaseInsertTextOperation): InsertTextOperation {
-    const cursor: Cursor = { line: operation.path[0], column: operation.offset };
+  function insertTextOperation(
+    operation: BaseInsertTextOperation,
+    focus_offset: number | undefined
+  ): InsertTextOperation | undefined {
+    if (operation.text === '') return undefined;
+
+    const start = {
+      line: operation.path[0],
+      column: focus_offset || 0,
+    };
+
     const text = operation.text.split('');
-    return { type: 'insert_text', cursor, text };
+    return { type: 'insert_text', cursor: { ...start, column: start.column }, text };
   }
 
   /**
    * Converts a slate remove text operation to a history remove text operation
    * @param operation
    */
-  function removeTextOperation(operation: BaseRemoveTextOperation): RemoveTextOperation {
+  function removeTextOperation(operation: BaseRemoveTextOperation): RemoveTextOperation | undefined {
     const offset = (line: number) => (line === 0 ? 0 : 1);
 
-    const startLine = operation.path[0];
-    const startColumn = operation.offset + offset(startLine);
-    const start = { line: startLine, column: startColumn };
+    if (operation.text === '') return undefined;
 
-    const endLine = operation?.path[0] || start.line;
-    const endColumn = operation.text.length + offset(endLine);
-    const end = { line: endLine, column: endColumn };
+    const cursor = pointToCursor(editor, { path: operation.path, offset: 0 });
 
-    const selection: Selection = { start, end };
+    const start = {
+      line: operation.path[0],
+      column: cursor.column + operation.offset,
+    };
+    const end = {
+      line: start.line,
+      column: start.column + operation.text.length - 1 + offset(start.line),
+    };
+
+    const selection = { start, end };
     return { type: 'remove_text', selection };
   }
 
   /**
-   * Converts a slate insert node operation to a history insert node operation
+   * Handles a slate insert or remove node operation
    * @param operation
+   * @param focus_offset
+   * @param insert_mode
    */
-  function insertNodeOperation(operation: BaseInsertNodeOperation): InsertNodeOperation {
-    console.log('insertNodeOperation', operation);
-    return { type: 'insert_node', cursor: { line: 0, column: 0 }, node: operation.node };
-  }
+  function nodeOperation(
+    operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
+    focus_offset: number | undefined,
+    insert_mode: boolean
+  ): InsertNodeOperation | RemoveNodeOperation | undefined {
+    console.log(insert_mode ? 'insertNodeOperation' : 'removeNodeOperation', operation);
+    if (operation.node.text === '') return undefined;
 
-  /**
-   * Converts a slate remove node operation to a history remove node operation
-   * @param operation
-   */
-  function removeNodeOperation(operation: BaseRemoveNodeOperation): RemoveNodeOperation {
-    console.log('removeNodeOperation', operation);
-    const selection = {
-      start: pointToCursor(editor, { path: operation.path, offset: 0 }),
-      end: pointToCursor(editor, { path: operation.path, offset: operation.node.text.length }),
+    const offset = (line: number) => (line === 0 ? 0 : 1);
+
+    const start = {
+      line: operation.path[0],
+      column: focus_offset || 0,
     };
-    return { type: 'remove_node', selection, node: operation.node };
+
+    const end = {
+      ...start,
+      column: start.column + operation.node.text.length - 1 + offset(start.line),
+    };
+
+    const selection = { start, end };
+
+    return {
+      type: insert_mode ? 'insert_node' : 'remove_node',
+      selection,
+      node: operation.node,
+    };
   }
 
   /**
-   * Converts a slate merge node operation to a history merge node operation
+   * Handles a slate merge or split node operation
    * @param operation
+   * @param merge_mode
    */
-  function mergeNodeOperation(operation: BaseMergeNodeOperation): MergeNodeOperation {
-    console.log('mergeNodeOperation', operation);
-    return { type: 'merge_node', cursor: { line: operation.path[0], column: 0 }, properties: operation.properties };
+  function handleNodeOperation(
+    operation: BaseMergeNodeOperation | BaseSplitNodeOperation,
+    merge_mode: boolean
+  ): MergeNodeOperation | SplitNodeOperation | undefined {
+    console.log(merge_mode ? 'mergeNodeOperation' : 'splitNodeOperation', operation);
+    if (!operation.properties.type) return undefined;
+    return {
+      type: merge_mode ? 'merge_node' : 'split_node',
+      cursor: { line: operation.position, column: 0 },
+      properties: operation.properties,
+    };
   }
 
   /**
-   * Converts a slate split node operation to a history split node operation
+   * Handles a slate set or unset node operation
    * @param operation
+   * @param offset
+   * @param set_mode
    */
-  function splitNodeOperation(operation: BaseSplitNodeOperation): SplitNodeOperation {
-    console.log('splitNodeOperation', operation);
-    return { type: 'split_node', cursor: { line: 0, column: 0 }, properties: operation.properties };
-  }
+  function setNodeOperation(
+    operation: BaseSetNodeOperation,
+    offset: number | undefined,
+    set_mode: boolean
+  ): SetNodeOperation | UnsetNodeOperation {
+    console.log(set_mode ? 'setNodeOperation' : 'unsetNodeOperation', operation);
 
-  /**
-   * Converts a slate set node operation to a history set node operation
-   * @param operation
-   */
-  function setNode(operation: BaseSetNodeOperation): SetNodeOperation {
-    const selection = emptySelection();
-    return { type: 'set_node', selection, properties: {}, newProperties: operation.newProperties };
-  }
+    const start = pointToCursor(editor, { path: operation.path, offset: 0 });
 
-  function unsetNode(operation: BaseSetNodeOperation): UnsetNodeOperation {
-    const selection = emptySelection();
-    return { type: 'unset_node', selection, properties: operation.properties, newProperties: operation.newProperties };
-  }
+    const end = {
+      ...start,
+      column: offset ? offset - 1 : start.column,
+    };
 
-  /**
-   * Converts a slate set selection operation to a history set selection operation
-   * @param operation
-   */
-  function setSelection(operation: BaseSetSelectionOperation): SetSelectionOperation {
-    console.log('setSelection', operation);
-    return { type: 'set_selection', properties: {}, newProperties: {} };
+    return {
+      type: set_mode ? 'set_node' : 'unset_node',
+      selection: { start, end },
+      properties: set_mode ? operation.properties : operation.newProperties,
+    };
   }
 
   return { undoOperation, redoOperation };

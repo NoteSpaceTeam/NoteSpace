@@ -42,7 +42,7 @@
     "test-jest": "^1.0.1",
     "ts-jest": "^29.1.2",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.7.2",
+    "tsx": "^4.7.3",
     "typescript": "^5.4.5"
   }
 }
