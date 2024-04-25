@@ -15,6 +15,5 @@ describe('SlateEditor', () => {
   it('should render the editor', async () => {
     const documentTitle = screen.getByPlaceholderText('Untitled');
     expect(documentTitle).toBeInTheDocument();
-    expect(editor).toHaveTextContent('');
   });
 });

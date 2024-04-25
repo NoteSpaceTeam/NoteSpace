@@ -103,7 +103,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
    * @param cursor
    */
   function splitNode({ cursor }: SplitNodeOperation) {
-    return fugue.reviveLocal({ start: cursor, end: cursor }, { returnLineBreaks: true });
+    return fugue.reviveLocal({ start: cursor, end: cursor });
   }
 
   /**

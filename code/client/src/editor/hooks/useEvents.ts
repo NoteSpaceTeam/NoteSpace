@@ -6,22 +6,22 @@ import { FugueDomainOperations } from '@editor/domain/document/fugue/types';
 
 /**
  * Hook client socket listeners to events
- * @param handlers
+ * @param fugueOperations
  * @param communication
  * @param onDone
  */
-function useEvents(handlers: FugueDomainOperations, communication: Communication, onDone: () => void) {
+function useEvents(fugueOperations: FugueDomainOperations, communication: Communication, onDone: () => void) {
   /**
    * Hook socket listeners to an apply an event to the editor
    * @param operations
    */
   function onOperation(operations: Operation[]) {
-    handlers.applyOperations(operations);
+    fugueOperations.applyOperations(operations);
     onDone();
   }
 
   function onDocument(document: Document) {
-    handlers.initDocument(document);
+    fugueOperations.initDocument(document);
     onDone();
   }
 

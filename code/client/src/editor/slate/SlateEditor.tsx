@@ -14,7 +14,7 @@ import useHistory from '@editor/slate/hooks/useHistory';
 import useDecorate from '@editor/slate/hooks/useDecorate';
 import useCursors from '@editor/slate/hooks/useCursors';
 import getEventHandlers from '@editor/slate/handlers/getEventHandlers';
-import getFugueHandlers from '@editor/domain/document/fugue/operations';
+import getFugueOperations from '@editor/domain/document/fugue/operations';
 import './SlateEditor.scss';
 import { Descendant } from 'slate';
 
@@ -27,7 +27,7 @@ const initialValue: Descendant[] = [descendant('paragraph', '')];
 function SlateEditor({ communication }: SlateEditorProps) {
   const fugue = useFugue();
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
-  const fugueHandlers = getFugueHandlers(fugue);
+  const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
   const { renderElement, renderLeaf } = useRenderers();
   const decorate = useDecorate(editor, cursors);
@@ -38,7 +38,7 @@ function SlateEditor({ communication }: SlateEditorProps) {
   );
 
   useHistory(editor, fugue, communication);
-  useEvents(fugueHandlers, communication, () => {
+  useEvents(fugueOperations, communication, () => {
     editor.children = toSlate(fugue);
     editor.onChange();
   });

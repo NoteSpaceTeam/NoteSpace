@@ -13,11 +13,6 @@ import {
   ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
-type TraverseOptions = {
-  returnDeleted?: boolean;
-  returnLineBreaks?: boolean;
-};
-
 /**
  * Class that represents a local replica of a FugueTree
  * @param T - the type of the values stored in the tree
@@ -98,33 +93,6 @@ export class Fugue {
   }
 
   /**
-   * Relives the nodes from the given start index and given length.
-   * @param selection
-   * @param options
-   */
-  reviveLocal(selection: Selection, options?: TraverseOptions): ReviveOperation[] {
-    const nodes = Array.from(this.traverseBySelection(selection, { ...options, returnDeleted: true }));
-    return nodes.map(node => this.reviveNode(node.id));
-  }
-
-  /**
-   * Revives a node based on the given id
-   * @param id
-   */
-  reviveNode(id: Id): ReviveOperation {
-    this.tree.reviveNode(id);
-    return { type: 'revive', id };
-  }
-
-  /**
-   * Revives a node based on the given operation
-   * @param operation
-   */
-  reviveRemote(operation: ReviveOperation): void {
-    this.tree.reviveNode(operation.id);
-  }
-
-  /**
    * Deletes the nodes from the given start index to the given end index.
    * @param selection
    */
@@ -163,6 +131,32 @@ export class Fugue {
   private removeNode(id: Id): DeleteOperation {
     this.tree.deleteNode(id);
     return { type: 'delete', id };
+  }
+
+  /**
+   * Relives the nodes from the given start index and given length.
+   * @param selection
+   */
+  reviveLocal(selection: Selection): ReviveOperation[] {
+    const nodes = Array.from(this.traverseBySelection(selection, true));
+    return nodes.map(node => this.reviveNode(node.id));
+  }
+
+  /**
+   * Revives a node based on the given id
+   * @param id
+   */
+  reviveNode(id: Id): ReviveOperation {
+    this.tree.reviveNode(id);
+    return { type: 'revive', id };
+  }
+
+  /**
+   * Revives a node based on the given operation
+   * @param operation
+   */
+  reviveRemote(operation: ReviveOperation): void {
+    this.tree.reviveNode(operation.id);
   }
 
   /**
@@ -219,7 +213,7 @@ export class Fugue {
    * @param selection
    */
   updateBlockStylesLocalBySelection(style: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1, 1).map(line => this.updateBlockStyleLocal(line, style));
+    return range(selection.start.line, selection.end.line + 1).map(line => this.updateBlockStyleLocal(line, style));
   }
 
   /**
@@ -245,47 +239,32 @@ export class Fugue {
   /**
    * Traverses the tree by the given selection
    * @param selection
-   * @param options
+   * @param returnDeleted
    */
-  *traverseBySelection(selection: Selection, options?: TraverseOptions): IterableIterator<FugueNode> {
+  *traverseBySelection(selection: Selection, returnDeleted: boolean = false): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    const { returnDeleted, returnLineBreaks } = {
-      returnDeleted: options?.returnDeleted || false,
-      returnLineBreaks: options?.returnLineBreaks || false,
-    };
-    let lineCounter = 0,
-      columnCounter = 0;
-    let inBounds = false,
-      finished = false;
+    let lineCounter = 0;
+    let columnCounter = 0;
+    let inBounds = false;
     for (const node of this.traverseTree(returnDeleted)) {
-      if (node.value === '\n') {
-        lineCounter++;
-        columnCounter = 0;
-      }
-
-      // check condition
+      // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
       }
-
       // yield node if in bounds
-      if (inBounds && (returnLineBreaks || (!returnLineBreaks && node.value !== '\n'))) {
+      if (inBounds) {
         yield node;
       }
-
-      finished =
-        lineCounter === end.line &&
-        columnCounter === end.column &&
-        ((!returnLineBreaks && node.value !== '\n') || returnLineBreaks);
-
-      if (finished) break;
-
-      // increment column counter
-      if (node.value !== '\n') {
+      // update counters
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      } else {
         columnCounter++;
-      } else if (returnLineBreaks) {
-        // don't ignore line breaks
-        columnCounter++;
+      }
+      // end condition
+      if (lineCounter === end.line && columnCounter === end.column) {
+        inBounds = false;
       }
     }
   }

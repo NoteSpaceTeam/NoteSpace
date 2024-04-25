@@ -13,12 +13,10 @@ function useHistory(editor: Editor, fugue: Fugue, communication: Communication) 
 
     editor.undo = () => {
       undoOperation();
-      console.log('undoOperation');
       undo();
     };
     editor.redo = () => {
       redoOperation();
-      console.log('redoOperation');
       redo();
     };
   }, [communication, editor, fugue]);

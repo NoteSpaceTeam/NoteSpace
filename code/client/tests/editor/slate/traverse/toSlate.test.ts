@@ -35,7 +35,7 @@ describe('toSlate', () => {
     // then
     expect(fugue.toString()).toEqual('abc\ndefg');
     expect(descendants).toEqual([
-      { type: 'heading-one', children: [{ text: 'ab', bold: true }, { text: 'c' }] },
+      { type: 'heading-one', children: [{ text: 'a', bold: true }, { text: 'bc' }] },
       { type: 'list-item', children: [{ text: 'defg' }] },
     ]);
   });
