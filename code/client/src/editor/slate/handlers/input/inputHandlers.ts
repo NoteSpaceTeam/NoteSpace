@@ -121,9 +121,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
     const clipboardData = typeof clipboard === 'string' ? clipboard : clipboard.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    const chars = clipboardData.split('');
-    const lineNodes = chars.filter(char => char === '\n');
-    domainOperations.pasteText(start, chars, lineNodes);
+    domainOperations.pasteText(start, clipboardData);
   }
 
   function onCut() {

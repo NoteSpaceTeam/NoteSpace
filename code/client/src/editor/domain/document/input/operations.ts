@@ -38,7 +38,9 @@ export default (fugue: Fugue, communication: Communication): InputDomainOperatio
     communication.emit('operation', operations);
   }
 
-  function pasteText(start: Cursor, text: string[], lineNodes: string[]) {
+  function pasteText(start: Cursor, text: string) {
+    const chars = text.split('');
+    const lineNodes = chars.filter(char => char === '\n');
     const operations: Operation[] = fugue.insertLocal(start, ...text);
     for (let i = 0; i < lineNodes.length; i++) {
       const styleOperation = fugue.updateBlockStyleLocal(start.line + i, 'paragraph', true);

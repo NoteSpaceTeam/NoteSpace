@@ -69,7 +69,7 @@ export default (fugue: Fugue, communication: Communication): MarkdownDomainOpera
     if (isSelectionEmpty(selection)) return;
     const { start, end } = selection;
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.line !== end.line ? { start: { line: start.line + 1, column: 0 }, end } : selection;
+      const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
       communication.emit('operation', operations);
     }

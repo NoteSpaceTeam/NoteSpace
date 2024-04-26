@@ -15,7 +15,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
 
   // create a new paragraph
   const lineStyle = fugue.getBlockStyle(lineCounter++);
-  descendants.push(descendant(lineStyle));
+  descendants.push(descendant(lineStyle, ''));
 
   for (const node of fugue.traverseTree()) {
     if (!node.value) continue;
@@ -38,18 +38,20 @@ export function toSlate(fugue: Fugue): Descendant[] {
 
     const lastDescendant = last(descendants);
     const lastTextNode = last(lastDescendant.children) as CustomText;
-    if (!isEqual(lastStyles, node.styles.filter(Boolean)) || !lastTextNode) {
+    const nodeStyles = node.styles.filter(Boolean);
+    if (!isEqual(lastStyles, nodeStyles) && lastTextNode.text) {
       // append text node with the given styles
       lastDescendant.children.push(textNode);
     } else {
       // merge text nodes with the same styles
-      lastTextNode.text += textNode.text;
+      if (!lastTextNode.text) {
+        lastDescendant.children.pop();
+        lastDescendant.children.push(textNode);
+      } else {
+        lastTextNode.text += textNode.text;
+      }
     }
-    lastStyles = node.styles as InlineStyle[];
-  }
-  // if descendants has no children, add an empty text node
-  if (descendants[0].children.length === 0) {
-    descendants[0].children.push({ text: '' });
+    lastStyles = nodeStyles as InlineStyle[];
   }
   return descendants;
 }

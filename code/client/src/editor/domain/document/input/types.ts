@@ -17,5 +17,5 @@ export type InsertLineBreakHandler = (cursor: Cursor) => void;
 export type DeleteCharacterHandler = (cursor: Cursor) => void;
 export type DeleteSelectionHandler = (selection: Selection) => void;
 export type DeleteWordHandler = (cursor: Cursor, reverse: boolean) => void;
-export type PasteTextHandler = (start: Cursor, text: string[], lineNodes: string[]) => void;
+export type PasteTextHandler = (start: Cursor, text: string) => void;
 export type UpdateSelectionHandler = (range: BaseSelection, styles: InlineStyle[]) => void;
