@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { InlineStyle } from '@notespace/shared/types/styles';
+import { getRoomId } from '@controllers/ws/rooms';
 
 type CursorData = {
   range: any;
@@ -10,22 +11,26 @@ const cursorColorsMap = new Map<string, string>();
 
 function onCursorChange() {
   return (socket: Socket, range: any) => {
+    const documentId = getRoomId(socket);
+    if (!documentId) {
+      throw new Error('Document Id is required');
+    }
     if (!range) {
-      deleteCursor(socket);
+      deleteCursor(socket, documentId);
     } else {
-      updateCursor(socket, range);
+      updateCursor(socket, range, documentId);
     }
   };
 }
 
-function deleteCursor(socket: Socket) {
+function deleteCursor(socket: Socket, documentId: string) {
   cursorColorsMap.delete(socket.id);
-  socket.broadcast.emit('cursorChange', { id: socket.id });
+  socket.broadcast.to(documentId).emit('cursorChange', { id: socket.id });
 }
 
-function updateCursor(socket: Socket, data: CursorData) {
+function updateCursor(socket: Socket, data: CursorData, documentId: string) {
   const color = getColor(socket);
-  socket.broadcast.emit('cursorChange', { ...data, id: socket.id, color });
+  socket.broadcast.to(documentId).emit('cursorChange', { ...data, id: socket.id, color });
 }
 
 function getColor(socket: Socket) {

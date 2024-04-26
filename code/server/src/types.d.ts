@@ -9,21 +9,22 @@ import {
 } from '@notespace/shared/crdt/types/operations';
 
 type DocumentDatabase = {
-  getDocument: () => Promise<Document>;
-  updateDocument: (nodes: Nodes<string>) => Promise<void>;
-  updateTitle: (title: string) => Promise<void>;
-  deleteDocument: () => Promise<void>;
+  createDocument: () => Promise<string>;
+  getDocument: (id: string) => Promise<Document>;
+  updateDocument: (id: string, document: Partial<Document>) => Promise<void>;
+  deleteDocument: (id: string) => Promise<void>;
 };
 
 type DocumentService = {
-  getDocument: () => Promise<Document>;
-  deleteDocument: () => void;
-  insertCharacter: (operation: InsertOperation) => Promise<void>;
-  deleteCharacter: (operation: DeleteOperation) => Promise<void>;
-  updateInlineStyle: (operation: InlineStyleOperation) => Promise<void>;
-  updateBlockStyle: (operation: BlockStyleOperation) => Promise<void>;
-  reviveLocal: (operation: ReviveOperation) => Promise<void>;
-  updateTitle: (title: string) => Promise<void>;
+  createDocument: () => Promise<string>;
+  getDocument: (id: string) => Promise<Document>;
+  deleteDocument: (id: string) => void;
+  insertCharacter: (id: string, operation: InsertOperation) => Promise<void>;
+  deleteCharacter: (id: string, operation: DeleteOperation) => Promise<void>;
+  updateInlineStyle: (id: string, operation: InlineStyleOperation) => Promise<void>;
+  updateBlockStyle: (id: string, operation: BlockStyleOperation) => Promise<void>;
+  reviveCharacter: (id: string, operation: ReviveOperation) => Promise<void>;
+  updateTitle: (id: string, title: string) => Promise<void>;
 };
 
 type SocketHandler = (socket: Socket, data: any) => Promise<void> | void;

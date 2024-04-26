@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@src/components/editor/crdt/fugue';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
-import { toSlate } from '@editor/slate/utils/slate';
+import { toSlate } from '@src/components/editor/slate/utils/slate';
 import { Descendant } from 'slate';
 
 describe('toSlate', () => {

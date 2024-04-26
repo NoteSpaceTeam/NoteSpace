@@ -16,7 +16,7 @@ const api = router(service);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
-const onConnectionHandler = onConnection(service, events);
+const onConnectionHandler = onConnection(events);
 
 app.use(cors({ origin: config.ORIGIN }));
 app.use('/', api);

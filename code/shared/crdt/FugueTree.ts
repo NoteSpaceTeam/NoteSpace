@@ -78,7 +78,6 @@ export class FugueTree<T> {
     const node = this.getById(id);
     if (!node.isDeleted) {
       node.isDeleted = true;
-      //this.updateDepths(node, -1);
     }
   }
 
@@ -90,7 +89,6 @@ export class FugueTree<T> {
     const node = this.getById(id);
     if (node.isDeleted) {
       node.isDeleted = false;
-      //this.updateDepths(node, 1);
     }
   }
 

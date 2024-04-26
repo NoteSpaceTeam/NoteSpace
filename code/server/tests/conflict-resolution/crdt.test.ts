@@ -39,11 +39,6 @@ afterAll(done => {
 });
 
 describe('Operations must be commutative', () => {
-  beforeEach(async () => {
-    const response = await request(app).delete('/document');
-    expect(response.status).toBe(200);
-  });
-
   it('insert operations should be commutative', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
@@ -59,12 +54,23 @@ describe('Operations must be commutative', () => {
       parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
+    // create a document
+    const createdResponse = await request(app).post('/documents');
+    expect(createdResponse.status).toBe(201);
+    const id = createdResponse.body.id;
+
+    // clients join the document
+    client1.emit('joinDocument', id);
+    client2.emit('joinDocument', id);
+
     // client 1 inserts 'a' and client 2 inserts 'b'
     client1.emit('operation', [insert1]);
     client2.emit('operation', [insert2]);
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    const response = await request(app).get('/document');
+
+    // get the document
+    const response = await request(app).get('/documents/' + id);
     expect(response.status).toBe(200);
     const nodes = response.body.nodes as Nodes<string>;
     tree.setTree(nodes);
@@ -73,9 +79,7 @@ describe('Operations must be commutative', () => {
 });
 
 describe('Operations must be idempotent', () => {
-  beforeEach(async () => {
-    const response = await request(app).delete('/document');
-    expect(response.status).toBe(200);
+  it('delete operations should be idempotent', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -90,13 +94,22 @@ describe('Operations must be idempotent', () => {
       parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
+
+    // create a document
+    const createdResponse = await request(app).post('/documents');
+    expect(createdResponse.status).toBe(201);
+    const id = createdResponse.body.id;
+
+    // clients join the document
+    client1.emit('joinDocument', id);
+    client2.emit('joinDocument', id);
+
     // both clients insert 'a'
     client1.emit('operation', [insert1]);
     client2.emit('operation', [insert2]);
-    await new Promise(resolve => setTimeout(resolve, 100));
-  });
 
-  it('delete operations should be idempotent', done => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const delete1: DeleteOperation = {
       type: 'delete',
       id: { sender: 'B', counter: 0 },
@@ -105,12 +118,11 @@ describe('Operations must be idempotent', () => {
     client1.emit('operation', [delete1]);
     client2.emit('operation', [delete1]);
 
-    setTimeout(async () => {
-      const response = await request(app).get('/document');
-      const nodes = response.body.nodes as Nodes<string>;
-      tree.setTree(nodes);
-      expect(tree.toString()).toBe('a');
-      done();
-    }, 500);
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const response = await request(app).get('/documents/' + id);
+    const nodes = response.body.nodes as Nodes<string>;
+    tree.setTree(nodes);
+    expect(tree.toString()).toBe('a');
   });
 });

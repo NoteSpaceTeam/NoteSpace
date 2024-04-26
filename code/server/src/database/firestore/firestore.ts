@@ -30,5 +30,6 @@ export async function getTitle(): Promise<string> {
 }
 
 export async function setTitle(title: string) {
+  console.log(title);
   return;
 }

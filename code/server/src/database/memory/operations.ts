@@ -1,33 +1,48 @@
 import { DocumentDatabase } from '@src/types';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
+import { v4 as uuid } from 'uuid';
 import { emptyTree } from '@notespace/shared/crdt/utils';
 
 export default function DocumentDatabase(): DocumentDatabase {
-  let nodes: Nodes<string> = emptyTree();
-  let title = '';
+  const documents: Record<string, Document> = {};
 
-  async function getDocument(): Promise<Document> {
-    return { title, nodes };
+  async function createDocument() {
+    const id = uuid();
+    documents[id] = {
+      title: '',
+      nodes: emptyTree(),
+    };
+    return id;
   }
 
-  async function updateDocument(newNodes: Nodes<string>) {
-    nodes = newNodes;
+  async function getDocument(id: string): Promise<Document> {
+    const document = documents[id];
+    if (!document) {
+      throw new Error(`Document with id ${id} not found with id`);
+    }
+    return document;
   }
 
-  async function updateTitle(newTitle: string) {
-    title = newTitle;
+  async function updateDocument(id: string, newDocument: Partial<Document>) {
+    const document = documents[id];
+    if (!document) {
+      throw new Error(`Document with id ${id} not found with id`);
+    }
+    documents[id] = { ...document, ...newDocument };
   }
 
-  async function deleteDocument() {
-    nodes = emptyTree();
-    title = '';
+  async function deleteDocument(id: string) {
+    const document = documents[id];
+    if (!document) {
+      throw new Error(`Document with id ${id} not found with id`);
+    }
+    delete documents[id];
   }
 
   return {
+    createDocument,
     getDocument,
     deleteDocument,
     updateDocument,
-    updateTitle,
   };
 }

@@ -1,4 +1,4 @@
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@src/components/editor/crdt/fugue';
 import {
   InsertOperation,
   DeleteOperation,
@@ -8,7 +8,7 @@ import {
 } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@notespace/shared/types/cursor';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { FugueNode } from '@editor/crdt/types';
+import { FugueNode } from '@src/components/editor/crdt/types';
 
 describe('Fugue', () => {
   let fugue: Fugue;
@@ -314,5 +314,19 @@ describe('Fugue', () => {
 
     // then
     expect(fugue.toString()).toEqual('a');
+  });
+
+  it('should delete a line by cursor', () => {
+    // given
+    const cursor1: Cursor = { line: 0, column: 0 };
+    const cursor2: Cursor = { line: 1, column: 0 };
+    const text = 'abc\ndef';
+
+    // when
+    fugue.insertLocal(cursor1, ...text.split(''));
+    fugue.deleteLocalByCursor(cursor2);
+
+    // then
+    // expect(fugue.toString()).toEqual('abcdef');
   });
 });

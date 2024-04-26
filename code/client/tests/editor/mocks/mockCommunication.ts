@@ -1,10 +1,20 @@
-import { Communication } from '@editor/domain/communication';
+import { Communication } from '@src/communication/communication.ts';
 
 export function mockCommunication(): Communication {
   return {
-    emit: () => {},
-    emitChunked: () => {},
-    on: () => {},
-    off: () => {},
+    socket: {
+      emit: () => {},
+      emitChunked: () => {},
+      on: () => {},
+      off: () => {},
+      connect: () => {},
+      disconnect: () => {},
+    },
+    http: {
+      get: async () => ({ nodes: [], title: '' }),
+      post: async () => {},
+      put: async () => {},
+      delete: async () => {},
+    },
   };
 }
