@@ -106,7 +106,10 @@ export class Fugue {
    * @param cursor
    */
   deleteLocalByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor);
+    let node : FugueNode | undefined;
+    if (cursor.line > 0 && cursor.column === 0)
+      node = this.findNode('\n', cursor.line - 1)
+    else node = this.getNodeByCursor(cursor);
     if (node) return this.deleteLocalById(node.id);
   }
 
@@ -140,6 +143,18 @@ export class Fugue {
   reviveLocal(selection: Selection): ReviveOperation[] {
     const nodes = Array.from(this.traverseBySelection(selection, true));
     return nodes.map(node => this.reviveNode(node.id));
+  }
+
+  /**
+   * Revives the node at the given cursor
+   * @param cursor
+   */
+  reviveLocalByCursor(cursor: Cursor) {
+    let node : FugueNode | undefined;
+    if (cursor.line > 0 && cursor.column === 0)
+      node = this.findNode('\n', cursor.line - 1)
+    else node = this.getNodeByCursor(cursor);
+    if (node) return this.reviveNode(node.id);
   }
 
   /**
@@ -246,7 +261,9 @@ export class Fugue {
     let lineCounter = 0;
     let columnCounter = 0;
     let inBounds = false;
+    let finished = false;
     for (const node of this.traverseTree(returnDeleted)) {
+        if (finished) break;
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
@@ -265,6 +282,7 @@ export class Fugue {
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) {
         inBounds = false;
+        finished = true;
       }
     }
   }
@@ -318,8 +336,9 @@ export class Fugue {
    * @param cursor
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
-    const cursor = { line, column: column - 1 };
-    const iterator = this.traverseBySelection({ start: cursor, end: cursor });
+    const start = { line, column: column - 1 };
+    const end = { line, column: column };
+    const iterator = this.traverseBySelection({ start, end });
     return iterator.next().value;
   }
 

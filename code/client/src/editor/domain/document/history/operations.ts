@@ -103,7 +103,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
    * @param cursor
    */
   function splitNode({ cursor }: SplitNodeOperation) {
-    return fugue.reviveLocal({ start: cursor, end: cursor });
+    return fugue.reviveLocalByCursor(cursor)
   }
 
   /**
@@ -111,7 +111,7 @@ export default (fugue: Fugue, communication: Communication): HistoryDomainOperat
    * @param cursor
    */
   function mergeNode({ cursor }: MergeNodeOperation) {
-    return fugue.deleteLocal({ start: cursor, end: cursor });
+    return fugue.deleteLocalByCursor(cursor)
   }
 
   /**
