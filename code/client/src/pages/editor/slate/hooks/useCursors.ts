@@ -11,7 +11,7 @@ export type CursorData = {
   styles: InlineStyle[];
 };
 
-export function useCursors({socket}: Communication) {
+export function useCursors({ socket }: Communication) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {

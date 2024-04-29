@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { Fugue } from '@pages/editor/crdt/fugue';
 import getInputOperations from '@pages/editor/domain/document/input/operations';
 import { InputDomainOperations } from '@pages/editor/domain/document/input/types.ts';
-import { mockCommunication } from '../../mocks/mockCommunication.ts';
+import { mockCommunication } from '../../../../mocks/mockCommunication.ts';
 
 describe('Input Operations', () => {
   const communication = mockCommunication();

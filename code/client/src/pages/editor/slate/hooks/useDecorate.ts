@@ -21,9 +21,7 @@ function useDecorate(editor: Editor, cursors: CursorData[]) {
         offset: Path.equals(end.path, editorPath) ? end.offset : node.text.length,
       };
 
-      ranges.push(
-          {anchor: newStart, focus: newEnd, cursor} as BaseRange & { cursor: CursorData }
-      );
+      ranges.push({ anchor: newStart, focus: newEnd, cursor } as BaseRange & { cursor: CursorData });
     }
     return ranges;
   };

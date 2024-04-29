@@ -9,7 +9,7 @@ import { FugueDomainOperations } from '@pages/editor/domain/document/fugue/types
  * @param communication
  * @param onDone
  */
-function useEvents(fugueOperations: FugueDomainOperations, {socket}: Communication, onDone: () => void) {
+function useEvents(fugueOperations: FugueDomainOperations, { socket }: Communication, onDone: () => void) {
   function onOperation(operations: Operation[]) {
     fugueOperations.applyOperations(operations);
     onDone();

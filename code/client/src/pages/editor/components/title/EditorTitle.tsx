@@ -12,7 +12,7 @@ function EditorTitle(props: InputProps) {
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
   const editor = useSlate();
-  const {socket} = props.communication
+  const { socket } = props.communication;
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
@@ -26,9 +26,9 @@ function EditorTitle(props: InputProps) {
     setPrevTitle(title);
   }
 
-  function onSubmit(e : React.FormEvent<HTMLInputElement>) {
+  function onSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
-    onConfirm()
+    onConfirm();
     ReactEditor.focus(editor);
   }
 

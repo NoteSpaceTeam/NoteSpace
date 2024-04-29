@@ -92,22 +92,19 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
    * Removes a node
    * @param selection
    */
-  const removeNode = ({ selection }: RemoveNodeOperation) =>
-    fugue.deleteLocal(selection);
+  const removeNode = ({ selection }: RemoveNodeOperation) => fugue.deleteLocal(selection);
 
   /**
    * Splits a node
    * @param cursor
    */
-  const splitNode = ({ cursor }: SplitNodeOperation) =>
-    fugue.reviveLocalByCursor(cursor);
+  const splitNode = ({ cursor }: SplitNodeOperation) => fugue.reviveLocalByCursor(cursor);
 
   /**
    * Merges a node
    * @param cursor
    */
-  const mergeNode = ({ cursor }: MergeNodeOperation) =>
-    fugue.deleteLocalByCursor(cursor);
+  const mergeNode = ({ cursor }: MergeNodeOperation) => fugue.deleteLocalByCursor(cursor);
 
   /**
    * Sets a node

@@ -10,7 +10,7 @@ export interface HttpCommunication {
 }
 
 async function get(url: string) {
-  return request(url, 'GET')
+  return request(url, 'GET');
 }
 
 async function post(url: string, body: any) {
@@ -22,7 +22,7 @@ async function put(url: string, body: any) {
 }
 
 async function del(url: string) {
-  return request(url, 'DELETE')
+  return request(url, 'DELETE');
 }
 
 const request = async (url: string, method: string, body?: any) => {
@@ -31,11 +31,11 @@ const request = async (url: string, method: string, body?: any) => {
     headers: {
       'Content-Type': 'application/json',
     },
-  }
+  };
   if (body) requestInit.body = JSON.stringify(body);
   const response = await fetch(BASE_URL + url, requestInit);
   return await response.json();
-}
+};
 
 export const httpCommunication: HttpCommunication = {
   post,

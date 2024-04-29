@@ -1,5 +1,5 @@
 import { socket } from '@communication/socket/socket.ts';
-import {SocketEventHandlers} from "socket.io-client";
+import { SocketEventHandlers } from 'socket.io-client';
 
 type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;

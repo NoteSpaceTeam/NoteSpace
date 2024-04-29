@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { userEvent } from '../../../test-utils';
+import { userEvent } from '@tests/test-utils.ts';
 import { setupEditor } from '../utils';
 
 describe('Inserts', () => {

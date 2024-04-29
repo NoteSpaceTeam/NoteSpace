@@ -34,7 +34,6 @@ function Toolbar({ onApplyMark }: ToolbarProps) {
     return () => window.removeEventListener('mouseup', getSelectionBounds);
   }, []);
 
-
   const handleMarkMouseDown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, mark: MarkOption) => {
     e.preventDefault();
     e.stopPropagation();

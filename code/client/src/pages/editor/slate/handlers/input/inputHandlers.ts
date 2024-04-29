@@ -115,9 +115,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * Handles paste events
    */
   function onPaste(clipboard: ClipboardEvent | string) {
-    const clipboardData = typeof clipboard === 'string'
-        ? clipboard
-        : clipboard.clipboardData?.getData('text');
+    const clipboardData = typeof clipboard === 'string' ? clipboard : clipboard.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
     domainOperations.pasteText(start, clipboardData);

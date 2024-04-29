@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Fugue } from '@pages/editor/crdt/fugue';
 import getMarkdownOperations from '@pages/editor/domain/document/markdown/operations';
-import { mockCommunication } from '../../mocks/mockCommunication.ts';
+import { mockCommunication } from '../../../../mocks/mockCommunication.ts';
 import { MarkdownDomainOperations } from '@pages/editor/domain/document/markdown/types.ts';
 import { toSlate } from '@pages/editor/slate/utils/slate.ts';
 

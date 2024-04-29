@@ -49,7 +49,7 @@ export class Fugue {
       if (node.value === '\n') {
         line++;
       }
-      column = (node.value === '\n' ? 0 : column + 1)
+      column = node.value === '\n' ? 0 : column + 1;
       return operation;
     });
   }
@@ -104,9 +104,8 @@ export class Fugue {
    * @param cursor
    */
   deleteLocalByCursor(cursor: Cursor) {
-    const node = (cursor.line > 0 && cursor.column === 0)
-        ? this.findNode('\n', cursor.line - 1)
-        : this.getNodeByCursor(cursor);
+    const node =
+      cursor.line > 0 && cursor.column === 0 ? this.findNode('\n', cursor.line - 1) : this.getNodeByCursor(cursor);
 
     if (node) return this.deleteLocalById(node.id);
   }
@@ -148,9 +147,8 @@ export class Fugue {
    * @param cursor
    */
   reviveLocalByCursor(cursor: Cursor) {
-    const node = (cursor.line > 0 && cursor.column === 0)
-        ? this.findNode('\n', cursor.line - 1)
-        : this.getNodeByCursor(cursor);
+    const node =
+      cursor.line > 0 && cursor.column === 0 ? this.findNode('\n', cursor.line - 1) : this.getNodeByCursor(cursor);
 
     if (node) return this.reviveNode(node.id);
   }
@@ -256,7 +254,9 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection, returnDeleted: boolean = false): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    let lineCounter = 0, columnCounter = 0, inBounds = false;
+    let lineCounter = 0,
+      columnCounter = 0,
+      inBounds = false;
     for (const node of this.traverseTree(returnDeleted)) {
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
@@ -269,7 +269,7 @@ export class Fugue {
       if (node.value === '\n') {
         lineCounter++;
       }
-      columnCounter = (node.value === '\n' ? 0 : columnCounter + 1);
+      columnCounter = node.value === '\n' ? 0 : columnCounter + 1;
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) break;
     }
@@ -294,9 +294,7 @@ export class Fugue {
       : { start: { line, column }, end: { line, column: Infinity } };
 
     const nodesInSelection = Array.from(this.traverseBySelection(selection));
-    const elements = reverse
-        ? nodesInSelection.reverse()
-        : nodesInSelection;
+    const elements = reverse ? nodesInSelection.reverse() : nodesInSelection;
     const nodes: FugueNode[] = [];
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {

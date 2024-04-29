@@ -1,4 +1,4 @@
-import {io, Socket} from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import config from '@/config.ts';
 import { range } from 'lodash';
 
@@ -11,7 +11,7 @@ declare module 'socket.io-client' {
   export type SocketEventHandlers = Record<string, (...args: any[]) => void>;
 }
 
-export const socket : Socket = io(config.SOCKET_SERVER_URL, OPTIONS);
+export const socket: Socket = io(config.SOCKET_SERVER_URL, OPTIONS);
 
 // Future implementation using specific algorithms
 socket.emitChunked = (event: string, data: any[], chunkSize: number = CHUNK_DATA_SIZE) => {

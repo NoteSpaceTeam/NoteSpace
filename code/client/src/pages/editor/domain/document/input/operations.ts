@@ -41,11 +41,8 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   function pasteText(start: Cursor, text: string) {
     const chars = text.split('');
     const lineNodes = chars.filter(char => char === '\n');
-    const insertOperations: Operation[] = fugue.insertLocal(start, ...text)
-    const styleOperations =
-        lineNodes.map(() =>
-            fugue.updateBlockStyleLocal(start.line + 1, 'paragraph', true)
-        );
+    const insertOperations: Operation[] = fugue.insertLocal(start, ...text);
+    const styleOperations = lineNodes.map(() => fugue.updateBlockStyleLocal(start.line + 1, 'paragraph', true));
     socket.emitChunked('operation', [...styleOperations, ...insertOperations]);
   }
 

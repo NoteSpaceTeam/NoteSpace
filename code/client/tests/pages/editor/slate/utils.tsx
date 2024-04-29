@@ -1,5 +1,5 @@
-import { setup } from '../../test-utils';
-import { mockCommunication } from '../mocks/mockCommunication';
+import { setup } from '@tests/test-utils.ts';
+import { mockCommunication } from '../../../mocks/mockCommunication.ts';
 import SlateEditor from '@pages/editor/slate/SlateEditor';
 import { Fugue } from '@pages/editor/crdt/fugue.ts';
 

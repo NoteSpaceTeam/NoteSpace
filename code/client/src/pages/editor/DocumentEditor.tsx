@@ -1,9 +1,9 @@
 import SlateEditor from '@pages/editor/slate/SlateEditor.tsx';
 import './DocumentEditor.scss';
 import useFugue from '@pages/editor/hooks/useFugue.ts';
-import {useContext, useEffect, useState} from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {CommunicationContext} from "@/contexts/CommunicationContext.tsx";
+import { CommunicationContext } from '@/contexts/CommunicationContext.tsx';
 
 function DocumentEditor() {
   const communication = useContext(CommunicationContext);
@@ -30,11 +30,7 @@ function DocumentEditor() {
     };
   }, [fugue, id, http, socket]);
 
-  return (
-    <div>
-      {loaded && <SlateEditor title={title} fugue={fugue} communication={communication} />}
-    </div>
-  )
+  return <div>{loaded && <SlateEditor title={title} fugue={fugue} communication={communication} />}</div>;
 }
 
 export default DocumentEditor;

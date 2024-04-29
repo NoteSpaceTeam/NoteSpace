@@ -20,8 +20,7 @@ type InsertTextFunction = (text: string) => void;
  * @param stringOffset
  */
 function before(editor: Editor, at: Point, stringOffset: number): Point | undefined {
-  if (at.offset >= stringOffset)
-    return { offset: at.offset - stringOffset, path: at.path };
+  if (at.offset >= stringOffset) return { offset: at.offset - stringOffset, path: at.path };
 
   const entry = editor.previous({ at: at.path, match: Text.isText });
 

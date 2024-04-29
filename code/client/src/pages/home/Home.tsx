@@ -1,10 +1,10 @@
-import {useContext, useEffect} from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {CommunicationContext} from "@/contexts/CommunicationContext.tsx";
+import { CommunicationContext } from '@/contexts/CommunicationContext.tsx';
 
 function Home() {
   const navigate = useNavigate();
-  const communication = useContext(CommunicationContext)
+  const communication = useContext(CommunicationContext);
   useEffect(() => {
     async function createDocument() {
       const { id } = await communication.http.post('/documents');

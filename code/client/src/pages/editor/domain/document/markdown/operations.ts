@@ -26,12 +26,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     // delete trigger nodes
     if (deleteTriggerNodes) {
       const cursor = { line, column: 0 };
-      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(
-          ' ',
-          cursor,
-          false,
-          true
-      ).next().value;
+      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
       const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
       operations.push(...deleteOperations);
     }
@@ -74,9 +69,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     if (isSelectionEmpty(selection)) return;
     const { start, end } = selection;
     if (start.column === 0 || start.line !== end.line) {
-      const newSelection = start.column !== 0
-          ? { start: { line: start.line + 1, column: 0 }, end }
-          : selection;
+      const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
       socket.emit('operation', operations);
     }

@@ -26,6 +26,7 @@
       "@pages/*": ["./pages/*"],
       "@communication/*": ["./communication/*"],
       "@components/*": ["./components/*"],
+      "@tests/*": ["../tests/*"]
     }
   },
   "include": ["src", "tests"],
