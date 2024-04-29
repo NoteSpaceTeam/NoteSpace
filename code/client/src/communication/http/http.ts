@@ -1,53 +1,39 @@
-import config from '@src/config.ts';
+import config from '@/config.ts';
 
 export const BASE_URL = config.HTTP_SERVER_URL;
 
-export type HttpCommunication = {
+export interface HttpCommunication {
   post: (url: string, data?: any) => Promise<any>;
   get: (url: string) => Promise<any>;
   put: (url: string, data?: any) => Promise<any>;
   delete: (url: string) => Promise<any>;
-};
+}
 
 async function get(url: string) {
-  const response = await fetch(BASE_URL + url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  return await response.json();
+  return request(url, 'GET')
 }
 
 async function post(url: string, body: any) {
-  const response = await fetch(BASE_URL + url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  return await response.json();
+  return request(url, 'POST', body);
 }
 
 async function put(url: string, body: any) {
-  const response = await fetch(BASE_URL + url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  return await response.json();
+  return request(url, 'PUT', body);
 }
 
 async function del(url: string) {
-  const response = await fetch(BASE_URL + url, {
-    method: 'DELETE',
+  return request(url, 'DELETE')
+}
+
+const request = async (url: string, method: string, body?: any) => {
+  const requestInit: RequestInit = {
+    method,
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  }
+  if (body) requestInit.body = JSON.stringify(body);
+  const response = await fetch(BASE_URL + url, requestInit);
   return await response.json();
 }
 

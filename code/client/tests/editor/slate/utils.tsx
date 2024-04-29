@@ -1,7 +1,7 @@
 import { setup } from '../../test-utils';
 import { mockCommunication } from '../mocks/mockCommunication';
-import SlateEditor from '@src/components/editor/slate/SlateEditor';
-import { Fugue } from '@src/components/editor/crdt/fugue.ts';
+import SlateEditor from '@pages/editor/slate/SlateEditor';
+import { Fugue } from '@pages/editor/crdt/fugue.ts';
 
 /**
  * Sets up the editor for testing

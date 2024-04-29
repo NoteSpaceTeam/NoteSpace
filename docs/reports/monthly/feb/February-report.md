@@ -1,7 +1,7 @@
 # Notespace - February Report
 ## Introduction
 This is the February report for the Notespace project. This report will cover the progress made in February and the goals for March.
-> For detailed information on the project structure, please refer to [project structure](../../project-overview-report.md) report.
+> More information on the project structure is available in the [project structure](../../project-overview-report.md) report.
  
 ## Project summary
 As of 26th of February, the project is in the early stages of development. 
@@ -23,14 +23,14 @@ The project structure can be seen below:
 ![Project structure](./img.png)
 
 2. ### Client project created
-The client project was created using Vite as the build tool and React as the frontend library. 
+The client project was created using [Vite](https://vitejs.dev) as the bundler and [React](https://reactjs.org/) as the frontend library. 
 The setup was done using the PWA template provided by Vite.
 
 3. ### Server project created
-The server project was created using Express and TypeScript. The setup was done using the TypeScript template.
+The server project was created using [Express](https://expressjs.com) and [TypeScript](https://www.typescriptlang.org). 
+The setup was done using the TypeScript template.
 
 4. ### Prototype for the live editor started
-
 A initial prototype for the live editor was started. The client and server were then connected using a socket connection.
 This socket connection will be used to send and receive changes to the editor, and is supported through the use of the [socket.io](https://socket.io/) library.
 

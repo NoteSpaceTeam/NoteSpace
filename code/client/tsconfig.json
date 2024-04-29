@@ -22,9 +22,10 @@
     "baseUrl": "./src",
     "downlevelIteration": true,
     "paths": {
-      "@src/*": ["./*"],
-      "@editor/*": ["./editor/*"],
-      "@socket/*": ["./socket/*"]
+      "@/*": ["./*"],
+      "@pages/*": ["./pages/*"],
+      "@communication/*": ["./communication/*"],
+      "@components/*": ["./components/*"],
     }
   },
   "include": ["src", "tests"],

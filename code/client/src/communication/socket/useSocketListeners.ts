@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Communication } from '@src/communication/communication.ts';
+import {SocketCommunication} from "@communication/socket/socket-communication.ts";
+import {SocketEventHandlers} from "socket.io-client";
 
-function useSocketListeners({ socket }: Communication, eventHandlers: Record<string, (...args: any[]) => void>) {
+function useSocketListeners(socket : SocketCommunication, eventHandlers: SocketEventHandlers) {
   useEffect(() => {
     socket.on(eventHandlers);
     return () => socket.off(eventHandlers);

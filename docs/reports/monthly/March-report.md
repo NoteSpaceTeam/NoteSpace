@@ -9,7 +9,7 @@ This is the March report for the Notespace project. This report will cover the p
 As of the 27th of March, the project has made significant progress.
 The project has been refactored and optimized for better performance and maintainability.
 The conflict resolution algorithm has been updated, and a rich text editor prototype has been implemented using Slate.js.
-The project has also been integrated with Firestore for database support.
+The project has also been integrated with [Firestore](https://firebase.google.com/docs/firestore) for database support.
 
 The following tasks have been completed:
 
@@ -33,7 +33,7 @@ After encountering some issues with BlockNote, there was a migration from BlockN
 a more powerful and flexible rich text editor framework.
 It allowed for more customization and features like markdown support, as well as out-of-the-box React integration.
 
-We also started working on the integration of Slate.js with the backend,
+We also started working on the integration of Slate.js with the backend.
 
 4. ### Firestore integration
 For database support, Firestore was integrated into the project. This will store document information. 

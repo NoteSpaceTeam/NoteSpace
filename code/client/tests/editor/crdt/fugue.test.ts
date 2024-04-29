@@ -1,4 +1,4 @@
-import { Fugue } from '@src/components/editor/crdt/fugue';
+import { Fugue } from '@pages/editor/crdt/fugue';
 import {
   InsertOperation,
   DeleteOperation,
@@ -8,7 +8,7 @@ import {
 } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@notespace/shared/types/cursor';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { FugueNode } from '@src/components/editor/crdt/types';
+import { FugueNode } from '@pages/editor/crdt/types';
 
 describe('Fugue', () => {
   let fugue: Fugue;

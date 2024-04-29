@@ -1,10 +1,10 @@
-import { socketCommunication, SocketCommunication } from '@src/communication/socket/ws.ts';
-import { httpCommunication, HttpCommunication } from '@src/communication/http/http.ts';
+import { socketCommunication, SocketCommunication } from '@communication/socket/socket-communication.ts';
+import { httpCommunication, HttpCommunication } from '@communication/http/http.ts';
 
-export type Communication = {
+export interface Communication {
   socket: SocketCommunication;
   http: HttpCommunication;
-};
+}
 
 export const communication: Communication = {
   socket: socketCommunication,
