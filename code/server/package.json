@@ -13,14 +13,14 @@
   "author": "notespace-team",
   "license": "MIT",
   "dependencies": {
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "file:..\shared",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.1.0",
     "lodash": "^4.17.21",
     "socket.io": "^4.7.5",
-    "supertest": "^6.3.4"
+    "supertest": "^7.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.5",
