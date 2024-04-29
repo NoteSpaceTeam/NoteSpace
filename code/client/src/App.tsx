@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import DocumentEditor from '@pages/editor/DocumentEditor';
-import Header from '@components/header/Header';
-import Home from '@pages/home/Home.tsx';
+import DocumentEditor from '@/ui/pages/editor/DocumentEditor';
+import Header from '@/ui/components/header/Header';
+import Home from '@/ui/pages/home/Home.tsx';
 import './App.scss';
 import { CommunicationProvider } from '@/contexts/CommunicationContext.tsx';
-import { communication } from '@communication/communication.ts';
+import { communication } from '@/domain/communication/communication.ts';
 
 function App() {
   return (
