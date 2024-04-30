@@ -2,15 +2,16 @@ import { Socket } from 'socket.io';
 import { DocumentService } from '@src/types';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { getRoomId } from '@controllers/ws/rooms';
+import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 
 function onOperation(service: DocumentService) {
   return async (socket: Socket, operations: Operation[]) => {
     if (!operations) {
-      throw new Error('Operations are required');
+      throw new InvalidParameterError('Operations are required');
     }
     const documentId = getRoomId(socket);
     if (!documentId) {
-      throw new Error('Client socket not in a room');
+      throw new ForbiddenError('Client socket not in a room');
     }
     for (const operation of operations) {
       switch (operation.type) {
@@ -30,7 +31,7 @@ function onOperation(service: DocumentService) {
           await service.reviveCharacter(documentId, operation);
           break;
         default:
-          throw new Error('Invalid operation type');
+          throw new InvalidParameterError('Invalid operation type');
       }
     }
     socket.emit('ack');
