@@ -39,6 +39,7 @@ h1 {
 }
 
 button {
+  background-color: black;
   border-radius: 8px;
   cursor: pointer;
   padding: 2vh;

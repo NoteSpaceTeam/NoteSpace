@@ -56,28 +56,23 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     });
   }
 
-  async function insertCharacter(operation: InsertOperation) {
-    const { id, value, parent, side, styles } = operation;
+  async function insertCharacter({ id, value, parent, side, styles }: InsertOperation) {
     tree.addNode(id, value, parent, side, styles);
   }
 
-  async function deleteCharacter(operation: DeleteOperation) {
-    const { id } = operation;
+  async function deleteCharacter({ id }: DeleteOperation) {
     tree.deleteNode(id);
   }
 
-  async function updateInlineStyle(operation: InlineStyleOperation) {
-    const { id, style, value } = operation;
+  async function updateInlineStyle({ id, style, value }: InlineStyleOperation) {
     tree.updateInlineStyle(id, style, value);
   }
 
-  async function updateBlockStyle(operation: BlockStyleOperation) {
-    const { style, line } = operation;
+  async function updateBlockStyle({ style, line }: BlockStyleOperation) {
     tree.updateBlockStyle(style, line);
   }
 
-  async function reviveCharacter(operation: ReviveOperation) {
-    const { id } = operation;
+  async function reviveCharacter({ id }: ReviveOperation) {
     tree.reviveNode(id);
   }
 

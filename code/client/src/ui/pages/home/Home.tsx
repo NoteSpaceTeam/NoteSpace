@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useCommunication } from '@/domain/communication/context/useContext';
+import { useCommunication } from '@/domain/communication/context/useCommunication';
 import { Link, useNavigate } from 'react-router-dom';
 import { Document } from '@notespace/shared/crdt/types/document';
 import { MdDelete } from 'react-icons/md';
+import { IoDocumentText } from 'react-icons/io5';
+import { FaFilter, FaPlus } from 'react-icons/fa';
 import './Home.scss';
 
 function Home() {
@@ -30,14 +32,23 @@ function Home() {
 
   return (
     <div className="home">
-      <h3>Documents</h3>
-      <button onClick={createDocument}>Create Document</button>
+      <h2>Documents</h2>
+      <div className="header">
+        <FaFilter />
+        <button onClick={createDocument}>
+          <p>New</p>
+          <FaPlus />
+        </button>
+      </div>
       <ul>
         {docs.map(doc => (
           <li key={doc.id}>
-            <Link to={`/documents/${doc.id}`} className={'doc-title'}>
-              {doc.title || 'Untitled'}
-            </Link>
+            <div>
+              <IoDocumentText />
+              <Link to={`/documents/${doc.id}`} className="doc-title">
+                {doc.title || 'Untitled'}
+              </Link>
+            </div>
             <button onClick={() => onDeleteDocument(doc.id)}>
               <MdDelete />
             </button>
