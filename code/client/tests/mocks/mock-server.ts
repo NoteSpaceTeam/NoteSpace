@@ -1,4 +1,4 @@
-import handlers from './mock-handlers.ts';
-import { mockServer } from '@tests/mocks/global-mocks.ts';
+import handlers from './mock-handlers';
+import { mockServer } from '@tests/mocks/global-mocks';
 
 export const server = mockServer(...handlers);

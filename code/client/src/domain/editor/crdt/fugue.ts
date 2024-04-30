@@ -1,9 +1,9 @@
 import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree.ts';
-import { generateReplicaId, nodeInsert } from './utils.ts';
-import { type FugueNode, type NodeInsert } from '@/ui/pages/editor/crdt/types.ts';
-import { Cursor, Selection } from '@notespace/shared/types/cursor.ts';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
+import { generateReplicaId, nodeInsert } from './utils';
+import { type FugueNode, type NodeInsert } from '@/domain/editor/crdt/types';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, last, range } from 'lodash';
 import {
   BlockStyleOperation,
@@ -11,7 +11,7 @@ import {
   InlineStyleOperation,
   InsertOperation,
   ReviveOperation,
-} from '@notespace/shared/crdt/types/operations.ts';
+} from '@notespace/shared/crdt/types/operations';
 
 /**
  * Class that represents a local replica of a FugueTree

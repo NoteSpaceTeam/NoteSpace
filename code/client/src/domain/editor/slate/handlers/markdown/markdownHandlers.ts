@@ -1,8 +1,8 @@
-import { getSelection, isSelected } from '@/domain/editor/slate/utils/selection.ts';
+import { getSelection, isSelected } from '@/domain/editor/slate/utils/selection';
 import { Editor } from 'slate';
-import CustomEditor from '@/domain/editor/slate/CustomEditor.ts';
+import CustomEditor from '@/domain/editor/slate/CustomEditor';
 import { MarkdownDomainOperations } from '@/domain/editor/operations/markdown/types';
-import { InlineStyle } from '@notespace/shared/types/styles.ts';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 export default (editor: Editor, handlers: MarkdownDomainOperations) => {
   /**

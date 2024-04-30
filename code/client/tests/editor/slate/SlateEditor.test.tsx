@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@tests/test-utils.ts';
-import { mockCommunication } from '../../mocks/mockCommunication.ts';
-import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor.tsx';
+import { render, screen } from '@tests/test-utils';
+import { mockCommunication } from '../../mocks/mockCommunication';
+import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 
 describe('SlateEditor', () => {

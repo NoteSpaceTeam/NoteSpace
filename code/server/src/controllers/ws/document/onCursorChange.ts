@@ -12,9 +12,8 @@ const cursorColorsMap = new Map<string, string>();
 function onCursorChange() {
   return (socket: Socket, range: any) => {
     const documentId = getRoomId(socket);
-    if (!documentId) {
-      throw new Error('Document Id is required');
-    }
+    if (!documentId) return;
+
     if (!range) {
       deleteCursor(socket, documentId);
     } else {

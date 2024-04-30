@@ -12,6 +12,10 @@ import { ReviveOperation } from '@notespace/shared/crdt/types/operations';
 export default function DocumentService(database: DocumentDatabase): DocumentService {
   const tree = new FugueTree<string>();
 
+  async function getDocuments() {
+    return await database.getDocuments();
+  }
+
   async function createDocument() {
     return await database.createDocument();
   }
@@ -76,6 +80,7 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
   }
 
   return {
+    getDocuments,
     createDocument,
     getDocument,
     deleteDocument,

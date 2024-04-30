@@ -1,10 +1,10 @@
 import { type RenderElementProps } from 'slate-react';
-import { ElementRenderers, LeafRenderers } from './elements.tsx';
-import { Paragraph } from './components/components.ts';
-import { type CustomText } from '@/domain/editor/slate/types.ts';
+import { ElementRenderers, LeafRenderers } from './elements';
+import { Paragraph } from './components/components';
+import { type CustomText } from '@/domain/editor/slate/types';
 import { type ReactNode } from 'react';
-import Selection from '@/ui/pages/editor/components/cursor/Selection.tsx';
-import Cursor from '@/ui/pages/editor/components/cursor/Cursor.tsx';
+import Selection from '@/ui/pages/editor/components/cursor/Selection';
+import Cursor from '@/ui/pages/editor/components/cursor/Cursor';
 import { Range } from 'slate';
 
 /**
@@ -38,7 +38,7 @@ export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
     const { color, id, range, styles } = leaf.cursor;
 
     children = Range.isCollapsed(range!) ? (
-      <Cursor color={color} styles={styles} key={id} children />
+      <Cursor color={color} styles={styles} key={id} children={children} />
     ) : (
       <Selection color={color} children={children} />
     );

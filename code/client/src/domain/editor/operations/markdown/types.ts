@@ -1,5 +1,5 @@
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import { Selection } from '@notespace/shared/types/cursor.ts';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { Selection } from '@notespace/shared/types/cursor';
 
 export type MarkdownDomainOperations = {
   applyBlockStyle: ApplyBlockStyle;

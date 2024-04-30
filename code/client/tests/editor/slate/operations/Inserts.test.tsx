@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { userEvent } from '@tests/test-utils.ts';
-import { setupEditor } from '../utils.tsx';
+import { userEvent } from '@tests/test-utils';
+import { setupEditor } from '../utils';
 
 describe('Inserts', () => {
   let editor: HTMLElement;

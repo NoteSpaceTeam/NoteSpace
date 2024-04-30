@@ -6,9 +6,14 @@ import { emptyTree } from '@notespace/shared/crdt/utils';
 export default function DocumentDatabase(): DocumentDatabase {
   const documents: Record<string, Document> = {};
 
+  async function getDocuments() {
+    return Object.values(documents);
+  }
+
   async function createDocument() {
     const id = uuid();
     documents[id] = {
+      id,
       title: '',
       nodes: emptyTree(),
     };
@@ -40,6 +45,7 @@ export default function DocumentDatabase(): DocumentDatabase {
   }
 
   return {
+    getDocuments,
     createDocument,
     getDocument,
     deleteDocument,

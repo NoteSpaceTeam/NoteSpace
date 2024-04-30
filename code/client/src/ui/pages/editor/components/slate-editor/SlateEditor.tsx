@@ -1,22 +1,22 @@
-import { toSlate } from '@/domain/editor/slate/utils/slate.ts';
-import { descendant } from '@/domain/editor/slate/utils/slate.ts';
+import { toSlate } from '@/domain/editor/slate/utils/slate';
+import { descendant } from '@/domain/editor/slate/utils/slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
-import { Communication } from '@/domain/communication/communication.ts';
-import { getMarkdownPlugin } from '@/domain/editor/slate/plugins/markdown/withMarkdown.ts';
-import useEvents from '@/domain/editor/hooks/useEvents.ts';
-import useRenderers from '@/domain/editor/slate/hooks/useRenderers.tsx';
-import Toolbar from '@/ui/pages/editor/components/toolbar/Toolbar.tsx';
-import useEditor from '@/domain/editor/slate/hooks/useEditor.ts';
-import useHistory from '@/domain/editor/slate/hooks/useHistory.ts';
-import useDecorate from '@/domain/editor/slate/hooks/useDecorate.ts';
-import useCursors from '@/domain/editor/slate/hooks/useCursors.ts';
-import getEventHandlers from '@/domain/editor/slate/handlers/getEventHandlers.ts';
-import getFugueOperations from '@/domain/editor/operations/fugue/operations.ts';
+import { Communication } from '@/domain/communication/communication';
+import { getMarkdownPlugin } from '@/domain/editor/slate/plugins/markdown/withMarkdown';
+import useEvents from '@/domain/editor/hooks/useEvents';
+import useRenderers from '@/domain/editor/slate/hooks/useRenderers';
+import Toolbar from '@/ui/pages/editor/components/toolbar/Toolbar';
+import useEditor from '@/domain/editor/slate/hooks/useEditor';
+import useHistory from '@/domain/editor/slate/hooks/useHistory';
+import useDecorate from '@/domain/editor/slate/hooks/useDecorate';
+import useCursors from '@/domain/editor/slate/hooks/useCursors';
+import getEventHandlers from '@/domain/editor/slate/handlers/getEventHandlers';
+import getFugueOperations from '@/domain/editor/operations/fugue/operations';
 import './SlateEditor.scss';
 import { Descendant } from 'slate';
-import { Fugue } from '@/domain/editor/crdt/fugue.ts';
-import EditorTitle from '@/ui/pages/editor/components/title/EditorTitle.tsx';
+import { Fugue } from '@/domain/editor/crdt/fugue';
+import EditorTitle from '@/ui/pages/editor/components/title/EditorTitle';
 import { useCallback, useEffect } from 'react';
 
 type SlateEditorProps = {

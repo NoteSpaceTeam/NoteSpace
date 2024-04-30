@@ -1,12 +1,12 @@
-import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor.tsx';
+import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor';
 import './DocumentEditor.scss';
-import useFugue from '@/domain/editor/hooks/useFugue.ts';
-import { useContext, useEffect, useState } from 'react';
+import useFugue from '@/domain/editor/hooks/useFugue';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CommunicationContext } from '@/contexts/CommunicationContext.tsx';
+import { useCommunication } from '@/domain/communication/context/useContext';
 
 function DocumentEditor() {
-  const communication = useContext(CommunicationContext);
+  const communication = useCommunication();
   const { http, socket } = communication;
 
   const fugue = useFugue();

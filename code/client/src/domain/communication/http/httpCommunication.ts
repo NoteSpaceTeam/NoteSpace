@@ -1,4 +1,4 @@
-import config from '@/config.ts';
+import config from '@/config';
 
 export const BASE_URL = config.HTTP_SERVER_URL;
 
@@ -34,7 +34,13 @@ const request = async (url: string, method: string, body?: any) => {
   };
   if (body) requestInit.body = JSON.stringify(body);
   const response = await fetch(BASE_URL + url, requestInit);
-  return await response.json();
+
+  try {
+    return await response.json();
+  } catch (err) {
+    // parsing failed, probably empty body
+    return undefined;
+  }
 };
 
 export const httpCommunication: HttpCommunication = {

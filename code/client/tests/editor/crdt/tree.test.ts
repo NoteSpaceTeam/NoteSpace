@@ -1,8 +1,8 @@
-import { FugueTree } from '@notespace/shared/crdt/FugueTree.ts';
-import { InsertOperation } from '@notespace/shared/crdt/types/operations.ts';
+import { FugueTree } from '@notespace/shared/crdt/FugueTree';
+import { InsertOperation } from '@notespace/shared/crdt/types/operations';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FugueNode } from '@/domain/editor/crdt/types';
-import { Nodes } from '@notespace/shared/crdt/types/nodes.ts';
+import { Nodes } from '@notespace/shared/crdt/types/nodes';
 
 describe('FugueTree', () => {
   let tree: FugueTree<string>;

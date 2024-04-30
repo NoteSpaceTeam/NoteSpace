@@ -21,8 +21,8 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/domain/document/history/types.ts';
-import { pointToCursor } from '@/domain/editor/slate/utils/selection.ts';
+} from '@/domain/editor/domain/document/history/types';
+import { pointToCursor } from '@/domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
   insert_text: 'remove_text',

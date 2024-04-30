@@ -1,11 +1,11 @@
 import { BaseSelection } from 'slate';
-import { Fugue } from '@/domain/editor/crdt/fugue.ts';
-import { InputDomainOperations } from '@/domain/editor/domain/document/input/types.ts';
-import { Cursor, Selection } from '@notespace/shared/types/cursor.ts';
-import { nodeInsert } from '@/domain/editor/crdt/utils.ts';
-import { InlineStyle } from '@notespace/shared/types/styles.ts';
-import { Operation } from '@notespace/shared/crdt/types/operations.ts';
-import { Communication } from '@/domain/communication/communication.ts';
+import { Fugue } from '@/domain/editor/crdt/fugue';
+import { InputDomainOperations } from '@/domain/editor/operations/input/types';
+import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { nodeInsert } from '@/domain/editor/crdt/utils';
+import { InlineStyle } from '@notespace/shared/types/styles';
+import { Operation } from '@notespace/shared/crdt/types/operations';
+import { Communication } from '@/domain/communication/communication';
 
 export default (fugue: Fugue, { socket }: Communication): InputDomainOperations => {
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {

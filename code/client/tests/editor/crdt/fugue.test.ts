@@ -5,8 +5,8 @@ import {
   InlineStyleOperation,
   BlockStyleOperation,
   ReviveOperation,
-} from '@notespace/shared/crdt/types/operations.ts';
-import { Selection, Cursor } from '@notespace/shared/types/cursor.ts';
+} from '@notespace/shared/crdt/types/operations';
+import { Selection, Cursor } from '@notespace/shared/types/cursor';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FugueNode } from '@/domain/editor/crdt/types';
 

@@ -1,7 +1,7 @@
-import { Operation } from '@notespace/shared/crdt/types/operations.ts';
-import { Fugue } from '@/domain/editor/crdt/fugue.ts';
-import { Document } from '@notespace/shared/crdt/types/document.ts';
-import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types.ts';
+import { Operation } from '@notespace/shared/crdt/types/operations';
+import { Fugue } from '@/domain/editor/crdt/fugue';
+import { Document } from '@notespace/shared/crdt/types/document';
+import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types';
 
 export default (fugue: Fugue): FugueDomainOperations => {
   function applyOperations(operations: Operation[]) {

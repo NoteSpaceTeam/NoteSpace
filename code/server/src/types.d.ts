@@ -9,6 +9,7 @@ import {
 } from '@notespace/shared/crdt/types/operations';
 
 type DocumentDatabase = {
+  getDocuments: () => Promise<Document[]>;
   createDocument: () => Promise<string>;
   getDocument: (id: string) => Promise<Document>;
   updateDocument: (id: string, document: Partial<Document>) => Promise<void>;
@@ -16,6 +17,7 @@ type DocumentDatabase = {
 };
 
 type DocumentService = {
+  getDocuments: () => Promise<Document[]>;
   createDocument: () => Promise<string>;
   getDocument: (id: string) => Promise<Document>;
   deleteDocument: (id: string) => void;

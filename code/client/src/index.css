@@ -40,16 +40,11 @@ h1 {
 
 button {
   border-radius: 8px;
-  font-family: inherit;
-  background-color: white;
-  color: lightgray;
   cursor: pointer;
-  transition: border-color 0.25s;
+  padding: 2vh;
+  border: none;
 }
 
-button:hover {
-  border-color: gray;
-}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

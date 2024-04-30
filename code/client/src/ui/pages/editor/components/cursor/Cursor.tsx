@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { InlineStyle } from '@notespace/shared/types/styles.ts';
+import { InlineStyle } from '@notespace/shared/types/styles';
 
 type CursorProps = {
   children: ReactNode;

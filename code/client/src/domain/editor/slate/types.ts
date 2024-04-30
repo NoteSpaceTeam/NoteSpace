@@ -1,8 +1,8 @@
 import { type BaseEditor, type Descendant } from 'slate';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { type BlockStyle } from '@notespace/shared/types/styles.ts';
-import { CursorData } from '@/domain/editor/slate/hooks/useCursors.ts';
+import { type BlockStyle } from '@notespace/shared/types/styles';
+import { CursorData } from '@/domain/editor/slate/hooks/useCursors';
 
 export interface CustomFormat {
   bold?: boolean;

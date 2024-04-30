@@ -1,8 +1,8 @@
 import {
   createSetBlockApply,
   createSetInlineApply,
-} from '@/domain/editor/slate/plugins/markdown/operations/applyOperations.ts';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
+} from '@/domain/editor/slate/plugins/markdown/operations/applyOperations';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { ApplyBlockStyle, ApplyInlineStyle } from '@/domain/editor/operations/markdown/types';
 import { Editor, Range } from 'slate';
 

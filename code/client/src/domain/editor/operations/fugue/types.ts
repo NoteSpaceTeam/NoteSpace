@@ -1,5 +1,5 @@
-import { Operation } from '@notespace/shared/crdt/types/operations.ts';
-import { Document } from '@notespace/shared/crdt/types/document.ts';
+import { Operation } from '@notespace/shared/crdt/types/operations';
+import { Document } from '@notespace/shared/crdt/types/document';
 
 export type FugueDomainOperations = {
   applyOperations: (operations: Operation[]) => void;

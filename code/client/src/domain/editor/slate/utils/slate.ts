@@ -1,9 +1,9 @@
 import { createEditor, Descendant, Editor } from 'slate';
-import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import type { CustomText } from '@/domain/editor/slate/types.ts';
+import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import type { CustomText } from '@/domain/editor/slate/types';
 import { isEqual, last } from 'lodash';
-import { Fugue } from '@/domain/editor/crdt/fugue.ts';
-import { BlockStyles } from '@notespace/shared/types/styles.ts';
+import { Fugue } from '@/domain/editor/crdt/fugue';
+import { BlockStyles } from '@notespace/shared/types/styles';
 
 /**
  * Converts a FugueTree to a Slate document

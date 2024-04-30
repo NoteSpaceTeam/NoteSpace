@@ -1,0 +1,40 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2vh;
+
+  button {
+    background-color: cornflowerblue;
+  }
+  ul {
+    padding: 0;
+    text-align: center;
+
+    li {
+      list-style-type: none;
+      margin: 1vh;
+
+      .doc-title {
+        background-color: cornflowerblue;
+        color: white;
+        margin: 1vh;
+        padding: 0.5vh 2vh 0.5vh 2vh;
+        border-radius: 5px;
+        font-size: smaller;
+      }
+
+      button {
+        background-color: white;
+        color: gray;
+        margin: 0;
+        padding: 0;
+      }
+
+      button:hover {
+        color: red;
+      }
+    }
+  }
+}

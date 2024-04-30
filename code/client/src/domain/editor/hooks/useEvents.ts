@@ -1,7 +1,7 @@
-import useSocketListeners from '@/domain/communication/socket/useSocketListeners.ts';
-import { type Operation } from '@notespace/shared/crdt/types/operations.ts';
-import { Communication } from '@/domain/communication/communication.ts';
-import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types.ts';
+import useSocketListeners from '@/domain/communication/socket/useSocketListeners';
+import { type Operation } from '@notespace/shared/crdt/types/operations';
+import { Communication } from '@/domain/communication/communication';
+import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types';
 
 /**
  * Hook client socket listeners to events

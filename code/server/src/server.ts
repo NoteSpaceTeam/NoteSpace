@@ -7,7 +7,7 @@ import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import onConnection from '@controllers/ws/onConnection';
-import config from './config';
+import config from '@src/config';
 
 const database = databaseInit();
 const service = serviceInit(database);

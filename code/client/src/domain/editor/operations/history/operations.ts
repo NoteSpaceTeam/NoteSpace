@@ -1,4 +1,4 @@
-import { Fugue } from '@/domain/editor/crdt/fugue.ts';
+import { Fugue } from '@/domain/editor/crdt/fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,
@@ -11,10 +11,10 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/domain/document/history/types.ts';
-import { Communication } from '@/domain/communication/communication.ts';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles.ts';
-import { getStyleType } from '@notespace/shared/types/styles.ts';
+} from '@/domain/editor/domain/document/history/types';
+import { Communication } from '@/domain/communication/communication';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { getStyleType } from '@notespace/shared/types/styles';
 
 export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperations => {
   const applyHistoryOperation: ApplyHistory = (operations: HistoryOperation[]) => {

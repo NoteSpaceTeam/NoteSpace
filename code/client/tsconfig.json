@@ -7,7 +7,7 @@
     "skipLibCheck": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",

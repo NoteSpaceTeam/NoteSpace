@@ -1,4 +1,4 @@
-import { socket } from '@/domain/communication/socket/socket.ts';
+import { socket } from '@/domain/communication/socket/socket';
 import { SocketEventHandlers } from 'socket.io-client';
 
 type EmitType = (event: string, data?: any) => void;

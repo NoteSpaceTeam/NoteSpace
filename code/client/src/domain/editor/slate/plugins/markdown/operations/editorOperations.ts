@@ -1,12 +1,12 @@
 import { Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@/domain/editor/slate/types.ts';
-import { shortcuts } from '../shortcuts.ts';
-import CustomEditor from '@/domain/editor/slate/CustomEditor.ts';
-import { isMultiBlock } from '@/domain/editor/slate/utils/slate.ts';
-import { getSelection } from '@/domain/editor/slate/utils/selection.ts';
+import { type CustomElement } from '@/domain/editor/slate/types';
+import { shortcuts } from '../shortcuts';
+import CustomEditor from '@/domain/editor/slate/CustomEditor';
+import { isMultiBlock } from '@/domain/editor/slate/utils/slate';
+import { getSelection } from '@/domain/editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
 import { MarkdownDomainOperations } from '@/domain/editor/operations/markdown/types';
-import { RuleType } from '@/domain/editor/slate/plugins/markdown/rules.ts';
+import { RuleType } from '@/domain/editor/slate/plugins/markdown/rules';
 
 type InlineFunction = (n: unknown) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
