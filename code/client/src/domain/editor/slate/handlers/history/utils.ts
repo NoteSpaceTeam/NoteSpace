@@ -21,7 +21,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/domain/document/history/types';
+} from '@/domain/editor/operations/history/types';
 import { pointToCursor } from '@/domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
@@ -36,7 +36,7 @@ const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
 
 const getReverseType = (type: BaseOperation['type']) => reverseTypes[type] || type;
 
-interface Batch {
+export interface Batch {
   operations: BaseOperation[];
   selectionBefore: Range | null;
 }
@@ -63,7 +63,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   ): HistoryOperation | undefined {
     switch (type) {
       case 'insert_text':
-        return insertTextOperation(operation as BaseInsertTextOperation, selectionBefore?.focus.offset);
+        return insertTextOperation(operation as BaseInsertTextOperation);
       case 'remove_text':
         return removeTextOperation(operation as BaseRemoveTextOperation);
       case 'insert_node':
@@ -86,19 +86,11 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   /**
    * Converts a slate insert text operation to a history insert text operation
    * @param operation
-   * @param focus_offset
    */
-  function insertTextOperation(
-    operation: BaseInsertTextOperation,
-    focus_offset: number | undefined
-  ): InsertTextOperation | undefined {
+  function insertTextOperation(operation: BaseInsertTextOperation): InsertTextOperation | undefined {
     if (operation.text === '') return undefined;
 
-    const start = {
-      line: operation.path[0],
-      column: focus_offset || 0,
-    };
-
+    const start = pointToCursor(editor, { path: operation.path, offset: operation.offset });
     const text = operation.text.split('');
     return { type: 'insert_text', cursor: { ...start, column: start.column }, text };
   }

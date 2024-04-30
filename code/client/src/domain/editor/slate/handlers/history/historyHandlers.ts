@@ -1,6 +1,6 @@
 import { Editor } from 'slate';
 import { last } from 'lodash';
-import { HistoryDomainOperations } from '@/domain/editor/domain/document/history/types';
+import { HistoryDomainOperations } from '@/domain/editor/operations/history/types';
 import { toHistoryOperations } from '@/domain/editor/slate/handlers/history/utils';
 
 export type HistoryHandlers = {
