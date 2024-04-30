@@ -11,7 +11,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/domain/document/history/types';
+} from '@/domain/editor/operations/history/types';
 import { Communication } from '@/domain/communication/communication';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { getStyleType } from '@notespace/shared/types/styles';
@@ -24,7 +24,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
       .flat()
       .filter(operation => operation !== undefined && operation !== null);
 
-    socket.emitChunked('operation', communicationOperations);
+    socket.emit('operation', communicationOperations);
   };
 
   function getOperation(operation: HistoryOperation) {

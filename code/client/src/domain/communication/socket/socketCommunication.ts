@@ -1,12 +1,17 @@
-import { socket } from '@/domain/communication/socket/socket';
-import { SocketEventHandlers } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import config from '@/config';
+import { OperationEmitter } from '@/domain/communication/socket/operationEmitter';
 
 type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;
+export type SocketEventHandlers = Record<string, (...args: any[]) => void>;
+
+const OPTIONS = { autoConnect: false };
+export const socket: Socket = io(config.SOCKET_SERVER_URL, OPTIONS);
+const operationEmitter = new OperationEmitter();
 
 export interface SocketCommunication {
   emit: EmitType;
-  emitChunked: EmitType;
   on: ListenType;
   off: ListenType;
   connect: () => void;
@@ -14,11 +19,11 @@ export interface SocketCommunication {
 }
 
 function emit(event: string, data: any) {
-  socket.emit(event, data);
-}
-
-function emitChunked(event: string, data: any) {
-  socket.emitChunked(event, data);
+  if (event === 'operation') {
+    operationEmitter.addOperation(...data);
+  } else {
+    socket.emit(event, data);
+  }
 }
 
 function on(eventHandlers: SocketEventHandlers) {
@@ -43,7 +48,6 @@ function disconnect() {
 
 export const socketCommunication: SocketCommunication = {
   emit,
-  emitChunked,
   on,
   off,
   connect,

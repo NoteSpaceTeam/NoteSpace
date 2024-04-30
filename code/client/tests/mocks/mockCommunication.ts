@@ -4,7 +4,6 @@ export function mockCommunication(): Communication {
   return {
     socket: {
       emit: () => {},
-      emitChunked: () => {},
       on: () => {},
       off: () => {},
       connect: () => {},

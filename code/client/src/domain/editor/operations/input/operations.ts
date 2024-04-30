@@ -11,13 +11,13 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {
     if (char.length !== 1) throw new Error('Invalid character');
     const operations = fugue.insertLocal(cursor, nodeInsert(char, styles));
-    socket.emitChunked('operation', operations);
+    socket.emit('operation', operations);
   }
 
   function insertLineBreak(cursor: Cursor) {
     const operations = fugue.insertLocal(cursor, '\n');
     const styleOperation = fugue.updateBlockStyleLocal(cursor.line + 1, 'paragraph', true);
-    socket.emitChunked('operation', [styleOperation, ...operations]);
+    socket.emit('operation', [styleOperation, ...operations]);
   }
 
   function deleteCharacter(cursor: Cursor) {
@@ -29,7 +29,7 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
 
   function deleteSelection(selection: Selection) {
     const operations = fugue.deleteLocal(selection);
-    socket.emitChunked('operation', operations);
+    socket.emit('operation', operations);
   }
 
   function deleteWord(cursor: Cursor, reverse: boolean) {
@@ -43,7 +43,7 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
     const lineNodes = chars.filter(char => char === '\n');
     const insertOperations: Operation[] = fugue.insertLocal(start, ...text);
     const styleOperations = lineNodes.map(() => fugue.updateBlockStyleLocal(start.line + 1, 'paragraph', true));
-    socket.emitChunked('operation', [...styleOperations, ...insertOperations]);
+    socket.emit('operation', [...styleOperations, ...insertOperations]);
   }
 
   function updateSelection(range: BaseSelection, styles: InlineStyle[]) {
