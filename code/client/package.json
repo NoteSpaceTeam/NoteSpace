@@ -48,8 +48,8 @@
     "@typescript-eslint/parser": "^7.8.0",
     "@vite-pwa/assets-generator": "^0.2.4",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.5.2",
-    "@vitest/ui": "^1.5.2",
+    "@vitest/coverage-v8": "^1.5.3",
+    "@vitest/ui": "^1.5.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
@@ -60,11 +60,12 @@
     "jsdom": "^24.0.0",
     "knip": "^5.11.0",
     "prettier": "^3.2.5",
-    "sass": "^1.75.0",
+    "sass": "^1.76.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
     "vite-plugin-qrcode": "^0.2.3",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.5.2"
-  }
+    "vitest": "^1.5.3"
+  },
+  "packageManager": "pnpm@9.0.6+sha256.0624e30eff866cdeb363b15061bdb7fd9425b17bc1bb42c22f5f4efdea21f6b3"
 }

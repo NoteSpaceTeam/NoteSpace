@@ -23,9 +23,9 @@
     "downlevelIteration": true,
     "paths": {
       "@/*": ["./*"],
-      "@pages/*": ["./pages/*"],
-      "@communication/*": ["./communication/*"],
-      "@components/*": ["./components/*"],
+      "@domain/*": ["./domain/*"],
+      "@pwa/*": ["./pwa/*"],
+      "@ui/*": ["./ui/*"],
       "@tests/*": ["../tests/*"]
     }
   },

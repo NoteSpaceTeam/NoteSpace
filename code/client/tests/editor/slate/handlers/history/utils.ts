@@ -1,7 +1,6 @@
 import { withHistory } from 'slate-history';
 import {
   BaseOperation,
-  createEditor,
   InsertNodeOperation,
   InsertTextOperation,
   MergeNodeOperation,
@@ -13,12 +12,11 @@ import {
   SplitNodeOperation,
 } from 'slate';
 import { Batch } from '@/domain/editor/slate/handlers/history/utils';
-import { descendant } from '@/domain/editor/slate/utils/slate';
+import { buildEditor } from '@/domain/editor/slate/utils/slate';
+import { withReact } from 'slate-react';
 
 export const mockEditor = () => {
-  const editor = withHistory(createEditor());
-  editor.children = [descendant('paragraph', '')];
-  return editor;
+  return buildEditor(withReact, withHistory);
 };
 
 export const applyBatch = (editor: any, batch: Batch) => {

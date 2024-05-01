@@ -105,6 +105,7 @@ export type MergeNodeOperation = {
  */
 export type SetNodeOperation = {
   type: BaseSetNodeOperation['type'];
+  lineOperation: boolean;
   selection: Selection;
   properties: Partial<Node>;
 };
@@ -118,6 +119,7 @@ export type SetNodeOperation = {
  */
 export type UnsetNodeOperation = {
   type: 'unset_node';
+  lineOperation: boolean;
   selection: Selection;
   properties: Partial<Node>;
 };

@@ -58,8 +58,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
    */
   function toHistoryOperation(
     type: HistoryOperation['type'],
-    operation: BaseOperation,
-    selectionBefore: BaseRange | null
+    selectionBefore: BaseRange | null,
+    operation: BaseOperation
   ): HistoryOperation | undefined {
     switch (type) {
       case 'insert_text':
@@ -67,9 +67,9 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
       case 'remove_text':
         return removeTextOperation(operation as BaseRemoveTextOperation);
       case 'insert_node':
-        return nodeOperation(operation as BaseInsertNodeOperation, selectionBefore?.focus.offset, true);
+        return nodeOperation(operation as BaseInsertNodeOperation, true);
       case 'remove_node':
-        return nodeOperation(operation as BaseRemoveNodeOperation, selectionBefore?.focus.offset, false);
+        return nodeOperation(operation as BaseRemoveNodeOperation, false);
       case 'merge_node':
         return handleNodeOperation(operation as BaseMergeNodeOperation, true);
       case 'split_node':
@@ -122,12 +122,10 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   /**
    * Handles a slate insert or remove node operation
    * @param operation
-   * @param focus_offset
    * @param insert_mode
    */
   function nodeOperation(
     operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
-    focus_offset: number | undefined,
     insert_mode: boolean
   ): InsertNodeOperation | RemoveNodeOperation | undefined {
     console.log(insert_mode ? 'insertNodeOperation' : 'removeNodeOperation', operation);
@@ -135,10 +133,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     const offset = (line: number) => (line === 0 ? 0 : 1);
 
-    const start = {
-      line: operation.path[0],
-      column: focus_offset || 0,
-    };
+    const start = pointToCursor(editor, { path: operation.path, offset: 0 });
 
     const end = {
       ...start,
@@ -183,15 +178,18 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     offset: number | undefined,
     set_mode: boolean
   ): SetNodeOperation | UnsetNodeOperation {
+    const lineOperation = operation.path.length === 1;
+
     const start = pointToCursor(editor, { path: operation.path, offset: 0 });
 
     const end = {
       ...start,
-      column: offset ? offset - 1 : start.column,
+      column: start.column + (offset || 0),
     };
 
     return {
       type: set_mode ? 'set_node' : 'unset_node',
+      lineOperation,
       selection: { start, end },
       properties: set_mode ? operation.properties : operation.newProperties,
     };
@@ -201,7 +199,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     .map(operation => {
       const type: BaseOperation['type'] = operation.type;
       const operationType = reverseType ? getReverseType(type) : (type as HistoryOperation['type']);
-      return toHistoryOperation(operationType, operation, operations.selectionBefore);
+      return toHistoryOperation(operationType, operations.selectionBefore, operation);
     })
     .filter(operation => operation !== undefined) as HistoryOperation[];
 }
