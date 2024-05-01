@@ -5,12 +5,14 @@ import { Document } from '@notespace/shared/crdt/types/document';
 import { MdDelete } from 'react-icons/md';
 import { IoDocumentText } from 'react-icons/io5';
 import { FaFilter, FaPlus } from 'react-icons/fa';
-import './Home.scss';
+import './Workspace.scss';
+import { useErrorBoundary } from 'react-error-boundary';
 
-function Home() {
+function Workspace() {
   const navigate = useNavigate();
   const communication = useCommunication();
   const [docs, setDocs] = useState<Document[]>([]);
+  const { showBoundary } = useErrorBoundary();
 
   async function createDocument() {
     const { id } = await communication.http.post('/documents');
@@ -27,15 +29,15 @@ function Home() {
       const documents = await communication.http.get('/documents');
       setDocs(documents);
     }
-    getDocuments();
-  }, [communication]);
+    getDocuments().catch(showBoundary);
+  }, [communication, showBoundary]);
 
   return (
-    <div className="home">
-      <h2>Documents</h2>
+    <div className="workspace">
+      <h2>Workspace</h2>
       <div className="header">
         <FaFilter />
-        <button onClick={createDocument}>
+        <button onClick={() => createDocument().catch(showBoundary)}>
           <p>New</p>
           <FaPlus />
         </button>
@@ -49,7 +51,7 @@ function Home() {
                 {doc.title || 'Untitled'}
               </Link>
             </div>
-            <button onClick={() => onDeleteDocument(doc.id)}>
+            <button onClick={() => onDeleteDocument(doc.id).catch(showBoundary)}>
               <MdDelete />
             </button>
           </li>
@@ -59,4 +61,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Workspace;

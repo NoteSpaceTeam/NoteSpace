@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@tests/test-utils';
 import { mockCommunication } from '../../mocks/mockCommunication';
-import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor';
+import Editor from '@/ui/pages/document/components/editor/Editor';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 
 describe('SlateEditor', () => {
@@ -9,7 +9,7 @@ describe('SlateEditor', () => {
   let editor: HTMLElement;
 
   beforeEach(async () => {
-    const { findByTestId } = render(<SlateEditor fugue={fugue} communication={mockCommunication()} />);
+    const { findByTestId } = render(<Editor fugue={fugue} communication={mockCommunication()} />);
     editor = await findByTestId('editor');
     editor.focus();
   });

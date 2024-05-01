@@ -68,8 +68,8 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     tree.updateInlineStyle(id, style, value);
   }
 
-  async function updateBlockStyle({ style, line }: BlockStyleOperation) {
-    tree.updateBlockStyle(style, line);
+  async function updateBlockStyle({ style, line, append }: BlockStyleOperation) {
+    tree.updateBlockStyle(style, line, append);
   }
 
   async function reviveCharacter({ id }: ReviveOperation) {

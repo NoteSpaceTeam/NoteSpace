@@ -1,23 +1,23 @@
-import { toSlate } from '@/domain/editor/slate/utils/slate';
-import { descendant } from '@/domain/editor/slate/utils/slate';
+import { useCallback, useEffect } from 'react';
+import { Descendant } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
+import { toSlate } from '@/domain/editor/slate/utils/slate';
+import { descendant } from '@/domain/editor/slate/utils/slate';
 import { Communication } from '@/domain/communication/communication';
 import { getMarkdownPlugin } from '@/domain/editor/slate/plugins/markdown/withMarkdown';
+import { Fugue } from '@/domain/editor/crdt/fugue';
 import useEvents from '@/domain/editor/hooks/useEvents';
 import useRenderers from '@/domain/editor/slate/hooks/useRenderers';
-import Toolbar from '@/ui/pages/editor/components/toolbar/Toolbar';
+import Toolbar from '@/ui/pages/document/components/toolbar/Toolbar';
+import Title from '@/ui/pages/document/components/title/Title';
 import useEditor from '@/domain/editor/slate/hooks/useEditor';
 import useHistory from '@/domain/editor/slate/hooks/useHistory';
 import useDecorate from '@/domain/editor/slate/hooks/useDecorate';
 import useCursors from '@/domain/editor/slate/hooks/useCursors';
 import getEventHandlers from '@/domain/editor/slate/handlers/getEventHandlers';
 import getFugueOperations from '@/domain/editor/operations/fugue/operations';
-import './SlateEditor.scss';
-import { Descendant } from 'slate';
-import { Fugue } from '@/domain/editor/crdt/fugue';
-import EditorTitle from '@/ui/pages/editor/components/title/EditorTitle';
-import { useCallback, useEffect } from 'react';
+import './Editor.scss';
 
 type SlateEditorProps = {
   title?: string;
@@ -27,7 +27,7 @@ type SlateEditorProps = {
 
 const initialValue: Descendant[] = [descendant('paragraph', '')];
 
-function SlateEditor({ title, fugue, communication }: SlateEditorProps) {
+function Editor({ title, fugue, communication }: SlateEditorProps) {
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
@@ -55,7 +55,7 @@ function SlateEditor({ title, fugue, communication }: SlateEditorProps) {
     <div className="editor">
       <div className="container">
         <Slate editor={editor} initialValue={initialValue} onChange={onSelectionChange}>
-          <EditorTitle title={title || ''} placeholder={'Untitled'} communication={communication} />
+          <Title title={title || ''} placeholder={'Untitled'} communication={communication} />
           <Toolbar onApplyMark={onFormat} />
           <Editable
             className="editable"
@@ -78,4 +78,4 @@ function SlateEditor({ title, fugue, communication }: SlateEditorProps) {
   );
 }
 
-export default SlateEditor;
+export default Editor;

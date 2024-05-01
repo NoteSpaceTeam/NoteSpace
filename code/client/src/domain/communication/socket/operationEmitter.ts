@@ -4,7 +4,7 @@ import { socket } from '@/domain/communication/socket/socketCommunication';
 
 export class OperationEmitter {
   private readonly operationBuffer: Operation[] = [];
-  private readonly timeoutDuration = 100;
+  private readonly timeoutDuration = 200;
   private readonly chunkSize = 100;
   private readonly maxBufferedOperations = 10;
   private timeoutId: NodeJS.Timeout | null = null;

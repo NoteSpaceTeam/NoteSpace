@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import DocumentEditor from '@/ui/pages/editor/DocumentEditor';
-import Header from '@/ui/components/header/Header';
-import Home from '@/ui/pages/home/Home';
-import './App.scss';
 import { CommunicationProvider } from '@/domain/communication/context/CommunicationContext';
 import { communication } from '@/domain/communication/communication';
+import { ErrorBoundary } from 'react-error-boundary';
+import Document from '@/ui/pages/document/Document';
+import Header from '@/ui/components/header/Header';
+import Workspace from '@/ui/pages/workspace/Workspace';
+import Error from '@/ui/components/error/Error';
+import './App.scss';
+import NotFound from '@/ui/pages/notfound/NotFound';
 
 function App() {
   return (
@@ -12,11 +15,14 @@ function App() {
       <CommunicationProvider communication={communication}>
         <Router>
           <Header />
-          <Routes>
-            <Route path="/" element={<Navigate to={`/documents`} />} />
-            <Route path="/documents" element={<Home />} />
-            <Route path="/documents/:id" element={<DocumentEditor />} />
-          </Routes>
+          <ErrorBoundary FallbackComponent={Error}>
+            <Routes>
+              <Route path="/" element={<Navigate to={`/documents`} />} />
+              <Route path="/documents" element={<Workspace />} />
+              <Route path="/documents/:id" element={<Document />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
         </Router>
       </CommunicationProvider>
     </div>

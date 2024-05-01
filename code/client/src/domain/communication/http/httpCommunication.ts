@@ -35,12 +35,12 @@ const request = async (url: string, method: string, body?: any) => {
   if (body) requestInit.body = JSON.stringify(body);
   const response = await fetch(BASE_URL + url, requestInit);
 
-  try {
-    return await response.json();
-  } catch (err) {
-    // parsing failed, probably empty body
-    return undefined;
+  if (response.headers.get('content-length') === '0') return;
+  const result = await response.json();
+  if (response.ok) {
+    return result;
   }
+  throw new Error(result.error || 'Failed to fetch');
 };
 
 export const httpCommunication: HttpCommunication = {

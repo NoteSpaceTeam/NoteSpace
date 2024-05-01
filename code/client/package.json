@@ -27,6 +27,7 @@
     "msw": "^2.2.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-error-boundary": "^4.0.13",
     "react-icons": "^5.1.0",
     "react-router-dom": "^6.23.0",
     "slate": "^0.103.0",
@@ -66,6 +67,5 @@
     "vite-plugin-qrcode": "^0.2.3",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.5.3"
-  },
-  "packageManager": "pnpm@9.0.6+sha256.0624e30eff866cdeb363b15061bdb7fd9425b17bc1bb42c22f5f4efdea21f6b3"
+  }
 }

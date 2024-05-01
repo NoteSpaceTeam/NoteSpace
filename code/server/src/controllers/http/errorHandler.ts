@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+export default function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
   let statusCode = 500;
-  switch (err.name) {
+  switch (error.name) {
     case 'NotFoundError':
       statusCode = 404;
       break;
@@ -14,6 +14,5 @@ export default function errorHandler(err: Error, req: Request, res: Response, ne
       statusCode = 403;
       break;
   }
-  console.error(err.stack);
-  res.status(statusCode).send({ error: err.message });
+  res.status(statusCode).send({ error: error.message });
 }

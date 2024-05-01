@@ -1,6 +1,6 @@
 import { setup } from '@tests/test-utils';
 import { mockCommunication } from '../../mocks/mockCommunication';
-import SlateEditor from '@/ui/pages/editor/components/slate-editor/SlateEditor';
+import SlateEditor from '@/ui/pages/document/components/editor/Editor';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 
 /**

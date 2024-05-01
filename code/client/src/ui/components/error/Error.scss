@@ -1,0 +1,30 @@
+.error {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: black;
+  width: 20%;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  p {
+    font-size: 1em;
+    font-weight: 400;
+  }
+
+  span {
+    display: block;
+    background-color: red;
+    color: white;
+    width: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    > * {
+      padding-top: 1vh;
+    }
+  }
+}

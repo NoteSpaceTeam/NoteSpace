@@ -3,8 +3,8 @@ import { ElementRenderers, LeafRenderers } from './elements';
 import { Paragraph } from './components/components';
 import { type CustomText } from '@/domain/editor/slate/types';
 import { type ReactNode } from 'react';
-import Selection from '@/ui/pages/editor/components/cursor/Selection';
-import Cursor from '@/ui/pages/editor/components/cursor/Cursor';
+import Selection from '@/ui/pages/document/components/cursor/Selection';
+import Cursor from '@/ui/pages/document/components/cursor/Cursor';
 import { Range } from 'slate';
 
 /**

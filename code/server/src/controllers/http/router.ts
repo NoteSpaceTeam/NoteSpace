@@ -12,7 +12,6 @@ export default function (service: DocumentService) {
 
   const router = PromiseRouter(); // automatically routes unhandled errors to error handling middleware
   router.use(express.urlencoded({ extended: true }));
-  router.use(errorHandler);
 
   router.get('/', (req, res) => {
     res.send('Welcome to NoteSpace');
@@ -22,5 +21,6 @@ export default function (service: DocumentService) {
   router.get('/documents/:id', getDocument);
   router.delete('/documents/:id', deleteDocument);
 
+  router.use(errorHandler);
   return router;
 }

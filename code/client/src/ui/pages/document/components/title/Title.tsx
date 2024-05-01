@@ -3,12 +3,12 @@ import useSocketListeners from '@/domain/communication/socket/useSocketListeners
 import { ReactEditor, useSlate } from 'slate-react';
 import { Communication } from '@/domain/communication/communication';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
   communication: Communication;
 }
 
-function EditorTitle(props: InputProps) {
+function Title(props: TitleProps) {
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
   const editor = useSlate();
@@ -46,8 +46,9 @@ function EditorTitle(props: InputProps) {
       onBlur={onConfirm}
       onKeyDown={onKeyDown}
       spellCheck={false}
+      maxLength={30}
       {...props}
     />
   );
 }
-export default EditorTitle;
+export default Title;
