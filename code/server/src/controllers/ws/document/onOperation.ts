@@ -6,6 +6,8 @@ import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 
 function onOperation(service: DocumentService) {
   return async (socket: Socket, operations: Operation[]) => {
+
+    console.log('onOperation:', operations)
     if (!operations) {
       throw new InvalidParameterError('Operations are required');
     }

@@ -3,7 +3,7 @@ import { BaseInsertTextOperation, BaseSetNodeOperation, Editor } from 'slate';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import {
   applyBatch,
-  deleteText,
+  removeText,
   getRedoOperations,
   getUndoOperations,
   mockEditor,
@@ -34,7 +34,7 @@ describe('No style', () => {
     fugue.insertLocal({ line: 0, column: 0 }, ...'abc'.split(''));
     editor.children = toSlate(fugue);
 
-    const batch = toBatch(deleteText('a', [0, 0], 0));
+    const batch = toBatch(removeText('a', [0, 0], 0));
 
     applyBatch(editor, batch);
   };
@@ -109,7 +109,7 @@ describe('Inline Style', () => {
     fugue.insertLocal({ line: 0, column: 0 }, 'a');
     editor.children = toSlate(fugue);
 
-    const batch = toBatch(deleteText('b', [0, 1], 0), removeNode({ text: '', bold: true }, [0, 1]));
+    const batch = toBatch(removeText('b', [0, 1], 0), removeNode({ text: '', bold: true }, [0, 1]));
     editor.history.undos = [batch];
   };
 

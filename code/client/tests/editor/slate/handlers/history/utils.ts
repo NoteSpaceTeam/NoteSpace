@@ -39,7 +39,7 @@ export const insertText = (text: string, path: Path, offset: number): InsertText
   return { type: 'insert_text', path, offset, text };
 };
 
-export const deleteText = (text: string, path: Path, offset: number): RemoveTextOperation => ({
+export const removeText = (text: string, path: Path, offset: number): RemoveTextOperation => ({
   type: 'remove_text',
   path,
   offset,
