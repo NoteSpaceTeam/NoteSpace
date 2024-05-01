@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { Descendant } from 'slate';
@@ -11,7 +11,7 @@ describe('toSlate', () => {
     fugue = new Fugue();
   });
 
-  it('should return empty descendants for an empty fugue tree', () => {
+  test('should return empty descendants for an empty fugue tree', () => {
     // when
     const descendants: Descendant[] = toSlate(fugue);
 
@@ -20,7 +20,7 @@ describe('toSlate', () => {
     expect(descendants).toEqual([{ type: 'paragraph', children: [{ text: '' }] }]);
   });
 
-  it('should return descendants based on fugue tree', () => {
+  test('should return descendants based on fugue tree', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: cursor, end: { line: 0, column: 1 } };

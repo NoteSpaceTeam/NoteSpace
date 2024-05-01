@@ -1,12 +1,33 @@
-import { describe, it, beforeEach, expect } from 'vitest';
-import { applyBatch, insertNode, insertText, mockEditor, toBatch } from '@tests/editor/slate/handlers/history/utils';
+import { describe, test, beforeEach, expect } from 'vitest';
+import {
+  applyBatch,
+  getRedoOperations,
+  getUndoOperations,
+  insertNode,
+  insertText,
+  mockEditor,
+  setNode,
+  toBatch,
+} from '@tests/editor/slate/handlers/history/utils';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import { toSlate } from '@domain/editor/slate/utils/slate';
-import { last } from 'lodash';
-import { toHistoryOperations } from '@domain/editor/slate/handlers/history/utils';
-import { InsertNodeOperation, InsertTextOperation, RemoveTextOperation } from '@domain/editor/operations/history/types';
-import { BaseInsertNodeOperation, BaseInsertTextOperation, BaseRemoveTextOperation, Editor } from 'slate';
+import {
+  InsertNodeOperation,
+  InsertTextOperation,
+  RemoveNodeOperation,
+  RemoveTextOperation,
+  SetNodeOperation,
+  UnsetNodeOperation,
+} from '@domain/editor/operations/history/types';
+import {
+  BaseInsertNodeOperation,
+  BaseInsertTextOperation,
+  BaseRemoveTextOperation,
+  BaseSetNodeOperation,
+  Editor,
+} from 'slate';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
+import { BlockStyles } from '@notespace/shared/types/styles';
 
 let editor: Editor;
 let fugue: Fugue;
@@ -16,7 +37,7 @@ beforeEach(() => {
   fugue = new Fugue();
 });
 
-describe('No style & Block style', () => {
+describe('No style', () => {
   const insertAtEmpty = () => {
     fugue.insertLocal({ line: 0, column: 0 }, '');
     editor.children = toSlate(fugue);
@@ -26,8 +47,8 @@ describe('No style & Block style', () => {
 
   beforeEach(insertAtEmpty);
 
-  it('Should undo insert', () => {
-    const { operations, editorBatch } = getUndoOperations();
+  test('Should undo insert', () => {
+    const { operations, editorBatch } = getUndoOperations(editor, 3);
     for (const i in operations) {
       const op = operations[i] as RemoveTextOperation;
       const editorOp = editorBatch!.operations[i] as BaseRemoveTextOperation;
@@ -40,14 +61,43 @@ describe('No style & Block style', () => {
     }
   });
 
-  it('Should redo insert', () => {
-    const { operations, editorBatch } = getRedoOperations();
+  test('Should redo insert', () => {
+    const { operations, editorBatch } = getRedoOperations(editor, 3);
     for (const i in operations) {
       const op = operations[i] as InsertTextOperation;
       const editorOp = editorBatch!.operations[i] as BaseInsertTextOperation;
       expect(operations[i].type).toBe('insert_text');
       expect(op.cursor).toEqual(pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset }));
     }
+  });
+});
+
+describe('Block style', () => {
+  const insertBlockAtEmpty = () => {
+    fugue.insertLocal({ line: 0, column: 0 }, '');
+    editor.children = toSlate(fugue);
+    const batch = toBatch(setNode({ type: BlockStyles.p }, { type: BlockStyles.h1 }, [0]));
+    editor.history.undos = [batch];
+  };
+
+  beforeEach(insertBlockAtEmpty);
+
+  test('Should undo insert block', () => {
+    const { operations, editorBatch } = getUndoOperations(editor, 1);
+
+    const op = operations[0] as UnsetNodeOperation;
+    const editorOp = editorBatch!.operations[0] as BaseSetNodeOperation;
+    expect(operations[0].type).toBe('unset_node');
+    expect(op.properties).toBe(editorOp.newProperties);
+  });
+
+  test('Should redo insert block', () => {
+    const { operations } = getRedoOperations(editor, 1);
+
+    const op = operations[0] as SetNodeOperation;
+    const editorOp = editor.history!.redos[0].operations[0] as BaseSetNodeOperation;
+    expect(operations[0].type).toBe('set_node');
+    expect(op.properties.type).toBe(editorOp.properties.type);
   });
 });
 
@@ -66,12 +116,10 @@ describe('Inline style', () => {
 
     beforeEach(insertInlineAtEmpty);
 
-    it('Should undo insert text', () => {
-      const editorBatch = last(editor.history.undos);
-      const operations = toHistoryOperations(editor, editorBatch, true); // undo - true, redo - false
-      expect(operations.length).toBe(3);
+    test('Should undo insert text', () => {
+      const { operations, editorBatch } = getUndoOperations(editor, 3);
 
-      const nodeInsertOp = operations[0] as InsertNodeOperation;
+      const nodeInsertOp = operations[0] as RemoveNodeOperation;
       const editorNodeOp = editorBatch!.operations[0] as BaseInsertNodeOperation;
 
       expect(nodeInsertOp.node.text).toBe(editorNodeOp.node.text);
@@ -81,11 +129,9 @@ describe('Inline style', () => {
         end: pointToCursor(editor, { path: editorNodeOp.path, offset: 0 + editorNodeOp.node.text.length - 1 }),
       });
     });
-    it('Should redo insert text', () => {
-      const editorBatch = last(editor.history.undos);
-      editor.undo();
-      const operations = toHistoryOperations(editor, editorBatch, false); // undo - true, redo - false
-      expect(operations.length).toBe(3);
+
+    test('Should redo insert text', () => {
+      const { operations, editorBatch } = getRedoOperations(editor, 3);
 
       const nodeInsertOp = operations[0] as InsertNodeOperation;
       const editorNodeOp = editorBatch!.operations[0] as BaseInsertNodeOperation;
@@ -95,28 +141,3 @@ describe('Inline style', () => {
     });
   });
 });
-
-function getUndoOperations() {
-  const editorBatch = last(editor.history.undos);
-
-  // Then
-  expect(editorBatch).toBeDefined();
-
-  // When
-  const operations = toHistoryOperations(editor, editorBatch, true); // undo - true, redo - false
-
-  // Then
-  expect(operations.length).toBe(3);
-  return { operations, editorBatch };
-}
-
-function getRedoOperations() {
-  editor.undo();
-
-  const editorBatch = last(editor.history.redos);
-  const operations = toHistoryOperations(editor, editorBatch, false); // undo - true, redo - false
-
-  // Then
-  expect(operations.length).toBe(3);
-  return { operations, editorBatch };
-}

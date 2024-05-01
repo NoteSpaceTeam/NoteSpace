@@ -7,7 +7,7 @@ import {
   ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@notespace/shared/types/cursor';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { FugueNode } from '@/domain/editor/crdt/types';
 
 describe('Fugue', () => {
@@ -17,12 +17,12 @@ describe('Fugue', () => {
     fugue = new Fugue();
   });
 
-  it('should initialize properly', () => {
+  test('should initialize properly', () => {
     expect(fugue).toBeDefined();
     expect(fugue.toString()).toEqual(expect.any(String));
   });
 
-  it('should insert values locally', () => {
+  test('should insert values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
 
@@ -35,7 +35,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('abc');
   });
 
-  it('should insert values remotely', () => {
+  test('should insert values remotely', () => {
     // given
     const operation: InsertOperation = {
       type: 'insert',
@@ -52,7 +52,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toContain('a');
   });
 
-  it('should insert multiple lines locally', () => {
+  test('should insert multiple lines locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const input = 'abc\ndef';
@@ -66,7 +66,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('abc\ndef');
   });
 
-  it('should delete values locally', () => {
+  test('should delete values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
@@ -81,7 +81,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('a');
   });
 
-  it('should delete values remotely', () => {
+  test('should delete values remotely', () => {
     // given
     const insertOperation: InsertOperation = {
       type: 'insert',
@@ -103,7 +103,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('');
   });
 
-  it('should update inline style of node locally', () => {
+  test('should update inline style of node locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
@@ -118,7 +118,7 @@ describe('Fugue', () => {
     expect(fugue.getNodeByCursor({ line: 0, column: 1 })?.styles).toEqual(['bold']);
   });
 
-  it('should update inline style of node remotely', () => {
+  test('should update inline style of node remotely', () => {
     // given
     const id = { sender: 'A', counter: 0 };
     const insertOperation: InsertOperation = {
@@ -143,7 +143,7 @@ describe('Fugue', () => {
     expect(fugue.getNodeById(id).styles).toEqual(['bold']);
   });
 
-  it('should update block style of node locally', () => {
+  test('should update block style of node locally', () => {
     // when
     const operationHeading1 = fugue.updateBlockStyleLocal(0, 'heading-one');
     const operationListItem = fugue.updateBlockStyleLocal(1, 'list-item');
@@ -155,7 +155,7 @@ describe('Fugue', () => {
     expect(fugue.getBlockStyle(1)).toEqual('list-item');
   });
 
-  it('should update block style of node remotely', () => {
+  test('should update block style of node remotely', () => {
     // given
     const operation: BlockStyleOperation = { type: 'block-style', line: 0, style: 'heading-one', append: false };
 
@@ -166,7 +166,7 @@ describe('Fugue', () => {
     expect(fugue.getBlockStyle(0)).toEqual('heading-one');
   });
 
-  it('should return the nodes in the given selection', () => {
+  test('should return the nodes in the given selection', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 2 } };
@@ -180,7 +180,7 @@ describe('Fugue', () => {
     expect(nodes.map(node => node.value).join('')).toEqual('ab');
   });
 
-  it('should return the nodes in the given selections', () => {
+  test('should return the nodes in the given selections', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const line1 = 'abcdef';
@@ -204,7 +204,7 @@ describe('Fugue', () => {
     expect(nodes3.map(node => node.value).join('')).toEqual('def\nghij');
   });
 
-  it('should return all nodes until the given separator', () => {
+  test('should return all nodes until the given separator', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
 
@@ -225,7 +225,7 @@ describe('Fugue', () => {
     expect(reverseNodes[0].value).toEqual('a');
   });
 
-  it('should delete a word by cursor', () => {
+  test('should delete a word by cursor', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     fugue.insertLocal(cursor, 'a', 'b', 'c', ' ', 'd', 'e');
@@ -246,7 +246,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual(' ');
   });
 
-  it('should revive nodes locally', () => {
+  test('should revive nodes locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
@@ -285,7 +285,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('abc\ndef');
   });
 
-  it('should revive nodes remotely', () => {
+  test('should revive nodes remotely', () => {
     // given
     const insertOperation: InsertOperation = {
       type: 'insert',
@@ -316,7 +316,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('a');
   });
 
-  it('should delete a line by cursor', () => {
+  test('should delete a line by cursor', () => {
     // given
     const cursor1: Cursor = { line: 0, column: 0 };
     const cursor2: Cursor = { line: 1, column: 0 };

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 import {
   InsertOperation,
@@ -21,7 +21,7 @@ describe('Fugue Operations', () => {
     fugueOperations = getFugueOperations(fugue);
   });
 
-  it('should apply operations', () => {
+  test('should apply operations', () => {
     // given
     const insertOperation: InsertOperation = {
       type: 'insert',
@@ -84,7 +84,7 @@ describe('Fugue Operations', () => {
     expect(fugue.getBlockStyle(0)).toEqual('paragraph');
   });
 
-  it('should initialize document', () => {
+  test('should initialize document', () => {
     // given
     const root: Node<string> = rootNode();
     const node1: Node<string> = treeNode({ sender: 'A', counter: 0 }, 'a', root.id, 'R', 1);

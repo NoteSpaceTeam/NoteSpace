@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { render, screen } from '@tests/test-utils';
 import { mockCommunication } from '../../mocks/mockCommunication';
 import Editor from '@/ui/pages/document/components/editor/Editor';
@@ -14,7 +14,7 @@ describe('SlateEditor', () => {
     editor.focus();
   });
 
-  it('should render the editor', async () => {
+  test('should render the editor', async () => {
     const documentTitle = screen.getByPlaceholderText('Untitled');
     expect(documentTitle).toBeInTheDocument();
   });

@@ -1,6 +1,7 @@
 import { withHistory } from 'slate-history';
 import {
   BaseOperation,
+  Editor,
   InsertNodeOperation,
   InsertTextOperation,
   MergeNodeOperation,
@@ -11,9 +12,11 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
 } from 'slate';
-import { Batch } from '@/domain/editor/slate/handlers/history/utils';
+import { Batch, toHistoryOperations } from '@domain/editor/slate/handlers/history/toHistoryOperations';
 import { buildEditor } from '@/domain/editor/slate/utils/slate';
 import { withReact } from 'slate-react';
+import { last } from 'lodash';
+import { expect } from 'vitest';
 
 export const mockEditor = () => {
   return buildEditor(withReact, withHistory);
@@ -67,3 +70,28 @@ export const setNode = (properties: Partial<Node>, newProperties: Partial<Node>,
   properties,
   newProperties,
 });
+
+export function getUndoOperations(editor: Editor, n: number) {
+  const editorBatch = last(editor.history.undos);
+
+  // Then
+  expect(editorBatch).toBeDefined();
+
+  // When
+  const operations = toHistoryOperations(editor, editorBatch, true); // undo - true, redo - false
+
+  // Then
+  expect(operations.length).toBe(n);
+  return { operations, editorBatch };
+}
+
+export function getRedoOperations(editor: Editor, n: number) {
+  editor.undo();
+
+  const editorBatch = last(editor.history.redos);
+  const operations = toHistoryOperations(editor, editorBatch, false); // undo - true, redo - false
+
+  // Then
+  expect(operations.length).toBe(n);
+  return { operations, editorBatch };
+}

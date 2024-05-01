@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import getMarkdownOperations from '@/domain/editor/operations/markdown/operations';
 import { mockCommunication } from '@tests/mocks/mockCommunication';
@@ -15,7 +15,7 @@ describe('Markdown Operations', () => {
     markdownOperations = getMarkdownOperations(fugue, communication);
   });
 
-  it('should apply block style to line', () => {
+  test('should apply block style to line', () => {
     // when
     markdownOperations.applyBlockStyle('heading-one', 0);
 
@@ -23,7 +23,7 @@ describe('Markdown Operations', () => {
     expect(toSlate(fugue)).toEqual([{ type: 'heading-one', children: [{ text: '' }] }]);
   });
 
-  it('should apply inline style to selection', () => {
+  test('should apply inline style to selection', () => {
     // given
     const text = 'abc\ndef';
     const cursor = { line: 0, column: 0 };
@@ -40,7 +40,7 @@ describe('Markdown Operations', () => {
     ]);
   });
 
-  it('should reset block styles by selection', () => {
+  test('should reset block styles by selection', () => {
     // given
     const text = 'abc\ndef';
     const cursor1 = { line: 0, column: 0 };

@@ -39,7 +39,7 @@ afterAll(done => {
 });
 
 describe('Operations must be commutative', () => {
-  it('insert operations should be commutative', async () => {
+  test('insert operations should be commutative', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -79,7 +79,7 @@ describe('Operations must be commutative', () => {
 });
 
 describe('Operations must be idempotent', () => {
-  it('delete operations should be idempotent', async () => {
+  test('delete operations should be idempotent', async () => {
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },

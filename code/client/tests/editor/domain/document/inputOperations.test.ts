@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@/domain/editor/crdt/fugue';
 import getInputOperations from '@/domain/editor/operations/input/operations';
 import { InputDomainOperations } from '@/domain/editor/operations/input/types';
@@ -14,7 +14,7 @@ describe('Input Operations', () => {
     inputOperations = getInputOperations(fugue, communication);
   });
 
-  it('should insert character', () => {
+  test('should insert character', () => {
     // given
     const cursor = { line: 0, column: 0 };
 
@@ -25,7 +25,7 @@ describe('Input Operations', () => {
     expect(fugue.toString()).toEqual('a');
   });
 
-  it('should insert line break', () => {
+  test('should insert line break', () => {
     // given
     const cursor = { line: 0, column: 0 };
 
@@ -36,7 +36,7 @@ describe('Input Operations', () => {
     expect(fugue.toString()).toEqual('\n');
   });
 
-  it('should delete character', () => {
+  test('should delete character', () => {
     // given
     const cursor1 = { line: 0, column: 0 };
     const cursor2 = { line: 0, column: 1 };
@@ -49,7 +49,7 @@ describe('Input Operations', () => {
     expect(fugue.toString()).toEqual('');
   });
 
-  it('should delete by selection', () => {
+  test('should delete by selection', () => {
     // given
     const cursor1 = { line: 0, column: 0 };
     const cursor2 = { line: 0, column: 1 };
@@ -64,7 +64,7 @@ describe('Input Operations', () => {
     expect(fugue.toString()).toEqual('');
   });
 
-  it('should delete word', () => {
+  test('should delete word', () => {
     // given
     const text = 'hello world';
     const cursor1 = { line: 0, column: text.length };
@@ -86,7 +86,7 @@ describe('Input Operations', () => {
     expect(fugue.toString()).toEqual(' ');
   });
 
-  it('should paste text', () => {
+  test('should paste text', () => {
     // given
     const text = 'hello world\nthis is a test\n';
     const cursor = { line: 0, column: 0 };

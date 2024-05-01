@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, test, expect } from 'vitest';
 
 describe('History Operations', () => {
-  it('should work', () => {
+  test('should work', () => {
     expect(true).toBeTruthy();
   });
 });
