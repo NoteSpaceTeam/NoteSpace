@@ -14,5 +14,7 @@ export default function errorHandler(error: Error, req: Request, res: Response, 
       statusCode = 403;
       break;
   }
-  res.status(statusCode).send({ error: error.message });
+  const message = statusCode === 500 ? 'Internal server error' : error.message;
+  res.status(statusCode).send({ error: message });
+  console.error(error.stack);
 }

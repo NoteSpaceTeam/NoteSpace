@@ -205,6 +205,12 @@ export class FugueTree<T> {
     }
   }
 
+  reset() {
+    this._nodes.clear();
+    this._root = rootNode();
+    this._nodes.set("root", [this.root]);
+  }
+
   toString() {
     return Array.from(this.traverse(this.root))
       .map((node) => node.value)

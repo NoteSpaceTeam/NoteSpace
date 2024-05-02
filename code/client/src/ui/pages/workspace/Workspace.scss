@@ -41,6 +41,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 4vh;
       list-style-type: none;
       margin: 1vh;
       padding: 1vh 2vh 1vh 2vh;
@@ -52,9 +53,14 @@
       div {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: 2vh;
       }
 
       .doc-title {
+        display: flex;
+        align-items: center;
+        justify-content: left;
         color: black;
         margin: 1vh 1vh 1vh 2vh;
         padding: 0;
@@ -68,10 +74,11 @@
         margin: 0;
         padding: 0;
         transition: color 0.2s;
+        font-size: 2vh;
       }
 
       button:hover {
-        color: red;
+        color: #fd5c63;
       }
     }
 

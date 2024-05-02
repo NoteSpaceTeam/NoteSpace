@@ -65,6 +65,6 @@ button:focus-visible {
 }
 
 ::selection {
-  background-color: gray;
+  background-color: grey;
   color: white;
 }

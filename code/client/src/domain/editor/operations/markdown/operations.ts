@@ -70,7 +70,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     const { start, end } = selection;
 
     // Remove block styles if the selection is single position at beginning of a line or multi-line selection
-    if((start === end && start.column === 0) || start.line !== end.line) {
+    if ((start === end && start.column === 0) || start.line !== end.line) {
       const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
       socket.emit('operation', operations);

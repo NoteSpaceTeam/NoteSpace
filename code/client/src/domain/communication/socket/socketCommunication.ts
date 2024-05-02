@@ -19,10 +19,15 @@ export interface SocketCommunication {
 }
 
 function emit(event: string, data: any) {
-  if (event === 'operation') {
-    operationEmitter.addOperation(...data);
-  } else {
-    socket.emit(event, data);
+  switch (event) {
+    case 'operation':
+      operationEmitter.addOperation(...data);
+      break;
+    case 'cursorChange':
+      setTimeout(() => socket.emit(event, data), operationEmitter.timeout);
+      break;
+    default:
+      socket.emit(event, data);
   }
 }
 

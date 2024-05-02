@@ -1,11 +1,11 @@
 import { DocumentDatabase } from '@src/types';
-import { Document } from '@notespace/shared/crdt/types/document';
+import { DocumentStorageData } from '@notespace/shared/crdt/types/document';
 import { v4 as uuid } from 'uuid';
-import { emptyTree } from '@notespace/shared/crdt/utils';
 import { NotFoundError } from '@domain/errors/errors';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentMemoryDatabase(): DocumentDatabase {
-  const documents: Record<string, Document> = {};
+  const documents: Record<string, DocumentStorageData> = {};
 
   async function getDocuments() {
     return Object.values(documents);
@@ -16,25 +16,17 @@ export default function DocumentMemoryDatabase(): DocumentDatabase {
     documents[id] = {
       id,
       title: '',
-      nodes: emptyTree(),
+      operations: [],
     };
     return id;
   }
 
-  async function getDocument(id: string): Promise<Document> {
+  async function getDocument(id: string): Promise<DocumentStorageData> {
     const document = documents[id];
     if (!document) {
       throw new NotFoundError(`Document with id ${id} not found`);
     }
     return document;
-  }
-
-  async function updateDocument(id: string, newDocument: Partial<Document>) {
-    const document = documents[id];
-    if (!document) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
-    documents[id] = { ...document, ...newDocument };
   }
 
   async function deleteDocument(id: string) {
@@ -45,11 +37,28 @@ export default function DocumentMemoryDatabase(): DocumentDatabase {
     delete documents[id];
   }
 
+  async function updateDocument(id: string, operations: Operation[]) {
+    const document = documents[id];
+    if (!document) {
+      throw new NotFoundError(`Document with id ${id} not found`);
+    }
+    documents[id] = { ...document, operations: [...document.operations, ...operations] };
+  }
+
+  async function updateTitle(id: string, title: string) {
+    const document = documents[id];
+    if (!document) {
+      throw new NotFoundError(`Document with id ${id} not found`);
+    }
+    documents[id] = { ...document, title };
+  }
+
   return {
     getDocuments,
     createDocument,
     getDocument,
     deleteDocument,
     updateDocument,
+    updateTitle,
   };
 }

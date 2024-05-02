@@ -44,17 +44,22 @@ function Workspace() {
       </div>
       <ul>
         {docs.map(doc => (
-          <li key={doc.id}>
-            <div>
-              <IoDocumentText />
-              <Link to={`/documents/${doc.id}`} className="doc-title">
+          <Link to={`/documents/${doc.id}`} className="doc-title" key={doc.id}>
+            <li>
+              <div>
+                <IoDocumentText />
                 {doc.title || 'Untitled'}
-              </Link>
-            </div>
-            <button onClick={() => onDeleteDocument(doc.id).catch(showBoundary)}>
-              <MdDelete />
-            </button>
-          </li>
+              </div>
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  onDeleteDocument(doc.id).catch(showBoundary);
+                }}
+              >
+                <MdDelete />
+              </button>
+            </li>
+          </Link>
         ))}
       </ul>
     </div>

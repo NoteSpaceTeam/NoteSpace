@@ -1,4 +1,4 @@
-import { Node, Id, Nodes } from "./types/nodes";
+import { Node, Id } from "./types/nodes";
 import { InlineStyle } from "../types/styles";
 
 export function rootNode<T>(): Node<T> {
@@ -34,8 +34,4 @@ export function treeNode<T>(
     depth,
     styles,
   };
-}
-
-export function emptyTree<T>(): Nodes<T> {
-  return { root: [rootNode<T>()] };
 }

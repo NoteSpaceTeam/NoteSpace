@@ -26,6 +26,7 @@
       "@domain/*": ["./domain/*"],
       "@pwa/*": ["./pwa/*"],
       "@ui/*": ["./ui/*"],
+      "@assets/*": ["./assets/*"],
       "@tests/*": ["../tests/*"]
     }
   },

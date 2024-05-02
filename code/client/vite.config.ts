@@ -20,6 +20,7 @@ export default defineConfig({
     alias: {
       '@src': new URL('./src', import.meta.url).pathname,
       '@editor': new URL('./src/editor', import.meta.url).pathname,
+      '@assets': new URL('./src/assets', import.meta.url).pathname,
     },
     environment: 'jsdom',
   },
