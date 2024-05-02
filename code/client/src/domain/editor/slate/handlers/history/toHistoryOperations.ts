@@ -47,7 +47,11 @@ export interface Batch {
  * @param operations
  * @param reverseType - if true, the reverse operation will be the same type as the last operation
  */
-function toHistoryOperations(editor: Editor, operations: Batch | undefined, reverseType: boolean): HistoryOperation[] {
+function toHistoryOperations(
+    editor: Editor,
+    operations: Batch | undefined,
+    reverseType: boolean
+): HistoryOperation[] {
   if (!operations) return [];
 
   /**
@@ -71,15 +75,21 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
       case 'remove_node':
         return nodeOperation(operation as BaseRemoveNodeOperation, false);
       case 'merge_node':
-        return handleNodeOperation(operation as BaseMergeNodeOperation, true);
+        return handleNodeOperation(
+            operation as BaseMergeNodeOperation,
+            selectionBefore?.anchor.offset,
+            true
+        );
       case 'split_node':
-        return handleNodeOperation(operation as BaseSplitNodeOperation, false);
+        return handleNodeOperation(
+            operation as BaseSplitNodeOperation,
+            selectionBefore?.anchor.offset,
+            false
+        );
       case 'set_node':
         return setNodeOperation(operation as BaseSetNodeOperation, selectionBefore?.anchor.offset, true);
       case 'unset_node':
         return setNodeOperation(operation as BaseSetNodeOperation, selectionBefore?.anchor.offset, false);
-      default:
-        throw new Error(`Invalid operation type: ${type}`);
     }
   }
 
@@ -152,19 +162,26 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   /**
    * Handles a slate merge or split node operation
    * @param operation
+   * @param offset
    * @param merge_mode
    */
   function handleNodeOperation(
     operation: BaseMergeNodeOperation | BaseSplitNodeOperation,
+    offset: number | undefined,
     merge_mode: boolean
   ): MergeNodeOperation | SplitNodeOperation | undefined {
     if (!operation.properties.type) return undefined;
 
-    return {
-      type: merge_mode ? 'merge_node' : 'split_node',
-      cursor: { line: operation.position, column: 0 },
-      properties: operation.properties,
-    };
+
+      return (merge_mode) ? {
+        type: 'merge_node',
+        cursor: pointToCursor(editor, { path: [operation.path[0] + 1, 0], offset: 0 }),
+        properties: operation.properties,
+      } : {
+        type: 'split_node',
+        cursor: pointToCursor(editor, { path: [operation.path[0], 0], offset: offset || 0 }),
+        properties: operation.properties,
+      }
   }
 
   /**
@@ -198,10 +215,11 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   return operations.operations
     .map(operation => {
       const type: BaseOperation['type'] = operation.type;
-      const operationType = reverseType ? getReverseType(type) : (type as HistoryOperation['type']);
+      const operationType = reverseType
+          ? getReverseType(type)
+          : (type as HistoryOperation['type']);
       return toHistoryOperation(operationType, operations.selectionBefore, operation);
-    })
-    .filter(operation => operation !== undefined) as HistoryOperation[];
+    }).filter(operation => operation !== undefined) as HistoryOperation[];
 }
 
 export { toHistoryOperations };
