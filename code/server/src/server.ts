@@ -2,12 +2,12 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import databaseInit from '@database/memory/operations';
+import databaseInit from '@database/firestore/operations';
 import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import onConnection from '@controllers/ws/onConnection';
-import config from './config';
+import config from '@src/config';
 
 const database = databaseInit();
 const service = serviceInit(database);
@@ -16,7 +16,7 @@ const api = router(service);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
-const onConnectionHandler = onConnection(service, events);
+const onConnectionHandler = onConnection(events);
 
 app.use(cors({ origin: config.ORIGIN }));
 app.use('/', api);

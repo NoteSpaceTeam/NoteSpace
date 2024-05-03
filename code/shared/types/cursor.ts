@@ -15,3 +15,7 @@ export function emptySelection(): Selection {
 export function emptyCursor(): Cursor {
   return { line: 0, column: 0 };
 }
+
+export function toCursor(line: number, column: number): Cursor {
+  return { line, column };
+}

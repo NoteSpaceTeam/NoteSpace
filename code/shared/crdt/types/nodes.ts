@@ -29,4 +29,8 @@ export type Node<T> = {
   styles: Style[];
 };
 
-export type Nodes<T> = Record<string, Node<T>[]>;
+export type RootNode<T> = Node<Node<T>[]>
+
+export type NodeType<T> = Node<T> | RootNode<T>
+
+export type Nodes<T> = Record<string, NodeType<T>[]>;

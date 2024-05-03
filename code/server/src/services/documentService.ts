@@ -1,75 +1,40 @@
 import { DocumentDatabase, DocumentService } from '@src/types';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
-import {
-  DeleteOperation,
-  InsertOperation,
-  InlineStyleOperation,
-  BlockStyleOperation,
-} from '@notespace/shared/crdt/types/operations';
+import { Document } from '@notespace/shared/crdt/types/document';
+import {Operation,} from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
-  const tree = new FugueTree<string>();
 
-  async function getDocument() {
-    return await database.getDocument();
+  async function getDocuments() {
+    return await database.getDocuments();
   }
 
-  function deleteDocument() {
-    database.deleteDocument();
+  async function createDocument() {
+    return await database.createDocument();
   }
 
-  async function insertCharacter(operation: InsertOperation) {
-    await updateDocument(() => {
-      const { id, value, parent, side, styles } = operation;
-      tree.addNode(id, value, parent, side, styles);
-    });
+  async function getDocument(id: string): Promise<Document> {
+    const { title, operations } = await database.getDocument(id);
+    return { id, title, operations: operations };
   }
 
-  async function deleteCharacter(operation: DeleteOperation) {
-    await updateDocument(() => {
-      const { id } = operation;
-      tree.deleteNode(id);
-    });
+  async function deleteDocument(id: string) {
+    await database.deleteDocument(id);
   }
 
-  async function updateInlineStyle(operation: InlineStyleOperation) {
-    await updateDocument(() => {
-      const { id, style, value } = operation;
-      tree.updateInlineStyle(id, style, value);
-    });
+  async function updateDocument(id: string, operations: Operation[]) {
+    await database.updateDocument(id, operations);
   }
 
-  async function updateBlockStyle(operation: BlockStyleOperation) {
-    await updateDocument(() => {
-      const { style, line } = operation;
-      tree.updateBlockStyle(style, line);
-    });
-  }
-
-  function updateTitle(title: string) {
-    database.updateTitle(title);
-  }
-
-  async function updateDocument(update: () => void) {
-    const { nodes } = await database.getDocument();
-    tree.setTree(nodes);
-    update();
-    const updatedNodes = getNodes();
-    database.updateDocument(updatedNodes);
-  }
-
-  function getNodes(): Nodes<string> {
-    return Object.fromEntries(Array.from(tree.nodes.entries()));
+  async function updateTitle(id: string, title: string) {
+    await database.updateTitle(id, title);
   }
 
   return {
+    getDocuments,
+    createDocument,
     getDocument,
     deleteDocument,
-    insertCharacter,
-    deleteCharacter,
-    updateInlineStyle,
-    updateBlockStyle,
     updateTitle,
+    updateDocument,
   };
 }

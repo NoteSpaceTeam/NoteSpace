@@ -2,10 +2,8 @@
 /// <reference types="vite/client" />
 
 import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { pwaConfig } from './src/pwa/pwa-config.ts';
 import { qrcode } from 'vite-plugin-qrcode';
 import { config } from 'dotenv';
 
@@ -16,12 +14,13 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), qrcode(), react(), VitePWA(pwaConfig)],
+  plugins: [tsconfigPaths(), qrcode(), react() /* VitePWA(pwaConfig) */],
   test: {
     globals: true,
     alias: {
       '@src': new URL('./src', import.meta.url).pathname,
       '@editor': new URL('./src/editor', import.meta.url).pathname,
+      '@assets': new URL('./src/assets', import.meta.url).pathname,
     },
     environment: 'jsdom',
   },

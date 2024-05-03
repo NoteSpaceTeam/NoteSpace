@@ -1,0 +1,16 @@
+header {
+  color: black;
+  background: white;
+  width: 100%;
+  padding: 1vh 0 1vh 5vh;
+  box-shadow: black 0 0 1px;
+  display: flex;
+  align-items: center;
+
+  .title {
+    font-size: 3vh;
+    padding: 1vh;
+    margin: 0 0 0 1vh;
+    font-weight: 500;
+  }
+}

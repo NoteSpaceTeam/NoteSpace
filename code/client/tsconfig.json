@@ -7,6 +7,7 @@
     "skipLibCheck": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": false,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
@@ -21,9 +22,12 @@
     "baseUrl": "./src",
     "downlevelIteration": true,
     "paths": {
-      "@src/*": ["./*"],
-      "@editor/*": ["./editor/*"],
-      "@socket/*": ["./socket/*"]
+      "@/*": ["./*"],
+      "@domain/*": ["./domain/*"],
+      "@pwa/*": ["./pwa/*"],
+      "@ui/*": ["./ui/*"],
+      "@assets/*": ["./assets/*"],
+      "@tests/*": ["../tests/*"]
     }
   },
   "include": ["src", "tests"],

@@ -1,10 +1,12 @@
-import { Node, Id, Nodes } from "./types/nodes";
+import {Node, Id, RootNode} from "./types/nodes";
 import { InlineStyle } from "../types/styles";
 
-export function rootNode<T>(): Node<T> {
+
+
+export function rootNode<T>(): RootNode<T> {
   return {
     id: { sender: "root", counter: 0 },
-    value: null,
+    value: [],
     isDeleted: true,
     parent: null,
     side: "R",
@@ -34,8 +36,4 @@ export function treeNode<T>(
     depth,
     styles,
   };
-}
-
-export function emptyTree<T>(): Nodes<T> {
-  return { root: [rootNode<T>()] };
 }
