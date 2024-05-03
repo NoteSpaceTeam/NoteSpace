@@ -12,3 +12,4 @@ export type Document = DocumentData & {
 export type DocumentStorageData = DocumentData & {
   operations: Operation[];
 };
+
