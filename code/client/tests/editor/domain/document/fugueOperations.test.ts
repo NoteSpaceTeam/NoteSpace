@@ -95,21 +95,9 @@ describe('Fugue Operations', () => {
       id: 'test',
       title: 'test',
       operations: [
-            {
-              type: 'insert',
-              id: { sender: 'xyz', counter: 0 },
-              value: 'a',
-              parent: { sender: 'root', counter: 0 },
-              side: 'R',
-            },
-            {
-              type: 'insert',
-              id: { sender: 'xyz', counter: 1 },
-              value: 'b',
-              parent: { sender: 'xyz', counter: 0 },
-              side: 'R',
-            },
-      ]
+        { type: 'insert', ...node1, parent: root.id, styles: []},
+        { type: 'insert', ...node2, parent: node1.id, styles: []},
+      ],
     };
 
     // when

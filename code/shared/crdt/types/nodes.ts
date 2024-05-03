@@ -19,7 +19,7 @@ export type Id = {
  */
 export type Node<T> = {
   id: Id;
-  value: T | null;
+  value: T;
   isDeleted: boolean;
   parent: Id | null;
   side: "L" | "R";

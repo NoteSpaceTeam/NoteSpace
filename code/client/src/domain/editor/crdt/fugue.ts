@@ -51,12 +51,6 @@ export class Fugue {
     }
   }
 
-
-
-
-
-
-
   /**
    * Inserts the given values starting from the given index.
    * @param cursor
