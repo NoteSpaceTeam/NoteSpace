@@ -9,7 +9,7 @@ import {
 import getFugueOperations from '@/domain/editor/operations/fugue/operations';
 import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types';
 import { Document } from '@notespace/shared/crdt/types/document';
-import { Node } from '@notespace/shared/crdt/types/nodes';
+import { Node, RootNode } from '@notespace/shared/crdt/types/nodes';
 import { rootNode, treeNode } from '@notespace/shared/crdt/utils';
 
 describe('Fugue Operations', () => {
@@ -86,21 +86,34 @@ describe('Fugue Operations', () => {
 
   test('should initialize document', () => {
     // given
-    const root: Node<string> = rootNode();
+    const root: RootNode<string> = rootNode();
     const node1: Node<string> = treeNode({ sender: 'A', counter: 0 }, 'a', root.id, 'R', 1);
     const node2: Node<string> = treeNode({ sender: 'A', counter: 1 }, 'b', node1.id, 'R', 2);
     root.rightChildren = [node1.id];
     node1.rightChildren = [node2.id];
     const document: Document = {
+      id: 'test',
       title: 'test',
-      nodes: {
-        root: [root],
-        A: [node1, node2],
-      },
+      operations: [
+            {
+              type: 'insert',
+              id: { sender: 'xyz', counter: 0 },
+              value: 'a',
+              parent: { sender: 'root', counter: 0 },
+              side: 'R',
+            },
+            {
+              type: 'insert',
+              id: { sender: 'xyz', counter: 1 },
+              value: 'b',
+              parent: { sender: 'xyz', counter: 0 },
+              side: 'R',
+            },
+      ]
     };
 
     // when
-    fugueOperations.initDocument(document);
+    fugueOperations.applyOperations(document.operations);
 
     // then
     expect(fugue.toString()).toEqual('ab');
