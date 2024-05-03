@@ -1,14 +1,15 @@
-import { setup } from '../../test-utils';
-import SlateEditor from '../../../src/editor/slate/SlateEditor';
-import { Editor } from 'slate';
+import { setup } from '@tests/test-utils';
+import { mockCommunication } from '../../mocks/mockCommunication';
+import SlateEditor from '@/ui/pages/document/components/editor/Editor';
+import { Fugue } from '@/domain/editor/crdt/fugue';
 
 /**
  * Sets up the editor for testing
- * @param editor
  * @returns user and the slate editor
  */
-const setupEditor = async (editor?: Editor) => {
-  const { user, render } = setup(<SlateEditor editor={editor} />);
+const setupEditor = async () => {
+  const fugue = new Fugue();
+  const { user, render } = setup(<SlateEditor fugue={fugue} communication={mockCommunication()} />);
   const { findByTestId } = render;
   const editorElement = await findByTestId('editor'); // calls 'act' under the hood, but is more readable
   editorElement.focus();
@@ -19,7 +20,6 @@ const setupEditor = async (editor?: Editor) => {
  * Cleans up the editor after testing
  */
 const cleanupEditor = async () => {
-  // cleanup
   const editor = document.querySelector('[data-testid="editable"]');
   if (editor) editor.innerHTML = '';
 };

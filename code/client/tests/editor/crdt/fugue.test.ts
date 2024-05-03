@@ -1,13 +1,14 @@
-import { Fugue } from '@editor/crdt/fugue';
+import { Fugue } from '@/domain/editor/crdt/fugue';
 import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
+  ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 import { Selection, Cursor } from '@notespace/shared/types/cursor';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { FugueNode } from '@editor/crdt/types';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { FugueNode } from '@/domain/editor/crdt/types';
 
 describe('Fugue', () => {
   let fugue: Fugue;
@@ -16,12 +17,12 @@ describe('Fugue', () => {
     fugue = new Fugue();
   });
 
-  it('should initialize properly', () => {
+  test('should initialize properly', () => {
     expect(fugue).toBeDefined();
     expect(fugue.toString()).toEqual(expect.any(String));
   });
 
-  it('should insert values locally', () => {
+  test('should insert values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
 
@@ -34,7 +35,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('abc');
   });
 
-  it('should insert values remotely', () => {
+  test('should insert values remotely', () => {
     // given
     const operation: InsertOperation = {
       type: 'insert',
@@ -51,7 +52,21 @@ describe('Fugue', () => {
     expect(fugue.toString()).toContain('a');
   });
 
-  it('should delete values locally', () => {
+  test('should insert multiple lines locally', () => {
+    // given
+    const cursor: Cursor = { line: 0, column: 0 };
+    const input = 'abc\ndef';
+
+    // when
+    const operations = fugue.insertLocal(cursor, ...input.split(''));
+
+    // then
+    expect(operations).toHaveLength(7);
+    expect(operations.map(op => op.value).join('')).toEqual('abc\ndef');
+    expect(fugue.toString()).toEqual('abc\ndef');
+  });
+
+  test('should delete values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
@@ -66,7 +81,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('a');
   });
 
-  it('should delete values remotely', () => {
+  test('should delete values remotely', () => {
     // given
     const insertOperation: InsertOperation = {
       type: 'insert',
@@ -88,7 +103,7 @@ describe('Fugue', () => {
     expect(fugue.toString()).toEqual('');
   });
 
-  it('should update inline style of node locally', () => {
+  test('should update inline style of node locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
@@ -103,7 +118,7 @@ describe('Fugue', () => {
     expect(fugue.getNodeByCursor({ line: 0, column: 1 })?.styles).toEqual(['bold']);
   });
 
-  it('should update inline style of node remotely', () => {
+  test('should update inline style of node remotely', () => {
     // given
     const id = { sender: 'A', counter: 0 };
     const insertOperation: InsertOperation = {
@@ -128,10 +143,10 @@ describe('Fugue', () => {
     expect(fugue.getNodeById(id).styles).toEqual(['bold']);
   });
 
-  it('should update block style of node locally', () => {
+  test('should update block style of node locally', () => {
     // when
-    const operationHeading1 = fugue.updateBlockStyleLocal('heading-one', 0);
-    const operationListItem = fugue.updateBlockStyleLocal('list-item', 1);
+    const operationHeading1 = fugue.updateBlockStyleLocal(0, 'heading-one');
+    const operationListItem = fugue.updateBlockStyleLocal(1, 'list-item');
 
     // then
     expect(operationHeading1).toEqual(expect.objectContaining({ type: 'block-style', line: 0, style: 'heading-one' }));
@@ -140,7 +155,7 @@ describe('Fugue', () => {
     expect(fugue.getBlockStyle(1)).toEqual('list-item');
   });
 
-  it('should update block style of node remotely', () => {
+  test('should update block style of node remotely', () => {
     // given
     const operation: BlockStyleOperation = { type: 'block-style', line: 0, style: 'heading-one', append: false };
 
@@ -151,10 +166,10 @@ describe('Fugue', () => {
     expect(fugue.getBlockStyle(0)).toEqual('heading-one');
   });
 
-  it('should return the nodes in the given selection', () => {
+  test('should return the nodes in the given selection', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
+    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 2 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c');
@@ -165,17 +180,41 @@ describe('Fugue', () => {
     expect(nodes.map(node => node.value).join('')).toEqual('ab');
   });
 
-  it('should return all nodes until the given separator', () => {
+  test('should return the nodes in the given selections', () => {
+    // given
+    const cursor: Cursor = { line: 0, column: 0 };
+    const line1 = 'abcdef';
+    const line2 = 'ghijkl';
+    const selection1: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
+    const selection2: Selection = { start: { line: 0, column: 3 }, end: { line: 0, column: 5 } };
+    const selection3: Selection = { start: { line: 0, column: 3 }, end: { line: 1, column: 4 } };
+
+    // when
+    fugue.insertLocal(cursor, ...line1.split(''));
+    fugue.insertLocal({ ...cursor, column: line1.length }, '\n');
+    fugue.insertLocal({ ...cursor, column: 0, line: 1 }, ...line2.split(''));
+
+    const nodes1 = Array.from(fugue.traverseBySelection(selection1));
+    const nodes2 = Array.from(fugue.traverseBySelection(selection2));
+    const nodes3 = Array.from(fugue.traverseBySelection(selection3));
+
+    // then
+    expect(nodes1.map(node => node.value).join('')).toEqual('bc');
+    expect(nodes2.map(node => node.value).join('')).toEqual('de');
+    expect(nodes3.map(node => node.value).join('')).toEqual('def\nghij');
+  });
+
+  test('should return all nodes until the given separator', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
 
     // when
     fugue.insertLocal(cursor, '#', '#', '#', ' ', 'a');
-    const nodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false).next().value;
+    const nodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
 
     // then
-    expect(nodes).toHaveLength(3);
-    expect(nodes.map(node => node.value).join('')).toEqual('###');
+    expect(nodes).toHaveLength(4);
+    expect(nodes.map(node => node.value).join('')).toEqual('### ');
 
     // when
     const endCursor: Cursor = { line: 0, column: 5 };
@@ -186,7 +225,7 @@ describe('Fugue', () => {
     expect(reverseNodes[0].value).toEqual('a');
   });
 
-  it('should delete a word by cursor', () => {
+  test('should delete a word by cursor', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
     fugue.insertLocal(cursor, 'a', 'b', 'c', ' ', 'd', 'e');
@@ -205,5 +244,89 @@ describe('Fugue', () => {
     // then
     expect(reverseOperations).toHaveLength(2);
     expect(fugue.toString()).toEqual(' ');
+  });
+
+  test('should revive nodes locally', () => {
+    // given
+    const cursor: Cursor = { line: 0, column: 0 };
+    const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
+    const selection2: Selection = { start: { line: 0, column: 0 }, end: { line: 1, column: 2 } };
+
+    // when
+    fugue.insertLocal(cursor, 'a', 'b', 'c');
+    fugue.deleteLocal(selection);
+
+    // then
+    expect(fugue.toString()).toEqual('a');
+
+    // when
+    const operations = fugue.reviveLocal(selection);
+
+    // then
+    expect(operations).toHaveLength(2);
+    expect(fugue.toString()).toEqual('abc');
+
+    // when
+    fugue.insertLocal({ line: 0, column: 3 }, '\n', 'd', 'e', 'f');
+
+    // then
+    expect(fugue.toString()).toEqual('abc\ndef');
+
+    // when
+    fugue.deleteLocal(selection2);
+
+    // then
+    expect(fugue.toString()).toEqual('f');
+
+    const operations2 = fugue.reviveLocal(selection2);
+
+    // then
+    expect(operations2).toHaveLength(6);
+    expect(fugue.toString()).toEqual('abc\ndef');
+  });
+
+  test('should revive nodes remotely', () => {
+    // given
+    const insertOperation: InsertOperation = {
+      type: 'insert',
+      id: { sender: 'A', counter: 0 },
+      value: 'a',
+      parent: { sender: 'root', counter: 0 },
+      side: 'R',
+    };
+    const deleteOperation: DeleteOperation = {
+      type: 'delete',
+      id: { sender: 'A', counter: 0 },
+    };
+
+    // when
+    fugue.insertRemote(insertOperation);
+    fugue.deleteRemote(deleteOperation);
+
+    // then
+    expect(fugue.toString()).toEqual('');
+
+    // when
+    const reviveOperation: ReviveOperation = { type: 'revive', id: insertOperation.id };
+
+    // when
+    fugue.reviveRemote(reviveOperation);
+
+    // then
+    expect(fugue.toString()).toEqual('a');
+  });
+
+  test('should delete a line by cursor', () => {
+    // given
+    const cursor1: Cursor = { line: 0, column: 0 };
+    const cursor2: Cursor = { line: 1, column: 0 };
+    const text = 'abc\ndef';
+
+    // when
+    fugue.insertLocal(cursor1, ...text.split(''));
+    fugue.deleteLocalByCursor(cursor2);
+
+    // then
+    // expect(fugue.toString()).toEqual('abcdef');
   });
 });

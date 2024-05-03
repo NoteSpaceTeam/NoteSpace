@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { userEvent } from '../../../test-utils';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { userEvent } from '@tests/test-utils';
 import { setupEditor } from '../utils';
 
 describe('Inserts', () => {
@@ -10,29 +10,29 @@ describe('Inserts', () => {
     editor = editorElement;
   });
 
-  it('should display written text in the editor', async () => {
+  test('should display written text in the editor', async () => {
     await userEvent.type(editor, 'abc');
     expect(editor).toHaveTextContent('abc');
   });
 
-  it('should allow to have multiple lines', async () => {
+  test('should allow to have multiple lines', async () => {
     await userEvent.type(editor, 'abc{enter}def');
     expect(editor).toHaveTextContent('abc def');
   });
 
-  // it('should allow for text to be pasted', async () => {
+  // test('should allow for text to be pasted', async () => {
   //   const text = 'Hello World!';
   //   await userEvent.paste(text);
   //   await waitFor(() => expect(editor).toHaveTextContent(text));
   // });
 
-  // it('should allow to reload the page', async () => {
+  // test('should allow to reload the page', async () => {
   //   await userEvent.type(editor, 'abc');
   //   document.location.reload();
   //   await waitFor(() => expect(editor).toHaveTextContent(''));
   // });
 
-  // it('should allow to undo the last action', async () => {
+  // test('should allow to undo the last action', async () => {
   //   await userEvent.type(editor, 'abc'); // abc
   //   await userEvent.keyboard('{ctrl}z{/ctrl}');
   //   await waitFor(() => expect(editor).toHaveTextContent('')); // fails

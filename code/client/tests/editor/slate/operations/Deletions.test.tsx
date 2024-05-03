@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { userEvent } from '../../../test-utils';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { userEvent } from '@tests/test-utils';
 import { setupEditor } from '../utils';
 
 const EDITOR_PLACEHOLDER = 'Start writing...';
@@ -12,7 +12,7 @@ describe('Deletions', () => {
     editor = editorElement;
   });
 
-  it('should allow for text to be deleted', async () => {
+  test('should allow for text to be deleted', async () => {
     const text = 'abc';
     await userEvent.type(editor, text);
     await userEvent.type(editor, '{backspace}');
@@ -22,14 +22,14 @@ describe('Deletions', () => {
     expect(editor).toHaveTextContent(EDITOR_PLACEHOLDER);
   });
 
-  it('should allow for text to be cut', async () => {
+  test('should allow for text to be cut', async () => {
     const text = 'abc';
     await userEvent.type(editor, text);
     await userEvent.type(editor, '{selectall}{cut}');
     expect(editor).toHaveTextContent(EDITOR_PLACEHOLDER);
   });
 
-  it('should allow for text to be selected', async () => {
+  test('should allow for text to be selected', async () => {
     const text = 'abc';
     await userEvent.type(editor, text);
     await userEvent.type(editor, '{selectall}');

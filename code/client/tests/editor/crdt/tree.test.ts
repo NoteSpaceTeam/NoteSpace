@@ -1,7 +1,7 @@
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { InsertOperation } from '@notespace/shared/crdt/types/operations';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { FugueNode } from '@editor/crdt/types';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { FugueNode } from '@/domain/editor/crdt/types';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
 
 describe('FugueTree', () => {
@@ -10,7 +10,7 @@ describe('FugueTree', () => {
     tree = new FugueTree();
   });
 
-  it('should add a node to the tree', () => {
+  test('should add a node to the tree', () => {
     // given
     const operation: InsertOperation = {
       type: 'insert',
@@ -33,7 +33,7 @@ describe('FugueTree', () => {
     expect(node.value).toEqual(value);
   });
 
-  it('should delete a node from the tree', () => {
+  test('should delete a node from the tree', () => {
     // given
     const { id, value, parent, side }: InsertOperation = {
       type: 'insert',
@@ -52,7 +52,7 @@ describe('FugueTree', () => {
     expect(tree.toString()).toBe('');
   });
 
-  it('should set the tree to the given nodes', () => {
+  test('should set the tree to the given nodes', () => {
     // given
     const nodes: Nodes<string> = {};
     const rootNode: FugueNode = tree.root;
@@ -78,7 +78,7 @@ describe('FugueTree', () => {
     expect(tree.getById({ sender: 'A', counter: 0 })).toEqual(childNode);
   });
 
-  it('should return the leftmost descendant of a node', () => {
+  test('should return the leftmost descendant of a node', () => {
     // given
     tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');
     tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'L');
@@ -94,7 +94,7 @@ describe('FugueTree', () => {
     expect(leftmostDescendant.id.counter).toEqual(2);
   });
 
-  it('should traverse the tree in depth-first order', () => {
+  test('should traverse the tree in depth-first order', () => {
     // given
     tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R');
     tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'R');
@@ -116,7 +116,7 @@ describe('FugueTree', () => {
     expect(values.join('')).toEqual(tree.toString());
   });
 
-  it('should update the inline style of a node', () => {
+  test('should update the inline style of a node', () => {
     // given
     tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R');
 
@@ -135,7 +135,7 @@ describe('FugueTree', () => {
     expect(node.styles).toEqual(['italic']);
   });
 
-  it('should update the block style of a line', () => {
+  test('should update the block style of a line', () => {
     // when
     tree.updateBlockStyle('heading-one', 0);
     tree.updateBlockStyle('list-item', 1);
