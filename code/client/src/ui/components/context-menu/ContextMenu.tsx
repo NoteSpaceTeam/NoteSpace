@@ -10,31 +10,31 @@ type ContextMenuProps = {
 function ContextMenu({ item, children }: ContextMenuProps) {
   const [mousePosition, setMousePosition] = useState<PopoverPosition | null>(null);
 
-  const handleClick = (e: MouseEvent<HTMLElement>) => {
+  function onContextMenu(e: MouseEvent<HTMLElement>) {
     if (mousePosition !== null) return; // don't show context menu if it's already open
     e.preventDefault();
     setMousePosition({
       left: e.clientX - 2,
       top: e.clientY - 4,
     });
-  };
+  }
 
-  const handleClose = () => {
+  function onClose() {
     setMousePosition(null);
-  };
+  }
 
   return (
-    <div onContextMenu={handleClick}>
+    <div onContextMenu={onContextMenu}>
       {item}
       <Menu
         className="menu"
         open={mousePosition !== null}
-        onClose={handleClose}
+        onClose={onClose}
         anchorReference="anchorPosition"
         anchorPosition={mousePosition || undefined}
         keepMounted
       >
-        <div className="context-menu">{children}</div>
+        <div className="menu-items">{children}</div>
       </Menu>
     </div>
   );

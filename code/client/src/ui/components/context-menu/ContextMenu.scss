@@ -1,33 +1,35 @@
-.context-menu {
-  display: flex;
-  flex-direction: column;
-  background-color: black;
-
-  button {
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    color: white;
+.menu {
+  ul {
     background-color: black;
-    border: none;
-    padding: 2vh;
-    margin: 0 1vh 0 1vh;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    width: 17vh;
+    border-radius: 5px;
+  }
 
-    &:hover {
-      background-color: white;
-      color: black;
-    }
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
 
-    :first-child {
-      margin-right: 1.5vh;
+    button {
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      color: white;
+      background-color: black;
+      border: none;
+      padding: 2vh;
+      margin: 0 1vh 0 1vh;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: white;
+        color: black;
+      }
+
+      :first-child {
+        margin-right: 1.5vh;
+      }
     }
   }
-}
-
-.menu ul {
-  background-color: black;
-  width: 17vh;
-  border-radius: 5px;
 }

@@ -3,7 +3,7 @@ import useFugue from '@/domain/editor/hooks/useFugue';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCommunication } from '@/domain/communication/context/useCommunication';
-import useDocumentServices from '@/domain/editor/services/useDocumentServices';
+import useDocumentServices from '@domain/editor/hooks/useDocumentServices';
 import './Document.scss';
 import useError from '@domain/error/useError';
 
