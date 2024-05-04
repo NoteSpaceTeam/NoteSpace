@@ -20,7 +20,7 @@ export function rootNode<T>(): RootNode<T> {
 export function treeNode<T>(
   id: Id,
   value: T,
-  parent: Id,
+  parent: Id | null ,
   side: "L" | "R",
   depth: number,
   styles: InlineStyle[] = [],

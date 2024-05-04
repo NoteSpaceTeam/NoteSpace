@@ -31,15 +31,9 @@ export class FugueTree<T> {
    * @param side the side of the parent node where this node is located
    * @param styles the styles of the node
    */
-  addNode(
-    id: Id,
-    value: T,
-    parent: Id,
-    side: "L" | "R",
-    styles?: InlineStyle[],
-  ) {
+  addNode({ id, value, parent, side, styles }: Node<T>) {
     // create node
-    const node = treeNode(id, value, parent, side, 0, styles);
+    const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
 
     // add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
@@ -53,9 +47,9 @@ export class FugueTree<T> {
     this.updateDepths(node, 1);
   }
 
-  addLineRoot(id: Id, value: T, parent: Id, side: "L" | "R", styles?: InlineStyle[]) {
+  addLineRoot({ id, value, parent, side, styles }: Node<T>){
     // create node
-    const node = treeNode(id, value, parent, side, 0, styles);
+    const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
     this._root.value.push(node);
 
     // add to nodes map
@@ -69,8 +63,6 @@ export class FugueTree<T> {
     // update depths of ancestors
     this.updateDepths(node, 1);
   }
-
-
 
   /**
    * Inserts node among its same-side siblings, in lexicographic order by id.sender.
@@ -190,10 +182,7 @@ export class FugueTree<T> {
    * @param returnDeleted
    * @returns an iterator over the nodes in the subtree.
    */
-  *traverse(
-    root: NodeType<T>,
-    returnDeleted: boolean = false,
-  ): IterableIterator<NodeType<T>> {
+  *traverse(root: NodeType<T>, returnDeleted: boolean = false): IterableIterator<NodeType<T>> {
     let current = root;
     const stack: { side: "L" | "R"; childIndex: number }[] = [
       { side: "L", childIndex: 0 },
@@ -228,12 +217,6 @@ export class FugueTree<T> {
         stack.push({ side: "L", childIndex: 0 });
       }
     }
-  }
-
-  reset() {
-    this._nodes.clear();
-    this._root = rootNode();
-    this._nodes.set("root", [this._root]);
   }
 
   toString() {

@@ -6,4 +6,4 @@ export type NodeInsert = {
   styles: InlineStyle[];
 };
 
-export type FugueNode = NodeType<string>
+export type FugueNode = NodeType<string>;

@@ -6,7 +6,7 @@ import { Document, DocumentData, DocumentStorageData } from '@notespace/shared/c
 import { v4 as uuid } from 'uuid';
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/crdt/types/operations';
-import {firestore} from "firebase-admin";
+import { firestore } from 'firebase-admin';
 import FieldValue = firestore.FieldValue;
 
 export default function DocumentFirestoreDatabase(): DocumentDatabase {
@@ -37,28 +37,28 @@ export default function DocumentFirestoreDatabase(): DocumentDatabase {
   }
 
   async function getDocument(id: string): Promise<DocumentStorageData> {
-    const doc = await getDoc(id)
+    const doc = await getDoc(id);
     return (await doc.get()).data() as DocumentStorageData;
   }
 
   async function deleteDocument(id: string) {
-    const doc = await getDoc(id)
+    const doc = await getDoc(id);
     await doc.delete();
   }
 
   async function updateDocument(id: string, newOperations: Operation[]) {
-    const doc = await getDoc(id)
-    await doc.update({operations: FieldValue.arrayUnion(newOperations)})
+    const doc = await getDoc(id);
+    await doc.update({ operations: FieldValue.arrayUnion(newOperations) });
   }
 
   async function updateTitle(id: string, title: string) {
-    const doc = await getDoc(id)
-    await doc.update({title})
+    const doc = await getDoc(id);
+    await doc.update({ title });
   }
 
   async function getDoc(id: string) {
     const query = documents.where('id', '==', id);
-    const data = (await query.get())
+    const data = await query.get();
     if (data.empty) {
       throw new NotFoundError(`Document with id ${id} not found`);
     }

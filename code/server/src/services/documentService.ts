@@ -1,9 +1,8 @@
 import { DocumentDatabase, DocumentService } from '@src/types';
 import { Document } from '@notespace/shared/crdt/types/document';
-import {Operation,} from '@notespace/shared/crdt/types/operations';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
-
   async function getDocuments() {
     return await database.getDocuments();
   }

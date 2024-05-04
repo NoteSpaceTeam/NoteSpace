@@ -3,6 +3,6 @@ import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types';
 
 export default (fugue: Fugue): FugueDomainOperations => {
   return {
-    applyOperations: (operations) => fugue.applyOperations(operations)
+    applyOperations: operations => fugue.applyOperations(operations),
   };
 };

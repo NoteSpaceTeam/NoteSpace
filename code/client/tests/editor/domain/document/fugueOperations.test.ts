@@ -95,8 +95,8 @@ describe('Fugue Operations', () => {
       id: 'test',
       title: 'test',
       operations: [
-        { type: 'insert', ...node1, parent: root.id, styles: []},
-        { type: 'insert', ...node2, parent: node1.id, styles: []},
+        { type: 'insert', ...node1, parent: root.id, styles: [] },
+        { type: 'insert', ...node2, parent: node1.id, styles: [] },
       ],
     };
 

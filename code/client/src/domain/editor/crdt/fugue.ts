@@ -9,7 +9,8 @@ import {
   BlockStyleOperation,
   DeleteOperation,
   InlineStyleOperation,
-  InsertOperation, Operation,
+  InsertOperation,
+  Operation,
   ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
@@ -32,7 +33,7 @@ export class Fugue {
       switch (operation.type) {
         case 'insert':
           this.insertRemote(operation);
-            break;
+          break;
         case 'delete':
           this.deleteRemote(operation);
           break;
@@ -87,9 +88,7 @@ export class Fugue {
     const id = { sender: this.replicaId, counter: this.counter++ };
 
     const lineNode = this.tree.getLineRoot(line);
-    const leftOrigin = column === 0
-        ? lineNode
-        : this.getNodeByCursor({ line, column })!;
+    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column })!;
 
     if (isEmpty(leftOrigin.rightChildren)) {
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
@@ -107,10 +106,9 @@ export class Fugue {
    * @param styles
    */
   private addNode({ id, value, parent, side, styles }: InsertOperation) {
-    if(value === '\n') {
+    if (value === '\n') {
       this.tree.addLineRoot(id, value, parent, side, styles);
-    }
-    else {
+    } else {
       this.tree.addNode(id, value, parent, side, styles);
     }
   }
@@ -130,9 +128,7 @@ export class Fugue {
    */
   deleteLocalByCursor(cursor: Cursor) {
     const node =
-      cursor.line > 0 && cursor.column === 0
-          ? this.tree.getLineRoot(cursor.line)
-          : this.getNodeByCursor(cursor);
+      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
 
     if (node) return this.deleteLocalById(node.id);
   }
@@ -175,9 +171,7 @@ export class Fugue {
    */
   reviveLocalByCursor(cursor: Cursor) {
     const node =
-      cursor.line > 0 && cursor.column === 0
-          ? this.tree.getLineRoot(cursor.line)
-          : this.getNodeByCursor(cursor);
+      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
 
     if (node) return this.reviveNode(node.id);
   }
@@ -301,9 +295,7 @@ export class Fugue {
       if (node.value === '\n') {
         lineCounter++;
       }
-      columnCounter = node.value === '\n'
-          ? 0
-          : columnCounter + 1;
+      columnCounter = node.value === '\n' ? 0 : columnCounter + 1;
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) break;
     }
@@ -328,9 +320,7 @@ export class Fugue {
       : { start: { line, column }, end: { line, column: Infinity } };
 
     const nodesInSelection = Array.from(this.traverseBySelection(selection));
-    const elements = reverse
-        ? nodesInSelection.reverse()
-        : nodesInSelection;
+    const elements = reverse ? nodesInSelection.reverse() : nodesInSelection;
     const nodes: FugueNode[] = [];
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
