@@ -41,8 +41,7 @@ function getColor(socket: Socket) {
 }
 
 function getRandomColor() {
-  // returns hue value between 0 and 360 for random color
-  return `${Math.random() * 360}`;
+  return 'hsl(' + Math.random() * 360 + ', 100%, 60%)';
 }
 
 export default onCursorChange;

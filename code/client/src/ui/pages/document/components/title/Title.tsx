@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useSocketListeners from '@/domain/communication/socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Communication } from '@/domain/communication/communication';
+import useWorkspace from '@domain/workspace/useWorkspace';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
@@ -13,6 +14,7 @@ function Title(props: TitleProps) {
   const [prevTitle, setPrevTitle] = useState(props.title);
   const editor = useSlate();
   const { socket } = props.communication;
+  const { setFilePath } = useWorkspace();
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
@@ -24,6 +26,7 @@ function Title(props: TitleProps) {
     if (title === prevTitle) return;
     socket.emit('titleChange', title);
     setPrevTitle(title);
+    setFilePath(`/documents/${title || 'Untitled'}`);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {

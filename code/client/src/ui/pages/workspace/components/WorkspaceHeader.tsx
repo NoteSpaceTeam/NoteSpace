@@ -1,4 +1,5 @@
-import { FaFilter, FaPlus } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
+import { MdOutlineNotes } from 'react-icons/md';
 
 type WorkspaceHeaderProps = {
   onCreateDocument: () => Promise<void>;
@@ -7,7 +8,7 @@ type WorkspaceHeaderProps = {
 function WorkspaceHeader({ onCreateDocument }: WorkspaceHeaderProps) {
   return (
     <div className="header">
-      <FaFilter />
+      <MdOutlineNotes />
       <button onClick={onCreateDocument}>
         <p>New</p>
         <FaPlus />

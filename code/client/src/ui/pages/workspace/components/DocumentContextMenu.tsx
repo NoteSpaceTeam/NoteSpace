@@ -17,13 +17,13 @@ function DocumentContextMenu({ item, onRename, onDelete, onDuplicate }: Document
         <MdEdit />
         Rename
       </button>
-      <button onClick={onDelete}>
-        <MdDelete />
-        Delete
-      </button>
       <button onClick={onDuplicate}>
         <HiDuplicate />
         Duplicate
+      </button>
+      <button onClick={onDelete}>
+        <MdDelete />
+        Delete
       </button>
     </ContextMenu>
   );

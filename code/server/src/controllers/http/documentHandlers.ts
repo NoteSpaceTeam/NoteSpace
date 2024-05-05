@@ -8,7 +8,8 @@ function documentHandlers(service: DocumentService) {
   }
 
   async function createDocument(req: Request, res: Response) {
-    const id = await service.createDocument();
+    const { title } = req.body;
+    const id = await service.createDocument(title);
     res.status(201).send({ id });
   }
 

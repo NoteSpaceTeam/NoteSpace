@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useCommunication } from '@/domain/communication/context/useCommunication';
-import { useNavigate } from 'react-router-dom';
-import { Document } from '@notespace/shared/crdt/types/document';
+import { DocumentData } from '@notespace/shared/crdt/types/document';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
 import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
-import './Workspace.scss';
 import useError from '@domain/error/useError';
+import useWorkspace from '@domain/workspace/useWorkspace';
+import './Workspace.scss';
 
 function Workspace() {
-  const navigate = useNavigate();
   const communication = useCommunication();
-  const [docs, setDocs] = useState<Document[]>([]);
+  const [docs, setDocs] = useState<DocumentData[]>([]);
   const { showError } = useError();
+  const { setFilePath } = useWorkspace();
 
-  async function createDocument() {
-    const { id } = await communication.http.post('/documents');
-    navigate(`/documents/${id}`);
+  async function createDocument(title?: string) {
+    const { id } = await communication.http.post('/documents', { title });
+    setDocs(prev => [...prev, { id, title } as DocumentData]);
   }
 
   async function deleteDocument(id: string) {
@@ -28,8 +28,9 @@ function Workspace() {
       const documents = await communication.http.get('/documents');
       setDocs(documents);
     }
+    setFilePath('/documents');
     getDocuments().catch(showError);
-  }, [communication, showError]);
+  }, [communication, setFilePath, showError]);
 
   return (
     <div className="workspace">
@@ -40,7 +41,11 @@ function Workspace() {
           <DocumentPreview
             key={document.id}
             document={document}
-            onDeleteDocument={() => deleteDocument(document.id).catch(showError)}
+            onDelete={() => deleteDocument(document.id).catch(showError)}
+            onDuplicate={() => createDocument(document.title).catch(showError)}
+            onRename={() => {
+              /*TODO*/
+            }}
           />
         ))}
       </ul>

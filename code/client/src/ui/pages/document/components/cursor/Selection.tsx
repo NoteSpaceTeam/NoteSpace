@@ -1,12 +1,11 @@
 import { ReactNode } from 'react';
 
 type SelectionProps = {
-  hue: string;
+  color: string;
   children: ReactNode;
 };
 
-function Selection({ hue, children }: SelectionProps) {
-  const color = `hsl(${hue}, 100%, 75%)`;
+function Selection({ color, children }: SelectionProps) {
   return <span style={{ backgroundColor: color }}>{children}</span>;
 }
 

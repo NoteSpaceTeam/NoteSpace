@@ -6,6 +6,7 @@ import { useCommunication } from '@/domain/communication/context/useCommunicatio
 import useDocumentServices from '@domain/editor/hooks/useDocumentServices';
 import './Document.scss';
 import useError from '@domain/error/useError';
+import useWorkspace from '@domain/workspace/useWorkspace';
 
 function Document() {
   const communication = useCommunication();
@@ -17,6 +18,7 @@ function Document() {
   const [title, setTitle] = useState('');
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
+  const { setFilePath } = useWorkspace();
 
   useEffect(() => {
     async function fetchDocument() {
@@ -27,13 +29,14 @@ function Document() {
       socket.connect();
       socket.emit('joinDocument', id);
       setLoaded(true);
+      setFilePath(`/documents/${title || 'Untitled'}`);
     }
     fetchDocument().catch(showError);
     return () => {
       socket.emit('leaveDocument');
       socket.disconnect();
     };
-  }, [fugue, id, http, socket, showError, services, navigate]);
+  }, [fugue, id, http, socket, showError, services, navigate, setFilePath]);
 
   return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
 }

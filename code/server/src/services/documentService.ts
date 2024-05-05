@@ -19,8 +19,8 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
     return await database.getDocuments();
   }
 
-  async function createDocument() {
-    return await database.createDocument();
+  async function createDocument(title?: string) {
+    return await database.createDocument(title || '');
   }
 
   async function getDocument(id: string): Promise<Document> {

@@ -1,5 +1,5 @@
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
-import serviceAccount from './firestore-key-5cddf-472039f8dbb6.json';
+import serviceAccount from '@/firestore-key-5cddf-472039f8dbb6.json';
 import { getFirestore } from 'firebase-admin/firestore';
 import { DocumentDatabase } from '@src/types';
 import { Document, DocumentData, DocumentStorageData } from '@notespace/shared/crdt/types/document';
@@ -23,11 +23,11 @@ export default function DocumentFirestoreDatabase(): DocumentDatabase {
     });
   }
 
-  async function createDocument() {
+  async function createDocument(title: string) {
     const id = uuid();
     const docData: DocumentStorageData = {
       id,
-      title: '',
+      title,
       operations: [],
     };
     await documents.doc(id).set(docData);

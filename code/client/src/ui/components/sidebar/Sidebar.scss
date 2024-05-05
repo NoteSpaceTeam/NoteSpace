@@ -1,0 +1,56 @@
+.sidebar {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: 0.5s;
+  padding-top: 60px;
+  z-index: 2;
+  color: black;
+  box-shadow: black 0 0 1px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    list-style-type: none;
+    padding: 8px 8px 8px 16px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    transition: 0.3s;
+  }
+
+  button {
+    position: fixed;
+    top: 1vh;
+    left: 2vh;
+    background-color: transparent;
+    border: none;
+    color: black;
+    font-size: 5vh;
+    padding: 0;
+    transition: transform 1s ease-in-out;
+
+    .icon-menu {
+      transition: opacity 1s ease-in-out;
+    }
+
+    .icon-close {
+      transition: opacity 1s ease-in-out;
+    }
+  }
+
+  button:hover {
+    color: dimgray;
+  }
+}

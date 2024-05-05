@@ -24,7 +24,7 @@ function ContextMenu({ item, children }: ContextMenuProps) {
   }
 
   return (
-    <div onContextMenu={onContextMenu}>
+    <div onContextMenu={onContextMenu} onClick={onClose}>
       {item}
       <Menu
         className="menu"
