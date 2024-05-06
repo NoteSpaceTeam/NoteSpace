@@ -31,7 +31,13 @@ export class FugueTree<T> {
    * @param side the side of the parent node where this node is located
    * @param styles the styles of the node
    */
-  addNode({ id, value, parent, side, styles }: Node<T>) {
+  addNode(
+      id : Id,
+      value: T,
+      parent: Id | null,
+      side: "L" | "R",
+      styles: InlineStyle[] | BlockStyle[]
+  ) {
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
 
@@ -47,7 +53,13 @@ export class FugueTree<T> {
     this.updateDepths(node, 1);
   }
 
-  addLineRoot({ id, value, parent, side, styles }: Node<T>){
+  addLineRoot(
+      id : Id,
+      value : T,
+      parent : Id,
+      side : "L" | "R",
+      styles : InlineStyle[] | BlockStyle[]
+  ){
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
     this._root.value.push(node);

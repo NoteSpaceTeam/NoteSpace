@@ -19,7 +19,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "link:..\\shared",
     "@testing-library/jest-dom": "^6.4.5",
     "dotenv": "^16.4.5",
     "eslint-plugin-playwright": "^1.6.0",
@@ -59,7 +59,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.6",
     "jsdom": "^24.0.0",
-    "knip": "^5.12.2",
+    "knip": "^5.12.3",
     "prettier": "^3.2.5",
     "sass": "^1.76.0",
     "typescript": "^5.4.5",

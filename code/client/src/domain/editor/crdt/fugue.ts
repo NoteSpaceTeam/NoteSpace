@@ -1,5 +1,5 @@
 import { type Id } from '@notespace/shared/crdt/types/nodes';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import {BlockStyle, InlineStyle} from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@/domain/editor/crdt/types';
@@ -105,11 +105,11 @@ export class Fugue {
    * @param side
    * @param styles
    */
-  private addNode({ id, value, parent, side, styles }: InsertOperation) {
+  private addNode({id, value, parent, side, styles}: InsertOperation) {
     if (value === '\n') {
-      this.tree.addLineRoot(id, value, parent, side, styles);
+      this.tree.addLineRoot(id, value, parent, side, styles || []);
     } else {
-      this.tree.addNode(id, value, parent, side, styles);
+      this.tree.addNode(id, value, parent, side, styles || []);
     }
   }
 
