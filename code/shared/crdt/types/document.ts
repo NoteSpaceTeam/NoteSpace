@@ -6,7 +6,7 @@ export type DocumentData = {
 };
 
 export type Document = DocumentData & {
-  operations : Operation[];
+  operations: Operation[];
 };
 
 export type DocumentStorageData = DocumentData & {

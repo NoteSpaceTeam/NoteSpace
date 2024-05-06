@@ -1,12 +1,12 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
-import {InsertOperation, DeleteOperation, Operation} from '@notespace/shared/crdt/types/operations';
+import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/crdt/types/operations';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
 import server from '../../src/server';
-import {applyOperations} from "./utils";
+import { applyOperations } from './utils';
 
 const { app, onConnectionHandler } = server;
 const PORT = process.env.PORT || 8080;

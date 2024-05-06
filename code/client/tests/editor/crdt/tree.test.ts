@@ -2,7 +2,7 @@ import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { InsertOperation } from '@notespace/shared/crdt/types/operations';
 import { describe, test, expect, beforeEach } from 'vitest';
 import { FugueNode } from '@/domain/editor/crdt/types';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
+import { Nodes, Node } from '@notespace/shared/crdt/types/nodes';
 
 describe('FugueTree', () => {
   let tree: FugueTree<string>;
@@ -23,7 +23,7 @@ describe('FugueTree', () => {
     const { id, value, parent, side } = operation;
 
     // when
-    tree.addNode(id, value, parent, side);
+    tree.addNode({ id, value, parent, side } as Node<string>);
 
     // then
     const root = tree.getById(rootId);

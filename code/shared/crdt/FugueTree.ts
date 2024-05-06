@@ -1,8 +1,8 @@
 import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
 import { isEmpty, isNull } from "lodash";
-import {rootNode, treeNode} from "./utils";
-import {RootNode, NodeType} from "./types/nodes";
+import { rootNode, treeNode } from "./utils";
+import { RootNode, NodeType } from "./types/nodes";
 
 export class FugueTree<T> {
   private _root: RootNode<T>;
@@ -47,7 +47,7 @@ export class FugueTree<T> {
     this.updateDepths(node, 1);
   }
 
-  addLineRoot({ id, value, parent, side, styles }: Node<T>){
+  addLineRoot({ id, value, parent, side, styles }: Node<T>) {
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
     this._root.value.push(node);
@@ -182,7 +182,10 @@ export class FugueTree<T> {
    * @param returnDeleted
    * @returns an iterator over the nodes in the subtree.
    */
-  *traverse(root: NodeType<T>, returnDeleted: boolean = false): IterableIterator<NodeType<T>> {
+  *traverse(
+    root: NodeType<T>,
+    returnDeleted: boolean = false,
+  ): IterableIterator<NodeType<T>> {
     let current = root;
     const stack: { side: "L" | "R"; childIndex: number }[] = [
       { side: "L", childIndex: 0 },

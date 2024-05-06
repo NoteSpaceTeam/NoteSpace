@@ -1,7 +1,5 @@
-import {Node, Id, RootNode} from "./types/nodes";
+import { Node, Id, RootNode } from "./types/nodes";
 import { InlineStyle } from "../types/styles";
-
-
 
 export function rootNode<T>(): RootNode<T> {
   return {
@@ -20,7 +18,7 @@ export function rootNode<T>(): RootNode<T> {
 export function treeNode<T>(
   id: Id,
   value: T,
-  parent: Id | null ,
+  parent: Id | null,
   side: "L" | "R",
   depth: number,
   styles: InlineStyle[] = [],
