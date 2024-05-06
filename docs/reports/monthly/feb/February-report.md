@@ -38,7 +38,7 @@ This socket connection will be used to send and receive changes to the editor, a
 
 Research on conflict resolution algorithms was started. 
 The goal is to find a suitable algorithm that can be used to resolve conflicts in the live editor.
-> More details on the conflict resolution algorithms can be found both in the [March report](../March-report.md) 
+> More details on the conflict resolution algorithms can be found both in the [March report](../mar/March-report.md) 
 > and the [ConflictResolution](../../features/Editor.md#ConflictResolution) section.
 
 

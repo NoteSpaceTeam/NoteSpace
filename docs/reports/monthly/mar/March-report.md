@@ -1,7 +1,7 @@
 # Notespace - March Report
 ## Introduction
 This is the March report for the Notespace project. This report will cover the progress made in March.
-> For detailed information on the project structure, please refer to [project structure](../project-overview-report.md) report.
+> For detailed information on the project structure, please refer to [project structure](../../project-overview-report.md) report.
 
 ## Project summary
 
@@ -17,7 +17,7 @@ The following tasks have been completed:
 A draft for the project's proposal was built and research on conflict algorithms continued.
 In the end, a CRDT algorithm was chosen, and we started implementing it. The algorithm itself is called Fugue.
 > More details on the conflict resolution algorithms can be found in the 
-[ConflictResolution](../features/Editor.md#ConflictResolution) section.
+[ConflictResolution](../../features/Editor.md#ConflictResolution) section.
 
 
 2. ### Fugue CRDT implementation
