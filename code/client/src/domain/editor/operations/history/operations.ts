@@ -58,7 +58,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
       start: cursor,
       end: {
         ...cursor,
-        column: cursor.column + (text.length > 1 ? text.length - 1 : 0),
+        column: cursor.column + text.length,
       },
     };
     return fugue.reviveLocal(selection);
