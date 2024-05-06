@@ -26,7 +26,6 @@ function Document() {
       const { nodes, title } = await services.getDocument(id);
       fugue.init(nodes);
       setTitle(title);
-      socket.connect();
       socket.emit('joinDocument', id);
       setLoaded(true);
       setFilePath(`/documents/${title || 'Untitled'}`);
@@ -34,7 +33,6 @@ function Document() {
     fetchDocument().catch(showError);
     return () => {
       socket.emit('leaveDocument');
-      socket.disconnect();
     };
   }, [fugue, id, http, socket, showError, services, navigate, setFilePath]);
 

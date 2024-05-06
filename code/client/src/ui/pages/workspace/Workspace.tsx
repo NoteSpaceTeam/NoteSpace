@@ -8,29 +8,33 @@ import useWorkspace from '@domain/workspace/useWorkspace';
 import './Workspace.scss';
 
 function Workspace() {
-  const communication = useCommunication();
+  const { http } = useCommunication();
   const [docs, setDocs] = useState<DocumentData[]>([]);
   const { showError } = useError();
   const { setFilePath } = useWorkspace();
 
   async function createDocument(title?: string) {
-    const { id } = await communication.http.post('/documents', { title });
+    const { id } = await http.post('/documents', { title });
     setDocs(prev => [...prev, { id, title } as DocumentData]);
   }
 
   async function deleteDocument(id: string) {
-    await communication.http.delete(`/documents/${id}`);
+    await http.delete(`/documents/${id}`);
     setDocs(docs.filter(doc => doc.id !== id));
+  }
+
+  async function updateDocument(id: string, title: string) {
+    await http.put(`/documents/${id}`, { title });
   }
 
   useEffect(() => {
     async function getDocuments() {
-      const documents = await communication.http.get('/documents');
+      const documents = await http.get('/documents');
       setDocs(documents);
     }
     setFilePath('/documents');
     getDocuments().catch(showError);
-  }, [communication, setFilePath, showError]);
+  }, [http, setFilePath, showError]);
 
   return (
     <div className="workspace">
@@ -40,12 +44,10 @@ function Workspace() {
         {docs.map(document => (
           <DocumentPreview
             key={document.id}
-            document={document}
+            doc={document}
             onDelete={() => deleteDocument(document.id).catch(showError)}
             onDuplicate={() => createDocument(document.title).catch(showError)}
-            onRename={() => {
-              /*TODO*/
-            }}
+            onRename={title => updateDocument(document.id, title).catch(showError)}
           />
         ))}
       </ul>

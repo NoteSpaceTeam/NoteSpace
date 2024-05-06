@@ -1,7 +1,7 @@
 .menu {
   ul {
     background-color: black;
-    width: 20vh;
+    width: 100px;
     border-radius: 5px;
   }
 
@@ -19,6 +19,7 @@
       border: none;
       padding: 2vh;
       margin: 0 1vh 0 1vh;
+      font-size: 10px;
       cursor: pointer;
       transition: background-color 0.3s;
 

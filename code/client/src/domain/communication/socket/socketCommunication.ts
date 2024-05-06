@@ -6,7 +6,7 @@ type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;
 export type SocketEventHandlers = Record<string, (...args: any[]) => void>;
 
-const OPTIONS = { autoConnect: false };
+const OPTIONS = { autoConnect: true };
 export const socket: Socket = io(config.SOCKET_SERVER_URL, OPTIONS);
 const operationEmitter = new OperationEmitter();
 
