@@ -1,65 +1,54 @@
 import { useEffect, useState } from 'react';
 import { useCommunication } from '@/domain/communication/context/useCommunication';
-import { Link, useNavigate } from 'react-router-dom';
-import { Document } from '@notespace/shared/crdt/types/document';
-import { MdDelete } from 'react-icons/md';
-import { IoDocumentText } from 'react-icons/io5';
-import { FaFilter, FaPlus } from 'react-icons/fa';
+import { DocumentData } from '@notespace/shared/crdt/types/document';
+import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
+import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
+import useError from '@domain/error/useError';
+import useWorkspace from '@domain/workspace/useWorkspace';
 import './Workspace.scss';
-import { useErrorBoundary } from 'react-error-boundary';
 
 function Workspace() {
-  const navigate = useNavigate();
-  const communication = useCommunication();
-  const [docs, setDocs] = useState<Document[]>([]);
-  const { showBoundary } = useErrorBoundary();
+  const { http } = useCommunication();
+  const [docs, setDocs] = useState<DocumentData[]>([]);
+  const { showError } = useError();
+  const { setFilePath } = useWorkspace();
 
-  async function createDocument() {
-    const { id } = await communication.http.post('/documents');
-    navigate(`/documents/${id}`);
+  async function createDocument(title?: string) {
+    const { id } = await http.post('/documents', { title });
+    setDocs(prev => [...prev, { id, title } as DocumentData]);
   }
 
-  async function onDeleteDocument(id: string) {
-    await communication.http.delete(`/documents/${id}`);
+  async function deleteDocument(id: string) {
+    await http.delete(`/documents/${id}`);
     setDocs(docs.filter(doc => doc.id !== id));
+  }
+
+  async function updateDocument(id: string, title: string) {
+    await http.put(`/documents/${id}`, { title });
   }
 
   useEffect(() => {
     async function getDocuments() {
-      const documents = await communication.http.get('/documents');
+      const documents = await http.get('/documents');
       setDocs(documents);
     }
-    getDocuments().catch(showBoundary);
-  }, [communication, showBoundary]);
+    setFilePath('/documents');
+    getDocuments().catch(showError);
+  }, [http, setFilePath, showError]);
 
   return (
     <div className="workspace">
       <h2>Workspace</h2>
-      <div className="header">
-        <FaFilter />
-        <button onClick={() => createDocument().catch(showBoundary)}>
-          <p>New</p>
-          <FaPlus />
-        </button>
-      </div>
+      <WorkspaceHeader onCreateDocument={() => createDocument().catch(showError)} />
       <ul>
-        {docs.map(doc => (
-          <Link to={`/documents/${doc.id}`} className="doc-title" key={doc.id}>
-            <li>
-              <div>
-                <IoDocumentText />
-                {doc.title || 'Untitled'}
-              </div>
-              <button
-                onClick={e => {
-                  e.preventDefault();
-                  onDeleteDocument(doc.id).catch(showBoundary);
-                }}
-              >
-                <MdDelete />
-              </button>
-            </li>
-          </Link>
+        {docs.map(document => (
+          <DocumentPreview
+            key={document.id}
+            doc={document}
+            onDelete={() => deleteDocument(document.id).catch(showError)}
+            onDuplicate={() => createDocument(document.title).catch(showError)}
+            onRename={title => updateDocument(document.id, title).catch(showError)}
+          />
         ))}
       </ul>
     </div>

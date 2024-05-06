@@ -1,4 +1,4 @@
-import { HttpCommunication } from '@/domain/communication/http/httpCommunication';
+import { HttpCommunication } from '@domain/communication/http/httpCommunication';
 import { Document } from '@notespace/shared/crdt/types/document';
 
 async function getDocument(http: HttpCommunication, id: string): Promise<Document> {

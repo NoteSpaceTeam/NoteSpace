@@ -126,7 +126,6 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
     insert_mode: boolean
   ): InsertNodeOperation | RemoveNodeOperation | undefined {
-    console.log(insert_mode ? 'insertNodeOperation' : 'removeNodeOperation', operation);
     if (operation.node.text === '') return undefined;
 
     const offset = (line: number) => (line === 0 ? 0 : 1);

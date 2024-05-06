@@ -11,11 +11,11 @@ export default function DocumentMemoryDatabase(): DocumentDatabase {
     return Object.values(documents);
   }
 
-  async function createDocument() {
+  async function createDocument(title: string) {
     const id = uuid();
     documents[id] = {
       id,
-      title: '',
+      title,
       operations: [],
     };
     return id;

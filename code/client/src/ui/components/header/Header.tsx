@@ -1,12 +1,11 @@
-import { Link } from 'react-router-dom';
 import './Header.scss';
+import useWorkspace from '@domain/workspace/useWorkspace';
 
 function Header() {
+  const { filePath } = useWorkspace();
   return (
     <header>
-      <Link to={'/'} className="title">
-        NoteSpace
-      </Link>
+      <p>{filePath}</p>
     </header>
   );
 }

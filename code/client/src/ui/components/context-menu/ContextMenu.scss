@@ -1,0 +1,36 @@
+.menu {
+  ul {
+    background-color: black;
+    width: 100px;
+    border-radius: 5px;
+  }
+
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+
+    button {
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      color: white;
+      background-color: black;
+      border: none;
+      padding: 2vh;
+      margin: 0 1vh 0 1vh;
+      font-size: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: white;
+        color: black;
+      }
+
+      :first-child {
+        margin-right: 1.5vh;
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 
 type DocumentDatabase = {
   getDocuments: () => Promise<DocumentData[]>;
-  createDocument: () => Promise<string>;
+  createDocument: (title: string) => Promise<string>;
   getDocument: (id: string) => Promise<DocumentStorageData>;
   deleteDocument: (id: string) => Promise<void>;
   updateDocument: (id: string, operations: Operation[]) => Promise<void>;
@@ -13,7 +13,7 @@ type DocumentDatabase = {
 
 type DocumentService = {
   getDocuments: () => Promise<DocumentData[]>;
-  createDocument: () => Promise<string>;
+  createDocument: (title?: string) => Promise<string>;
   getDocument: (id: string) => Promise<Document>;
   deleteDocument: (id: string) => void;
   updateDocument: (id: string, operations: Operation[]) => Promise<void>;

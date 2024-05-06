@@ -8,7 +8,8 @@ function documentHandlers(service: DocumentService) {
   }
 
   async function createDocument(req: Request, res: Response) {
-    const id = await service.createDocument();
+    const { title } = req.body;
+    const id = await service.createDocument(title);
     res.status(201).send({ id });
   }
 
@@ -22,11 +23,19 @@ function documentHandlers(service: DocumentService) {
     res.status(200).send();
   }
 
+  async function updateDocument(req: Request, res: Response) {
+    const { id } = req.params;
+    const { title } = req.body;
+    await service.updateTitle(id, title);
+    res.status(200).send();
+  }
+
   return {
     getDocuments,
     createDocument,
     getDocument,
     deleteDocument,
+    updateDocument,
   };
 }
 
