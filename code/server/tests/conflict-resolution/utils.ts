@@ -1,6 +1,5 @@
 import {Operation} from "@notespace/shared/crdt/types/operations";
 import {FugueTree} from "@notespace/shared/crdt/FugueTree";
-import { treeNode } from "@notespace/shared/crdt/utils";
 
 /**
  * Applies the given operations to the tree
@@ -11,14 +10,13 @@ export function applyOperations(tree : FugueTree<string>, operations: Operation[
     for (const operation of operations) {
         switch (operation.type) {
             case 'insert':
-                tree.addNode(treeNode(
+                tree.addNode(
                     operation.id,
                     operation.value,
                     operation.parent || tree.root.id,
                     operation.side,
-                    0,
                     []
-                ));
+                );
                 break;
             case 'delete':
                 tree.deleteNode(operation.id);
