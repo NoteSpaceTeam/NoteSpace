@@ -56,10 +56,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
   function insertText({ cursor, text }: InsertTextOperation) {
     const selection = {
       start: cursor,
-      end: {
-        ...cursor,
-        column: cursor.column + text.length,
-      },
+      end: { ...cursor, column: cursor.column + text.length },
     };
     return fugue.reviveLocal(selection);
   }

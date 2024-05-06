@@ -11,10 +11,9 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
    */
   function onFormat(mark: InlineStyle) {
     const value = CustomEditor.toggleMark(editor, mark);
-    if (isSelected(editor)) {
-      const selection = getSelection(editor);
-      handlers.applyInlineStyle(mark, selection, value);
-    }
+    if (!isSelected(editor)) return;
+    const selection = getSelection(editor);
+    handlers.applyInlineStyle(mark, selection, value);
   }
 
   return { onFormat };

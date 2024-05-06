@@ -1,7 +1,10 @@
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { isEmpty, range } from 'lodash';
-import { socket } from '@/domain/communication/socket/socketCommunication';
+import { socket } from '@domain/communication/socket/socketCommunication';
 
+/**
+ * Buffers operations and emits them in chunks to the server.
+ */
 export class OperationEmitter {
   private readonly operationBuffer: Operation[] = [];
   private readonly timeoutDuration = 100;
@@ -13,15 +16,11 @@ export class OperationEmitter {
     this.operationBuffer.push(...operations);
     this.resetTimeout();
 
-    if (this.operationBuffer.length >= this.maxBufferedOperations) {
-      this.emitOperations();
-    }
+    if (this.operationBuffer.length >= this.maxBufferedOperations) this.emitOperations();
   }
 
   private resetTimeout() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
+    if (this.timeoutId) clearTimeout(this.timeoutId);
     this.timeoutId = setTimeout(() => this.emitOperations(), this.timeoutDuration);
   }
 
@@ -43,9 +42,9 @@ export class OperationEmitter {
     const onAcknowledge = () => {
       if (chunkIndex < chunks.length) {
         socket.emit('operation', chunks[chunkIndex++]);
-      } else {
-        socket.off('ack', onAcknowledge);
+        return;
       }
+      socket.off('ack', onAcknowledge);
     };
     socket.emit('operation', chunks[chunkIndex++]);
     socket.on('ack', onAcknowledge);

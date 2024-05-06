@@ -15,11 +15,11 @@ export function toSlate(fugue: Fugue): Descendant[] {
   descendants.push(descendant(lineStyle, ''));
 
   for (const node of fugue.traverseTree()) {
-    if (!node.value) continue;
+    if (node.parent === null || !node.value) continue;
 
     // create a text node with the given styles
     const textNode: CustomText = {
-      text: node.value,
+      text: node.value as string,
     };
 
     node.styles.forEach(style => {

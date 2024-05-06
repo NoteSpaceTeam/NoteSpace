@@ -9,10 +9,9 @@ export function joinRoom(socket: Socket, roomId: string) {
 
 export function leaveRoom(socket: Socket) {
   const roomId = rooms.get(socket.id);
-  if (roomId) {
-    socket.leave(roomId);
-    rooms.delete(socket.id);
-  }
+  if (!roomId) return;
+  socket.leave(roomId);
+  rooms.delete(socket.id);
 }
 
 export function getRoomId(socket: Socket) {

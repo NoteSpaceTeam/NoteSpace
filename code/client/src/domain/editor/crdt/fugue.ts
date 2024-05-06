@@ -1,5 +1,5 @@
 import { type Id } from '@notespace/shared/crdt/types/nodes';
-import {BlockStyle, InlineStyle} from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@/domain/editor/crdt/types';
@@ -57,16 +57,16 @@ export class Fugue {
    * @param cursor
    * @param values
    */
-  insertLocal(cursor: Cursor, ...values: NodeInsert[] | string[]): InsertOperation[] {
-    let { line, column } = cursor;
+  insertLocal({ line, column }: Cursor, ...values: (NodeInsert | string)[]): InsertOperation[] {
     return values.map(value => {
       const node = typeof value === 'string' ? nodeInsert(value, []) : value;
       const operation = this.getInsertOperation({ line, column }, node);
+
       this.addNode(operation);
-      if (node.value === '\n') {
-        line++;
-      }
+
+      if (node.value === '\n') line++;
       column = node.value === '\n' ? 0 : column + 1;
+
       return operation;
     });
   }
@@ -75,9 +75,7 @@ export class Fugue {
    * Inserts a new node in the tree based on the given operation.
    * @param operation
    */
-  insertRemote(operation: InsertOperation): void {
-    this.addNode(operation);
-  }
+  insertRemote = (operation: InsertOperation) => this.addNode(operation);
 
   /**
    * Returns the insert operation based on the given cursor and insert node
@@ -87,12 +85,11 @@ export class Fugue {
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
 
-    const lineNode = this.tree.getLineRoot(line);
-    const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column })!;
+    const leftOrigin = this.getNodeByCursor({ line, column })!;
 
-    if (isEmpty(leftOrigin.rightChildren)) {
+    if (isEmpty(leftOrigin.rightChildren))
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
-    }
+
     const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
     return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
   }
@@ -105,13 +102,8 @@ export class Fugue {
    * @param side
    * @param styles
    */
-  private addNode({id, value, parent, side, styles}: InsertOperation) {
-    if (value === '\n') {
-      this.tree.addLineRoot(id, value, parent, side, styles || []);
-    } else {
-      this.tree.addNode(id, value, parent, side, styles || []);
-    }
-  }
+  private addNode = ({ id, value, parent, side, styles }: InsertOperation) =>
+    this.tree.addNode(id, value, parent, side, styles || []);
 
   /**
    * Deletes the nodes from the given start index to the given end index.
@@ -127,9 +119,7 @@ export class Fugue {
    * @param cursor
    */
   deleteLocalByCursor(cursor: Cursor) {
-    const node =
-      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
-
+    const node = this.getNodeByCursor(cursor);
     if (node) return this.deleteLocalById(node.id);
   }
 
@@ -143,9 +133,7 @@ export class Fugue {
    * Deletes the node based on the given operation
    * @param operation
    */
-  deleteRemote(operation: DeleteOperation): void {
-    this.tree.deleteNode(operation.id);
-  }
+  deleteRemote = (operation: DeleteOperation) => this.tree.deleteNode(operation.id);
 
   /**
    * Deletes the node based on the given node id
@@ -170,9 +158,7 @@ export class Fugue {
    * @param cursor
    */
   reviveLocalByCursor(cursor: Cursor) {
-    const node =
-      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
-
+    const node = this.getNodeByCursor(cursor);
     if (node) return this.reviveNode(node.id);
   }
 
@@ -285,16 +271,14 @@ export class Fugue {
 
     for (const node of this.tree.traverse(lineRootNode, returnDeleted)) {
       // start condition
-      if (lineCounter === start.line && columnCounter === start.column) {
-        inBounds = true;
-      }
+      if (lineCounter === start.line && columnCounter === start.column) inBounds = true;
+
       // yield node if in bounds
       if (inBounds) yield node;
 
       // update counters
-      if (node.value === '\n') {
-        lineCounter++;
-      }
+      if (node.value === '\n') lineCounter++;
+
       columnCounter = node.value === '\n' ? 0 : columnCounter + 1;
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) break;
@@ -321,7 +305,9 @@ export class Fugue {
 
     const nodesInSelection = Array.from(this.traverseBySelection(selection));
     const elements = reverse ? nodesInSelection.reverse() : nodesInSelection;
+
     const nodes: FugueNode[] = [];
+
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
         if (inclusive) nodes.push(node);
@@ -350,6 +336,8 @@ export class Fugue {
    * @param cursor
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
+    if (column === 0) return this.tree.getLineRoot(line);
+
     const start = { line, column: column - 1 };
     const end = { line, column: column };
     const iterator = this.traverseBySelection({ start, end });
@@ -359,14 +347,10 @@ export class Fugue {
   /**
    * Returns the string representation of the tree.
    */
-  toString(): string {
-    return this.tree.toString();
-  }
+  toString = (): string => this.tree.toString();
 
   /**
    * Returns a node by id
    */
-  getNodeById(id: Id): FugueNode {
-    return this.tree.getById(id);
-  }
+  getNodeById = (id: Id): FugueNode => this.tree.getById(id);
 }

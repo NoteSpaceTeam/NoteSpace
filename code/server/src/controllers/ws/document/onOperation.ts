@@ -6,13 +6,11 @@ import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 
 function onOperation(service: DocumentService) {
   return async (socket: Socket, operations: Operation[]) => {
-    if (!operations) {
-      throw new InvalidParameterError('Operations are required');
-    }
+    if (!operations) throw new InvalidParameterError('Operations are required');
+
     const documentId = getRoomId(socket);
-    if (!documentId) {
-      throw new ForbiddenError('Client socket not in a room');
-    }
+    if (!documentId) throw new ForbiddenError('Client socket not in a room');
+
     socket.broadcast.to(documentId).emit('operation', operations);
     await service.updateDocument(documentId, operations);
     socket.emit('ack');

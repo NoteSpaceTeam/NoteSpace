@@ -1,9 +1,9 @@
 import Editor from '@/ui/pages/document/components/editor/Editor';
-import useFugue from '@/domain/editor/hooks/useFugue';
+import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCommunication } from '@/domain/communication/context/useCommunication';
-import useDocumentServices from '@domain/editor/hooks/useDocumentServices';
+import useDocumentServices from '@/services/useDocumentServices';
 import './Document.scss';
 import useError from '@domain/error/useError';
 import useWorkspace from '@domain/workspace/useWorkspace';

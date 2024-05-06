@@ -19,33 +19,29 @@ export default function DocumentMemoryDatabase(): DocumentDatabase {
 
   async function getDocument(id: string): Promise<DocumentStorageData> {
     const document = documents[id];
-    if (!document) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
+    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+
     return document;
   }
 
   async function deleteDocument(id: string) {
     const document = documents[id];
-    if (!document) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
+    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+
     delete documents[id];
   }
 
   async function updateDocument(id: string, operations: Operation[]) {
     const document = documents[id];
-    if (!document) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
+    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+
     documents[id] = { ...document, operations: [...document.operations, ...operations] };
   }
 
   async function updateTitle(id: string, title: string) {
     const document = documents[id];
-    if (!document) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
+    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+
     documents[id] = { ...document, title };
   }
 

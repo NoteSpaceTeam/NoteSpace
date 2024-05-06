@@ -5,9 +5,8 @@ import documentHandlers from '@controllers/http/documentHandlers';
 import errorHandler from '@controllers/http/errorHandler';
 
 export default function (service: DocumentService) {
-  if (!service) {
-    throw new Error('Service parameter is required');
-  }
+  if (!service) throw new Error('Service parameter is required');
+
   const { getDocuments, createDocument, getDocument, deleteDocument, updateDocument } = documentHandlers(service);
 
   const router = PromiseRouter(); // automatically routes unhandled errors to error handling middleware

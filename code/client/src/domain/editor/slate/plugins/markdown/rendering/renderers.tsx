@@ -14,10 +14,9 @@ import { Range } from 'slate';
  */
 export const getElementRenderer = (type: string, props: RenderElementProps) => {
   for (const key in ElementRenderers) {
-    if (key === type) {
-      const k = key as keyof typeof ElementRenderers;
-      return ElementRenderers[k](props);
-    }
+    if (key !== type) continue;
+    const k = key as keyof typeof ElementRenderers;
+    return ElementRenderers[k](props);
   }
   return <Paragraph {...props} children={props.children} />;
 };
@@ -36,11 +35,12 @@ export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
   }
   if (leaf.cursor) {
     const { color, range, styles } = leaf.cursor;
-    if (Range.isCollapsed(range!)) {
-      children = <Cursor color={color} styles={styles} children={children} />;
-    } else {
-      children = <Selection color={color} children={children} />;
-    }
+
+    children = Range.isCollapsed(range!) ? (
+      <Cursor color={color} styles={styles} children={children} />
+    ) : (
+      <Selection color={color} children={children} />
+    );
   }
   return children;
 };

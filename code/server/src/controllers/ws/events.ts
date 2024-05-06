@@ -6,9 +6,8 @@ import onJoinDocument from '@controllers/ws/document/onJoinDocument';
 import onLeaveDocument from '@controllers/ws/document/onLeaveDocument';
 
 export default function events(service: DocumentService): Record<string, SocketHandler> {
-  if (!service) {
-    throw new Error('Service parameter is required');
-  }
+  if (!service) throw new Error('Service parameter is required');
+
   return {
     operation: onOperation(service),
     cursorChange: onCursorChange(),

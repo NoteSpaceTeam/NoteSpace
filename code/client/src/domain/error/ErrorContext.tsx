@@ -16,11 +16,8 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError(undefined);
-      }, ERROR_TIMEOUT);
-    }
+    if (!error) return;
+    setTimeout(() => setError(undefined), ERROR_TIMEOUT);
   }, [error]);
 
   return (

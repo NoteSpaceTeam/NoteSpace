@@ -21,7 +21,7 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   }
 
   function deleteCharacter(cursor: Cursor) {
-    // don't delete line if it's not a paragraph
+    // don't delete line if it's not a paragraph - this is to prevent deleting the block style & line simultaneously
     if (cursor.column === 0 && fugue.getBlockStyle(cursor.line) !== 'paragraph') return;
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) socket.emit('operation', operations);

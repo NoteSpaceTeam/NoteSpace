@@ -1,6 +1,6 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
-import {InsertOperation, DeleteOperation, Operation} from '@notespace/shared/crdt/types/operations';
+import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/crdt/types/operations';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
@@ -39,7 +39,7 @@ afterAll(done => {
 });
 
 beforeEach(() => {
-    tree = new FugueTree<string>();
+  tree = new FugueTree<string>();
 });
 
 describe('Operations must be commutative', () => {

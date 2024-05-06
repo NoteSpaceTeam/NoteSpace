@@ -26,10 +26,12 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     // delete trigger nodes
     if (deleteTriggerNodes) {
       const cursor = { line, column: 0 };
-      const triggerNodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
+      const nodes = Array.from(fugue.traverseBySeparator(' ', cursor, false, true));
+      const triggerNodes: FugueNode[] = nodes[0];
       const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
       operations.push(...deleteOperations);
     }
+
     // apply block style
     const styleOperation = fugue.updateBlockStyleLocal(line, style);
     operations.push(styleOperation);

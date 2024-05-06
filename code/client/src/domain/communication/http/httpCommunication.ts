@@ -28,18 +28,16 @@ async function del(url: string) {
 const request = async (url: string, method: string, body?: any) => {
   const requestInit: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
   };
   if (body) requestInit.body = JSON.stringify(body);
-  const response = await fetch(BASE_URL + url, requestInit);
 
+  const response = await fetch(BASE_URL + url, requestInit);
   if (response.headers.get('content-length') === '0') return;
+
   const result = await response.json();
-  if (response.ok) {
-    return result;
-  }
+  if (response.ok) return result;
+
   throw new Error(result.error || 'Failed to fetch');
 };
 
