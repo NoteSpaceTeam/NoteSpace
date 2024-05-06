@@ -34,5 +34,4 @@ export function applyOperations(tree : FugueTree<string>, operations: Operation[
                 throw new Error('Invalid operation type');
         }
     }
-  }
 }

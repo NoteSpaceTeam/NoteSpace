@@ -36,7 +36,7 @@ export class FugueTree<T> {
       value: T,
       parent: Id | null,
       side: "L" | "R",
-      styles: InlineStyle[] | BlockStyle[]
+      styles? : InlineStyle[] | BlockStyle[]
   ) {
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
@@ -58,7 +58,7 @@ export class FugueTree<T> {
       value : T,
       parent : Id,
       side : "L" | "R",
-      styles : InlineStyle[] | BlockStyle[]
+      styles ?: InlineStyle[] | BlockStyle[]
   ){
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
