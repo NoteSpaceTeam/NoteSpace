@@ -12,8 +12,7 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
   }
 
   async function getDocument(id: string): Promise<Document> {
-    const { title, operations } = await database.getDocument(id);
-    return { id, title, operations: operations };
+    return await database.getDocument(id);
   }
 
   async function deleteDocument(id: string) {

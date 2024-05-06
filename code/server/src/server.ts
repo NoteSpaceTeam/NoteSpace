@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import databaseInit from '@database/firestore/operations';
+import databaseInit from '@database/memory/operations';
 import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';

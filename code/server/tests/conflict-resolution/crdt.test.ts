@@ -1,7 +1,6 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
 import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/crdt/types/operations';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
@@ -125,8 +124,8 @@ describe('Operations must be idempotent', () => {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const response = await request(app).get('/documents/' + id);
-    const nodes = response.body.nodes as Nodes<string>;
-    tree.setTree(nodes);
+    const nodes = response.body.operations as Operation[];
+    applyOperations(tree, nodes);
     expect(tree.toString()).toBe('a');
   });
 });

@@ -13,11 +13,7 @@ export default function DocumentMemoryDatabase(): DocumentDatabase {
 
   async function createDocument(title: string) {
     const id = uuid();
-    documents[id] = {
-      id,
-      title,
-      operations: [],
-    };
+    documents[id] = { id, title, operations: [] };
     return id;
   }
 

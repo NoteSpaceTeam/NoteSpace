@@ -1,8 +1,8 @@
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
-import serviceAccount from '@/firestore-key-5cddf-472039f8dbb6.json';
+import serviceAccount from '../../../firestore-key-5cddf-472039f8dbb6.json';
 import { getFirestore } from 'firebase-admin/firestore';
 import { DocumentDatabase } from '@src/types';
-import { Document, DocumentData, DocumentStorageData } from '@notespace/shared/crdt/types/document';
+import { DocumentData, DocumentStorageData } from '@notespace/shared/crdt/types/document';
 import { v4 as uuid } from 'uuid';
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/crdt/types/operations';
@@ -19,26 +19,20 @@ export default function DocumentFirestoreDatabase(): DocumentDatabase {
 
   async function getDocuments(): Promise<DocumentData[]> {
     const snapshot = await documents.get();
-    return snapshot.docs.map(doc => {
-      const { id, title } = doc.data() as Document;
-      return { id, title };
-    });
+    return snapshot.docs.map(doc => doc.data() as DocumentData);
   }
 
   async function createDocument(title: string) {
     const id = uuid();
-    const docData: DocumentStorageData = {
-      id,
-      title,
-      operations: [],
-    };
+    const docData: DocumentStorageData = { id, title, operations: [] };
     await documents.doc(id).set(docData);
     return id;
   }
 
   async function getDocument(id: string): Promise<DocumentStorageData> {
     const doc = await getDoc(id);
-    return (await doc.get()).data() as DocumentStorageData;
+    const snapshot = await doc.get();
+    return snapshot.data() as DocumentStorageData;
   }
 
   async function deleteDocument(id: string) {
