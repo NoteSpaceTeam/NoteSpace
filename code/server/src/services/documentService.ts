@@ -1,20 +1,8 @@
 import { DocumentDatabase, DocumentService } from '@src/types';
-import { FugueTree } from '@notespace/shared/crdt/FugueTree';
-import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { Document } from '@notespace/shared/crdt/types/document';
-import {
-  BlockStyleOperation,
-  DeleteOperation,
-  InlineStyleOperation,
-  InsertOperation,
-  Operation,
-  ReviveOperation,
-} from '@notespace/shared/crdt/types/operations';
-import { InvalidParameterError } from '@domain/errors/errors';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
-  const tree = new FugueTree<string>();
-
   async function getDocuments() {
     return await database.getDocuments();
   }
@@ -25,9 +13,7 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
 
   async function getDocument(id: string): Promise<Document> {
     const { title, operations } = await database.getDocument(id);
-    tree.reset();
-    await applyOperations(operations);
-    return { id, title, nodes: getNodes() };
+    return { id, title, operations: operations };
   }
 
   async function deleteDocument(id: string) {
@@ -36,54 +22,6 @@ export default function DocumentService(database: DocumentDatabase): DocumentSer
 
   async function updateDocument(id: string, operations: Operation[]) {
     await database.updateDocument(id, operations);
-  }
-
-  async function applyOperations(operations: Operation[]) {
-    for (const operation of operations) {
-      switch (operation.type) {
-        case 'insert':
-          await insertCharacter(operation);
-          break;
-        case 'delete':
-          await deleteCharacter(operation);
-          break;
-        case 'inline-style':
-          await updateInlineStyle(operation);
-          break;
-        case 'block-style':
-          await updateBlockStyle(operation);
-          break;
-        case 'revive':
-          await reviveCharacter(operation);
-          break;
-        default:
-          throw new InvalidParameterError('Invalid operation type');
-      }
-    }
-  }
-
-  async function insertCharacter({ id, value, parent, side, styles }: InsertOperation) {
-    tree.addNode(id, value, parent, side, styles);
-  }
-
-  async function deleteCharacter({ id }: DeleteOperation) {
-    tree.deleteNode(id);
-  }
-
-  async function updateInlineStyle({ id, style, value }: InlineStyleOperation) {
-    tree.updateInlineStyle(id, style, value);
-  }
-
-  async function updateBlockStyle({ style, line, append }: BlockStyleOperation) {
-    tree.updateBlockStyle(style, line, append);
-  }
-
-  async function reviveCharacter({ id }: ReviveOperation) {
-    tree.reviveNode(id);
-  }
-
-  function getNodes(): Nodes<string> {
-    return Object.fromEntries(Array.from(tree.nodes.entries()));
   }
 
   async function updateTitle(id: string, title: string) {

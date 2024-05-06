@@ -1,15 +1,16 @@
 import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
 import { isEmpty, isNull } from "lodash";
-import { rootNode, treeNode } from "./utils";
+import {rootNode, treeNode} from "./utils";
+import {RootNode, NodeType} from "./types/nodes";
 
 export class FugueTree<T> {
-  private _nodes = new Map<string, Node<T>[]>();
-  private _root: Node<T>;
+  private _root: RootNode<T>;
+  private _nodes = new Map<string, NodeType<T>[]>();
 
   constructor() {
     this._root = rootNode();
-    this._nodes.set("root", [this.root]);
+    this._nodes.set("root", [this._root]);
   }
 
   /**
@@ -17,9 +18,9 @@ export class FugueTree<T> {
    * @param nodes
    */
   setTree(nodes: Nodes<T>) {
-    const nodesMap = new Map<string, Node<T>[]>(Object.entries(nodes));
+    const nodesMap = new Map<string, NodeType<T>[]>(Object.entries(nodes));
     this._nodes = nodesMap;
-    this._root = nodesMap.get("root")![0];
+    this._root = nodesMap.get("root")![0] as RootNode<T>;
   }
 
   /**
@@ -30,15 +31,26 @@ export class FugueTree<T> {
    * @param side the side of the parent node where this node is located
    * @param styles the styles of the node
    */
-  addNode(
-    id: Id,
-    value: T,
-    parent: Id,
-    side: "L" | "R",
-    styles?: InlineStyle[],
-  ) {
+  addNode({ id, value, parent, side, styles }: Node<T>) {
     // create node
-    const node = treeNode(id, value, parent, side, 0, styles);
+    const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+
+    // add to nodes map
+    const senderNodes = this.nodes.get(id.sender) || [];
+    if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
+    senderNodes.push(node);
+
+    // insert into parent's siblings
+    this.insertChild(node);
+
+    // update depths of ancestors
+    this.updateDepths(node, 1);
+  }
+
+  addLineRoot({ id, value, parent, side, styles }: Node<T>){
+    // create node
+    const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    this._root.value.push(node);
 
     // add to nodes map
     const senderNodes = this.nodes.get(id.sender) || [];
@@ -97,9 +109,9 @@ export class FugueTree<T> {
    * @param node the node whose ancestors' depths are to be updated.
    * @param delta the amount by which to update the depths.
    */
-  private updateDepths(node: Node<T>, delta: number) {
+  private updateDepths(node: NodeType<T>, delta: number) {
     for (
-      let anc: Node<T> | null = node;
+      let anc: NodeType<T> | null = node;
       anc !== null;
       anc = anc.parent && this.getById(anc.parent)
     ) {
@@ -113,7 +125,7 @@ export class FugueTree<T> {
    * @throws if the id is unknown.
    * @returns the node with the given id.
    */
-  getById(id: Id): Node<T> {
+  getById(id: Id): NodeType<T> {
     const bySender = this.nodes.get(id.sender);
     if (bySender !== undefined) {
       const node = bySender[id.counter];
@@ -122,12 +134,16 @@ export class FugueTree<T> {
     throw new Error("Unknown ID: " + JSON.stringify(id));
   }
 
+  getLineRoot(line: number): NodeType<T> {
+    return line === 0 ? this._root : this._root.value[line - 1];
+  }
+
   /**
    * Returns the leftmost left-only descendant of node, i.e., the
    * first left child of the first left child ... of node.
    *
    */
-  getLeftmostDescendant(nodeId: Id): Node<T> {
+  getLeftmostDescendant(nodeId: Id): NodeType<T> {
     let node = this.getById(nodeId);
     while (!isEmpty(node.leftChildren)) {
       node = this.getById(node.leftChildren[0]);
@@ -166,16 +182,14 @@ export class FugueTree<T> {
    * @param returnDeleted
    * @returns an iterator over the nodes in the subtree.
    */
-  *traverse(
-    root: Node<T>,
-    returnDeleted: boolean = false,
-  ): IterableIterator<Node<T>> {
+  *traverse(root: NodeType<T>, returnDeleted: boolean = false): IterableIterator<NodeType<T>> {
     let current = root;
     const stack: { side: "L" | "R"; childIndex: number }[] = [
       { side: "L", childIndex: 0 },
     ];
     while (true) {
       const top = stack[stack.length - 1];
+      if (!top) return;
       const children =
         top.side === "L" ? current.leftChildren : current.rightChildren;
       if (top.childIndex === children.length) {
@@ -205,19 +219,13 @@ export class FugueTree<T> {
     }
   }
 
-  reset() {
-    this._nodes.clear();
-    this._root = rootNode();
-    this._nodes.set("root", [this.root]);
-  }
-
   toString() {
-    return Array.from(this.traverse(this.root))
+    return Array.from(this.traverse(this._root))
       .map((node) => node.value)
       .join("");
   }
 
-  get root(): Node<T> {
+  get root(): RootNode<T> {
     return this._root;
   }
 

@@ -23,8 +23,8 @@ function Document() {
   useEffect(() => {
     async function fetchDocument() {
       if (!id) return;
-      const { nodes, title } = await services.getDocument(id);
-      fugue.init(nodes);
+      const { operations, title } = await services.getDocument(id);
+      fugue.applyOperations(operations);
       setTitle(title);
       socket.emit('joinDocument', id);
       setLoaded(true);

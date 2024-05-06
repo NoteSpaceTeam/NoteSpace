@@ -1,4 +1,3 @@
-import { Nodes } from "./nodes";
 import { Operation } from "./operations";
 
 export type DocumentData = {
@@ -7,7 +6,7 @@ export type DocumentData = {
 };
 
 export type Document = DocumentData & {
-  nodes: Nodes<string>;
+  operations : Operation[];
 };
 
 export type DocumentStorageData = DocumentData & {

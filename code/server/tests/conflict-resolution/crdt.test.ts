@@ -1,11 +1,12 @@
 import * as http from 'http';
 import { io, Socket } from 'socket.io-client';
-import { InsertOperation, DeleteOperation } from '@notespace/shared/crdt/types/operations';
+import {InsertOperation, DeleteOperation, Operation} from '@notespace/shared/crdt/types/operations';
 import { Nodes } from '@notespace/shared/crdt/types/nodes';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
 import server from '../../src/server';
+import {applyOperations} from "./utils";
 
 const { app, onConnectionHandler } = server;
 const PORT = process.env.PORT || 8080;
@@ -14,7 +15,7 @@ let ioServer: Server;
 let httpServer: http.Server;
 let client1: Socket;
 let client2: Socket;
-const tree = new FugueTree();
+const tree = new FugueTree<string>();
 
 beforeAll(done => {
   httpServer = http.createServer(app);
@@ -72,8 +73,11 @@ describe('Operations must be commutative', () => {
     // get the document
     const response = await request(app).get('/documents/' + id);
     expect(response.status).toBe(200);
-    const nodes = response.body.nodes as Nodes<string>;
-    tree.setTree(nodes);
+    const operations = response.body.operations as Operation[];
+
+    // apply the operations to the tree
+    applyOperations(tree, operations);
+
     expect(tree.toString()).toBe('ab');
   });
 });

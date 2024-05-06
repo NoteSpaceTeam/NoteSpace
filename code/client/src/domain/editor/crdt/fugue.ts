@@ -1,4 +1,4 @@
-import { type Id, Nodes } from '@notespace/shared/crdt/types/nodes';
+import { type Id } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
@@ -10,6 +10,7 @@ import {
   DeleteOperation,
   InlineStyleOperation,
   InsertOperation,
+  Operation,
   ReviveOperation,
 } from '@notespace/shared/crdt/types/operations';
 
@@ -27,12 +28,28 @@ export class Fugue {
     this.tree = new FugueTree();
   }
 
-  /**
-   * Builds the tree from the given nodes map.
-   * @param nodes
-   */
-  init(nodes: Nodes<string>): void {
-    this.tree.setTree(nodes);
+  applyOperations(operations: Operation[]) {
+    for (const operation of operations) {
+      switch (operation.type) {
+        case 'insert':
+          this.insertRemote(operation);
+          break;
+        case 'delete':
+          this.deleteRemote(operation);
+          break;
+        case 'inline-style':
+          this.updateInlineStyleRemote(operation);
+          break;
+        case 'block-style':
+          this.updateBlockStyleRemote(operation);
+          break;
+        case 'revive':
+          this.reviveRemote(operation);
+          break;
+        default:
+          throw new Error('Invalid operation type');
+      }
+    }
   }
 
   /**
@@ -69,8 +86,10 @@ export class Fugue {
    */
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const lineNode = line === 0 ? this.tree.root : this.findNode('\n', line);
+
+    const lineNode = this.tree.getLineRoot(line);
     const leftOrigin = column === 0 ? lineNode : this.getNodeByCursor({ line, column })!;
+
     if (isEmpty(leftOrigin.rightChildren)) {
       return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     }
@@ -87,7 +106,11 @@ export class Fugue {
    * @param styles
    */
   private addNode({ id, value, parent, side, styles }: InsertOperation) {
-    this.tree.addNode(id, value, parent, side, styles);
+    if (value === '\n') {
+      this.tree.addLineRoot(id, value, parent, side, styles);
+    } else {
+      this.tree.addNode(id, value, parent, side, styles);
+    }
   }
 
   /**
@@ -105,7 +128,7 @@ export class Fugue {
    */
   deleteLocalByCursor(cursor: Cursor) {
     const node =
-      cursor.line > 0 && cursor.column === 0 ? this.findNode('\n', cursor.line - 1) : this.getNodeByCursor(cursor);
+      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
 
     if (node) return this.deleteLocalById(node.id);
   }
@@ -148,7 +171,7 @@ export class Fugue {
    */
   reviveLocalByCursor(cursor: Cursor) {
     const node =
-      cursor.line > 0 && cursor.column === 0 ? this.findNode('\n', cursor.line - 1) : this.getNodeByCursor(cursor);
+      cursor.line > 0 && cursor.column === 0 ? this.tree.getLineRoot(cursor.line) : this.getNodeByCursor(cursor);
 
     if (node) return this.reviveNode(node.id);
   }
@@ -254,10 +277,13 @@ export class Fugue {
    */
   *traverseBySelection(selection: Selection, returnDeleted: boolean = false): IterableIterator<FugueNode> {
     const { start, end } = selection;
-    let lineCounter = 0,
+    let lineCounter = start.line,
       columnCounter = 0,
       inBounds = false;
-    for (const node of this.traverseTree(returnDeleted)) {
+
+    const lineRootNode = this.tree.getLineRoot(start.line);
+
+    for (const node of this.tree.traverse(lineRootNode, returnDeleted)) {
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) {
         inBounds = true;
@@ -328,22 +354,6 @@ export class Fugue {
     const end = { line, column: column };
     const iterator = this.traverseBySelection({ start, end });
     return iterator.next().value;
-  }
-
-  /**
-   * Finds the node skip-th node with the given value
-   * @param value
-   * @param skip
-   */
-  private findNode(value: string, skip: number): FugueNode {
-    let lastMatch = this.tree.root;
-    for (const node of this.traverseTree()) {
-      if (node.value === value) {
-        lastMatch = node;
-        if (--skip === 0) return lastMatch;
-      }
-    }
-    return lastMatch;
   }
 
   /**

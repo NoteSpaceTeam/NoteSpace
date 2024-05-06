@@ -2,3 +2,4 @@
 pnpm-lock.yaml
 *.env
 coverage
+/code/client/bun.lockb

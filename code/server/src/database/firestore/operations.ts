@@ -6,6 +6,8 @@ import { Document, DocumentData, DocumentStorageData } from '@notespace/shared/c
 import { v4 as uuid } from 'uuid';
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/crdt/types/operations';
+import { firestore } from 'firebase-admin';
+import FieldValue = firestore.FieldValue;
 
 export default function DocumentFirestoreDatabase(): DocumentDatabase {
   initializeApp({
@@ -35,36 +37,32 @@ export default function DocumentFirestoreDatabase(): DocumentDatabase {
   }
 
   async function getDocument(id: string): Promise<DocumentStorageData> {
-    const doc = await documents.doc(id).get();
-    if (!doc.exists) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
-    return doc.data() as DocumentStorageData;
+    const doc = await getDoc(id);
+    return (await doc.get()).data() as DocumentStorageData;
   }
 
   async function deleteDocument(id: string) {
-    const doc = await documents.doc(id).get();
-    if (!doc.exists) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
-    await documents.doc(id).delete();
+    const doc = await getDoc(id);
+    await doc.delete();
   }
 
   async function updateDocument(id: string, newOperations: Operation[]) {
-    const doc = await documents.doc(id).get();
-    if (!doc.exists) {
-      throw new NotFoundError(`Document with id ${id} not found`);
-    }
-    const { operations } = doc.data() as DocumentStorageData;
-    await documents.doc(id).update({ operations: [...operations, ...newOperations] });
+    const doc = await getDoc(id);
+    await doc.update({ operations: FieldValue.arrayUnion(newOperations) });
   }
 
   async function updateTitle(id: string, title: string) {
-    const doc = await documents.doc(id).get();
-    if (!doc.exists) {
+    const doc = await getDoc(id);
+    await doc.update({ title });
+  }
+
+  async function getDoc(id: string) {
+    const query = documents.where('id', '==', id);
+    const data = await query.get();
+    if (data.empty) {
       throw new NotFoundError(`Document with id ${id} not found`);
     }
-    await documents.doc(id).update({ title });
+    return data.docs[0].ref;
   }
 
   return {
