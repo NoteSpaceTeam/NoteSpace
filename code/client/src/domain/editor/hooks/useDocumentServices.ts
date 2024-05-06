@@ -1,5 +1,5 @@
-import { HttpCommunication } from '@/domain/communication/http/httpCommunication';
-import documentServices from '@/domain/editor/services/documentServices';
+import { HttpCommunication } from '@domain/communication/http/httpCommunication';
+import documentServices from '@/services/documentServices';
 
 function useDocumentServices(http: HttpCommunication) {
   async function getDocument(id: string) {

@@ -19,6 +19,7 @@ const io = new Server(server, config.SERVER_OPTIONS);
 const onConnectionHandler = onConnection(events);
 
 app.use(cors({ origin: config.ORIGIN }));
+app.use(express.json());
 app.use('/', api);
 
 io.on('connection', onConnectionHandler);

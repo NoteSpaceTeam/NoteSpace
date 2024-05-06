@@ -12,12 +12,10 @@
     "downlevelIteration": true,
     "baseUrl": "../",
     "paths": {
-      /*Controllers*/
-      "@controllers/*": ["./server/src/controllers/*"],
-      /*Databases*/
-      "@database/*": ["./server/src/database/*"],
-      /*Others*/
+      "@/*": ["./server/*"],
       "@src/*": ["./server/src/*"],
+      "@controllers/*": ["./server/src/controllers/*"],
+      "@database/*": ["./server/src/database/*"],
       "@domain/*": ["./server/src/domain/*"],
       "@services/*": ["./server/src/services/*"]
     }
