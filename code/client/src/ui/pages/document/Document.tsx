@@ -24,7 +24,7 @@ function Document() {
     async function fetchDocument() {
       if (!id) return;
       const { operations, title } = await services.getDocument(id);
-      fugue.applyOperations(operations);
+      fugue.applyOperations(operations, true);
       setTitle(title);
       socket.emit('joinDocument', id);
       setLoaded(true);

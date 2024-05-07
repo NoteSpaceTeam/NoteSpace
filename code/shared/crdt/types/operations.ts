@@ -2,6 +2,7 @@ import { Id } from "./nodes";
 import { InlineStyle, BlockStyle } from "../../types/styles";
 
 export type InsertOperation = {
+  line ?: number;
   type: "insert";
   id: Id;
   value: string;

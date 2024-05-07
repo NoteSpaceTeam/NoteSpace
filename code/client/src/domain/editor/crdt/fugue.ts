@@ -28,7 +28,8 @@ export class Fugue {
     this.tree = new FugueTree();
   }
 
-  applyOperations(operations: Operation[]) {
+  applyOperations(operations: Operation[], override : boolean = false) {
+    if (override) this.tree.clear();
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
@@ -84,26 +85,33 @@ export class Fugue {
    */
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
+    let operation : InsertOperation;
 
     const leftOrigin = this.getNodeByCursor({ line, column })!;
 
     if (isEmpty(leftOrigin.rightChildren))
-      return { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
-
-    const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
-    return { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
+      operation = { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
+    else {
+      const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
+      operation =  { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
+    }
+    if(value === '\n') operation.line = line;
+    return operation;
   }
 
   /**
    * Inserts a new node in the tree based on the given operation.
+   * @param line
    * @param id
    * @param value
    * @param parent
    * @param side
    * @param styles
    */
-  private addNode = ({ id, value, parent, side, styles }: InsertOperation) =>
-    this.tree.addNode(id, value, parent, side, styles || []);
+  private addNode = ({ line, id, value, parent, side, styles }: InsertOperation) => {
+      if (value === '\n') this.tree.addLineRoot(line || 0, id, parent, side, styles);
+      else this.tree.addNode(id, value, parent, side, styles || []);
+  }
 
   /**
    * Deletes the nodes from the given start index to the given end index.
@@ -311,8 +319,7 @@ export class Fugue {
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
         if (inclusive) nodes.push(node);
-        yield nodes;
-        nodes.length = 0;
+        break;
       }
       nodes.push(node);
     }

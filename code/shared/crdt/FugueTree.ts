@@ -39,20 +39,33 @@ export class FugueTree<T> {
   ) {
     // create node
     const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    this._addNode(node);
+  }
 
-    if (value === "\n") this._root.value.push(node);
+  addLineRoot(line : number, id : Id, parent : Id, side : "L" | "R", styles?: InlineStyle[]) {
+    const node = treeNode(id, '\n', parent, side, 0, styles) as Node<T>;
+    // Insert into 'line' index of the root node
 
+    this._root.value.splice(line, 0, node);
+
+    this._addNode(node);
+  }
+
+  _addNode(node : Node<T>){
     // add to nodes map
+    const { id } = node;
     const senderNodes = this.nodes.get(id.sender) || [];
     if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
     senderNodes.push(node);
-
     // insert into parent's siblings
     this.insertChild(node);
-
     // update depths of ancestors
     this.updateDepths(node, 1);
   }
+
+
+
+
 
   /**
    * Inserts node among its same-side siblings, in lexicographic order by id.sender.
@@ -126,6 +139,12 @@ export class FugueTree<T> {
 
   setTree(nodes: Nodes<T>) {
     this._nodes = new Map(Object.entries(nodes));
+  }
+
+  clear() {
+    this._root = rootNode();
+    this._nodes.clear();
+    this._nodes.set("root", [this._root]);
   }
 
   /**
