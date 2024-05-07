@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: npm/action-setup@v3
         with:
           version: 'latest'
 
@@ -29,10 +29,10 @@ jobs:
           node-version: 'latest'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Test client
-        run: pnpm test
+        run: npm test
   server:
     strategy:
       matrix:
@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: npm/action-setup@v3
         with:
           version: 'latest'
 
@@ -60,7 +60,7 @@ jobs:
           node-version: 'latest'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Test server
         run: pnpm test
@@ -81,7 +81,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: npm/action-setup@v3
         with:
           version: 'latest'
 
@@ -91,4 +91,4 @@ jobs:
           node-version: 'latest'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install

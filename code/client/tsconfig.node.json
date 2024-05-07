@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es2022",
     "composite": true,
-    "module": "esnext",
-    "moduleResolution": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./*"],
