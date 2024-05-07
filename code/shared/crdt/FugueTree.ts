@@ -1,6 +1,6 @@
 import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
-import { isEmpty, isNull } from "lodash";
+
 import { rootNode, treeNode } from "./utils";
 import { RootNode, NodeType } from "./types/nodes";
 
@@ -61,7 +61,7 @@ export class FugueTree<T> {
     // add to nodes map
     const { id } = node;
     const senderNodes = this.nodes.get(id.sender) || [];
-    if (isEmpty(senderNodes)) this.nodes.set(id.sender, senderNodes);
+    if (senderNodes.length === 0) this.nodes.set(id.sender, senderNodes);
     senderNodes.push(node);
     // insert into parent's siblings
     this.insertChild(node);
@@ -156,7 +156,7 @@ export class FugueTree<T> {
    */
   getLeftmostDescendant(nodeId: Id): NodeType<T> {
     let node = this.getById(nodeId);
-    while (!isEmpty(node.leftChildren)) {
+    while (node.leftChildren.length !== 0) {
       node = this.getById(node.leftChildren[0]);
     }
     return node;
@@ -217,8 +217,8 @@ export class FugueTree<T> {
           continue;
         }
         // Go to the parent.
-        if (isNull(current.parent)) return;
-        current = this.getById(current.parent);
+        if (current.parent === null) return;
+        current = this.getById(current.parent as Id);
         stack.pop();
         continue;
       }

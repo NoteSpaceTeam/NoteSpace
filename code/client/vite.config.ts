@@ -36,7 +36,7 @@ export default defineConfig({
   test: {
     globals: true,
     alias: {
-      '@': new URL('./src', import.meta.url).pathname,
+      '@/': new URL('./src', import.meta.url).pathname,
       '@pwa': new URL('./src/pwa', import.meta.url).pathname,
       '@domain': new URL('./src/domain', import.meta.url).pathname,
       '@assets': new URL('./src/assets', import.meta.url).pathname,
