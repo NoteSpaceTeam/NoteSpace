@@ -1,4 +1,4 @@
-import { Editor, Node, Path, Point, Range } from 'slate';
+import { Editor, Node, Path, Point, Range, Text } from 'slate';
 import { Cursor, emptyCursor, emptySelection, Selection } from '@notespace/shared/types/cursor';
 import { first, isEqual } from 'lodash';
 
@@ -49,7 +49,10 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
     // Else verify if the path is the same
     if (Path.equals(entry[1], point.path)) break;
 
-    cursor.column += first(entry).text.length;
+    if (Text.isText(first(entry))) {
+      const text = first(entry) as Text;
+      cursor.column += text.text.length;
+    }
   }
   return cursor;
 }

@@ -1,7 +1,7 @@
-import { type BaseEditor, type Descendant } from 'slate';
+import { type BaseEditor, Descendant } from 'slate';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { type BlockStyle } from '@notespace/shared/types/styles';
+import { type BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { CursorData } from '@/domain/editor/slate/hooks/useCursors';
 
 export interface CustomFormat {
@@ -18,16 +18,14 @@ export interface CustomText extends CustomFormat {
 }
 
 export interface CustomElement {
-  type: BlockStyle;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
+  type: BlockStyle | InlineStyle;
   children: Descendant[];
 }
 
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor & HistoryEditor;
-    Element: CustomElement & Element;
     Text: CustomText;
+    Element: CustomElement;
   }
 }

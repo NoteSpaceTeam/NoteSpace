@@ -1,13 +1,13 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Fugue } from '@/domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/crdt/fugue';
 import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/crdt/types/operations';
-import getFugueOperations from '@/domain/editor/operations/fugue/operations';
-import { FugueDomainOperations } from '@/domain/editor/operations/fugue/types';
+import getFugueOperations from '@domain/editor/operations/fugue/operations';
+import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
 import { Document } from '@notespace/shared/crdt/types/document';
 import { Node, RootNode } from '@notespace/shared/crdt/types/nodes';
 import { rootNode, treeNode } from '@notespace/shared/crdt/utils';

@@ -1,5 +1,5 @@
-import { socketCommunication, SocketCommunication } from '@/domain/communication/socket/socketCommunication';
-import { httpCommunication, HttpCommunication } from '@/domain/communication/http/httpCommunication';
+import { socketCommunication, SocketCommunication } from '@domain/communication/socket/socketCommunication';
+import { httpCommunication, HttpCommunication } from '@domain/communication/http/httpCommunication';
 
 export interface Communication {
   socket: SocketCommunication;

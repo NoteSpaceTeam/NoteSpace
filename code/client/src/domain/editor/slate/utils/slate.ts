@@ -1,12 +1,12 @@
-import { createEditor, Descendant, Editor } from 'slate';
+import { createEditor, Descendant, Editor, Element } from 'slate';
 import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import type { CustomText } from '@/domain/editor/slate/types';
+import type { CustomText } from '@domain/editor/slate/types';
 import { isEqual, last } from 'lodash';
 import { BlockStyles } from '@notespace/shared/types/styles';
 import { Fugue } from '@domain/editor/crdt/fugue';
 
 export function toSlate(fugue: Fugue): Descendant[] {
-  const descendants: Descendant[] = [];
+  const descendants: Element[] = [];
   let lastStyles: InlineStyle[] = [];
   let lineCounter = 0;
 
@@ -34,7 +34,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
       continue;
     }
 
-    const lastDescendant = last(descendants);
+    const lastDescendant = last(descendants) as Element;
     const lastTextNode = last(lastDescendant.children) as CustomText;
     const nodeStyles = node.styles.filter(Boolean);
     if (!isEqual(lastStyles, nodeStyles) && lastTextNode.text) {
@@ -60,7 +60,7 @@ export function toSlate(fugue: Fugue): Descendant[] {
  * @param children
  * @returns
  */
-export const descendant = (style: BlockStyle, ...children: string[]): Descendant => ({
+export const descendant = (style: BlockStyle, ...children: string[]): Element => ({
   type: style,
   children: children.map(text => ({ text })),
 });

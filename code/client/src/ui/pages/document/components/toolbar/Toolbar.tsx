@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { useFocused, useSlate } from 'slate-react';
-import CustomEditor from '@/domain/editor/slate/CustomEditor';
-import { isSelected } from '@/domain/editor/slate/utils/selection';
+import CustomEditor from '@domain/editor/slate/CustomEditor';
+import { isSelected } from '@domain/editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
 import { InlineStyle } from '@notespace/shared/types/styles';
 

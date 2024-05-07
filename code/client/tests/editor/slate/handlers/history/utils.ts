@@ -13,7 +13,7 @@ import {
   SplitNodeOperation,
 } from 'slate';
 import { Batch, toHistoryOperations } from '@domain/editor/slate/handlers/history/toHistoryOperations';
-import { buildEditor } from '@/domain/editor/slate/utils/slate';
+import { buildEditor } from '@domain/editor/slate/utils/slate';
 import { withReact } from 'slate-react';
 import { last } from 'lodash';
 import { expect } from 'vitest';

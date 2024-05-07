@@ -14,13 +14,31 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), qrcode(), react() /* VitePWA(pwaConfig) */],
+  plugins: [tsconfigPaths(), qrcode(), react()],
+  build: {
+    //sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: (id: string) => {
+          //if(id.includes('node_modules')) return 'vendor';
+          if (id.includes('src')) return 'app';
+          if (id.includes('slate')) return 'slate';
+          if (id.includes('react')) return 'react';
+        },
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
+  },
   test: {
     globals: true,
     alias: {
-      '@src': new URL('./src', import.meta.url).pathname,
-      '@editor': new URL('./src/editor', import.meta.url).pathname,
+      '@': new URL('./src', import.meta.url).pathname,
+      '@domain': new URL('./src/domain', import.meta.url).pathname,
       '@assets': new URL('./src/assets', import.meta.url).pathname,
+      '@ui': new URL('./src/ui', import.meta.url).pathname,
+      '@tests': new URL('./tests/', import.meta.url).pathname,
     },
     environment: 'jsdom',
   },

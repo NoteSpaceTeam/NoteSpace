@@ -1,14 +1,14 @@
-import { Descendant, Editor, Element, Point, Range, Text, type TextUnit, Transforms } from 'slate';
-import { type CustomElement } from '@/domain/editor/slate/types';
+import { Editor, Element, Node, Point, Range, Text, type TextUnit, Transforms } from 'slate';
 import { shortcuts } from '../shortcuts';
-import CustomEditor from '@/domain/editor/slate/CustomEditor';
-import { isMultiBlock } from '@/domain/editor/slate/utils/slate';
-import { getSelection } from '@/domain/editor/slate/utils/selection';
+import CustomEditor from '@domain/editor/slate/CustomEditor';
+import { isMultiBlock } from '@domain/editor/slate/utils/slate';
+import { getSelection } from '@domain/editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownDomainOperations } from '@/domain/editor/operations/markdown/types';
-import { RuleType } from '@/domain/editor/slate/plugins/markdown/rules';
+import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
+import { RuleType } from '@domain/editor/slate/plugins/markdown/rules';
+import { BlockStyle } from '@notespace/shared/types/styles';
 
-type InlineFunction = (n: unknown) => boolean;
+type InlineFunction = (n: Element) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
 type DeleteFunction = (options?: TextDeleteOptions) => void;
 type InsertTextFunction = (text: string) => void;
@@ -91,7 +91,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     // check if the text before the selection ends with a trigger character
     const { anchor } = selection;
     const block = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
+      match: (n: Node) => Element.isElement(n) && editor.isBlock(n),
     });
 
     const path = block ? block[1] : [];
@@ -117,13 +117,15 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     const { selection } = editor;
     if (!selection) return;
     const block = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
+      match: (n: Node) => Element.isElement(n) && editor.isBlock(n),
     });
     const path = block ? block[1] : [];
     const end = editor.end(path);
     Transforms.splitNodes(editor, { always: true });
 
-    const type = (block![0] as Descendant).type;
+    const element = block![0] as Element;
+
+    const type = element.type as BlockStyle;
     if (!isMultiBlock(type)) {
       Transforms.setNodes(editor, { type: 'paragraph' });
       CustomEditor.resetMarks(editor);
@@ -134,7 +136,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     // if selection was at the end of the block, unwrap the block
     if (!Point.equals(end, Range.end(selection))) return;
     Transforms.unwrapNodes(editor, {
-      match: (n: CustomElement) => editor.isInline(n),
+      match: (n: Node) => Element.isElement(n) && editor.isInline(n),
       mode: 'all',
     });
     const marks = editor.marks ?? {};
@@ -150,7 +152,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     const { selection } = editor;
     if (!selection || !Range.isCollapsed(selection)) return;
     const match = editor.above({
-      match: (n: CustomElement) => editor.isBlock(n),
+      match: (n: Node) => Element.isElement(n) && editor.isBlock(n),
     });
     if (match) {
       const [block, path] = match;
@@ -181,8 +183,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
    * @param n
    * @param isInline
    */
-  const isInline = (n: unknown, isInline: InlineFunction) =>
-    (Element.isElement(n) && n.type === 'inline-code') || isInline(n);
+  const isInline = (n: Element, isInline: InlineFunction) => (Element.isElement(n) && n.type === 'code') || isInline(n);
 
   return { insertText, insertBreak, deleteBackward, deleteSelection, isInline };
 };

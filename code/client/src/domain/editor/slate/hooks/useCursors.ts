@@ -1,7 +1,7 @@
 import { Range } from 'slate';
 import { useState } from 'react';
-import useSocketListeners from '@/domain/communication/socket/useSocketListeners';
-import { Communication } from '@/domain/communication/communication';
+import useSocketListeners from '@domain/communication/socket/useSocketListeners';
+import { Communication } from '@domain/communication/communication';
 import { InlineStyle } from '@notespace/shared/types/styles';
 
 export type CursorData = {

@@ -2,7 +2,7 @@ import { type Id } from '@notespace/shared/crdt/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
-import { type FugueNode, type NodeInsert } from '@/domain/editor/crdt/types';
+import { type FugueNode, type NodeInsert } from '@domain/editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/types/cursor';
 import { isEmpty, last, range } from 'lodash';
 import {
@@ -28,7 +28,7 @@ export class Fugue {
     this.tree = new FugueTree();
   }
 
-  applyOperations(operations: Operation[], override : boolean = false) {
+  applyOperations(operations: Operation[], override: boolean = false) {
     if (override) this.tree.clear();
     for (const operation of operations) {
       switch (operation.type) {
@@ -83,9 +83,9 @@ export class Fugue {
    * @param cursor
    * @param insertNode
    */
-  private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert): InsertOperation {
+  private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert) {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    let operation : InsertOperation;
+    let operation: InsertOperation;
 
     const leftOrigin = this.getNodeByCursor({ line, column })!;
 
@@ -93,9 +93,9 @@ export class Fugue {
       operation = { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
     else {
       const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
-      operation =  { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
+      operation = { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
     }
-    if(value === '\n') operation.line = line;
+    if (value === '\n') operation.line = line;
     return operation;
   }
 
@@ -109,9 +109,9 @@ export class Fugue {
    * @param styles
    */
   private addNode = ({ line, id, value, parent, side, styles }: InsertOperation) => {
-      if (value === '\n') this.tree.addLineRoot(line || 0, id, parent, side, styles);
-      else this.tree.addNode(id, value, parent, side, styles || []);
-  }
+    if (value === '\n') this.tree.addLineRoot(line || 0, id, parent, side, styles);
+    else this.tree.addNode(id, value, parent, side, styles || []);
+  };
 
   /**
    * Deletes the nodes from the given start index to the given end index.

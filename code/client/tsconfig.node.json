@@ -4,7 +4,15 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "nodenext",
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@domain/*": ["./domain/*"],
+      "@pwa/*": ["./pwa/*"],
+      "@ui/*": ["./ui/*"],
+      "@assets/*": ["./assets/*"],
+      "@tests/*": ["../tests/*"]
+    }
   },
   "include": ["vite.config.ts", "src/pwa/*"]
 }

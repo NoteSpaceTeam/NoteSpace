@@ -8,7 +8,7 @@ import {
   mockEditor,
   setNode,
   toBatch,
-} from '@tests/editor/slate/handlers/history/utils';
+} from './utils';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import {
@@ -25,6 +25,8 @@ import {
   BaseRemoveTextOperation,
   BaseSetNodeOperation,
   Editor,
+  Element,
+  Text,
 } from 'slate';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 import { BlockStyles } from '@notespace/shared/types/styles';
@@ -97,7 +99,10 @@ describe('Block style', () => {
     const op = operations[0] as SetNodeOperation;
     const editorOp = editor.history!.redos[0].operations[0] as BaseSetNodeOperation;
     expect(operations[0].type).toBe('set_node');
-    expect(op.properties.type).toBe(editorOp.properties.type);
+
+    const props = op.properties as Element;
+    const newProps = editorOp.properties as Element;
+    expect(props.type).toBe(newProps.type);
   });
 });
 
@@ -121,12 +126,16 @@ describe('Inline style', () => {
 
       const nodeInsertOp = operations[0] as RemoveNodeOperation;
       const editorNodeOp = editorBatch!.operations[0] as BaseInsertNodeOperation;
+      expect(Text.isText(nodeInsertOp.node) && Text.isText(editorNodeOp.node)).toBe(true);
 
-      expect(nodeInsertOp.node.text).toBe(editorNodeOp.node.text);
-      expect(nodeInsertOp.node.bold).toBe(editorNodeOp.node.bold);
+      const nodeText = nodeInsertOp.node as Text;
+      const editorText = editorNodeOp.node as Text;
+
+      expect(nodeText.text).toBe(editorText.text);
+      expect(nodeText.bold).toBe(editorText.bold);
       expect(nodeInsertOp.selection).toEqual({
         start: pointToCursor(editor, { path: editorNodeOp.path, offset: 0 }),
-        end: pointToCursor(editor, { path: editorNodeOp.path, offset: 0 + editorNodeOp.node.text.length - 1 }),
+        end: pointToCursor(editor, { path: editorNodeOp.path, offset: editorText.text.length - 1 }),
       });
     });
 
@@ -136,8 +145,13 @@ describe('Inline style', () => {
       const nodeInsertOp = operations[0] as InsertNodeOperation;
       const editorNodeOp = editorBatch!.operations[0] as BaseInsertNodeOperation;
 
-      expect(nodeInsertOp.node.text).toBe(editorNodeOp.node.text);
-      expect(nodeInsertOp.node.bold).toBe(editorNodeOp.node.bold);
+      expect(Text.isText(nodeInsertOp.node) && Text.isText(editorNodeOp.node)).toBe(true);
+
+      const nodeText = nodeInsertOp.node as Text;
+      const editorText = editorNodeOp.node as Text;
+
+      expect(nodeText.text).toBe(editorText.text);
+      expect(nodeText.bold).toBe(editorText.bold);
     });
   });
 });

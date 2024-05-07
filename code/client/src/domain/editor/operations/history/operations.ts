@@ -1,4 +1,4 @@
-import { Fugue } from '@/domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/crdt/fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,
@@ -11,10 +11,11 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/operations/history/types';
-import { Communication } from '@/domain/communication/communication';
+} from '@domain/editor/operations/history/types';
+import { Communication } from '@domain/communication/communication';
 import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
 import { getStyleType } from '@notespace/shared/types/styles';
+import { Text, Element } from 'slate';
 
 export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperations => {
   const applyHistoryOperation: ApplyHistory = (operations: HistoryOperation[]) => {
@@ -74,6 +75,8 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
    */
   function insertNode({ selection, node }: InsertNodeOperation) {
     const styles = Object.keys(node).filter(key => key !== 'text');
+    if (!Text.isText(node)) return;
+
     if (!node.text) return;
     const reviveOperations = fugue.reviveLocal(selection);
     const styleOperations = styles.map(style => {
@@ -110,6 +113,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
    * @param set_mode
    */
   function setNode({ selection, properties }: SetNodeOperation | UnsetNodeOperation, set_mode: boolean) {
+    if (!Element.isElement(properties)) return;
     const type = properties.type;
     const styleType = getStyleType(type);
 

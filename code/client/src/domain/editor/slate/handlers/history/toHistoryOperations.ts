@@ -10,6 +10,8 @@ import {
   BaseSplitNodeOperation,
   Editor,
   Range,
+  Element,
+  Text,
 } from 'slate';
 import {
   HistoryOperation,
@@ -21,8 +23,8 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@/domain/editor/operations/history/types';
-import { pointToCursor } from '@/domain/editor/slate/utils/selection';
+} from '@domain/editor/operations/history/types';
+import { pointToCursor } from '@domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
   insert_text: 'remove_text',
@@ -126,6 +128,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
     insert_mode: boolean
   ): InsertNodeOperation | RemoveNodeOperation | undefined {
+    if (!Text.isText(operation.node)) return;
+
     if (operation.node.text === '') return undefined;
 
     const offset = (line: number) => (line === 0 ? 0 : 1);
@@ -157,6 +161,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     offset: number | undefined,
     merge_mode: boolean
   ): MergeNodeOperation | SplitNodeOperation | undefined {
+    if (!Element.isElement(operation.properties)) return undefined;
+
     if (!operation.properties.type) return undefined;
 
     return merge_mode

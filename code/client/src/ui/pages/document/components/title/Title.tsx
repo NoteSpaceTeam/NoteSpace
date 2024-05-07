@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import useSocketListeners from '@/domain/communication/socket/useSocketListeners';
+import useSocketListeners from '@domain/communication/socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Communication } from '@/domain/communication/communication';
+import { Communication } from '@domain/communication/communication';
 import useWorkspace from '@domain/workspace/useWorkspace';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
