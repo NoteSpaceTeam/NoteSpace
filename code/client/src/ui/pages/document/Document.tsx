@@ -1,7 +1,7 @@
 import Editor from '@ui/pages/document/components/editor/Editor';
 import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useCommunication } from '@domain/communication/context/useCommunication';
 import useDocumentServices from '@/services/useDocumentServices';
 import './Document.scss';
@@ -17,7 +17,6 @@ function Document() {
   const { id } = useParams();
   const [title, setTitle] = useState('');
   const [loaded, setLoaded] = useState(false);
-  const navigate = useNavigate();
   const { setFilePath } = useWorkspace();
 
   useEffect(() => {
@@ -34,7 +33,7 @@ function Document() {
     return () => {
       socket.emit('leaveDocument');
     };
-  }, [fugue, id, http, socket, showError, services, navigate, setFilePath]);
+  }, [fugue, id, http, socket, showError, services, setFilePath]);
 
   return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
 }

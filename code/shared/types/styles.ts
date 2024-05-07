@@ -11,6 +11,9 @@ export const BlockStyles = {
   num: "numbered-list-item",
   code: "code",
   hr: "horizontal-rule",
+  checked: "checked-list-item",
+  unchecked: "unchecked-list-item",
+  link: "link",
 } as const;
 
 export const InlineStyles = {

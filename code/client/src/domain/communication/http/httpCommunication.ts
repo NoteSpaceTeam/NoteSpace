@@ -33,8 +33,8 @@ const request = async (url: string, method: string, body?: any) => {
   if (body) requestInit.body = JSON.stringify(body);
 
   const response = await fetch(BASE_URL + url, requestInit);
-  if (response.headers.get('content-length') === '0') return;
-
+  const noBody = response.status === 204 || response.headers.get('content-length') === '0';
+  if (noBody) return;
   const result = await response.json();
   if (response.ok) return result;
 

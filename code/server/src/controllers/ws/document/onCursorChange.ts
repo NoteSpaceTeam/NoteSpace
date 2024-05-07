@@ -41,7 +41,7 @@ function getColor(socket: Socket) {
 }
 
 function getRandomColor() {
-  return 'hsl(' + Math.random() * 360 + ', 100%, 60%)';
+  return 'hsl(' + Math.random() * 360 + ', 100%, 80%)';
 }
 
 export default onCursorChange;

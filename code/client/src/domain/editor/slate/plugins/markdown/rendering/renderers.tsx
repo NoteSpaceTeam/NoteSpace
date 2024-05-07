@@ -1,46 +1,64 @@
-import { type RenderElementProps } from 'slate-react';
+import { type RenderElementProps, RenderLeafProps } from 'slate-react';
 import { ElementRenderers, LeafRenderers } from './elements';
-import { Paragraph } from './components/components';
-import { type CustomText } from '@domain/editor/slate/types';
-import { type ReactNode } from 'react';
 import Selection from '@ui/pages/document/components/cursor/Selection';
 import Cursor from '@ui/pages/document/components/cursor/Cursor';
 import { Range } from 'slate';
+import { type BlockStyle, BlockStyles } from '@notespace/shared/types/styles';
+import CheckListItem from '@domain/editor/slate/plugins/markdown/rendering/components/elements/CheckListItem';
+import { isStatefulBlock } from '@domain/editor/slate/utils/slate';
 
 /**
  * Returns the renderer for a given element type
- * @param type
+ * @param style
  * @param props
+ * @param updateStyle
  */
-export const getElementRenderer = (type: string, props: RenderElementProps) => {
-  for (const key in ElementRenderers) {
-    if (key !== type) continue;
-    const k = key as keyof typeof ElementRenderers;
-    return ElementRenderers[k](props);
-  }
-  return <Paragraph {...props} children={props.children} />;
+export const getElementRenderer = (
+  style: BlockStyle,
+  props: RenderElementProps,
+  updateStyle: (style: BlockStyle) => void
+) => {
+  if (isStatefulBlock(style)) return statefulElementRenderers(style, props, updateStyle);
+  const key = style as keyof typeof ElementRenderers;
+  const renderer = ElementRenderers[key];
+  return renderer(props);
 };
+
+function statefulElementRenderers(
+  style: BlockStyle,
+  props: RenderElementProps,
+  updateStyle: (style: BlockStyle) => void
+) {
+  function onToggle(active: boolean) {
+    const style = active ? BlockStyles.checked : BlockStyles.unchecked;
+    updateStyle(style);
+  }
+  if (style === BlockStyles.checked) {
+    return <CheckListItem {...props} active={true} onToggle={onToggle} />;
+  } else if (style === BlockStyles.unchecked) {
+    return <CheckListItem {...props} active={false} onToggle={onToggle} />;
+  }
+  throw new Error('Invalid stateful block type');
+}
 
 /**
  * Returns the renderer for a given leaf
- * @param leaf
- * @param children
+ * @param props
  */
-export const getLeafRenderer = (leaf: CustomText, children: ReactNode) => {
-  for (const key in leaf) {
-    if (!leaf[key as keyof CustomText]) continue;
-    const renderer = LeafRenderers[key as keyof typeof LeafRenderers];
+export const getLeafRenderer = ({ attributes, leaf, children }: RenderLeafProps) => {
+  for (const style in leaf) {
+    const key = style as keyof typeof LeafRenderers;
+    const renderer = LeafRenderers[key];
     if (!renderer) continue;
     children = renderer(children);
   }
   if (leaf.cursor) {
     const { color, range, styles } = leaf.cursor;
-
     children = Range.isCollapsed(range!) ? (
       <Cursor color={color} styles={styles} children={children} />
     ) : (
       <Selection color={color} children={children} />
     );
   }
-  return children;
+  return <span {...attributes}>{children}</span>;
 };

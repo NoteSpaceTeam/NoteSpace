@@ -11,11 +11,14 @@ import {
   Heading5,
   Heading6,
   LineBreak,
+  Link,
   ListItem,
   NumberedListItem,
+  Paragraph,
 } from './components/components';
 
 export const ElementRenderers = {
+  [BlockStyles.p]: (props: RenderElementProps) => <Paragraph {...props} />,
   [BlockStyles.h1]: (props: RenderElementProps) => <Heading1 {...props} />,
   [BlockStyles.h2]: (props: RenderElementProps) => <Heading2 {...props} />,
   [BlockStyles.h3]: (props: RenderElementProps) => <Heading3 {...props} />,
@@ -27,6 +30,7 @@ export const ElementRenderers = {
   [BlockStyles.num]: (props: RenderElementProps) => <NumberedListItem {...props} />,
   [BlockStyles.code]: (props: RenderElementProps) => <Code {...props} />,
   [BlockStyles.hr]: (props: RenderElementProps) => <LineBreak {...props} />,
+  [BlockStyles.link]: (props: RenderElementProps) => <Link {...props} />,
 } as const;
 
 export const LeafRenderers = {

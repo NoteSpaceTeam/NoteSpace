@@ -1,19 +1,17 @@
 import React from 'react';
 
-interface NumberedListItemProps {
-  attributes: NonNullable<unknown>;
-  children?: React.ReactNode;
-}
+interface NumberedListItemProps extends React.HTMLAttributes<HTMLLIElement> {}
 
-function NumberedListElement({ attributes, children }: NumberedListItemProps) {
+function NumberedListItem(props: NumberedListItemProps) {
   const styles = {
     paddingLeft: 10,
+    listStyleType: 'decimal',
   };
   return (
-    <li style={styles} {...attributes}>
-      {children}
+    <li style={styles} {...props}>
+      {props.children}
     </li>
   );
 }
 
-export default NumberedListElement;
+export default NumberedListItem;

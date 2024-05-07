@@ -10,6 +10,8 @@ import NumberedListItem from './elements/NumberedListItem';
 import LineBreak from './elements/LineBreak';
 import Code from './elements/Code';
 import Paragraph from './elements/Paragraph';
+import CheckListItem from './elements/CheckListItem';
+import Link from './elements/Link';
 
 export {
   Heading1,
@@ -21,7 +23,9 @@ export {
   Blockquote,
   ListItem,
   NumberedListItem,
+  CheckListItem,
   LineBreak,
   Code,
   Paragraph,
+  Link,
 };

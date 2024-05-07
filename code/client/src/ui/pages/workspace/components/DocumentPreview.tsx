@@ -37,6 +37,7 @@ function DocumentPreview({ doc, onDelete, onRename, onDuplicate }: DocumentPrevi
         <span
           ref={titleRef}
           contentEditable={isEditing}
+          suppressContentEditableWarning={true}
           onInput={e => setTitle(e.currentTarget.innerText)}
           onKeyDown={e => {
             if (e.key === 'Enter') {

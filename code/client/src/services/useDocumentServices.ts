@@ -1,24 +1,16 @@
 import { HttpCommunication } from '@domain/communication/http/httpCommunication';
 import documentServices from '@/services/documentServices';
+import { useMemo } from 'react';
 
 function useDocumentServices(http: HttpCommunication) {
-  async function getDocument(id: string) {
-    return documentServices.getDocument(http, id);
-  }
-
-  async function createDocument() {
-    return documentServices.createDocument(http);
-  }
-
-  async function deleteDocument(id: string) {
-    return documentServices.deleteDocument(http, id);
-  }
-
-  return {
-    getDocument,
-    createDocument,
-    deleteDocument,
-  };
+  return useMemo(
+    () => ({
+      getDocument: (id: string) => documentServices.getDocument(http, id),
+      createDocument: () => documentServices.createDocument(http),
+      deleteDocument: (id: string) => documentServices.deleteDocument(http, id),
+    }),
+    [http]
+  );
 }
 
 export default useDocumentServices;

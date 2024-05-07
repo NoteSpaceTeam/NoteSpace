@@ -276,7 +276,6 @@ export class Fugue {
       inBounds = false;
 
     const lineRootNode = this.tree.getLineRoot(start.line);
-
     for (const node of this.tree.traverse(lineRootNode, returnDeleted)) {
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) inBounds = true;
@@ -285,9 +284,12 @@ export class Fugue {
       if (inBounds) yield node;
 
       // update counters
-      if (node.value === '\n') lineCounter++;
-
-      columnCounter = node.value === '\n' ? 0 : columnCounter + 1;
+      if (node.value === '\n') {
+        lineCounter++;
+        columnCounter = 0;
+      } else {
+        columnCounter++;
+      }
       // end condition
       if (lineCounter === end.line && columnCounter === end.column) break;
     }
@@ -315,7 +317,6 @@ export class Fugue {
     const elements = reverse ? nodesInSelection.reverse() : nodesInSelection;
 
     const nodes: FugueNode[] = [];
-
     for (const node of elements) {
       if (node.value === separator && last(nodes)?.value !== separator) {
         if (inclusive) nodes.push(node);
@@ -346,7 +347,7 @@ export class Fugue {
     if (column === 0) return this.tree.getLineRoot(line);
 
     const start = { line, column: column - 1 };
-    const end = { line, column: column };
+    const end = { line, column };
     const iterator = this.traverseBySelection({ start, end });
     return iterator.next().value;
   }

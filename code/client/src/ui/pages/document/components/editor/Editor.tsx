@@ -1,4 +1,3 @@
-import { useCallback, useEffect } from 'react';
 import { Descendant } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -31,7 +30,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
-  const { renderElement, renderLeaf } = useRenderers();
+  const { renderElement, renderLeaf } = useRenderers(editor, fugue);
   const decorate = useDecorate(editor, cursors);
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
     editor,
@@ -39,17 +38,11 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
     communication
   );
 
-  const refreshEditor = useCallback(() => {
+  useHistory(editor, fugue, communication);
+  useEvents(fugueOperations, communication, () => {
     editor.children = toSlate(fugue);
     editor.onChange();
-  }, [editor, fugue]);
-
-  useEffect(() => {
-    refreshEditor();
-  }, [refreshEditor]);
-
-  useHistory(editor, fugue, communication);
-  useEvents(fugueOperations, communication, refreshEditor);
+  });
 
   return (
     <div className="editor">

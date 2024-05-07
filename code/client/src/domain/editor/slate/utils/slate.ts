@@ -5,6 +5,15 @@ import { isEqual, last } from 'lodash';
 import { BlockStyles } from '@notespace/shared/types/styles';
 import { Fugue } from '@domain/editor/crdt/fugue';
 
+const multiBlocks: BlockStyle[] = [
+  BlockStyles.li,
+  BlockStyles.num,
+  BlockStyles.blockquote,
+  BlockStyles.checked,
+  BlockStyles.unchecked,
+];
+const statefulBlocks: BlockStyle[] = [BlockStyles.checked, BlockStyles.unchecked];
+
 export function toSlate(fugue: Fugue): Descendant[] {
   const descendants: Element[] = [];
   let lastStyles: InlineStyle[] = [];
@@ -70,8 +79,15 @@ export const descendant = (style: BlockStyle, ...children: string[]): Element =>
  * @param blockStyle
  */
 export const isMultiBlock = (blockStyle: BlockStyle) => {
-  const multiBlocks: BlockStyle[] = [BlockStyles.li, BlockStyles.num, BlockStyles.blockquote];
   return multiBlocks.includes(blockStyle);
+};
+
+/**
+ * Checks if the block style is a stateful block.
+ * @param blockStyle
+ */
+export const isStatefulBlock = (blockStyle: BlockStyle) => {
+  return statefulBlocks.includes(blockStyle);
 };
 
 /**

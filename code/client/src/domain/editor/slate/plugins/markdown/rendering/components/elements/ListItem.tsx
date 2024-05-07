@@ -1,18 +1,19 @@
 import React from 'react';
 
 interface ListItemProps {
-  attributes: NonNullable<unknown>;
   children?: React.ReactNode;
 }
 
-function ListItem({ attributes, children }: ListItemProps) {
+function ListItem(props: ListItemProps) {
   const styles = {
     paddingLeft: 10,
   };
   return (
-    <li style={styles} {...attributes}>
-      {children}
-    </li>
+    <div>
+      <li style={styles} {...props}>
+        {props.children}
+      </li>
+    </div>
   );
 }
 
