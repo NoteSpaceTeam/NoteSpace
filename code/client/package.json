@@ -13,7 +13,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "build": "tsc && vite build",
-    "generate": "pwa-assets-generator",
+    "generate": "pwa-assets-generator -c src/pwa/pwa-assets.config.ts",
     "knip": "knip",
     "format": "prettier --write . && eslint . --ext .ts,.tsx",
     "preview": "vite preview"

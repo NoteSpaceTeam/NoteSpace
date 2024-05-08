@@ -6,8 +6,8 @@ import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { qrcode } from 'vite-plugin-qrcode';
 import { config } from 'dotenv';
-import { VitePWA } from 'vite-plugin-pwa';
-import { pwaConfig } from './src/pwa/pwa-config.ts';
+// import { VitePWA } from 'vite-plugin-pwa';
+// import { pwaConfig } from './src/pwa/pwa-config.ts';
 
 config();
 
@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), qrcode(), react(), VitePWA(pwaConfig)],
+  plugins: [tsconfigPaths(), qrcode(), react() /*VitePWA(pwaConfig)*/],
   build: {
     //sourcemap: true,
     rollupOptions: {

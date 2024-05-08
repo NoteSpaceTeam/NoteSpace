@@ -11,35 +11,25 @@ export const manifestConfig: Partial<ManifestOptions> = {
   orientation: 'portrait-primary',
   icons: [
     {
-      src: '/android-chrome-192x192.png',
+      src: 'pwa-64x64.png',
+      sizes: '64x64',
+      type: 'image/png',
+    },
+    {
+      src: 'pwa-192x192.png',
       sizes: '192x192',
       type: 'image/png',
-      purpose: 'any maskable',
     },
     {
-      src: '/android-chrome-512x512.png',
+      src: 'pwa-512x512.png',
       sizes: '512x512',
       type: 'image/png',
-      purpose: 'any maskable',
-    },
-    /* favicon */
-    {
-      src: '/favicon-16x16.png',
-      sizes: '16x16',
-      type: 'image/png',
-      purpose: 'any maskable',
     },
     {
-      src: '/favicon-32x32.png',
-      sizes: '32x32',
+      src: 'maskable-icon-512x512.png',
+      sizes: '512x512',
       type: 'image/png',
-      purpose: 'any maskable',
-    },
-    {
-      src: '/apple-touch-icon.png',
-      sizes: '180x180',
-      type: 'image/png',
-      purpose: 'any maskable',
+      purpose: 'maskable',
     },
   ],
 };

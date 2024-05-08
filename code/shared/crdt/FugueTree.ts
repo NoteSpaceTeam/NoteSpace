@@ -1,6 +1,5 @@
 import { Id, Node, Nodes } from "./types/nodes";
 import { BlockStyle, InlineStyle } from "../types/styles";
-
 import { rootNode, treeNode } from "./utils";
 import { RootNode, NodeType } from "./types/nodes";
 
