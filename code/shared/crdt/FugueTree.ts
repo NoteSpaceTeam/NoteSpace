@@ -49,7 +49,6 @@ export class FugueTree<T> {
     styles?: InlineStyle[],
   ) {
     const node = treeNode(id, "\n", parent, side, 0, styles) as Node<T>;
-    // Insert into 'line' index of the root node
 
     this._root.value.splice(line, 0, node);
 
@@ -92,6 +91,9 @@ export class FugueTree<T> {
    */
   deleteNode(id: Id) {
     const node = this.getById(id);
+
+    if (node.value === "\n") this._root.value = this._root.value.filter((n) => n.id !== id);
+
     if (!node.isDeleted) node.isDeleted = true;
   }
 
