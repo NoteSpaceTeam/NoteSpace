@@ -1,0 +1,13 @@
+version: 'latest'
+services:
+  postgres-db:
+    container_name: postgres-db
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=notespace
+      - POSTGRES_DB=notespace
+    ports:
+      - 5432:5432

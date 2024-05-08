@@ -4,7 +4,7 @@ import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/c
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
-import server from '../../src/server';
+import server from '../../src/ts/server';
 import { applyOperations } from './utils';
 
 const { app, onConnectionHandler } = server;

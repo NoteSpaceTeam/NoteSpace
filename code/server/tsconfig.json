@@ -10,14 +10,14 @@
     "strict": true,
     "skipLibCheck": true,
     "downlevelIteration": true,
-    "baseUrl": "../",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./server/*"],
-      "@src/*": ["./server/src/*"],
-      "@controllers/*": ["./server/src/controllers/*"],
-      "@database/*": ["./server/src/database/*"],
-      "@domain/*": ["./server/src/domain/*"],
-      "@services/*": ["./server/src/services/*"]
+      "@/*": ["./*"],
+      "@src/*": ["./src/ts/*"],
+      "@controllers/*": ["./src/ts/controllers/*"],
+      "@database/*": ["./src/ts/database/*"],
+      "@domain/*": ["./src/ts/domain/*"],
+      "@services/*": ["./src/ts/services/*"]
     }
   },
   "include": ["src/**/*"],

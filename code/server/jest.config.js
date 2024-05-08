@@ -8,13 +8,13 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(
     {
       /*Controllers*/
-      '@controllers/*': ['./src/controllers/*'],
+      '@controllers/*': ['./src/ts/controllers/*'],
       /*Databases*/
-      '@database/*': ['./src/database/*'],
+      '@database/*': ['./src/ts/database/*'],
       /*Others*/
-      '@src/*': ['./src/*'],
-      '@domain/*': ['./src/domain/*'],
-      '@services/*': ['./src/services/*'],
+      '@src/*': ['./src/ts/*'],
+      '@domain/*': ['./src/ts/domain/*'],
+      '@services/*': ['./src/ts/services/*'],
     },
     { prefix: '<rootDir>/' }
   ),

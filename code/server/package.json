@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "serve": "tsc && node dist/server.js",
-    "start": "tsx watch -r tsconfig-paths/register src/server.ts",
+    "start": "tsx watch -r tsconfig-paths/register src/ts/server.ts",
     "test": "jest --detectOpenHandles --config jest.config.js",
     "knip": "knip",
     "format": "prettier --write . && eslint . --ext .ts"
@@ -19,6 +19,7 @@
     "express": "^4.19.2",
     "firebase-admin": "^12.1.0",
     "lodash": "^4.17.21",
+    "pg": "^8.11.5",
     "socket.io": "^4.7.5",
     "supertest": "^6.3.4",
     "uuid": "^9.0.1"
@@ -31,6 +32,7 @@
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.1",
     "@types/node": "^20.12.10",
+    "@types/pg": "^8.11.6",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
