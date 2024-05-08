@@ -17,6 +17,7 @@ import useCursors from '@domain/editor/slate/hooks/useCursors';
 import getEventHandlers from '@domain/editor/slate/handlers/getEventHandlers';
 import getFugueOperations from '@domain/editor/operations/fugue/operations';
 import './Editor.scss';
+import { useCallback, useEffect } from 'react';
 
 type SlateEditorProps = {
   title?: string;
@@ -38,11 +39,17 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
     communication
   );
 
-  useHistory(editor, fugue, communication);
-  useEvents(fugueOperations, communication, () => {
+  const refreshEditor = useCallback(() => {
     editor.children = toSlate(fugue);
     editor.onChange();
-  });
+  }, [editor, fugue]);
+
+  useEffect(() => {
+    refreshEditor();
+  }, [refreshEditor]);
+
+  useHistory(editor, fugue, communication);
+  useEvents(fugueOperations, communication, refreshEditor);
 
   return (
     <div className="editor">
