@@ -3,7 +3,7 @@ import operations from './operations/editorOperations';
 import markdownHandlers from '@domain/editor/operations/markdown/operations';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { Fugue } from '@domain/editor/crdt/fugue';
-import { Communication } from '@domain/communication/communication';
+import { Communication } from '@/services/communication/communication';
 
 /**
  * Adds markdown support to the editor.

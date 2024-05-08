@@ -1,4 +1,4 @@
-import { Communication } from '@domain/communication/communication';
+import { Communication } from '@/services/communication/communication';
 
 export function mockCommunication(): Communication {
   return {

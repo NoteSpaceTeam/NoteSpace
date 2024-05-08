@@ -1,18 +1,27 @@
 import { DocumentService, SocketHandler } from '@src/types';
-import onOperation from '@controllers/ws/document/onOperation';
-import onCursorChange from '@controllers/ws/document/onCursorChange';
-import onTitleChange from '@controllers/ws/document/onTitleChange';
-import onJoinDocument from '@controllers/ws/document/onJoinDocument';
-import onLeaveDocument from '@controllers/ws/document/onLeaveDocument';
+import operation from '@controllers/ws/namespaces/document/operation';
+import cursor from '@controllers/ws/namespaces/document/cursor';
+import title from '@controllers/ws/namespaces/document/title';
+import join from '@controllers/ws/namespaces/document/join';
+import leave from '@controllers/ws/namespaces/document/leave';
 
-export default function events(service: DocumentService): Record<string, SocketHandler> {
+export default function events(service: DocumentService): Record<string, Record<string, SocketHandler>> {
   if (!service) throw new Error('Service parameter is required');
 
+  const documentNamespace = {
+    operation: operation(service),
+    cursor: cursor(),
+    title: title(service),
+    join: join(),
+    leave: leave(),
+  };
+
+  const workspaceNamespace = {};
+  const userNamespace = {};
+
   return {
-    operation: onOperation(service),
-    cursorChange: onCursorChange(),
-    titleChange: onTitleChange(service),
-    joinDocument: onJoinDocument(),
-    leaveDocument: onLeaveDocument(),
+    '/document': documentNamespace,
+    '/workspace': workspaceNamespace,
+    '/user': userNamespace,
   };
 }

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { CommunicationProvider } from '@domain/communication/context/CommunicationContext';
-import { communication } from '@domain/communication/communication';
+import { CommunicationProvider } from '@/services/communication/context/CommunicationContext';
+import { communication } from '@/services/communication/communication';
 import Document from '@ui/pages/document/Document';
 import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';

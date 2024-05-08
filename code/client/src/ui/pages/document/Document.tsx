@@ -1,8 +1,8 @@
 import Editor from '@ui/pages/document/components/editor/Editor';
 import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useCommunication } from '@domain/communication/context/useCommunication';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useCommunication } from '@/services/communication/context/useCommunication';
 import useDocumentServices from '@/services/useDocumentServices';
 import './Document.scss';
 import useError from '@domain/error/useError';
@@ -18,6 +18,14 @@ function Document() {
   const [title, setTitle] = useState('');
   const [loaded, setLoaded] = useState(false);
   const { setFilePath } = useWorkspace();
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   socket.connect('/document');
+  //   return () => {
+  //     socket.disconnect('/document');
+  //   };
+  // }, [socket]);
 
   useEffect(() => {
     async function fetchDocument() {
@@ -25,15 +33,18 @@ function Document() {
       const { operations, title } = await services.getDocument(id);
       fugue.applyOperations(operations, true);
       setTitle(title);
-      socket.emit('joinDocument', id);
       setLoaded(true);
       setFilePath(`/documents/${title || 'Untitled'}`);
+      socket.emit('document:join', id);
     }
-    fetchDocument().catch(showError);
+    fetchDocument().catch(e => {
+      showError(e);
+      navigate('/');
+    });
     return () => {
-      socket.emit('leaveDocument');
+      socket.emit('document:leave');
     };
-  }, [fugue, id, http, socket, showError, services, setFilePath]);
+  }, [fugue, id, http, socket, showError, services, setFilePath, navigate]);
 
   return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
 }

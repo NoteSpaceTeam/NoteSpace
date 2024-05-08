@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useCommunication } from '@domain/communication/context/useCommunication';
+import { useCommunication } from '@/services/communication/context/useCommunication';
 import { DocumentData } from '@notespace/shared/crdt/types/document';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
 import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
@@ -8,7 +8,7 @@ import useWorkspace from '@domain/workspace/useWorkspace';
 import './Workspace.scss';
 
 function Workspace() {
-  const { http } = useCommunication();
+  const { http, socket } = useCommunication();
   const [docs, setDocs] = useState<DocumentData[]>([]);
   const { showError } = useError();
   const { setFilePath } = useWorkspace();
@@ -34,7 +34,8 @@ function Workspace() {
     }
     setFilePath('/documents');
     getDocuments().catch(showError);
-  }, [http, setFilePath, showError]);
+    socket.connect('/workspace');
+  }, [http, socket, setFilePath, showError]);
 
   return (
     <div className="workspace">

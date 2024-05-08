@@ -9,7 +9,7 @@ type CursorData = {
 
 const cursorColorsMap = new Map<string, string>();
 
-function onCursorChange() {
+function cursor() {
   return (socket: Socket, range: any) => {
     const documentId = getRoomId(socket);
     if (!documentId) return;
@@ -24,12 +24,12 @@ function onCursorChange() {
 
 function deleteCursor(socket: Socket, documentId: string) {
   cursorColorsMap.delete(socket.id);
-  socket.broadcast.to(documentId).emit('cursorChange', { id: socket.id });
+  socket.broadcast.to(documentId).emit('cursor', { id: socket.id });
 }
 
 function updateCursor(socket: Socket, data: CursorData, documentId: string) {
   const color = getColor(socket);
-  socket.broadcast.to(documentId).emit('cursorChange', { ...data, id: socket.id, color });
+  socket.broadcast.to(documentId).emit('cursor', { ...data, id: socket.id, color });
 }
 
 function getColor(socket: Socket) {
@@ -44,4 +44,4 @@ function getRandomColor() {
   return 'hsl(' + Math.random() * 360 + ', 100%, 80%)';
 }
 
-export default onCursorChange;
+export default cursor;

@@ -1,7 +1,7 @@
 import { Range } from 'slate';
 import { useState } from 'react';
-import useSocketListeners from '@domain/communication/socket/useSocketListeners';
-import { Communication } from '@domain/communication/communication';
+import useSocketListeners from '@/services/communication/socket/useSocketListeners';
+import { Communication } from '@/services/communication/communication';
 import { InlineStyle } from '@notespace/shared/types/styles';
 
 export type CursorData = {
@@ -23,7 +23,7 @@ export function useCursors({ socket }: Communication) {
   };
 
   useSocketListeners(socket, {
-    cursorChange: onCursorChange,
+    'document:cursor': onCursorChange,
   });
 
   return { cursors };

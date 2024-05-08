@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import useSocketListeners from '@domain/communication/socket/useSocketListeners';
+import useSocketListeners from '@/services/communication/socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Communication } from '@domain/communication/communication';
+import { Communication } from '@/services/communication/communication';
 import useWorkspace from '@domain/workspace/useWorkspace';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -24,7 +24,7 @@ function Title(props: TitleProps) {
 
   function onConfirm() {
     if (title === prevTitle) return;
-    socket.emit('titleChange', title);
+    socket.emit('document:title', title);
     setPrevTitle(title);
     setFilePath(`/documents/${title || 'Untitled'}`);
   }
@@ -38,7 +38,7 @@ function Title(props: TitleProps) {
   }
 
   useSocketListeners(socket, {
-    titleChange: setTitle,
+    'document:title': setTitle,
   });
 
   return (

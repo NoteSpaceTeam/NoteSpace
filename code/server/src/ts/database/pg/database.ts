@@ -9,6 +9,7 @@ const credentials = {
   port: parseInt(dbConfig.PG_PORT),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const connect = async () => {
   const { Client } = pg;
   const client = new Client(credentials);

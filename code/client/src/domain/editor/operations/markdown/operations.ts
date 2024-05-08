@@ -4,7 +4,7 @@ import { FugueNode } from '@domain/editor/crdt/types';
 import { Selection } from '@notespace/shared/types/cursor';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { deleteAroundSelection } from '@domain/editor/operations/markdown/utils';
-import { Communication } from '@domain/communication/communication';
+import { Communication } from '@/services/communication/communication';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 
@@ -37,7 +37,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(styleOperation);
 
     // emit operations
-    socket.emit('operation', operations);
+    socket.emit('document:operation', operations);
   }
 
   /**
@@ -64,7 +64,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(...styleOperations);
 
     // emit operations
-    socket.emit('operation', operations);
+    socket.emit('document:operation', operations);
   }
 
   function deleteBlockStyles(selection: Selection) {
@@ -75,7 +75,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     if ((start === end && start.column === 0) || start.line !== end.line) {
       const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
-      socket.emit('operation', operations);
+      socket.emit('document:operation', operations);
     }
   }
 

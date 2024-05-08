@@ -6,8 +6,8 @@ import databaseInit from '@database/memory/operations';
 import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
-import onConnection from '@controllers/ws/onConnection';
 import config from '@src/config';
+import { setupNamespaces } from '@controllers/ws/setupNamespaces';
 
 const database = databaseInit();
 const service = serviceInit(database);
@@ -16,13 +16,12 @@ const api = router(service);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
-const onConnectionHandler = onConnection(events);
 
 app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
 
-io.on('connection', onConnectionHandler);
+setupNamespaces(io, events);
 
 // do not start the server if this file is being imported
 if (require.main === module) {
@@ -32,5 +31,4 @@ if (require.main === module) {
 }
 export default {
   app,
-  onConnectionHandler,
 };

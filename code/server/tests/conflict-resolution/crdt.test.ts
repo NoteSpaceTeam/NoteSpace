@@ -7,7 +7,7 @@ import { Server } from 'socket.io';
 import server from '../../src/ts/server';
 import { applyOperations } from './utils';
 
-const { app, onConnectionHandler } = server;
+const { app } = server;
 const PORT = process.env.PORT || 8080;
 const BASE_URL = `http://localhost:${PORT}`;
 let ioServer: Server;
@@ -20,7 +20,7 @@ beforeAll(done => {
   httpServer = http.createServer(app);
   ioServer = new Server(httpServer);
 
-  ioServer.on('connection', onConnectionHandler);
+  // ioServer.on('connection', onConnectionHandler);
   httpServer.listen(PORT, () => {
     client1 = io(BASE_URL);
     client2 = io(BASE_URL);
@@ -29,7 +29,7 @@ beforeAll(done => {
 });
 
 afterAll(done => {
-  ioServer.off('connection', onConnectionHandler);
+  // ioServer.off('connection', onConnectionHandler);
   ioServer.close(() => {
     client1.close();
     client2.close();
@@ -64,8 +64,8 @@ describe('Operations must be commutative', () => {
     const id = createdResponse.body.id;
 
     // clients join the document
-    client1.emit('joinDocument', id);
-    client2.emit('joinDocument', id);
+    client1.emit('join', id);
+    client2.emit('join', id);
 
     // client 1 inserts 'a' and client 2 inserts 'b'
     client1.emit('operation', [insert1]);
@@ -108,8 +108,8 @@ describe('Operations must be idempotent', () => {
     const id = createdResponse.body.id;
 
     // clients join the document
-    client1.emit('joinDocument', id);
-    client2.emit('joinDocument', id);
+    client1.emit('join', id);
+    client2.emit('join', id);
 
     // both clients insert 'a'
     client1.emit('operation', [insert1]);

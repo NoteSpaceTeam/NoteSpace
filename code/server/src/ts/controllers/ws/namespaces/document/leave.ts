@@ -1,10 +1,10 @@
 import { Socket } from 'socket.io';
 import { leaveRoom } from '@controllers/ws/rooms';
 
-function onLeaveDocument() {
+function leave() {
   return function (socket: Socket) {
     leaveRoom(socket);
   };
 }
 
-export default onLeaveDocument;
+export default leave;

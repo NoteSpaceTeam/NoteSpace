@@ -1,4 +1,4 @@
-import config from '@/config';
+import config from '@/config.ts';
 
 export const BASE_URL = config.HTTP_SERVER_URL;
 

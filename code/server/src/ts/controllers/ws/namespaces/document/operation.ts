@@ -4,7 +4,7 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 import { getRoomId } from '@controllers/ws/rooms';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 
-function onOperation(service: DocumentService) {
+function operation(service: DocumentService) {
   return async (socket: Socket, operations: Operation[]) => {
     if (!operations) throw new InvalidParameterError('Operations are required');
 
@@ -17,4 +17,4 @@ function onOperation(service: DocumentService) {
   };
 }
 
-export default onOperation;
+export default operation;

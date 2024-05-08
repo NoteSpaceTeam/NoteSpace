@@ -1,4 +1,4 @@
-import { HttpCommunication } from '@domain/communication/http/httpCommunication';
+import { HttpCommunication } from '@/services/communication/http/httpCommunication';
 import documentServices from '@/services/documentServices';
 import { useMemo } from 'react';
 

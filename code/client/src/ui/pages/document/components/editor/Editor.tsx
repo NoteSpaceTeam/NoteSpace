@@ -3,7 +3,7 @@ import { Editable, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import { descendant } from '@domain/editor/slate/utils/slate';
-import { Communication } from '@domain/communication/communication';
+import { Communication } from '@/services/communication/communication';
 import { getMarkdownPlugin } from '@domain/editor/slate/plugins/markdown/withMarkdown';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import useEvents from '@domain/editor/hooks/useEvents';
@@ -31,7 +31,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
   const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
-  const { renderElement, renderLeaf } = useRenderers(editor, fugue);
+  const { renderElement, renderLeaf } = useRenderers(editor, fugue, communication);
   const decorate = useDecorate(editor, cursors);
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
     editor,

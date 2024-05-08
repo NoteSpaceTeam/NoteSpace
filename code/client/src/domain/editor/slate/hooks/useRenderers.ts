@@ -4,20 +4,24 @@ import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugin
 import { Editor } from 'slate';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import { BlockStyle } from '@notespace/shared/types/styles';
+import { Communication } from '@/services/communication/communication.ts';
 
 /**
  * Returns the renderers for the editor.
  */
-function useRenderers(editor: Editor, fugue: Fugue) {
+function useRenderers(editor: Editor, fugue: Fugue, { socket }: Communication) {
   const renderElement = useCallback(
     (props: RenderElementProps) => {
       const type = props.element.type as BlockStyle;
       const path = ReactEditor.findPath(editor, props.element);
       const line = path[path.length - 1];
-      const updateBlockStyle = (style: BlockStyle) => fugue.updateBlockStyleLocal(line, style);
+      const updateBlockStyle = (style: BlockStyle) => {
+        const operation = fugue.updateBlockStyleLocal(line, style);
+        socket.emit('document:operation', [operation]);
+      };
       return getElementRenderer(type, props, updateBlockStyle);
     },
-    [editor, fugue]
+    [editor, fugue, socket]
   );
   const renderLeaf = useCallback((props: RenderLeafProps) => getLeafRenderer(props), []);
   return { renderElement, renderLeaf };
