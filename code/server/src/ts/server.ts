@@ -3,14 +3,14 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import databaseInit from '@database/memory/memoryDB';
-import serviceInit from '@services/documentService';
+import {NoteSpaceServices} from '@services/noteSpaceServices';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
 
 const database = databaseInit();
-const service = serviceInit(database);
+const service = new NoteSpaceServices(database);
 const events = eventsInit(service);
 const api = router(service);
 const app = express();

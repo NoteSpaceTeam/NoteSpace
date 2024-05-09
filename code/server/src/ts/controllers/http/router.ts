@@ -1,26 +1,18 @@
 import express from 'express';
 import PromiseRouter from 'express-promise-router';
-import { DocumentService } from '@services/types';
-import documentHandlers from '@controllers/http/documentHandlers';
+import { DocumentService, NoteSpaceServices } from '@services/types';
+import documentHandlers from '@controllers/http/workspace/documentHandlers';
 import errorHandler from '@controllers/http/errorHandler';
+import resourcesHandlers from '@controllers/http/workspace/resourcesHandlers';
+import workspaceHandlers from '@controllers/http/workspace/workspaceHandlers';
 
-export default function (service: DocumentService) {
+export default function (service: NoteSpaceServices) {
   if (!service) throw new Error('Service parameter is required');
-
-  const { getDocuments, createDocument, getDocument, deleteDocument, updateDocument } = documentHandlers(service);
 
   const router = PromiseRouter(); // automatically routes unhandled errors to error handling middleware
   router.use(express.urlencoded({ extended: true }));
 
-  router.get('/', (req, res) => {
-    res.send('Welcome to NoteSpace API');
-  });
-  router.get('/documents', getDocuments);
-  router.post('/documents', createDocument);
-  router.get('/documents/:id', getDocument);
-  router.delete('/documents/:id', deleteDocument);
-  router.put('/documents/:id', updateDocument);
-
+  router.use('/workspaces', workspaceHandlers(service));
   router.use(errorHandler);
   return router;
 }

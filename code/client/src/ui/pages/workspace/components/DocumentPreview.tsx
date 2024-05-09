@@ -1,6 +1,6 @@
 import { IoDocumentText } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { DocumentData } from '../../../../../../shared/workspace/types/document.ts';
+import { DocumentData } from '@notespace/shared/workspace/types/document.d.ts';
 import DocumentContextMenu from '@ui/pages/workspace/components/DocumentContextMenu';
 import { useEffect, useRef, useState } from 'react';
 
