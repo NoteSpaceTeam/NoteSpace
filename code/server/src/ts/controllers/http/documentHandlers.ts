@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { DocumentService } from '@src/types';
+import { DocumentService } from '@controllers/ws/types';
 import { httpResponse } from '@controllers/http/utils';
 
 function documentHandlers(service: DocumentService) {

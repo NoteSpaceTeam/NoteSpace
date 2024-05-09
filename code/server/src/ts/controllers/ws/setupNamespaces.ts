@@ -1,4 +1,4 @@
-import { SocketNamespaces } from '@src/types';
+import { SocketNamespaces } from '@controllers/ws/types';
 import { Server } from 'socket.io';
 
 export function setupNamespaces(io: Server, events: SocketNamespaces) {

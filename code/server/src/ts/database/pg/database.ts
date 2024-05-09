@@ -1,4 +1,4 @@
-import pg from 'pg';
+import postgres from 'postgres';
 import dbConfig from './config';
 
 const credentials = {
@@ -9,10 +9,6 @@ const credentials = {
   port: parseInt(dbConfig.PG_PORT),
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const connect = async () => {
-  const { Client } = pg;
-  const client = new Client(credentials);
-  await client.connect();
-  return client;
-};
+const sql = postgres(credentials);
+
+export default sql;

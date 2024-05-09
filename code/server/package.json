@@ -19,7 +19,7 @@
     "express": "^4.19.2",
     "firebase-admin": "^12.1.0",
     "lodash": "^4.17.21",
-    "pg": "^8.11.5",
+    "postgres": "^3.4.4",
     "socket.io": "^4.7.5",
     "supertest": "^6.3.4",
     "uuid": "^9.0.1"

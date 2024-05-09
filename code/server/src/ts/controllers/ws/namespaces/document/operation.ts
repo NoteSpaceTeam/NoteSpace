@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { DocumentService } from '@src/types';
+import { DocumentService } from '@services//types';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { getRoomId } from '@controllers/ws/rooms';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';

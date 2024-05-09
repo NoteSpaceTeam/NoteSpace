@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { DocumentService } from '@src/types';
+import { DocumentService } from '@controllers/ws/types';
 import { getRoomId } from '@controllers/ws/rooms';
 import { InvalidParameterError } from '@domain/errors/errors';
 

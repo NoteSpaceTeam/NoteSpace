@@ -1,38 +1,30 @@
-import { DocumentDatabase, DocumentService } from '@src/types';
-import { Document } from '@notespace/shared/crdt/types/document';
+import { DocumentContent } from '@notespace/shared/workspace/types/document';
 import { Operation } from '@notespace/shared/crdt/types/operations';
+import { DocumentDatabase } from '@database/types';
+import { DocumentService } from '@services/types';
 
 export default function DocumentService(database: DocumentDatabase): DocumentService {
-  async function getDocuments() {
-    return await database.getDocuments();
+
+  async function createDocument(workspace : string, id: string) {
+    return await database.createDocument(workspace, id);
   }
 
-  async function createDocument(title?: string) {
-    return await database.createDocument(title || '');
+  async function getDocument(workspace : string, id: string): Promise<DocumentContent> {
+    return await database.getDocument(workspace, id);
   }
 
-  async function getDocument(id: string): Promise<Document> {
-    return await database.getDocument(id);
+  async function deleteDocument(workspace : string, id: string) {
+    await database.deleteDocument(workspace, id);
   }
 
-  async function deleteDocument(id: string) {
-    await database.deleteDocument(id);
-  }
-
-  async function updateDocument(id: string, operations: Operation[]) {
-    await database.updateDocument(id, operations);
-  }
-
-  async function updateTitle(id: string, title: string) {
-    await database.updateTitle(id, title);
+  async function updateDocument(workspace : string, id: string, operations: Operation[]) {
+    await database.updateDocument(workspace, id, operations);
   }
 
   return {
-    getDocuments,
     createDocument,
     getDocument,
     deleteDocument,
-    updateTitle,
     updateDocument,
   };
 }

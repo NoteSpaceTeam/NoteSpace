@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCommunication } from '@/services/communication/context/useCommunication';
-import { DocumentData } from '@notespace/shared/crdt/types/document';
+import { DocumentData } from '@notespace/shared/workspace/types/document.ts';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
 import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
 import useError from '@domain/error/useError';

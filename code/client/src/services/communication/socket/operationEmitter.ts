@@ -1,4 +1,4 @@
-import { Operation } from '../../../../../shared/crdt/types/operations';
+import { Operation } from '@notespace/shared/crdt/types/operations';
 import { isEmpty, range } from 'lodash';
 import { Socket } from 'socket.io-client';
 
