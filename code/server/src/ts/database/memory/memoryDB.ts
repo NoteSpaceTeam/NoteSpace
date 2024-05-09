@@ -6,26 +6,26 @@ import { DocumentContent } from '@notespace/shared/workspace/types/document';
 export default function DocumentMemoryDB(): DocumentDatabase {
   const documents: Record<string, DocumentContent> = {};
 
-  async function createDocument(workspace : string, id : string) {
+  async function createDocument(workspace: string, id: string) {
     documents[id] = { operations: [] };
     return id;
   }
 
-  async function getDocument(workspace : string, id: string): Promise<DocumentContent> {
+  async function getDocument(workspace: string, id: string): Promise<DocumentContent> {
     const document = documents[id];
     if (!document) throw new NotFoundError(`Document with id ${id} not found`);
 
     return document;
   }
 
-  async function deleteDocument(workspace : string, id: string) {
+  async function deleteDocument(workspace: string, id: string) {
     const document = documents[id];
     if (!document) throw new NotFoundError(`Document with id ${id} not found`);
 
     delete documents[id];
   }
 
-  async function updateDocument(workspace : string, id: string, operations: Operation[]) {
+  async function updateDocument(workspace: string, id: string, operations: Operation[]) {
     const document = documents[id];
     if (!document) throw new NotFoundError(`Document with id ${id} not found`);
 

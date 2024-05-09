@@ -3,7 +3,7 @@ import rooms from '@controllers/ws/rooms/rooms';
 
 function join() {
   return function (socket: Socket, documentId: string) {
-    rooms.document.join(socket, documentId);
+    rooms.workspace.join(socket, documentId);
   };
 }
 

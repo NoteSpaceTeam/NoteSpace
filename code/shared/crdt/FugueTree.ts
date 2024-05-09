@@ -92,7 +92,8 @@ export class FugueTree<T> {
   deleteNode(id: Id) {
     const node = this.getById(id);
 
-    if (node.value === "\n") this._root.value = this._root.value.filter((n) => n.id !== id);
+    if (node.value === "\n")
+      this._root.value = this._root.value.filter((n) => n.id !== id);
 
     if (!node.isDeleted) node.isDeleted = true;
   }

@@ -7,7 +7,7 @@ import serviceInit from '@services/documentService';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
-import { setupNamespaces } from '@controllers/ws/setupNamespaces';
+import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
 
 const database = databaseInit();
 const service = serviceInit(database);
@@ -21,14 +21,8 @@ app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
 
-setupNamespaces(io, events);
+setupEventHandlers(io, events);
 
-// do not start the server if this file is being imported
-if (require.main === module) {
-  server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
-    console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
-  });
-}
-export default {
-  app,
-};
+server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
+  console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+});

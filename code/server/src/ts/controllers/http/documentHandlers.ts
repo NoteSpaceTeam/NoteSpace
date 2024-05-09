@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
-import { DocumentService } from '@controllers/ws/types';
+import { DocumentService } from '@services/types';
 import { httpResponse } from '@controllers/http/utils';
 
 function documentHandlers(service: DocumentService) {
   async function getDocuments(req: Request, res: Response) {
-    const documents = await service.getDocuments();
-    httpResponse.ok(res, documents);
+    // const documents = await service.getDocuments();
+    // httpResponse.ok(res, documents);
   }
 
   async function createDocument(req: Request, res: Response) {
     const { title } = req.body;
-    const id = await service.createDocument(title);
+    const id = await service.createDocument(, title);
     httpResponse.created(res, { id });
   }
 

@@ -1,7 +1,7 @@
 import { SocketNamespaces } from '@controllers/ws/types';
 import { Server } from 'socket.io';
 
-export function setupNamespaces(io: Server, events: SocketNamespaces) {
+export function setupEventHandlers(io: Server, events: SocketNamespaces) {
   Object.entries(events).forEach(([namespace, event]) => {
     Object.entries(event).forEach(([name, handler]) => {
       io.of(namespace).on('connection', socket => {

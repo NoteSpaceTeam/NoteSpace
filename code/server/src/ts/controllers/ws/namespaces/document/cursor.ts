@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { InlineStyle } from '@notespace/shared/types/styles';
-import { getRoomId } from '@controllers/ws/rooms';
+import { getRoomId } from '@controllers/ws/rooms/roomOperations';
 
 type CursorData = {
   range: any;

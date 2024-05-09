@@ -4,8 +4,8 @@ import rooms from '@controllers/ws/rooms/rooms';
 
 function title(service: DocumentService) {
   return async function (socket: Socket, title: string) {
-    const { id, workspaceId } = rooms.document.get(socket);
-    // TODO: update document title
+    const { id } = rooms.document.get(socket);
+    // TODO: update workspace title
     // socket.broadcast.to(id).emit('title', title);
   };
 }

@@ -3,7 +3,7 @@ import rooms from '@controllers/ws/rooms/rooms';
 
 function leave() {
   return function (socket: Socket) {
-    rooms.document.leave(socket);
+    rooms.workspace.leave(socket);
   };
 }
 

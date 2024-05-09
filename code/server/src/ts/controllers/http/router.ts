@@ -1,6 +1,6 @@
 import express from 'express';
 import PromiseRouter from 'express-promise-router';
-import { DocumentService } from '@controllers/ws/types';
+import { DocumentService } from '@services/types';
 import documentHandlers from '@controllers/http/documentHandlers';
 import errorHandler from '@controllers/http/errorHandler';
 

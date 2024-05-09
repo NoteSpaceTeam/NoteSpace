@@ -3,7 +3,6 @@ import { WorkspaceResource } from '@notespace/shared/workspace/types/resource';
 
 import sql from './database';
 
-
 // export default function PostgresDB() : WorkspaceDatabase {
 //   async function getWorkspaceResources(workspace: string) : Promise<WorkspaceResource[]> {
 //     return sql`

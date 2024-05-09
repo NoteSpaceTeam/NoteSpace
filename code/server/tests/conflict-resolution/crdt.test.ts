@@ -4,12 +4,11 @@ import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/c
 import { FugueTree } from '@notespace/shared/crdt/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
-import server from '../../src/ts/server';
+import { app, setup } from '../server.test';
 import { applyOperations } from './utils';
 
-const { app } = server;
 const PORT = process.env.PORT || 8080;
-const BASE_URL = `http://localhost:${PORT}`;
+const BASE_URL = `http://localhost:${PORT}/document`;
 let ioServer: Server;
 let httpServer: http.Server;
 let client1: Socket;
@@ -19,6 +18,7 @@ let tree = new FugueTree<string>();
 beforeAll(done => {
   httpServer = http.createServer(app);
   ioServer = new Server(httpServer);
+  setup(ioServer);
 
   // ioServer.on('connection', onConnectionHandler);
   httpServer.listen(PORT, () => {
