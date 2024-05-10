@@ -1,5 +1,5 @@
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
-import serviceAccount from './firestore-key-5cddf-472039f8dbb6.json';
+import serviceAccount from '@/firestore-key-5cddf-472039f8dbb6.json';
 import { getFirestore } from 'firebase-admin/firestore';
 import { DocumentContent } from '@notespace/shared/workspace/document';
 import { NotFoundError } from '@domain/errors/errors';
@@ -8,44 +8,47 @@ import { firestore } from 'firebase-admin';
 import FieldValue = firestore.FieldValue;
 import { DocumentDatabase } from '@database/types';
 import CollectionReference = firestore.CollectionReference;
+import Firestore = firestore.Firestore;
 
-export default function DocumentFirestoreDB(): DocumentDatabase {
-  initializeApp({
-    credential: cert(serviceAccount as ServiceAccount),
-  });
+export class DocumentFirestoreDB implements DocumentDatabase {
+  private readonly db: Firestore;
+  constructor() {
+    initializeApp({
+      credential: cert(serviceAccount as ServiceAccount),
+    });
+    this.db = getFirestore();
+  }
 
-  const db = getFirestore();
-
-  async function createDocument(workspace: string, id: string) {
-    const documents = await getWorkspace(workspace);
+  async createDocument(workspace: string, id: string) {
+    const documents = await this.getWorkspace(workspace);
 
     const docData: DocumentContent = { operations: [] };
     await documents.doc(id).set(docData);
     return id;
   }
 
-  async function getDocument(workspace: string, id: string): Promise<DocumentContent> {
-    const doc = await getDoc(workspace, id);
+  async getDocument(workspace: string, id: string): Promise<DocumentContent> {
+    const doc = await this.getDoc(workspace, id);
     const snapshot = await doc.get();
     return snapshot.data() as DocumentContent;
   }
 
-  async function deleteDocument(workspace: string, id: string) {
-    const doc = await getDoc(workspace, id);
+  async deleteDocument(workspace: string, id: string) {
+    const doc = await this.getDoc(workspace, id);
     await doc.delete();
   }
 
-  async function updateDocument(workspace: string, id: string, newOperations: Operation[]) {
-    const doc = await getDoc(workspace, id);
+  async updateDocument(workspace: string, id: string, newOperations: Operation[]) {
+    const doc = await this.getDoc(workspace, id);
     await doc.update({ operations: FieldValue.arrayUnion(newOperations) });
   }
 
-  async function getWorkspace(workspace: string): Promise<CollectionReference> {
-    return db.collection(workspace);
+  async getWorkspace(workspace: string): Promise<CollectionReference> {
+    return this.db.collection(workspace);
   }
 
-  async function getDoc(workspace: string, id: string) {
-    const documents = await getWorkspace(workspace);
+  async getDoc(workspace: string, id: string) {
+    const documents = await this.getWorkspace(workspace);
 
     const query = documents.where('id', '==', id);
     const data = await query.get();
@@ -53,11 +56,4 @@ export default function DocumentFirestoreDB(): DocumentDatabase {
 
     return data.docs[0].ref;
   }
-
-  return {
-    createDocument,
-    getDocument,
-    deleteDocument,
-    updateDocument,
-  };
 }

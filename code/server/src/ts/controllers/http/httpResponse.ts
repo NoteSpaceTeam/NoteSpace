@@ -13,4 +13,3 @@ export const httpResponse = {
   conflict: (res: Response) => res.status(409),
   internalServerError: (res: Response) => res.status(500),
 };
-

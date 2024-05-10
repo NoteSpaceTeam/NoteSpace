@@ -91,8 +91,7 @@ export class FugueTree<T> {
     const siblings =
       side === "L" ? parentNode.leftChildren : parentNode.rightChildren;
     let i = 0;
-    while (i < siblings.length)
-      if (!(id.sender > siblings[i++].sender)) break;
+    while (i < siblings.length) if (!(id.sender > siblings[i++].sender)) break;
 
     siblings.splice(i, 0, id);
   }

@@ -3,39 +3,33 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 import { DocumentDatabase } from '@database/types';
 import { DocumentContent } from '@notespace/shared/workspace/document';
 
-export default function DocumentMemoryDB(): DocumentDatabase {
-  const documents: Record<string, DocumentContent> = {};
+export class DocumentMemoryDB implements DocumentDatabase {
+  private readonly documents: Record<string, Record<string, DocumentContent>> = {};
 
-  async function createDocument(workspace: string, id: string) {
-    documents[id] = { operations: [] };
+  async createDocument(wid: string, id: string) {
+    this.documents[wid][id] = { operations: [] };
     return id;
   }
 
-  async function getDocument(workspace: string, id: string): Promise<DocumentContent> {
-    const document = documents[id];
-    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+  async getDocument(wid: string, id: string): Promise<DocumentContent> {
+    return this.getDoc(wid, id);
+  }
 
+  async deleteDocument(wid: string, id: string) {
+    this.getDoc(wid, id);
+    delete this.documents[id];
+  }
+
+  async updateDocument(wid: string, id: string, operations: Operation[]) {
+    const document = this.getDoc(wid, id);
+    this.documents[wid][id].operations = [...document.operations, ...operations];
+  }
+
+  private getDoc(wid: string, id: string) {
+    const workspace = this.documents[wid];
+    if (!workspace) throw new NotFoundError(`Workspace with id ${wid} not found`);
+    const document = workspace[id];
+    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
     return document;
   }
-
-  async function deleteDocument(workspace: string, id: string) {
-    const document = documents[id];
-    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
-
-    delete documents[id];
-  }
-
-  async function updateDocument(workspace: string, id: string, operations: Operation[]) {
-    const document = documents[id];
-    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
-
-    documents[id] = { ...document, operations: [...document.operations, ...operations] };
-  }
-
-  return {
-    createDocument,
-    getDocument,
-    deleteDocument,
-    updateDocument,
-  };
 }

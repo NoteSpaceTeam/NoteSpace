@@ -228,8 +228,7 @@ export class Fugue {
    * @param selection
    */
   updateBlockStylesLocalBySelection = (style: BlockStyle, selection: Selection) =>
-    range(selection.start.line, selection.end.line + 1)
-      .map(line => this.updateBlockStyleLocal(line, style));
+    range(selection.start.line, selection.end.line + 1).map(line => this.updateBlockStyleLocal(line, style));
 
   /**
    * Updates the style of the node based on the given operation
@@ -240,9 +239,7 @@ export class Fugue {
   updateBlockStyleRemote = ({ line, style, append }: BlockStyleOperation) =>
     this.tree.updateBlockStyle(style, line, append);
 
-  getBlockStyle = (line: number) : BlockStyle =>
-    (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
-
+  getBlockStyle = (line: number): BlockStyle => (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
 
   /**
    * Traverses the tree in in-order traversal

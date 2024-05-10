@@ -15,20 +15,20 @@ function App() {
     <div className="app">
       <ErrorProvider>
         <CommunicationProvider communication={communication}>
-          <WorkspaceProvider>
-            <Router>
-              <Sidebar />
-              <div className="content">
-                <Header />
-                <Routes>
+          <Router>
+            <Sidebar />
+            <div className="content">
+              <Header />
+              <Routes>
+                <WorkspaceProvider>
                   <Route path="/" element={<Navigate to={`/documents`} />} />
                   <Route path="/documents" element={<Workspace />} />
                   <Route path="/documents/:id" element={<Document />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
-            </Router>
-          </WorkspaceProvider>
+                </WorkspaceProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </Router>
         </CommunicationProvider>
       </ErrorProvider>
     </div>

@@ -1,10 +1,14 @@
+import {
+  DocumentResource,
+  ResourceInputModel,
+  ResourceType,
+  WorkspaceResource,
+} from '@notespace/shared/workspace/resource';
 import { ResourcesDB } from '@database/pg/resourcesDB';
-import { ResourceInputModel, ResourceType, WorkspaceResource } from '../../../../shared/workspace/resource';
 import { DocumentDatabase } from '@database/types';
 
 export class ResourcesService {
-
-  private readonly resources: ResourcesDB
+  private readonly resources: ResourcesDB;
   private readonly documents: DocumentDatabase;
 
   constructor(resourcesDB: ResourcesDB, documents: DocumentDatabase) {
@@ -16,14 +20,14 @@ export class ResourcesService {
     return await this.resources.createResource(resource);
   }
 
-  async getResource(id: string): Promise<WorkspaceResource> {
-    return await this.resources.getResource(id);
-  }
-
-  async getDocContent(wid: string, rid: string): Promise<string> {
+  async getResource(wid: string, rid: string, metaOnly: boolean): Promise<WorkspaceResource> {
     const resource = await this.resources.getResource(rid);
-    if (resource.type !== ResourceType.DOCUMENT) throw new Error('Resource is not a document');
-    return this.documents.getDocument(wid, rid);
+    if (resource.type === ResourceType.FOLDER || metaOnly) return resource;
+    const { operations } = await this.documents.getDocument(wid, rid);
+    return {
+      ...resource,
+      content: operations,
+    } as DocumentResource;
   }
 
   async updateResource(resource: Partial<WorkspaceResource>): Promise<void> {

@@ -2,25 +2,25 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import databaseInit from '@database/memory/memoryDB';
-import {NoteSpaceServices} from '@services/noteSpaceServices';
+import { NoteSpaceServices } from '@services/noteSpaceServices';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
-import { NoteSpaceDB } from '@database/pg/noteSpaceDB';
+import { NoteSpaceDatabases } from '@database/noteSpaceDB';
 import { DocumentService } from '@services/documentService';
+import { DocumentMemoryDB } from '@database/memory/memoryDB';
 
 // Setup database
-const docDB = databaseInit();
-const database = new NoteSpaceDB(docDB);
+const docDB = new DocumentMemoryDB();
+const databases = new NoteSpaceDatabases(docDB);
 
 // Setup services
 const docService = new DocumentService(docDB);
-const service = new NoteSpaceServices(database);
+const services = new NoteSpaceServices(databases);
 
 // Setup server
-const api = router(service);
+const api = router(services);
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);

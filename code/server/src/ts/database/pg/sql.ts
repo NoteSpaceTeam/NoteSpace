@@ -12,4 +12,3 @@ const credentials = {
 const sql = postgres(credentials);
 
 export default sql;
-

@@ -2,7 +2,6 @@ import { Operation } from '@notespace/shared/crdt/types/operations';
 import { DocumentDatabase } from '@database/types';
 
 export class DocumentService {
-
   private readonly database: DocumentDatabase;
 
   constructor(database: DocumentDatabase) {
