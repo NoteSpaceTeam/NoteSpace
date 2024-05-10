@@ -1,20 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
+import { httpResponse } from '@controllers/http/httpResponse';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
-  let statusCode = 500;
+  let response: Response;
   switch (error.name) {
     case 'NotFoundError':
-      statusCode = 404;
+      response = httpResponse.notFound(res);
       break;
     case 'InvalidParameterError':
-      statusCode = 400;
+      response = httpResponse.badRequest(res);
       break;
     case 'ForbiddenError':
-      statusCode = 403;
+      response = httpResponse.forbidden(res);
+      break;
+    default:
+      response = httpResponse.internalServerError(res);
       break;
   }
-  const message = statusCode === 500 ? 'Internal server error' : error.message;
-  res.status(statusCode).send({ error: message });
+  const message = response.statusCode === 500 ? 'Internal server error' : error.message;
+  response.send({ error: message });
   console.error(error.stack);
 }

@@ -1,20 +1,20 @@
-import express from 'express';
+import * as express from 'express';
 import { Server } from 'socket.io';
-import { DocumentMemoryDB } from '../src/ts/database/memory/memoryDB';
-import { DocumentService } from '../src/ts/services/documentService';
+import { MemoryDocumentDatabase } from '../src/ts/database/memory/MemoryDocumentDatabase';
+import { DocumentService } from '../src/ts/services/DocumentService';
 import eventsInit from '../src/ts/controllers/ws/events';
 import router from '../src/ts/controllers/http/router';
 import { setupEventHandlers } from '../src/ts/controllers/ws/setupEventHandlers';
-import { NoteSpaceServices } from '../src/ts/services/noteSpaceServices';
-import { NoteSpaceDatabases } from '../src/ts/database/noteSpaceDB';
+import { Services } from '../src/ts/services/Services';
+import { Databases } from '../src/ts/database/Databases';
 
 // Setup database
-const docDB = new DocumentMemoryDB();
-const databases = new NoteSpaceDatabases(docDB);
+const docDB = new MemoryDocumentDatabase();
+const databases = new Databases(docDB);
 
 // Setup services
 const docService = new DocumentService(docDB);
-const services = new NoteSpaceServices(databases);
+const services = new Services(databases);
 
 const events = eventsInit(docService);
 const api = router(services);

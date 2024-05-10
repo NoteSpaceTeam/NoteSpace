@@ -1,10 +1,10 @@
 import { BaseSelection } from 'slate';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import { InputDomainOperations } from '@domain/editor/operations/input/types';
-import { Cursor, Selection } from '@notespace/shared/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/document/types/cursor';
 import { nodeInsert } from '@domain/editor/crdt/utils';
-import { InlineStyle } from '@notespace/shared/types/styles';
-import { Operation } from '@notespace/shared/crdt/types/operations';
+import { InlineStyle } from '@notespace/shared/document/types/styles';
+import { Operation } from '@notespace/shared/document/types/operations';
 import { Communication } from '@/services/communication/communication';
 
 export default (fugue: Fugue, { socket }: Communication): InputDomainOperations => {

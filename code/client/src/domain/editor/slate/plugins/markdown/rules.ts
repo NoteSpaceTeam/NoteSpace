@@ -2,7 +2,7 @@ import {
   createSetBlockApply,
   createSetInlineApply,
 } from '@domain/editor/slate/plugins/markdown/operations/applyOperations';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
 import { ApplyBlockStyle, ApplyInlineStyle } from '@domain/editor/operations/markdown/types';
 import { Editor, Range } from 'slate';
 

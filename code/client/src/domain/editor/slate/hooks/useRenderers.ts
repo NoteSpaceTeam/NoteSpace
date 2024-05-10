@@ -3,7 +3,7 @@ import { ReactEditor, type RenderElementProps, type RenderLeafProps } from 'slat
 import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugins/markdown/rendering/renderers';
 import { Editor } from 'slate';
 import { Fugue } from '@domain/editor/crdt/fugue';
-import { BlockStyle } from '@notespace/shared/types/styles';
+import { BlockStyle } from '@notespace/shared/document/types/styles';
 import { Communication } from '@/services/communication/communication.ts';
 
 /**

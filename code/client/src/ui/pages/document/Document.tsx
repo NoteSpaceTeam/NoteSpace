@@ -30,9 +30,9 @@ function Document() {
   useEffect(() => {
     async function fetchDocument() {
       if (!id) return;
-      const { operations, title } = await services.getDocument(id);
-      fugue.applyOperations(operations, true);
-      setTitle(title);
+      const { content, name } = await services.getDocument(id);
+      fugue.applyOperations(content, true);
+      setTitle(name);
       setLoaded(true);
       setFilePath(`/documents/${title || 'Untitled'}`);
       socket.emit('document:join', id);
@@ -44,7 +44,7 @@ function Document() {
     return () => {
       socket.emit('document:leave');
     };
-  }, [fugue, id, http, socket, showError, services, setFilePath, navigate]);
+  }, [fugue, id, http, socket, showError, services, setFilePath, navigate, title]);
 
   return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
 }

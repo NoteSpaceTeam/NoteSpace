@@ -1,8 +1,8 @@
 import { createEditor, Descendant, Editor, Element } from 'slate';
-import type { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
+import type { BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
 import type { CustomText } from '@domain/editor/slate/types';
 import { isEqual, last } from 'lodash';
-import { BlockStyles } from '@notespace/shared/types/styles';
+import { BlockStyles } from '@notespace/shared/document/types/styles';
 import { Fugue } from '@domain/editor/crdt/fugue';
 
 const multiBlocks: BlockStyle[] = [

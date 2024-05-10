@@ -16,6 +16,7 @@ begin;
         workspace uuid not null references workspace(id) on delete cascade,
         name text not null,
         type resource_type not null,
+        children uuid[] not null default '{}',
         created_at timestamp not null default now(),
         updated_at timestamp not null default now()
     );

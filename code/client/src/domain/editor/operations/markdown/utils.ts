@@ -1,7 +1,7 @@
 import { Fugue } from '@domain/editor/crdt/fugue';
-import { DeleteOperation } from '@notespace/shared/crdt/types/operations';
-import { Id } from '@notespace/shared/crdt/types/nodes';
-import { Selection } from '@notespace/shared/types/cursor';
+import { DeleteOperation } from '@notespace/shared/document/types/operations';
+import { Id } from '@notespace/shared/document/types/nodes';
+import { Selection } from '@notespace/shared/document/types/cursor';
 
 /**
  * Deletes characters around the selection

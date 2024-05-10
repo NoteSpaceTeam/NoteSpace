@@ -2,7 +2,7 @@ import { Range } from 'slate';
 import { useState } from 'react';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners';
 import { Communication } from '@/services/communication/communication';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { InlineStyle } from '@notespace/shared/document/types/styles';
 
 export type CursorData = {
   id: string;

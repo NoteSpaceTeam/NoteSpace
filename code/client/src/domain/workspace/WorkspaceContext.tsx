@@ -5,6 +5,7 @@ import { useCommunication } from '@/services/communication/context/useCommunicat
 import useError from '@domain/error/useError.ts';
 
 export type WorkspaceContextType = {
+  workspace?: string;
   resources: WorkspaceResource[];
   setResources: (resources: WorkspaceResource[]) => void;
   filePath: string | undefined;

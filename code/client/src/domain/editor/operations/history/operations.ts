@@ -13,8 +13,8 @@ import {
   UnsetNodeOperation,
 } from '@domain/editor/operations/history/types';
 import { Communication } from '@/services/communication/communication';
-import { BlockStyle, InlineStyle } from '@notespace/shared/types/styles';
-import { getStyleType } from '@notespace/shared/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
+import { getStyleType } from '@notespace/shared/document/types/styles';
 import { Text, Element } from 'slate';
 
 export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperations => {

@@ -3,7 +3,7 @@ import { useFocused, useSlate } from 'slate-react';
 import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isSelected } from '@domain/editor/slate/utils/selection';
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaCode } from 'react-icons/fa';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { InlineStyle } from '@notespace/shared/document/types/styles';
 
 type ToolbarProps = {
   onApplyMark: (mark: InlineStyle) => void;

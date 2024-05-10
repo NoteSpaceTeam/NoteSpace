@@ -1,5 +1,5 @@
-import { type InlineStyle } from '@notespace/shared/types/styles';
-import { NodeType } from '@notespace/shared/crdt/types/nodes';
+import { type InlineStyle } from '@notespace/shared/document/types/styles';
+import { NodeType } from '@notespace/shared/document/types/nodes';
 
 export type NodeInsert = {
   value: string;

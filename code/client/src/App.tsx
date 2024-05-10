@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CommunicationProvider } from '@/services/communication/context/CommunicationContext';
 import { communication } from '@/services/communication/communication';
 import Document from '@ui/pages/document/Document';
@@ -21,9 +21,9 @@ function App() {
               <Header />
               <Routes>
                 <WorkspaceProvider>
-                  <Route path="/" element={<Navigate to={`/documents`} />} />
-                  <Route path="/documents" element={<Workspace />} />
-                  <Route path="/documents/:id" element={<Document />} />
+                  <Route path="/" element={<Home />} />
+                  <Route path="/workspaces/:wid" element={<Workspace />} />
+                  <Route path="/workspaces/:wid/:id" element={<Document />} />
                 </WorkspaceProvider>
                 <Route path="*" element={<NotFound />} />
               </Routes>

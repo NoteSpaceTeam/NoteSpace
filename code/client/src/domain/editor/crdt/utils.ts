@@ -1,5 +1,5 @@
 import { range } from 'lodash';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { InlineStyle } from '@notespace/shared/document/types/styles';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;

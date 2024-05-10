@@ -2,24 +2,24 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import { NoteSpaceServices } from '@services/noteSpaceServices';
+import { Services } from '@services/Services';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
-import { NoteSpaceDatabases } from '@database/noteSpaceDB';
-import { DocumentService } from '@services/documentService';
-import { DocumentMemoryDB } from '@database/memory/memoryDB';
+import { Databases } from '@database/Databases';
+import { DocumentService } from '@services/DocumentService';
+import { MemoryDocumentDatabase } from '@database/memory/MemoryDocumentDatabase';
 
-// Setup database
-const docDB = new DocumentMemoryDB();
-const databases = new NoteSpaceDatabases(docDB);
+// databases
+const docDB = new MemoryDocumentDatabase();
+const databases = new Databases(docDB);
 
-// Setup services
+// services
 const docService = new DocumentService(docDB);
-const services = new NoteSpaceServices(databases);
+const services = new Services(databases);
 
-// Setup server
+// server
 const api = router(services);
 const app = express();
 const server = http.createServer(app);

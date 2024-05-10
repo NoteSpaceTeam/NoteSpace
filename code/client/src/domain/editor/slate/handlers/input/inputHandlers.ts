@@ -4,8 +4,8 @@ import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isEqual } from 'lodash';
 import { getKeyFromInputEvent } from '@domain/editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
-import { Cursor, emptyCursor } from '@notespace/shared/types/cursor';
-import { InlineStyle } from '@notespace/shared/types/styles';
+import { Cursor, emptyCursor } from '@notespace/shared/document/types/cursor';
+import { InlineStyle } from '@notespace/shared/document/types/styles';
 import { InputDomainOperations } from '@domain/editor/operations/input/types';
 
 const hotkeys: Record<string, string> = {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import useSocketListeners from '@/services/communication/socket/useSocketListeners';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Communication } from '@/services/communication/communication';
 import useWorkspace from '@domain/workspace/useWorkspace';
@@ -13,7 +12,7 @@ function Title(props: TitleProps) {
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
   const editor = useSlate();
-  const { socket } = props.communication;
+  const { http } = props.communication;
   const { setFilePath } = useWorkspace();
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
@@ -24,7 +23,7 @@ function Title(props: TitleProps) {
 
   function onConfirm() {
     if (title === prevTitle) return;
-    socket.emit('document:title', title);
+    // await http.put(`/documents/${title}`);
     setPrevTitle(title);
     setFilePath(`/documents/${title || 'Untitled'}`);
   }
@@ -37,9 +36,9 @@ function Title(props: TitleProps) {
     }
   }
 
-  useSocketListeners(socket, {
-    'document:title': setTitle,
-  });
+  // useSocketListeners(socket, {
+  //   'document:title': setTitle,
+  // });
 
   return (
     <input
