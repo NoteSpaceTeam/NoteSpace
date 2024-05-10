@@ -1,9 +1,9 @@
 import { HttpCommunication } from '@/services/communication/http/httpCommunication';
-import { Document } from '@notespace/shared/workspace/types/document.d.ts';
+import { DocumentContent } from '@notespace/shared/workspace/document';
 
-async function getDocument(http: HttpCommunication, id: string): Promise<Document> {
+async function getDocument(http: HttpCommunication, id: string): Promise<DocumentContent> {
   const { operations, title } = await http.get(`/documents/${id}`);
-  return { operations, title } as Document;
+  return { operations, title } as DocumentContent;
 }
 
 async function createDocument(http: HttpCommunication): Promise<string> {

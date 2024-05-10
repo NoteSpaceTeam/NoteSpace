@@ -1,7 +1,7 @@
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { DocumentDatabase } from '@database/types';
-import { DocumentContent } from '@notespace/shared/workspace/types/document';
+import { DocumentContent } from '@notespace/shared/workspace/document';
 
 export default function DocumentMemoryDB(): DocumentDatabase {
   const documents: Record<string, DocumentContent> = {};

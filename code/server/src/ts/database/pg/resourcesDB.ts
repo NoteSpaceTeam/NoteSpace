@@ -1,5 +1,5 @@
 import sql from '@database/pg/sql';
-import { ResourceInputModel, WorkspaceResource } from '@notespace/shared/workspace/types/resource';
+import { ResourceInputModel, WorkspaceResource } from '../../../../../shared/workspace/resource';
 import { ResourceDatabase } from '@database/types';
 
 export class ResourcesDB implements ResourceDatabase{

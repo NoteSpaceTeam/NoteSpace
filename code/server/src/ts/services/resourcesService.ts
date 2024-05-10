@@ -1,5 +1,5 @@
 import { ResourcesDB } from '@database/pg/resourcesDB';
-import { ResourceInputModel, ResourceType, WorkspaceResource } from '@notespace/shared/workspace/types/resource';
+import { ResourceInputModel, ResourceType, WorkspaceResource } from '../../../../shared/workspace/resource';
 import { DocumentDatabase } from '@database/types';
 
 export class ResourcesService {

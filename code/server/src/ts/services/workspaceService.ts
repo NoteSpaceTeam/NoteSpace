@@ -1,5 +1,5 @@
-import { WorkspaceResource } from '@notespace/shared/workspace/types/resource';
-import { WorkspaceInfo } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceResource } from '../../../../shared/workspace/resource';
+import { WorkspaceInfo } from '@notespace/shared/workspace/workspace';
 import { WorkspaceDB } from '@database/pg/workspaceDB';
 
 export class WorkspaceService {

@@ -65,9 +65,7 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: (edito
   }
 
   const applyRange = matchRangeRef.unref();
-  if (applyRange) {
-    apply(editor, applyRange);
-  }
+  if (applyRange) apply(editor, applyRange);
 };
 
 /**

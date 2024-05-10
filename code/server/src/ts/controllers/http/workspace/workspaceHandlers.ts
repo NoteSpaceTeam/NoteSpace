@@ -3,7 +3,7 @@ import PromiseRouter from 'express-promise-router';
 import { httpResponse } from '@controllers/http/httpResponse';
 import { Request, Response } from 'express';
 import resourcesHandlers from '@controllers/http/workspace/resourcesHandlers';
-import { WorkspaceInfo } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceInfo } from '@notespace/shared/workspace/workspace';
 import { NoteSpaceServices } from '@services/noteSpaceServices';
 
 function workspaceHandlers(service : NoteSpaceServices){

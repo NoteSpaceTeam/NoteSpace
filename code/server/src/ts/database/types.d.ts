@@ -1,7 +1,7 @@
-import { DocumentStorageData } from '@notespace/shared/workspace/types/document';
+import { DocumentStorageData } from '@notespace/shared/workspace/document';
 import { Operation } from '@notespace/shared/crdt/types/operations';
-import { WorkspaceResource } from '@notespace/shared/workspace/types/resource';
-import { WorkspaceInfo } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceResource } from '../../../../shared/workspace/resource';
+import { WorkspaceInfo } from '@notespace/shared/workspace/workspace';
 
 /**
  * Document Database - Interface for handling resources content management

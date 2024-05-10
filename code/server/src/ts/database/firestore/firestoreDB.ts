@@ -1,7 +1,7 @@
 import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import serviceAccount from './firestore-key-5cddf-472039f8dbb6.json';
 import { getFirestore } from 'firebase-admin/firestore';
-import { DocumentContent } from '@notespace/shared/workspace/types/document';
+import { DocumentContent } from '@notespace/shared/workspace/document';
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/crdt/types/operations';
 import { firestore } from 'firebase-admin';

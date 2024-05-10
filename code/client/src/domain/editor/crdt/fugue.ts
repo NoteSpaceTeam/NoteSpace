@@ -29,7 +29,7 @@ export class Fugue {
   }
 
   applyOperations(operations: Operation[], override: boolean = false) {
-    if (override) this.tree.clear();
+    if (override) this.tree.clear(); // clear the tree if operations will override the current state
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':
@@ -89,9 +89,9 @@ export class Fugue {
 
     const leftOrigin = this.getNodeByCursor({ line, column })!;
 
-    if (isEmpty(leftOrigin.rightChildren))
+    if (isEmpty(leftOrigin.rightChildren)) {
       operation = { type: 'insert', id, value, parent: leftOrigin.id, side: 'R', styles };
-    else {
+    } else {
       const rightOrigin = this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0]);
       operation = { type: 'insert', id, value, parent: rightOrigin.id, side: 'L', styles };
     }
@@ -183,9 +183,7 @@ export class Fugue {
    * Revives a node based on the given operation
    * @param operation
    */
-  reviveRemote(operation: ReviveOperation): void {
-    this.tree.reviveNode(operation.id);
-  }
+  reviveRemote = (operation: ReviveOperation) => this.tree.reviveNode(operation.id);
 
   /**
    * Updates the style of the nodes by the given selection
@@ -199,12 +197,7 @@ export class Fugue {
       const { id } = node;
       const style = format as InlineStyle;
       this.tree.updateInlineStyle(id, style, value);
-      return {
-        type: 'inline-style',
-        id,
-        style,
-        value,
-      };
+      return { type: 'inline-style', id, style, value };
     });
     return operations;
   }
@@ -215,9 +208,8 @@ export class Fugue {
    * @param style
    * @param value
    */
-  updateInlineStyleRemote({ id, style, value }: InlineStyleOperation): void {
+  updateInlineStyleRemote = ({ id, style, value }: InlineStyleOperation) =>
     this.tree.updateInlineStyle(id, style, value);
-  }
 
   /**
    * Updates the style of the node based on the given operation
@@ -227,12 +219,7 @@ export class Fugue {
    */
   updateBlockStyleLocal(line: number, style: BlockStyle, append: boolean = false): BlockStyleOperation {
     this.tree.updateBlockStyle(style, line, append);
-    return {
-      type: 'block-style',
-      line,
-      style,
-      append,
-    };
+    return { type: 'block-style', line, style, append };
   }
 
   /**
@@ -240,9 +227,9 @@ export class Fugue {
    * @param style
    * @param selection
    */
-  updateBlockStylesLocalBySelection(style: BlockStyle, selection: Selection) {
-    return range(selection.start.line, selection.end.line + 1).map(line => this.updateBlockStyleLocal(line, style));
-  }
+  updateBlockStylesLocalBySelection = (style: BlockStyle, selection: Selection) =>
+    range(selection.start.line, selection.end.line + 1)
+      .map(line => this.updateBlockStyleLocal(line, style));
 
   /**
    * Updates the style of the node based on the given operation
@@ -250,13 +237,12 @@ export class Fugue {
    * @param style
    * @param append
    */
-  updateBlockStyleRemote({ line, style, append }: BlockStyleOperation) {
+  updateBlockStyleRemote = ({ line, style, append }: BlockStyleOperation) =>
     this.tree.updateBlockStyle(style, line, append);
-  }
 
-  getBlockStyle(line: number): BlockStyle {
-    return (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
-  }
+  getBlockStyle = (line: number) : BlockStyle =>
+    (this.tree.root.styles[line] as BlockStyle) || 'paragraph';
+
 
   /**
    * Traverses the tree in in-order traversal

@@ -1,5 +1,5 @@
 import PromiseRouter from 'express-promise-router';
-import { ResourceInputModel, WorkspaceResource } from '@notespace/shared/workspace/types/resource';
+import { ResourceInputModel, WorkspaceResource } from '../../../../../../shared/workspace/resource';
 import { httpResponse } from '@controllers/http/httpResponse';
 import { Request, Response } from 'express';
 import { ResourcesService } from '@services/resourcesService';

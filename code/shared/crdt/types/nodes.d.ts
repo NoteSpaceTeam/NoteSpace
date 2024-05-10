@@ -1,4 +1,4 @@
-import { Style } from "../../types/styles";
+import { Style } from "../../domain/styles";
 
 export type Id = {
   sender: string;

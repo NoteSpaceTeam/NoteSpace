@@ -8,7 +8,7 @@ import {
 } from '@notespace/shared/crdt/types/operations';
 import getFugueOperations from '@domain/editor/operations/fugue/operations';
 import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
-import { Document } from '@notespace/shared/workspace/types/document.d.ts';
+import { Document } from '@notespace/shared/workspace/document.d.ts';
 import { Node, RootNode } from '@notespace/shared/crdt/types/nodes';
 import { rootNode, treeNode } from '@notespace/shared/crdt/utils';
 

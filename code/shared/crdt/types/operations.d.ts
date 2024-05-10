@@ -1,5 +1,5 @@
 import { Id } from "./nodes";
-import { InlineStyle, BlockStyle } from "../../types/styles";
+import { InlineStyle, BlockStyle } from "../../domain/styles";
 
 export type InsertOperation = {
   line?: number;

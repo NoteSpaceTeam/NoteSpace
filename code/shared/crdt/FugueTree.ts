@@ -1,5 +1,5 @@
 import { Id, Node, Nodes } from "./types/nodes";
-import { BlockStyle, InlineStyle } from "../types/styles";
+import { BlockStyle, InlineStyle } from "../domain/styles";
 import { rootNode, treeNode } from "./utils";
 import { RootNode, NodeType } from "./types/nodes";
 
@@ -12,8 +12,8 @@ export class FugueTree<T> {
   private _root: RootNode<T>;
 
   /* Holds all the nodes in the tree.
-        The key is the sender id and the value is an array of nodes sent by that sender
-     */
+     The key is the sender id and the value is an array of nodes sent by that sender
+  */
   private _nodes = new Map<string, NodeType<T>[]>();
 
   constructor() {
@@ -41,6 +41,14 @@ export class FugueTree<T> {
     this._addNode(node);
   }
 
+  /**
+   * Adds a line root node to the tree.
+   * @param line
+   * @param id
+   * @param parent
+   * @param side
+   * @param styles
+   */
   addLineRoot(
     line: number,
     id: Id,
@@ -55,6 +63,10 @@ export class FugueTree<T> {
     this._addNode(node);
   }
 
+  /**
+   * Internal method to add a node to the tree.
+   * @param node
+   */
   _addNode(node: Node<T>) {
     // add to nodes map
     const { id } = node;
@@ -79,9 +91,9 @@ export class FugueTree<T> {
     const siblings =
       side === "L" ? parentNode.leftChildren : parentNode.rightChildren;
     let i = 0;
-    while (i < siblings.length) {
+    while (i < siblings.length)
       if (!(id.sender > siblings[i++].sender)) break;
-    }
+
     siblings.splice(i, 0, id);
   }
 

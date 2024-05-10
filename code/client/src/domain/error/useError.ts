@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import { ErrorContext } from '@domain/error/ErrorContext';
 
-function useError() {
-  return useContext(ErrorContext);
-}
+const useError = () =>useContext(ErrorContext);
 
 export default useError;
