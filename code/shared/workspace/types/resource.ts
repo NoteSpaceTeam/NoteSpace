@@ -15,23 +15,19 @@ export interface ResourceInputModel {
   parent : string,
 }
 
-enum ResourceType { DOCUMENT = "D", FOLDER = "F" }
-
-export interface FolderResource extends WorkspaceResource { type: ResourceType.FOLDER }
-
-interface DocumentResource extends WorkspaceResource { type: ResourceType.DOCUMENT }
+export enum ResourceType { DOCUMENT = "D", FOLDER = "F" }
 
 export const WorkspaceResource = (resource : ResourceInputModel) =>
   resource.type === ResourceType.DOCUMENT ? doc(resource) : folder(resource)
 
-const doc = (resource: ResourceInputModel) : DocumentResource => ({
+const doc = (resource: ResourceInputModel) : WorkspaceResource => ({
   id: '',
   ...resource,
   type: ResourceType.DOCUMENT,
   children: [],
 })
 
-const folder = (resource : ResourceInputModel) : FolderResource => ({
+const folder = (resource : ResourceInputModel) : WorkspaceResource => ({
   id: '',
   ...resource,
   type: ResourceType.FOLDER,

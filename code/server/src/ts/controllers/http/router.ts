@@ -1,10 +1,8 @@
 import express from 'express';
 import PromiseRouter from 'express-promise-router';
-import { DocumentService, NoteSpaceServices } from '@services/types';
-import documentHandlers from '@controllers/http/workspace/documentHandlers';
-import errorHandler from '@controllers/http/errorHandler';
-import resourcesHandlers from '@controllers/http/workspace/resourcesHandlers';
+import { NoteSpaceServices } from '@services/noteSpaceServices';
 import workspaceHandlers from '@controllers/http/workspace/workspaceHandlers';
+import errorHandler from '@controllers/http/errorHandler';
 
 export default function (service: NoteSpaceServices) {
   if (!service) throw new Error('Service parameter is required');

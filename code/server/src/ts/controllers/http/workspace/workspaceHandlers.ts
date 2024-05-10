@@ -1,10 +1,10 @@
 import PromiseRouter from 'express-promise-router';
-import { NoteSpaceServices } from '@services/types';
-import { httpResponse } from '@controllers/http/utils';
+
+import { httpResponse } from '@controllers/http/httpResponse';
 import { Request, Response } from 'express';
 import resourcesHandlers from '@controllers/http/workspace/resourcesHandlers';
-import documentHandlers from '@controllers/http/workspace/documentHandlers';
 import { WorkspaceInfo } from '@notespace/shared/workspace/types/workspace';
+import { NoteSpaceServices } from '@services/noteSpaceServices';
 
 function workspaceHandlers(service : NoteSpaceServices){
   const router = PromiseRouter();
@@ -16,7 +16,7 @@ function workspaceHandlers(service : NoteSpaceServices){
   }
 
   const getWorkspaceInfo = async (req : Request, res : Response) => {
-    const workspace = await service.workspace.getWorkspace(req.params.id);
+    const workspace = await service.workspace.getWorkspace(req.params.wid);
     httpResponse.ok(res).json(workspace);
   }
 
@@ -27,18 +27,17 @@ function workspaceHandlers(service : NoteSpaceServices){
   }
 
   const deleteWorkspace = async (req : Request, res : Response) => {
-    await service.workspace.deleteWorkspace(req.params.id);
+    await service.workspace.deleteWorkspace(req.params.wid);
     httpResponse.noContent(res);
   }
 
   router.post('/', createWorkspace);
   router.put('/', updateWorkspace);
-  router.get('/:id', getWorkspaceInfo);
-  router.delete('/:id', deleteWorkspace);
+  router.get('/:wid', getWorkspaceInfo);
+  router.delete('/:wid', deleteWorkspace);
 
-  router.use('/:id/resources', resourcesHandlers(service.resources));
-  router.use('/:id/documents', documentHandlers(service.document));
-
+  // Set sub-routes for resources and documents
+  router.use('/:wid/', resourcesHandlers(service.resources));
   return router;
 }
 

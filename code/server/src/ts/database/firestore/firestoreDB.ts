@@ -16,11 +16,6 @@ export default function DocumentFirestoreDB(): DocumentDatabase {
 
   const db = getFirestore();
 
-  /**
-   * Create a new document in firestore - all metadata is stored in postgres
-   * @param workspace
-   * @param id - the id of the document - must correspond to the id in postgres
-   */
   async function createDocument(workspace: string, id: string) {
     const documents = await getWorkspace(workspace);
 
@@ -29,11 +24,6 @@ export default function DocumentFirestoreDB(): DocumentDatabase {
     return id;
   }
 
-  /**
-   * Get a document from firestore
-   * @param workspace
-   * @param id
-   */
   async function getDocument(workspace: string, id: string): Promise<DocumentContent> {
     const doc = await getDoc(workspace, id);
     const snapshot = await doc.get();

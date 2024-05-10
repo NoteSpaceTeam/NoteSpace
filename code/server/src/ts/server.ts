@@ -8,10 +8,18 @@ import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
+import { NoteSpaceDB } from '@database/pg/noteSpaceDB';
+import { DocumentService } from '@services/documentService';
 
-const database = databaseInit();
+// Setup database
+const docDB = databaseInit();
+const database = new NoteSpaceDB(docDB);
+
+// Setup services
+const docService = new DocumentService(docDB);
 const service = new NoteSpaceServices(database);
-const events = eventsInit(service);
+
+// Setup server
 const api = router(service);
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +29,8 @@ app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
 
+// Setup event handlers
+const events = eventsInit(docService);
 setupEventHandlers(io, events);
 
 server.listen(config.SERVER_PORT, config.SERVER_IP, () => {

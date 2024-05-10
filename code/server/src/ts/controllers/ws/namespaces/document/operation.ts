@@ -1,8 +1,9 @@
 import { Socket } from 'socket.io';
-import { DocumentService } from '@services//types';
+
 import { Operation } from '@notespace/shared/crdt/types/operations';
-import { getRoomId } from '@controllers/ws/rooms/roomOperations';
+
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
+import { DocumentService } from '@services/documentService';
 
 function operation(service: DocumentService) {
   return async (socket: Socket, operations: Operation[]) => {

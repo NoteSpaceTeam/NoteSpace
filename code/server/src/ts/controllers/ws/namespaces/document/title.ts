@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
-import { DocumentService } from '@services/types';
+
 import rooms from '@controllers/ws/rooms/rooms';
+import { DocumentService } from '@services/documentService';
 
 function title(service: DocumentService) {
   return async function (socket: Socket, title: string) {
