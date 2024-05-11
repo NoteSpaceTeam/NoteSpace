@@ -1,7 +1,7 @@
 version: 'latest'
 services:
   postgres-db:
-    container_name: postgres-db
+    container_name: notespace-postgres-db
     build:
       context: .
       dockerfile: docker/Dockerfile-db

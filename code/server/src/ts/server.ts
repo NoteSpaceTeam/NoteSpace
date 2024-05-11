@@ -8,15 +8,15 @@ import router from '@src/controllers/http/router';
 import config from '@src/config';
 import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
 import { Databases } from '@database/Databases';
-import { DocumentService } from '@services/DocumentService';
-import { MemoryDocumentDatabase } from '@database/memory/MemoryDocumentDatabase';
+import { DocumentsService } from '@services/DocumentsService';
+import { MemoryDocumentsDB } from '@database/documents/MemoryDocumentsDB';
 
 // databases
-const docDB = new MemoryDocumentDatabase();
+const docDB = new MemoryDocumentsDB();
 const databases = new Databases(docDB);
 
 // services
-const docService = new DocumentService(docDB);
+const docService = new DocumentsService(docDB);
 const services = new Services(databases);
 
 // server and controllers

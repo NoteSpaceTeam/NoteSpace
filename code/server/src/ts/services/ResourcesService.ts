@@ -1,11 +1,11 @@
 import { DocumentResource, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
-import { DocumentRepository, ResourceRepository } from '@database/types';
+import { DocumentsRepository, ResourcesRepository } from '@databases/types';
 
 export class ResourcesService {
-  private readonly resources: ResourceRepository;
-  private readonly documents: DocumentRepository;
+  private readonly resources: ResourcesRepository;
+  private readonly documents: DocumentsRepository;
 
-  constructor(resourcesDB: ResourceRepository, documents: DocumentRepository) {
+  constructor(resourcesDB: ResourcesRepository, documents: DocumentsRepository) {
     this.resources = resourcesDB;
     this.documents = documents;
   }

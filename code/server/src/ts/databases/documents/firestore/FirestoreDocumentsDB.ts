@@ -5,9 +5,9 @@ import { firestore } from 'firebase-admin';
 import FieldValue = firestore.FieldValue;
 import { DocumentRepository } from '@database/types';
 import CollectionReference = firestore.CollectionReference;
-import db from '@database/firestore/config';
+import db from '@database/documents/firestore/config';
 
-export class FirestoreDocumentDatabase implements DocumentRepository {
+export class FirestoreDocumentsDB implements DocumentRepository {
   async createDocument(wid: string, id: string) {
     const documents = await this.getWorkspace(wid);
     const docData: DocumentContent = { operations: [] };

@@ -1,16 +1,18 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
-import { ResourceRepository } from '@database/types';
+import { ResourcesRepository } from '@databases/types';
 import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
-import sql from '@database/postgres/config';
+import sql from '@databases/resources/postgres/config';
+import { isEmpty } from 'lodash';
 
-export class PostgresResourceDatabase implements ResourceRepository {
+export class PSQLResourcesDB implements ResourcesRepository {
+
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
-    const resource = { workspace: wid, name, type, parent: parent || 'IDKYET' };
+    const resource = { workspace: wid, name, type, parent: parent };
     const results = await sql`
         INSERT INTO resource ${sql(resource)}
         RETURNING id
     `;
-    if (results.length === 0) throw new Error('Resource not created');
+    if (isEmpty(results)) throw new Error('Resource not created');
     return results[0].id;
   }
 
@@ -18,7 +20,7 @@ export class PostgresResourceDatabase implements ResourceRepository {
     const results: WorkspaceResource[] = await sql`
         SELECT * FROM resource WHERE id = ${id}
     `;
-    if (results.length === 0) throw new NotFoundError('Resource not found');
+    if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }
 
@@ -29,7 +31,7 @@ export class PostgresResourceDatabase implements ResourceRepository {
         SET ${sql(resource)}
         WHERE id = ${id}
     `;
-    if (results.length === 0) throw new Error('Resource not updated');
+    if (isEmpty(results)) throw new Error('Resource not updated');
   }
 
   async deleteResource(id: string) {
@@ -37,6 +39,6 @@ export class PostgresResourceDatabase implements ResourceRepository {
         DELETE FROM resource
         WHERE id = ${id}
     `;
-    if (results.length === 0) throw new Error('Resource not deleted');
+    if (isEmpty(results)) throw new Error('Resource not deleted');
   }
 }

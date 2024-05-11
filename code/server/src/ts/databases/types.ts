@@ -6,7 +6,7 @@ import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspa
 /**
  * Document Repository - Interface for handling resources content management
  */
-export interface DocumentRepository {
+export interface DocumentsRepository {
   createDocument: (wid: string, id: string) => Promise<string>;
   getDocument: (wid: string, id: string) => Promise<DocumentContent>;
   deleteDocument: (wid: string, id: string) => Promise<void>;
@@ -16,7 +16,7 @@ export interface DocumentRepository {
 /**
  * Resource Repository - Interface for handling resources metadata management
  */
-export interface ResourceRepository {
+export interface ResourcesRepository {
   createResource: (wid: string, name: string, type: ResourceType, parent?: string) => Promise<string>;
   getResource: (id: string) => Promise<WorkspaceResource>;
   updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
@@ -26,11 +26,17 @@ export interface ResourceRepository {
 /**
  * Workspace Repository - Interface for handling workspace management
  */
-export interface WorkspaceRepository {
+export interface WorkspacesRepository {
   createWorkspace: (name: string) => Promise<string>;
   getWorkspaces: () => Promise<WorkspaceMetaData[]>;
   getWorkspace: (id: string) => Promise<WorkspaceMetaData>;
   updateWorkspace: (id: string, name: string) => Promise<void>;
   deleteWorkspace: (id: string) => Promise<void>;
   getWorkspaceResources: (id: string) => Promise<WorkspaceResource[]>;
+}
+
+export interface NoteSpaceDatabase {
+  readonly document: DocumentsRepository;
+  readonly resource: ResourcesRepository;
+  readonly workspace: WorkspacesRepository;
 }

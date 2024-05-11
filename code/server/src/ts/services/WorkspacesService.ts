@@ -1,11 +1,12 @@
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { Workspace, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
-import { WorkspaceRepository } from '@database/types';
+import { WorkspacesRepository } from '@databases/types';
 
-export class WorkspaceService {
-  private readonly database: WorkspaceRepository;
 
-  constructor(database: WorkspaceRepository) {
+export class WorkspacesService {
+  private readonly database: WorkspacesRepository;
+
+  constructor(database: WorkspacesRepository) {
     this.database = database;
   }
 

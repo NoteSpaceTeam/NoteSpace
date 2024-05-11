@@ -10,7 +10,7 @@ module.exports = {
       /*Controllers*/
       '@controllers/*': ['./src/ts/controllers/*'],
       /*Databases*/
-      '@database/*': ['./src/ts/database/*'],
+      '@databases/*': ['./src/ts/databases/*'],
       /*Others*/
       '@src/*': ['./src/ts/*'],
       '@domain/*': ['./src/ts/domain/*'],

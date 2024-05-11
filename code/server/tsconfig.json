@@ -15,7 +15,7 @@
       "@/*": ["./*"],
       "@src/*": ["./src/ts/*"],
       "@controllers/*": ["./src/ts/controllers/*"],
-      "@database/*": ["./src/ts/database/*"],
+      "@databases/*": ["./src/ts/databases/*"],
       "@domain/*": ["./src/ts/domain/*"],
       "@services/*": ["./src/ts/services/*"]
     }

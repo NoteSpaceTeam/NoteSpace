@@ -2,10 +2,10 @@ import { Socket } from 'socket.io';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
-import { DocumentService } from '@services/DocumentService';
+import { DocumentsService } from '@services/DocumentsService';
 import rooms from '@controllers/ws/rooms/rooms';
 
-function onOperation(service: DocumentService) {
+function onOperation(service: DocumentsService) {
   return async (socket: Socket, operations: Operation[]) => {
     if (!operations) throw new InvalidParameterError('Operations are required');
 
@@ -13,7 +13,7 @@ function onOperation(service: DocumentService) {
     if (!documentId) throw new ForbiddenError('Client socket not in a room');
 
     socket.broadcast.to(documentId).emit('operation', operations);
-    await service.addOperations('documents', documentId, operations);
+    await service.updateDocument('documents', documentId, operations);
     socket.emit('ack');
   };
 }

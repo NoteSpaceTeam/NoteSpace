@@ -68,7 +68,7 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     httpResponse.noContent(res).send();
   };
 
-  const router = PromiseRouter();
+  const router = PromiseRouter({mergeParams: true});
   router.post('/', createResource);
   router.get('/:id', getResource);
   router.put('/:id', updateResource);

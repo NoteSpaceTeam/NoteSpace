@@ -1,9 +1,9 @@
 import { NotFoundError } from '@domain/errors/errors';
 import { Operation } from '@notespace/shared/src/document/types/operations';
-import { DocumentRepository } from '@database/types';
+import { DocumentsRepository } from '@databases/types';
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 
-export class MemoryDocumentDatabase implements DocumentRepository {
+export class MemoryDocumentsDB implements DocumentsRepository {
   private readonly documents: Record<string, Record<string, DocumentContent>> = {};
 
   async createDocument(wid: string, id: string) {
