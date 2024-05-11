@@ -13,15 +13,15 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    * @param res
    */
   const createResource = async (req: Request, res: Response) => {
+    const { wid } = req.params;
     const resource = req.body as ResourceInputModel;
     if (!resource) throw new InvalidParameterError('Body is required');
-    const { workspace, type, name, parent } = resource;
-    if (!workspace) throw new InvalidParameterError('Workspace id is required');
+    const { type, name, parent } = resource;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!type) throw new InvalidParameterError('Resource type is required');
-    if (!name) throw new InvalidParameterError('Resource name is required');
     if (!parent) throw new InvalidParameterError('Resource parent is required');
-    const id = await service.createResource(workspace, name, type, parent);
-    io.of('/workspaces').in(workspace).emit('resources:create', { id, name, type, parent });
+    const id = await service.createResource(wid, name, type, parent);
+    io.of('/workspaces').in(wid).emit('resources:create', { id, name, type, parent });
     httpResponse.created(res).json({ id });
   };
 
@@ -45,6 +45,8 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    */
   const updateResource = async (req: Request, res: Response) => {
     const { wid, id } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!id) throw new InvalidParameterError('Resource id is required');
     const resource = req.body as Partial<WorkspaceResource>;
     if (!resource) throw new InvalidParameterError('Body is required');
     await service.updateResource(id, resource);
@@ -59,6 +61,8 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    */
   const deleteResource = async (req: Request, res: Response) => {
     const { wid, id } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!id) throw new InvalidParameterError('Resource id is required');
     await service.deleteResource(id);
     io.of('/workspaces').in(wid).emit('resources:delete', { id });
     httpResponse.noContent(res).send();

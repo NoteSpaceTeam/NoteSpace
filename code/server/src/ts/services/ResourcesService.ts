@@ -10,7 +10,7 @@ export class ResourcesService {
     this.documents = documents;
   }
 
-  async createResource(wid: string, name: string, type: ResourceType, parent: string): Promise<string> {
+  async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
     return await this.resources.createResource(wid, name, type, parent);
   }
 

@@ -4,8 +4,8 @@ import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
 import sql from '@database/postgres/config';
 
 export class PostgresResourceDatabase implements ResourceRepository {
-  async createResource(wid: string, name: string, type: ResourceType, parent: string): Promise<string> {
-    const resource = { workspace: wid, name, type, parent };
+  async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
+    const resource = { workspace: wid, name, type, parent: parent || 'IDKYET' };
     const results = await sql`
         INSERT INTO resource ${sql(resource)}
         RETURNING id

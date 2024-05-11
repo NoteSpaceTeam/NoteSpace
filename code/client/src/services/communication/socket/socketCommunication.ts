@@ -23,7 +23,6 @@ function emit(str: string, data: any) {
   const socket = namespaces[`/${namespace}`];
   if (!socket) throw new Error('Invalid namespace');
   socket.emit(event, data);
-  console.log(namespace, event, data);
 }
 
 function on(eventHandlers: SocketEventHandlers) {

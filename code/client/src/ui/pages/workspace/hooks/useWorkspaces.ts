@@ -20,7 +20,6 @@ function useWorkspaces() {
   }
 
   async function createWorkspace(values: { [key: string]: string }) {
-    console.log('Creating workspace', values);
     if (!values.name) throw new Error('Workspace name is required');
     // ... validate other fields
     const workspace = await http.post('/workspaces', values);

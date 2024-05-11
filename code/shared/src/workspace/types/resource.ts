@@ -11,10 +11,9 @@ export interface WorkspaceResource {
 }
 
 export interface ResourceInputModel {
-  workspace: string;
   name: string;
   type: ResourceType;
-  parent: string;
+  parent?: string;
 }
 
 export enum ResourceType {

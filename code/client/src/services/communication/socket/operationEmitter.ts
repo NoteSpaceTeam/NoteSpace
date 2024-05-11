@@ -30,7 +30,6 @@ export class OperationEmitter {
   }
 
   private emitOperations() {
-    console.log('operation');
     if (isEmpty(this.operationBuffer)) return;
     if (this.operationBuffer.length > this.chunkSize) {
       this.emitChunked();

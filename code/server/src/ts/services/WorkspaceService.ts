@@ -9,8 +9,8 @@ export class WorkspaceService {
     this.database = database;
   }
 
-  async createWorkspace(title: string): Promise<string> {
-    return await this.database.createWorkspace(title);
+  async createWorkspace(name: string): Promise<string> {
+    return await this.database.createWorkspace(name);
   }
 
   async getWorkspaces(): Promise<WorkspaceMetaData[]> {

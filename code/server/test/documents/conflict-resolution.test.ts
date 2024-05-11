@@ -1,18 +1,18 @@
 import * as http from 'http';
-import request = require('supertest');
 import { Server } from 'socket.io';
 import { setup } from '../server.test';
 import { applyOperations } from './utils';
-import { Express } from 'express';
 import { io, Socket } from 'socket.io-client';
-import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/src/document/types/operations';
+import { InsertOperation, DeleteOperation } from '@notespace/shared/src/document/types/operations';
 import { FugueTree } from '@notespace/shared/src/document/FugueTree';
+import { requests as requestOperations } from '../utils/requests';
+import { randomString } from '../utils';
 
 const PORT = process.env.PORT || 8080;
 const BASE_URL = `http://localhost:${PORT}/document`;
 let ioServer: Server;
 let httpServer: http.Server;
-let app: Express;
+let requests: ReturnType<typeof requestOperations>;
 let client1: Socket;
 let client2: Socket;
 let tree = new FugueTree<string>();
@@ -21,7 +21,7 @@ beforeAll(done => {
   const { _http, _io, _app } = setup();
   httpServer = _http;
   ioServer = _io;
-  app = _app;
+  requests = requestOperations(_app);
 
   // ioServer.on('connection', onConnectionHandler);
   httpServer.listen(PORT, () => {
@@ -47,6 +47,15 @@ beforeEach(() => {
 
 describe('Operations must be commutative', () => {
   test('insert operations should be commutative', async () => {
+    // setup document
+    const wid = await requests.workspace.createWorkspace(randomString());
+    const id = await requests.document.createDocument(wid);
+
+    // clients join the document
+    client1.emit('join', id);
+    client2.emit('join', id);
+
+    // create insert operations
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -61,14 +70,6 @@ describe('Operations must be commutative', () => {
       parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
-    // create a document
-    const createdResponse = await request(app).post('/documents');
-    expect(createdResponse.status).toBe(201);
-    const id = createdResponse.body.id;
-
-    // clients join the document
-    client1.emit('join', id);
-    client2.emit('join', id);
 
     // client 1 inserts 'a' and client 2 inserts 'b'
     client1.emit('operation', [insert1]);
@@ -77,12 +78,10 @@ describe('Operations must be commutative', () => {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     // get the document
-    const response = await request(app).get('/documents/' + id);
-    expect(response.status).toBe(200);
-    const operations = response.body.operations as Operation[];
+    const document = await requests.document.getDocument(wid, id);
 
     // apply the operations to the tree
-    applyOperations(tree, operations);
+    applyOperations(tree, document.content);
 
     expect(tree.toString()).toBe('ab');
   });
@@ -90,6 +89,15 @@ describe('Operations must be commutative', () => {
 
 describe('Operations must be idempotent', () => {
   test('delete operations should be idempotent', async () => {
+    // setup document
+    const wid = await requests.workspace.createWorkspace(randomString());
+    const id = await requests.document.createDocument(wid);
+
+    // clients join the document
+    client1.emit('join', id);
+    client2.emit('join', id);
+
+    // create insert operations
     const insert1: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
@@ -104,15 +112,6 @@ describe('Operations must be idempotent', () => {
       parent: { sender: 'root', counter: 0 },
       side: 'R',
     };
-
-    // create a document
-    const createdResponse = await request(app).post('/documents');
-    expect(createdResponse.status).toBe(201);
-    const id = createdResponse.body.id;
-
-    // clients join the document
-    client1.emit('join', id);
-    client2.emit('join', id);
 
     // both clients insert 'a'
     client1.emit('operation', [insert1]);
@@ -130,9 +129,8 @@ describe('Operations must be idempotent', () => {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    const response = await request(app).get('/documents/' + id);
-    const operations = response.body.operations as Operation[];
-    applyOperations(tree, operations);
+    const document = await requests.document.getDocument(wid, id);
+    applyOperations(tree, document.content);
     expect(tree.toString()).toBe('a');
   });
 });
