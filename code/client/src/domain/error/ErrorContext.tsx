@@ -5,11 +5,11 @@ import ErrorComponent from '@ui/components/error/Error';
 const ERROR_TIMEOUT = 5000;
 
 export type ErrorContextType = {
-  showError: (error: Error) => void;
+  publishError: (error: Error) => void;
 };
 
 export const ErrorContext = createContext<ErrorContextType>({
-  showError: () => {},
+  publishError: () => {},
 });
 
 export function ErrorProvider({ children }: { children: React.ReactNode }) {
@@ -21,7 +21,7 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
   }, [error]);
 
   return (
-    <ErrorContext.Provider value={{ showError: setError }}>
+    <ErrorContext.Provider value={{ publishError: setError }}>
       {error && <ErrorComponent error={error} />}
       {children}
     </ErrorContext.Provider>

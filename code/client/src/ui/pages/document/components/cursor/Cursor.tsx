@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { InlineStyle } from '@notespace/shared/document/types/styles';
+import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import './Cursor.scss';
 
 type CursorProps = {

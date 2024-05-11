@@ -17,10 +17,10 @@ export default function events(service: DocumentService): Record<string, Record<
       join: onJoinDocument(),
       leave: onLeaveDocument(),
     },
-    '/workspace': {
+    '/workspaces': {
       join: onJoinWorkspace(),
       leave: onLeaveWorkspace(),
     },
-    '/user': {},
+    '/users': {},
   };
 }

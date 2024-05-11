@@ -1,4 +1,4 @@
-import { BlockStyles, InlineStyles } from '@notespace/shared/document/types/styles';
+import { BlockStyles, InlineStyles } from '@notespace/shared/src/document/types/styles';
 import { blockRules, inlineRules } from '@domain/editor/slate/plugins/markdown/rules';
 
 export const shortcuts = [

@@ -1,5 +1,5 @@
-import { WorkspaceResource } from '@notespace/shared/workspace/types/resource';
-import { Workspace } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { Workspace, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
 import { WorkspaceRepository } from '@database/types';
 
 export class WorkspaceService {
@@ -13,8 +13,13 @@ export class WorkspaceService {
     return await this.database.createWorkspace(title);
   }
 
-  async getWorkspace(id: string): Promise<Workspace> {
+  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
+    return await this.database.getWorkspaces();
+  }
+
+  async getWorkspace(id: string, metaOnly: boolean): Promise<Workspace | WorkspaceMetaData> {
     const metadata = await this.database.getWorkspace(id);
+    if (metaOnly) return metadata;
     const resources = await this.getWorkspaceResources(id);
     return { ...metadata, resources };
   }

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CommunicationProvider } from '@/services/communication/context/CommunicationContext';
-import { communication } from '@/services/communication/communication';
 import Document from '@ui/pages/document/Document';
 import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';
@@ -9,22 +8,45 @@ import './App.scss';
 import { ErrorProvider } from '@domain/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
 import { WorkspaceProvider } from '@domain/workspace/WorkspaceContext';
+import Home from '@ui/pages/home/Home.tsx';
 
 function App() {
   return (
     <div className="app">
       <ErrorProvider>
-        <CommunicationProvider communication={communication}>
+        <CommunicationProvider>
           <Router>
-            <Sidebar />
+            <Header />
             <div className="content">
-              <Header />
               <Routes>
-                <WorkspaceProvider>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/workspaces/:wid" element={<Workspace />} />
-                  <Route path="/workspaces/:wid/:id" element={<Document />} />
-                </WorkspaceProvider>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/workspaces/:wid/*"
+                  element={
+                    <WorkspaceProvider>
+                      <Routes>
+                        <Route
+                          path="/"
+                          element={
+                            <>
+                              <Sidebar />
+                              <Workspace />
+                            </>
+                          }
+                        />
+                        <Route
+                          path="/:id"
+                          element={
+                            <>
+                              <Sidebar />
+                              <Document />
+                            </>
+                          }
+                        />
+                      </Routes>
+                    </WorkspaceProvider>
+                  }
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

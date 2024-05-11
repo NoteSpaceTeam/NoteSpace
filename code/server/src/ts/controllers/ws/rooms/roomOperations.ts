@@ -1,23 +1,21 @@
 import { Socket } from 'socket.io';
 import Room from '@controllers/ws/rooms/Room';
 
-export type RoomOperations = Map<string, Room>;
-
-export function joinRoom(rooms: RoomOperations, socket: Socket, roomId: string) {
-  socket.join(roomId);
-  const room = rooms.get(roomId) || new Room(roomId);
+export function joinRoom(rooms: Map<string, Room>, socket: Socket, id: string) {
+  socket.join(id);
+  const room = rooms.get(id) || new Room(id);
   room.join(socket.id);
-  rooms.set(roomId, room);
+  rooms.set(id, room);
 }
 
-export function leaveRoom(rooms: RoomOperations, socket: Socket) {
+export function leaveRoom(rooms: Map<string, Room>, socket: Socket) {
   const room = getRoom(rooms, socket);
   if (!room) return;
   socket.leave(room.id);
   room.leave(socket.id);
 }
 
-export function getRoom(rooms: RoomOperations, socket: Socket): Room | null {
+export function getRoom(rooms: Map<string, Room>, socket: Socket): Room | null {
   for (const room of rooms.values()) {
     if (room.has(socket.id)) return room;
   }

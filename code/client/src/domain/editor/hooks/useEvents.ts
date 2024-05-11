@@ -1,5 +1,5 @@
 import useSocketListeners from '@/services/communication/socket/useSocketListeners';
-import { type Operation } from '@notespace/shared/document/types/operations';
+import { type Operation } from '@notespace/shared/src/document/types/operations.ts';
 import { Communication } from '@/services/communication/communication';
 import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
 
@@ -11,7 +11,6 @@ import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
  */
 function useEvents(fugueOperations: FugueDomainOperations, { socket }: Communication, onDone: () => void) {
   function onOperation(operations: Operation[]) {
-    console.log('operation', operations);
     fugueOperations.applyOperations(operations);
     onDone();
   }

@@ -15,12 +15,16 @@ function leaveDocument(socket: Socket) {
   leaveRoom(documentRooms, socket);
 }
 
-function getDocumentInfo(socket: Socket) {
+function getDocument(socket: Socket) {
   const room = getRoom(documentRooms, socket);
   if (!room) throw new InvalidParameterError('User not in document');
-  const workspaceInfo = getWorkspaceInfo(socket);
+  const workspaceInfo = getWorkspace(socket);
   if (!workspaceInfo) throw new InvalidParameterError('User not in workspace');
   return { id: room.id, workspaceId: workspaceInfo.id };
+}
+
+function getDocumentRoom(id: string) {
+  return documentRooms.get(id);
 }
 
 function joinWorkspace(socket: Socket, workspaceId: string) {
@@ -31,21 +35,27 @@ function leaveWorkspace(socket: Socket) {
   leaveRoom(workspaceRooms, socket);
 }
 
-function getWorkspaceInfo(socket: Socket) {
+function getWorkspace(socket: Socket) {
   const room = getRoom(workspaceRooms, socket);
   if (!room) throw new InvalidParameterError('User not in workspace');
   return { id: room.id };
+}
+
+function getWorkspaceRoom(id: string) {
+  return workspaceRooms.get(id);
 }
 
 export default {
   document: {
     join: joinDocument,
     leave: leaveDocument,
-    get: getDocumentInfo,
+    get: getDocument,
+    getRoom: getDocumentRoom,
   },
   workspace: {
     join: joinWorkspace,
     leave: leaveWorkspace,
-    get: getWorkspaceInfo,
+    get: getWorkspace,
+    getRoom: getWorkspaceRoom,
   },
 };

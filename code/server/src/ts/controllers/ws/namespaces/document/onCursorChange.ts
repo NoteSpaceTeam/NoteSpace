@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { InlineStyle } from '@notespace/shared/document/types/styles';
+import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import rooms from '@controllers/ws/rooms/rooms';
 
 type CursorData = {

@@ -1,4 +1,4 @@
-import { ResourceType, WorkspaceResource } from '@notespace/shared/workspace/types/resource';
+import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourceRepository } from '@database/types';
 import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
 import sql from '@database/postgres/config';
@@ -22,12 +22,12 @@ export class PostgresResourceDatabase implements ResourceRepository {
     return results[0];
   }
 
-  async updateResource(resource: Partial<WorkspaceResource>): Promise<void> {
+  async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
     if (!resource.id) throw new InvalidParameterError('Resource id not provided');
     const results = await sql`
         UPDATE resource
         SET ${sql(resource)}
-        WHERE id = ${resource.id}
+        WHERE id = ${id}
     `;
     if (results.length === 0) throw new Error('Resource not updated');
   }

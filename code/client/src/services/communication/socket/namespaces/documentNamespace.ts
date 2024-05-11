@@ -1,12 +1,13 @@
 import { Socket } from 'socket.io-client';
 import { OperationEmitter } from '@/services/communication/socket/operationEmitter.ts';
-import { namespace } from '@/services/communication/socket/namespaces/namespaces.ts';
+import { namespace } from '@/services/communication/socket/namespaces/utils.ts';
 
 const socket = namespace('/document');
 const originalEmit = socket.emit;
 const OPERATION_DELAY = 100;
 const operationEmitter = new OperationEmitter(socket, OPERATION_DELAY);
 
+// TODO:
 // this is wrong, fix later
 socket.emit = function (event: string, ...data: any[]): Socket {
   switch (event) {

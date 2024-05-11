@@ -1,4 +1,4 @@
-import { Cursor, Selection } from '@notespace/shared/document/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
 import {
   BaseInsertTextOperation,
   BaseRemoveTextOperation,

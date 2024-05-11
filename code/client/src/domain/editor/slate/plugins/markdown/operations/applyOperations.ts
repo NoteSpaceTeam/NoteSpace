@@ -1,6 +1,6 @@
 import { type Editor, Element, Range, Text, Transforms } from 'slate';
 import { getSelectionByRange } from '@domain/editor/slate/utils/selection';
-import { BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { ApplyBlockStyle, ApplyInlineStyle } from '@domain/editor/operations/markdown/types';
 
 /**

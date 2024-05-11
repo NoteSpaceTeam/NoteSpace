@@ -1,4 +1,4 @@
 FROM ubuntu:latest
-LABEL authors="primu"
+LABEL authors="notespace-team"
 
 ENTRYPOINT ["top", "-b"]

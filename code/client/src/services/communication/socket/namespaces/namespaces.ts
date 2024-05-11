@@ -1,11 +1,6 @@
-import { io, Socket } from 'socket.io-client';
-import config from '@/config.ts';
+import { Socket } from 'socket.io-client';
 import documentNamespace from '@/services/communication/socket/namespaces/documentNamespace.ts';
-
-export function namespace(namespace: string) {
-  const OPTIONS = { autoConnect: true };
-  return io(config.SOCKET_SERVER_URL + namespace, OPTIONS);
-}
+import { namespace } from '@/services/communication/socket/namespaces/utils.ts';
 
 export default {
   '/document': documentNamespace,

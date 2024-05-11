@@ -1,5 +1,5 @@
 import { HttpCommunication } from '@/services/communication/http/httpCommunication';
-import { DocumentResource } from '@notespace/shared/workspace/types/resource';
+import { DocumentResource } from '@notespace/shared/src/workspace/types/resource.ts';
 
 async function getDocument(http: HttpCommunication, id: string): Promise<DocumentResource> {
   return await http.get(`/documents/${id}`);

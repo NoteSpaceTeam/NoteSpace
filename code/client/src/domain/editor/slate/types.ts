@@ -1,7 +1,7 @@
 import { type BaseEditor, Descendant } from 'slate';
 import { type ReactEditor } from 'slate-react';
 import { type HistoryEditor } from 'slate-history';
-import { type BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
+import { type BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { CursorData } from '@/domain/editor/slate/hooks/useCursors';
 
 export interface CustomFormat {

@@ -67,6 +67,7 @@ export const WorkspaceResourceFactory = (workspace: string) => ({
     name: name || "",
     parent: parent || "",
     children: [],
+    content: [],
   }),
   Folder: (id: string, name: string, parent?: string): FolderResource => ({
     type: ResourceType.FOLDER,

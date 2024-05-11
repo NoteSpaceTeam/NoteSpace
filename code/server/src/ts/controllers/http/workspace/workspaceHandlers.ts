@@ -2,10 +2,11 @@ import PromiseRouter from 'express-promise-router';
 import resourcesHandlers from '@controllers/http/workspace/resourcesHandlers';
 import { httpResponse } from '@controllers/http/httpResponse';
 import { Request, Response } from 'express';
-import { WorkspaceMetaData } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
 import { Services } from '@services/Services';
+import { Server } from 'socket.io';
 
-function workspaceHandlers(services: Services) {
+function workspaceHandlers(services: Services, io: Server) {
   /**
    * Create a new workspace
    * @param req
@@ -18,12 +19,23 @@ function workspaceHandlers(services: Services) {
   };
 
   /**
+   * Get all workspaces
+   * @param req
+   * @param res
+   */
+  const getWorkspaces = async (req: Request, res: Response) => {
+    const workspaces = await services.workspace.getWorkspaces();
+    httpResponse.ok(res).json(workspaces);
+  };
+
+  /**
    * Get a workspace by its id
    * @param req
    * @param res
    */
   const getWorkspace = async (req: Request, res: Response) => {
-    const workspace = await services.workspace.getWorkspace(req.params.wid);
+    const { metaOnly } = req.query;
+    const workspace = await services.workspace.getWorkspace(req.params.wid, metaOnly === 'true');
     httpResponse.ok(res).json(workspace);
   };
 
@@ -35,6 +47,7 @@ function workspaceHandlers(services: Services) {
   const updateWorkspace = async (req: Request, res: Response) => {
     const { id, name } = req.body as WorkspaceMetaData;
     await services.workspace.updateWorkspace(id, name);
+    io.of('/workspaces').in(id).emit('workspaces:update', { id, name });
     httpResponse.noContent(res).send();
   };
 
@@ -44,18 +57,21 @@ function workspaceHandlers(services: Services) {
    * @param res
    */
   const deleteWorkspace = async (req: Request, res: Response) => {
-    await services.workspace.deleteWorkspace(req.params.wid);
+    const { wid } = req.params;
+    await services.workspace.deleteWorkspace(wid);
+    io.of('/workspaces').in(wid).emit('workspaces:delete', { id: wid });
     httpResponse.noContent(res).send();
   };
 
   const router = PromiseRouter();
   router.post('/', createWorkspace);
+  router.get('/', getWorkspaces);
   router.get('/:wid', getWorkspace);
   router.put('/:wid', updateWorkspace);
   router.delete('/:wid', deleteWorkspace);
 
   // sub-routes for resources (documents and folders)
-  router.use('/:wid', resourcesHandlers(services.resources));
+  router.use('/:wid', resourcesHandlers(services.resources, io));
   return router;
 }
 

@@ -4,10 +4,9 @@ import { communication, Communication } from '@/services/communication/communica
 export const CommunicationContext = createContext<Communication>(communication);
 
 type CommunicationProviderProps = {
-  communication: Communication;
   children: ReactElement;
 };
 
-export function CommunicationProvider({ communication, children }: CommunicationProviderProps) {
+export function CommunicationProvider({ children }: CommunicationProviderProps) {
   return <CommunicationContext.Provider value={communication}>{children}</CommunicationContext.Provider>;
 }

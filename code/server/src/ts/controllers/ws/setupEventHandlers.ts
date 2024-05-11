@@ -15,8 +15,8 @@ export function setupEventHandlers(io: Server, events: SocketNamespaces) {
         });
         if (namespace === '/document') {
           socket.on('disconnect', reason => {
-            const { cursor } = events['/document'];
-            cursor(socket, null); // remove cursor
+            // const { cursor } = events['/document'];
+            // cursor(socket, null); // remove cursor
             console.log('disconnected from document', reason);
           });
         }

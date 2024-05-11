@@ -5,12 +5,12 @@ import {
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
-} from '@notespace/shared/document/types/operations';
+} from '@notespace/shared/src/document/types/operations.ts';
 import getFugueOperations from '@domain/editor/operations/fugue/operations';
 import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
-import { Document } from '@notespace/shared/workspace/types/document.d.ts';
-import { Node, RootNode } from '@notespace/shared/document/types/nodes';
-import { rootNode, treeNode } from '@notespace/shared/document/utils';
+import { Document } from '@notespace/shared/src/workspace/types/document.ts';
+import { Node, RootNode } from '@notespace/shared/src/document/types/nodes.ts';
+import { rootNode, treeNode } from '@notespace/shared/src/document/utils';
 
 describe('Fugue Operations', () => {
   let fugue: Fugue;

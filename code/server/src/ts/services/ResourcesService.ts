@@ -1,4 +1,4 @@
-import { DocumentResource, ResourceType, WorkspaceResource } from '@notespace/shared/workspace/types/resource';
+import { DocumentResource, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { DocumentRepository, ResourceRepository } from '@database/types';
 
 export class ResourcesService {
@@ -24,8 +24,8 @@ export class ResourcesService {
     } as DocumentResource;
   }
 
-  async updateResource(resource: Partial<WorkspaceResource>): Promise<void> {
-    await this.resources.updateResource(resource);
+  async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
+    await this.resources.updateResource(id, resource);
   }
 
   async deleteResource(id: string): Promise<void> {

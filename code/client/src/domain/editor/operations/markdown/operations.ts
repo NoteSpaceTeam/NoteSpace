@@ -1,11 +1,11 @@
 import { Fugue } from '@domain/editor/crdt/fugue';
-import { BlockStyle, InlineStyle } from '@notespace/shared/document/types/styles';
+import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { FugueNode } from '@domain/editor/crdt/types';
-import { Selection } from '@notespace/shared/document/types/cursor';
+import { Selection } from '@notespace/shared/src/document/types/cursor';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { deleteAroundSelection } from '@domain/editor/operations/markdown/utils';
 import { Communication } from '@/services/communication/communication';
-import { Operation } from '@notespace/shared/document/types/operations';
+import { Operation } from '@notespace/shared/src/document/types/operations.ts';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 
 /**

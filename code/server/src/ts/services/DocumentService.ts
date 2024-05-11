@@ -1,4 +1,4 @@
-import { Operation } from '@notespace/shared/document/types/operations';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 import { DocumentRepository } from '@database/types';
 
 export class DocumentService {

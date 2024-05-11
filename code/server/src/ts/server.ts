@@ -19,11 +19,11 @@ const databases = new Databases(docDB);
 const docService = new DocumentService(docDB);
 const services = new Services(databases);
 
-// server
-const api = router(services);
+// server and controllers
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
+const api = router(services, io);
 
 app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());

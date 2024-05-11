@@ -1,24 +1,27 @@
 import * as http from 'http';
-import { io, Socket } from 'socket.io-client';
-import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/document/types/operations';
-import { FugueTree } from '../../../shared/document/FugueTree';
 import request = require('supertest');
 import { Server } from 'socket.io';
-import { app, setup } from '../server.test';
+import { setup } from '../server.test';
 import { applyOperations } from './utils';
+import { Express } from 'express';
+import { io, Socket } from 'socket.io-client';
+import { InsertOperation, DeleteOperation, Operation } from '@notespace/shared/src/document/types/operations';
+import { FugueTree } from '@notespace/shared/src/document/FugueTree';
 
 const PORT = process.env.PORT || 8080;
 const BASE_URL = `http://localhost:${PORT}/document`;
 let ioServer: Server;
 let httpServer: http.Server;
+let app: Express;
 let client1: Socket;
 let client2: Socket;
 let tree = new FugueTree<string>();
 
 beforeAll(done => {
-  httpServer = http.createServer(app);
-  ioServer = new Server(httpServer);
-  setup(ioServer);
+  const { _http, _io, _app } = setup();
+  httpServer = _http;
+  ioServer = _io;
+  app = _app;
 
   // ioServer.on('connection', onConnectionHandler);
   httpServer.listen(PORT, () => {

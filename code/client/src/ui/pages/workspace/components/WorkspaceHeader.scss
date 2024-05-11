@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 30%;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+
+  > * {
+    padding: 0 2vh 0 2vh;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh;
+    margin: 0 2vh 0 2vh;
+    transition: color 0.2s;
+  }
+
+  button:hover {
+    color: lightgray;
+  }
+}

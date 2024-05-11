@@ -4,8 +4,8 @@ import {
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
-} from '@notespace/shared/document/types/operations';
-import { Selection, Cursor } from '@notespace/shared/document/types/cursor';
+} from '@notespace/shared/src/document/types/operations.ts';
+import { Selection, Cursor } from '@notespace/shared/src/document/types/cursor';
 import { describe, test, expect, beforeEach } from 'vitest';
 import { FugueNode } from '@domain/editor/crdt/types';
 

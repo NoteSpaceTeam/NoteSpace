@@ -6,7 +6,7 @@ import { getSelection } from '@domain/editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { RuleType } from '@domain/editor/slate/plugins/markdown/rules';
-import { BlockStyle } from '@notespace/shared/document/types/styles';
+import { BlockStyle } from '@notespace/shared/src/document/types/styles';
 
 type InlineFunction = (n: Element) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;

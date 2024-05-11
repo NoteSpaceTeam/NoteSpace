@@ -1,17 +1,24 @@
-import { FaPlus } from 'react-icons/fa';
 import { MdOutlineNotes } from 'react-icons/md';
+import './WorkspaceHeader.scss';
+import { ReactNode } from 'react';
+import { FaPlus } from 'react-icons/fa';
 
 type WorkspaceHeaderProps = {
-  onCreateDocument: () => Promise<void>;
+  onCreateNew?: () => Promise<void>;
+  children?: ReactNode;
 };
 
-function WorkspaceHeader({ onCreateDocument }: WorkspaceHeaderProps) {
+function WorkspaceHeader({ onCreateNew, children }: WorkspaceHeaderProps) {
   return (
     <div className="header">
       <MdOutlineNotes />
-      <button onClick={onCreateDocument}>
-        <p>New</p>
-        <FaPlus />
+      <button onClick={onCreateNew}>
+        {children || (
+          <>
+            <p>New</p>
+            <FaPlus />
+          </>
+        )}
       </button>
     </div>
   );

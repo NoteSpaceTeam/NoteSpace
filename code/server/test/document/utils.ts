@@ -1,5 +1,5 @@
-import { Operation } from '@notespace/shared/document/types/operations';
-import { FugueTree } from '../../../shared/document/FugueTree';
+import { Operation } from '@notespace/shared/src/document/types/operations';
+import { FugueTree } from '@notespace/shared/src/document/FugueTree';
 
 /**
  * Applies the given operations to the tree

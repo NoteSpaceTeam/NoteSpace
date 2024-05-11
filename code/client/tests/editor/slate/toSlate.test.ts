@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/crdt/fugue';
-import { Cursor, Selection } from '@notespace/shared/document/types/cursor';
+import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
 import { Descendant } from 'slate';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 

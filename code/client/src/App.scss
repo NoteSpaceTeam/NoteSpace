@@ -16,24 +16,39 @@
   height: 100vh;
   color: black;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   overflow: clip;
 
   .content {
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: start;
-    align-items: center;
+    align-items: start;
     overflow-y: auto;
 
-    > :last-child {
+    > div {
       width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
     }
   }
+}
+
+.button > * {
+  text-transform: capitalize;
+  color: white;
+  transition: color 0.3s;
+}
+
+.button:hover > * {
+  color: lightgray;
 }
 
 ::-webkit-scrollbar {

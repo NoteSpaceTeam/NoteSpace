@@ -13,7 +13,7 @@ function Document() {
   const services = useDocumentServices(communication.http);
   const { http, socket } = communication;
   const fugue = useFugue();
-  const { showError } = useError();
+  const { publishError } = useError();
   const { id } = useParams();
   const [title, setTitle] = useState('');
   const [loaded, setLoaded] = useState(false);
@@ -21,9 +21,9 @@ function Document() {
   const navigate = useNavigate();
 
   // useEffect(() => {
-  //   socket.connect('/document');
+  //   socket.connect('/documents');
   //   return () => {
-  //     socket.disconnect('/document');
+  //     socket.disconnect('/documents');
   //   };
   // }, [socket]);
 
@@ -38,13 +38,13 @@ function Document() {
       socket.emit('document:join', id);
     }
     fetchDocument().catch(e => {
-      showError(e);
+      publishError(e);
       navigate('/');
     });
     return () => {
       socket.emit('document:leave');
     };
-  }, [fugue, id, http, socket, showError, services, setFilePath, navigate, title]);
+  }, [fugue, id, http, socket, publishError, services, setFilePath, navigate, title]);
 
   return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
 }

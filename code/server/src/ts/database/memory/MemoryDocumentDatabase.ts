@@ -1,7 +1,7 @@
 import { NotFoundError } from '@domain/errors/errors';
-import { Operation } from '@notespace/shared/document/types/operations';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 import { DocumentRepository } from '@database/types';
-import { DocumentContent } from '@notespace/shared/workspace/types/document';
+import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 
 export class MemoryDocumentDatabase implements DocumentRepository {
   private readonly documents: Record<string, Record<string, DocumentContent>> = {};

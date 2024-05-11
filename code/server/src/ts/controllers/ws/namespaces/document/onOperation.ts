@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Operation } from '@notespace/shared/document/types/operations';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 import { DocumentService } from '@services/DocumentService';

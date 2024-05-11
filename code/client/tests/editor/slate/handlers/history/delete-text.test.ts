@@ -19,7 +19,7 @@ import {
   UnsetNodeOperation,
 } from '@domain/editor/operations/history/types';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
-import { BlockStyles } from '@notespace/shared/document/types/styles';
+import { BlockStyles } from '@notespace/shared/src/document/types/styles';
 
 let editor: Editor;
 let fugue: Fugue;

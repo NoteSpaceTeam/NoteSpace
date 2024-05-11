@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Communication } from '@/services/communication/communication.ts';
-import { DocumentResourceMetadata } from '@notespace/shared/workspace/types/resource.ts';
+import { DocumentResourceMetadata } from '@notespace/shared/src/workspace/types/resource.ts';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
 import useWorkspace from '@domain/workspace/useWorkspace.ts';
-import { ResourceType } from '@notespace/shared/workspace/types/resource.ts';
+import { ResourceType } from '@notespace/shared/src/workspace/types/resource.ts';
+import { useCommunication } from '@/services/communication/context/useCommunication.ts';
 
-export function useDocuments({ http, socket }: Communication) {
+export function useDocuments() {
+  const { http, socket } = useCommunication();
   const { resources } = useWorkspace();
   const [documents, setDocuments] = useState<DocumentResourceMetadata[]>(
     resources.filter(res => res.type === ResourceType.DOCUMENT) as DocumentResourceMetadata[]
@@ -40,9 +41,9 @@ export function useDocuments({ http, socket }: Communication) {
   }
 
   useSocketListeners(socket, {
-    'document:create': onCreateDocument,
-    'document:delete': onDeleteDocument,
-    'document:update': onUpdateDocument,
+    'document:created': onCreateDocument,
+    'document:deleted': onDeleteDocument,
+    'document:updated': onUpdateDocument,
   });
 
   return {

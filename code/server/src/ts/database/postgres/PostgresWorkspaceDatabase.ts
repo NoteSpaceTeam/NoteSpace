@@ -1,5 +1,5 @@
-import { WorkspaceResource } from '@notespace/shared/workspace/types/resource';
-import { WorkspaceMetaData } from '@notespace/shared/workspace/types/workspace';
+import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
 import { NotFoundError } from '@domain/errors/errors';
 import sql from '@database/postgres/config';
 import { WorkspaceRepository } from '@database/types';
@@ -13,6 +13,10 @@ export class PostgresWorkspaceDatabase implements WorkspaceRepository {
     `;
     if (results.length === 0) throw new Error('Workspace not created');
     return results[0].id;
+  }
+
+  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
+    return sql`SELECT * FROM workspace`;
   }
 
   async getWorkspace(id: string): Promise<WorkspaceMetaData> {
