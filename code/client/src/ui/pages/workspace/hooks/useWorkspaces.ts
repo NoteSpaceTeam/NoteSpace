@@ -45,9 +45,9 @@ function useWorkspaces() {
   }
 
   useSocketListeners(socket, {
-    'workspace:created': onCreateWorkspace,
-    'workspace:deleted': onDeleteWorkspace,
-    'workspace:updated': onUpdateWorkspace,
+    workspaceCreated: onCreateWorkspace,
+    workspaceDeleted: onDeleteWorkspace,
+    workspaceUpdated: onUpdateWorkspace,
   });
 
   return {

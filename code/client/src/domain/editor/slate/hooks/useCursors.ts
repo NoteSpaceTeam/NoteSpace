@@ -23,7 +23,7 @@ export function useCursors({ socket }: Communication) {
   };
 
   useSocketListeners(socket, {
-    'document:cursor': onCursorChange,
+    cursorChange: onCursorChange,
   });
 
   return { cursors };

@@ -35,14 +35,14 @@ function Document() {
       setTitle(name);
       setLoaded(true);
       setFilePath(`/documents/${title || 'Untitled'}`);
-      socket.emit('document:join', id);
+      socket.emit('joinDocument', id);
     }
     fetchDocument().catch(e => {
       publishError(e);
       navigate('/');
     });
     return () => {
-      socket.emit('document:leave');
+      socket.emit('leaveDocument');
     };
   }, [fugue, id, http, socket, publishError, services, setFilePath, navigate, title]);
 

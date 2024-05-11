@@ -5,7 +5,7 @@ import sql from '@databases/resources/postgres/config';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
 
-export class PSQLWorkspacesDB implements WorkspacesRepository {
+export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string): Promise<string> {
     const results = await sql`
         INSERT INTO workspace (name) 

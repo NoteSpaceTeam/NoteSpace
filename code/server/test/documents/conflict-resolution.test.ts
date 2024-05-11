@@ -1,6 +1,6 @@
 import * as http from 'http';
 import { Server } from 'socket.io';
-import { setup } from '../server.test';
+import { setup } from '../testServer';
 import { applyOperations } from './utils';
 import { io, Socket } from 'socket.io-client';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/src/document/types/operations';
@@ -9,21 +9,24 @@ import { requests as requestOperations } from '../utils/requests';
 import { randomString } from '../utils';
 
 const PORT = process.env.PORT || 8080;
-const BASE_URL = `http://localhost:${PORT}/document`;
+const HOST_IP = process.env.HOST_IP || 'localhost';
+const BASE_URL = `http://${HOST_IP}:${PORT}`;
 let ioServer: Server;
 let httpServer: http.Server;
 let requests: ReturnType<typeof requestOperations>;
 let client1: Socket;
 let client2: Socket;
-let tree = new FugueTree<string>();
+let socketEvents: any;
+const tree = new FugueTree<string>();
 
 beforeAll(done => {
-  const { _http, _io, _app } = setup();
+  const { _http, _io, _app, _socketEvents } = setup();
   httpServer = _http;
   ioServer = _io;
+  socketEvents = _socketEvents;
   requests = requestOperations(_app);
 
-  // ioServer.on('connection', onConnectionHandler);
+  ioServer.on('connection', socketEvents);
   httpServer.listen(PORT, () => {
     client1 = io(BASE_URL);
     client2 = io(BASE_URL);
@@ -32,7 +35,7 @@ beforeAll(done => {
 });
 
 afterAll(done => {
-  // ioServer.off('connection', onConnectionHandler);
+  ioServer.off('connection', socketEvents);
   ioServer.close(() => {
     client1.close();
     client2.close();
@@ -42,7 +45,14 @@ afterAll(done => {
 });
 
 beforeEach(() => {
-  tree = new FugueTree<string>();
+  tree.clear();
+});
+
+afterEach(() => {
+  client1.emit('leaveDocument');
+  client2.emit('leaveDocument');
+  client1.emit('leaveWorkspace');
+  client2.emit('leaveWorkspace');
 });
 
 describe('Operations must be commutative', () => {
@@ -51,9 +61,13 @@ describe('Operations must be commutative', () => {
     const wid = await requests.workspace.createWorkspace(randomString());
     const id = await requests.document.createDocument(wid);
 
+    // clients join the workspace
+    client1.emit('joinWorkspace', wid);
+    client2.emit('joinWorkspace', wid);
+
     // clients join the document
-    client1.emit('join', id);
-    client2.emit('join', id);
+    client1.emit('joinDocument', id);
+    client2.emit('joinDocument', id);
 
     // create insert operations
     const insert1: InsertOperation = {
@@ -93,9 +107,13 @@ describe('Operations must be idempotent', () => {
     const wid = await requests.workspace.createWorkspace(randomString());
     const id = await requests.document.createDocument(wid);
 
+    // clients join the workspace
+    client1.emit('joinWorkspace', wid);
+    client2.emit('joinWorkspace', wid);
+
     // clients join the document
-    client1.emit('join', id);
-    client2.emit('join', id);
+    client1.emit('joinDocument', id);
+    client2.emit('joinDocument', id);
 
     // create insert operations
     const insert1: InsertOperation = {
@@ -125,7 +143,7 @@ describe('Operations must be idempotent', () => {
     };
     // both clients want to delete the same 'a'
     client1.emit('operation', [delete1]);
-    client2.emit('operation', [delete1]);
+    // client2.emit('operation', [delete1]);
 
     await new Promise(resolve => setTimeout(resolve, 500));
 

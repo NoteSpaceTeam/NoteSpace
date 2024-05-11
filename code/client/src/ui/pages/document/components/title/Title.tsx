@@ -40,7 +40,7 @@ function Title(props: TitleProps) {
   }
 
   useSocketListeners(socket, {
-    'document:title': setTitle,
+    documentUpdated: setTitle, // TODO: fix later
   });
 
   return (

@@ -11,13 +11,15 @@ export class ResourcesService {
   }
 
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
-    return await this.resources.createResource(wid, name, type, parent);
+    const id = await this.resources.createResource(wid, name, type, parent);
+    if (type === ResourceType.DOCUMENT) await this.documents.createDocument(wid, id);
+    return id;
   }
 
-  async getResource(wid: string, rid: string, metaOnly: boolean): Promise<WorkspaceResource> {
-    const resource = await this.resources.getResource(rid);
+  async getResource(wid: string, id: string, metaOnly: boolean): Promise<WorkspaceResource> {
+    const resource = await this.resources.getResource(id);
     if (resource.type === ResourceType.FOLDER || metaOnly) return resource;
-    const { operations } = await this.documents.getDocument(wid, rid);
+    const { operations } = await this.documents.getDocument(wid, id);
     return {
       ...resource,
       content: operations,
@@ -29,6 +31,8 @@ export class ResourcesService {
   }
 
   async deleteResource(id: string): Promise<void> {
+    const { type, workspace } = await this.resources.getResource(id);
     await this.resources.deleteResource(id);
+    if (type === ResourceType.DOCUMENT) await this.documents.deleteDocument(workspace, id);
   }
 }

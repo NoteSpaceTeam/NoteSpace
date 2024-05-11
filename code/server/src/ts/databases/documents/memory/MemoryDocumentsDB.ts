@@ -4,10 +4,10 @@ import { DocumentsRepository } from '@databases/types';
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 
 export class MemoryDocumentsDB implements DocumentsRepository {
-  private readonly documents: Record<string, Record<string, DocumentContent>> = {};
+  private readonly workspaces: Record<string, Record<string, DocumentContent>> = {};
 
   async createDocument(wid: string, id: string) {
-    this.documents[wid][id] = { operations: [] };
+    this.workspaces[wid][id] = { operations: [] };
     return id;
   }
 
@@ -17,19 +17,27 @@ export class MemoryDocumentsDB implements DocumentsRepository {
 
   async deleteDocument(wid: string, id: string) {
     this.getDoc(wid, id);
-    delete this.documents[id];
+    delete this.workspaces[id];
   }
 
   async updateDocument(wid: string, id: string, operations: Operation[]) {
     const document = this.getDoc(wid, id);
-    this.documents[wid][id].operations = [...document.operations, ...operations];
+    this.workspaces[wid][id].operations = [...document.operations, ...operations];
   }
 
   private getDoc(wid: string, id: string) {
-    const workspace = this.documents[wid];
+    const workspace = this.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace with id ${wid} not found`);
     const document = workspace[id];
     if (!document) throw new NotFoundError(`Document with id ${id} not found`);
     return document;
+  }
+
+  async addWorkspace(wid: string) {
+    this.workspaces[wid] = {};
+  }
+
+  async removeWorkspace(wid: string) {
+    delete this.workspaces[wid];
   }
 }

@@ -4,8 +4,7 @@ import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
 import sql from '@databases/resources/postgres/config';
 import { isEmpty } from 'lodash';
 
-export class PSQLResourcesDB implements ResourcesRepository {
-
+export class PostgresResourcesDB implements ResourcesRepository {
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
     const resource = { workspace: wid, name, type, parent: parent };
     const results = await sql`

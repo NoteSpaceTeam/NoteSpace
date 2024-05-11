@@ -16,7 +16,7 @@ function useEvents(fugueOperations: FugueDomainOperations, { socket }: Communica
   }
 
   useSocketListeners(socket, {
-    'document:operation': onOperation,
+    operation: onOperation,
   });
 }
 

@@ -1,13 +1,11 @@
-import namespaces from '@/services/communication/socket/namespaces/namespaces.ts';
 import { io } from 'socket.io-client';
 import config from '@/config.ts';
+import { OperationEmitter } from '@/services/communication/socket/operationEmitter.ts';
 
 type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;
 type ConnectionType = (namespace: string) => void;
 export type SocketEventHandlers = Record<string, (...args: any[]) => void>;
-
-io(config.SOCKET_SERVER_URL);
 
 export interface SocketCommunication {
   emit: EmitType;
@@ -17,43 +15,41 @@ export interface SocketCommunication {
   disconnect: ConnectionType;
 }
 
-function emit(str: string, data: any) {
-  const [namespace, event] = str.split(':');
-  if (!namespace || !event) throw new Error('Invalid event format');
-  const socket = namespaces[`/${namespace}`];
-  if (!socket) throw new Error('Invalid namespace');
-  socket.emit(event, data);
+const socket = io(config.SOCKET_SERVER_URL);
+const OPERATION_DELAY = 100;
+const operationEmitter = new OperationEmitter(socket, OPERATION_DELAY);
+
+function emit(event: string, data: any) {
+  switch (event) {
+    case 'operation':
+      operationEmitter.addOperation(...data);
+      break;
+    case 'cursor':
+      setTimeout(() => socket.emit(event, data), OPERATION_DELAY);
+      break;
+    default:
+      socket.emit(event, ...data);
+      break;
+  }
 }
 
 function on(eventHandlers: SocketEventHandlers) {
-  Object.entries(eventHandlers).forEach(([str, handler]) => {
-    const [namespace, event] = str.split(':');
-    if (!namespace || !event) throw new Error('Invalid event format');
-    const socket = namespaces[`/${namespace}`];
-    if (!socket) throw new Error('Invalid namespace:' + namespace);
+  Object.entries(eventHandlers).forEach(([event, handler]) => {
     socket.on(event, handler);
   });
 }
 
 function off(eventHandlers: SocketEventHandlers) {
-  Object.entries(eventHandlers).forEach(([str, handler]) => {
-    const [namespace, event] = str.split(':');
-    if (!namespace || !event) throw new Error('Invalid event format');
-    const socket = namespaces[`/${namespace}`];
-    if (!socket) throw new Error('Invalid namespace:' + namespace);
+  Object.entries(eventHandlers).forEach(([event, handler]) => {
     socket.off(event, handler);
   });
 }
 
-function connect(namespace: string) {
-  const socket = namespaces[namespace];
-  if (!socket) throw new Error('Invalid namespace:' + namespace);
+function connect() {
   socket.connect();
 }
 
-function disconnect(namespace: string) {
-  const socket = namespaces[namespace];
-  if (!socket) throw new Error('Invalid namespace:' + namespace);
+function disconnect() {
   socket.disconnect();
 }
 

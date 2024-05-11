@@ -11,6 +11,8 @@ export interface DocumentsRepository {
   getDocument: (wid: string, id: string) => Promise<DocumentContent>;
   deleteDocument: (wid: string, id: string) => Promise<void>;
   updateDocument: (wid: string, id: string, operations: Operation[]) => Promise<void>;
+  addWorkspace: (wid: string) => Promise<void>;
+  removeWorkspace: (wid: string) => Promise<void>;
 }
 
 /**
@@ -35,7 +37,7 @@ export interface WorkspacesRepository {
   getWorkspaceResources: (id: string) => Promise<WorkspaceResource[]>;
 }
 
-export interface NoteSpaceDatabase {
+export interface Databases {
   readonly document: DocumentsRepository;
   readonly resource: ResourcesRepository;
   readonly workspace: WorkspacesRepository;

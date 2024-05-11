@@ -1,22 +1,20 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
-import cors from 'cors';
 import { Services } from '@services/Services';
+import cors from 'cors';
 import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
-import { setupEventHandlers } from '@controllers/ws/setupEventHandlers';
-import { Databases } from '@database/Databases';
+import initSocketEvents from '@controllers/ws/initSocketEvents';
+import { ProductionDatabases } from '@databases/ProductionDatabases';
 import { DocumentsService } from '@services/DocumentsService';
-import { MemoryDocumentsDB } from '@database/documents/MemoryDocumentsDB';
 
 // databases
-const docDB = new MemoryDocumentsDB();
-const databases = new Databases(docDB);
+const databases = new ProductionDatabases();
 
 // services
-const docService = new DocumentsService(docDB);
+const docService = new DocumentsService(databases.document);
 const services = new Services(databases);
 
 // server and controllers
@@ -29,9 +27,10 @@ app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
 
-// Setup event handlers
+// setup event handlers
 const events = eventsInit(docService);
-setupEventHandlers(io, events);
+const socketEvents = initSocketEvents(events);
+io.on('connection', socketEvents);
 
 server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
   console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);

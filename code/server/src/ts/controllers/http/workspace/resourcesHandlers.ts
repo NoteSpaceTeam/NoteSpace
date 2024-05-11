@@ -19,9 +19,9 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { type, name, parent } = resource;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!type) throw new InvalidParameterError('Resource type is required');
-    if (!parent) throw new InvalidParameterError('Resource parent is required');
+    // if (!parent) throw new InvalidParameterError('Resource parent is required');
     const id = await service.createResource(wid, name, type, parent);
-    io.of('/workspaces').in(wid).emit('resources:create', { id, name, type, parent });
+    io.in(wid).emit('resourceCreated', { id, name, type, parent });
     httpResponse.created(res).json({ id });
   };
 
@@ -50,7 +50,7 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const resource = req.body as Partial<WorkspaceResource>;
     if (!resource) throw new InvalidParameterError('Body is required');
     await service.updateResource(id, resource);
-    io.of('/workspaces').in(wid).emit('resources:update', resource);
+    io.in(wid).emit('resourceUpdated', resource);
     httpResponse.noContent(res).send();
   };
 
@@ -64,11 +64,11 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
     await service.deleteResource(id);
-    io.of('/workspaces').in(wid).emit('resources:delete', { id });
+    io.in(wid).emit('resourceDeleted', { id });
     httpResponse.noContent(res).send();
   };
 
-  const router = PromiseRouter({mergeParams: true});
+  const router = PromiseRouter({ mergeParams: true });
   router.post('/', createResource);
   router.get('/:id', getResource);
   router.put('/:id', updateResource);

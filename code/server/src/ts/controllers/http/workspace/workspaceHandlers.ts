@@ -51,7 +51,7 @@ function workspaceHandlers(services: Services, io: Server) {
     if (!id) throw new InvalidParameterError('Workspace id is required');
     if (!name) throw new InvalidParameterError('Workspace name is required');
     await services.workspace.updateWorkspace(id, name);
-    io.of('/workspaces').in(id).emit('workspaces:update', { id, name });
+    io.in(id).emit('updatedWorkspace', { id, name });
     httpResponse.noContent(res).send();
   };
 
@@ -64,7 +64,7 @@ function workspaceHandlers(services: Services, io: Server) {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     await services.workspace.deleteWorkspace(wid);
-    io.of('/workspaces').in(wid).emit('workspaces:delete', { id: wid });
+    io.in(wid).emit('workspaceDeleted', { id: wid });
     httpResponse.noContent(res).send();
   };
 

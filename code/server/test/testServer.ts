@@ -1,22 +1,21 @@
 import express = require('express');
 import http = require('http');
+import cors = require('cors');
 import { Server } from 'socket.io';
 import { DocumentsService } from '../src/ts/services/DocumentsService';
 import eventsInit from '../src/ts/controllers/ws/events';
 import router from '../src/ts/controllers/http/router';
-import { setupEventHandlers } from '../src/ts/controllers/ws/setupEventHandlers';
 import { Services } from '../src/ts/services/Services';
-import { MemoryDB } from '../src/ts/databases/resources/memory/MemoryDB';
+import { TestDatabases } from '../src/ts/databases/TestDatabases';
 import config from '../src/ts/config';
-import { MemoryDocumentsDB } from '../src/ts/databases/documents/MemoryDocumentsDB';
+import initSocketEvents from '../src/ts/controllers/ws/initSocketEvents';
 
 function setup() {
   // databases
-  const docDB = new MemoryDocumentsDB();
-  const databases = new MemoryDB(docDB);
+  const databases = new TestDatabases();
 
   // services
-  const docService = new DocumentsService(docDB);
+  const docService = new DocumentsService(databases.document);
   const services = new Services(databases);
 
   // server and controllers
@@ -25,17 +24,19 @@ function setup() {
   const io = new Server(server, config.SERVER_OPTIONS);
   const api = router(services, io);
 
+  app.use(cors({ origin: '*' }));
   app.use(express.json());
   app.use('/', api);
 
   // Setup event handlers
   const events = eventsInit(docService);
-  setupEventHandlers(io, events);
+  const socketEvents = initSocketEvents(events);
 
   return {
     _http: server,
     _io: io,
     _app: app,
+    _socketEvents: socketEvents,
   };
 }
 export { setup };

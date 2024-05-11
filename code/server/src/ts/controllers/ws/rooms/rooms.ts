@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import Room from '@controllers/ws/rooms/Room';
 import { getRoom, joinRoom, leaveRoom } from '@controllers/ws/rooms/roomOperations';
-import { InvalidParameterError } from '@domain/errors/errors';
+import { ForbiddenError } from '@domain/errors/errors';
 
 type Rooms = Map<string, Room>;
 const workspaceRooms: Rooms = new Map(); // (documentId) => Room
@@ -17,10 +17,10 @@ function leaveDocument(socket: Socket) {
 
 function getDocument(socket: Socket) {
   const room = getRoom(documentRooms, socket);
-  if (!room) throw new InvalidParameterError('User not in document');
-  const workspaceInfo = getWorkspace(socket);
-  if (!workspaceInfo) throw new InvalidParameterError('User not in workspace');
-  return { id: room.id, workspaceId: workspaceInfo.id };
+  if (!room) throw new ForbiddenError('Client not in a document');
+  const workspace = getWorkspace(socket);
+  if (!workspace) throw new ForbiddenError('Client not in a workspace');
+  return { id: room.id, wid: workspace.id };
 }
 
 function getDocumentRoom(id: string) {
@@ -37,7 +37,7 @@ function leaveWorkspace(socket: Socket) {
 
 function getWorkspace(socket: Socket) {
   const room = getRoom(workspaceRooms, socket);
-  if (!room) throw new InvalidParameterError('User not in workspace');
+  if (!room) throw new ForbiddenError('Client not in a workspace');
   return { id: room.id };
 }
 

@@ -41,9 +41,9 @@ export function useDocuments() {
   }
 
   useSocketListeners(socket, {
-    'document:created': onCreateDocument,
-    'document:deleted': onDeleteDocument,
-    'document:updated': onUpdateDocument,
+    documentCreated: onCreateDocument,
+    documentDeleted: onDeleteDocument,
+    documentUpdated: onUpdateDocument,
   });
 
   return {
