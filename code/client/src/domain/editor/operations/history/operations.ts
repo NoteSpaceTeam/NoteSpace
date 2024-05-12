@@ -25,7 +25,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
       .flat()
       .filter(operation => operation !== undefined && operation !== null);
 
-    socket.emit('operation', communicationOperations);
+    socket.emit('operations', communicationOperations);
   };
 
   function getOperation(operation: HistoryOperation) {

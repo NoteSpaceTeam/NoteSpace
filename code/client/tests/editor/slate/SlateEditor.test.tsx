@@ -9,7 +9,7 @@ describe('SlateEditor', () => {
   let editor: HTMLElement;
 
   beforeEach(async () => {
-    const { findByTestId } = render(<Editor fugue={fugue} communication={mockCommunication()} />);
+    const { findByTestId } = render(<Editor title={''} fugue={fugue} communication={mockCommunication()} />);
     editor = await findByTestId('editor');
     editor.focus();
   });

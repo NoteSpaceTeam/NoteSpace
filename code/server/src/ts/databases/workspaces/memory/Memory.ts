@@ -21,7 +21,7 @@ export function getWorkspaces(): Workspace[] {
 
 export function getWorkspace(id: string): Workspace {
   const workspace = workspaces.get(id);
-  if (!workspace) throw new Error(`Workspace with id ${id} not found`);
+  if (!workspace) throw new Error(`Workspace not found`);
   return workspace;
 }
 
@@ -31,13 +31,13 @@ export function updateWorkspace(id: string, name: string) {
 }
 
 export function deleteWorkspace(id: string) {
-  if (!workspaces.delete(id)) throw new Error(`Workspace with id ${id} not found`);
+  if (!workspaces.delete(id)) throw new Error(`Workspace not found`);
 }
 
 export function getResource(id: string): WorkspaceResource {
   const workspace = getResourceWorkspace(id);
   const resource = workspace.resources.find(r => r.id === id);
-  if (!resource) throw new Error(`Resource with id ${id} not found`);
+  if (!resource) throw new Error(`Resource not found`);
   return resource;
 }
 
@@ -72,7 +72,7 @@ function getResourceWorkspace(resourceId: string): Workspace {
       return workspace;
     }
   }
-  throw new Error(`Resource with id ${resourceId} not found`);
+  throw new Error(`Resource not found`);
 }
 
 export const memoryDB = {

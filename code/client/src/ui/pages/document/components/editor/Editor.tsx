@@ -20,7 +20,7 @@ import './Editor.scss';
 import { useCallback, useEffect } from 'react';
 
 type SlateEditorProps = {
-  title?: string;
+  title: string;
   fugue: Fugue;
   communication: Communication;
 };
@@ -55,7 +55,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
     <div className="editor">
       <div className="container">
         <Slate editor={editor} initialValue={initialValue} onChange={onSelectionChange}>
-          <Title title={title || ''} placeholder={'Untitled'} communication={communication} />
+          <Title title={title} placeholder="Untitled" communication={communication} />
           <Toolbar onApplyMark={onFormat} />
           <Editable
             className="editable"

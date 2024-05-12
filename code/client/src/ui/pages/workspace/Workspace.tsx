@@ -1,29 +1,22 @@
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
-import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
+import DocumentView from '@ui/pages/workspace/components/DocumentView.tsx';
 import useError from '@domain/error/useError';
 import useDocuments from '@ui/pages/workspace/hooks/useDocuments.ts';
 import './Workspace.scss';
-import { useEffect } from 'react';
-import { useCommunication } from '@/services/communication/context/useCommunication.ts';
-import { useParams } from 'react-router-dom';
+import useWorkspace from '@domain/workspace/useWorkspace.ts';
 
 function Workspace() {
+  const { workspace } = useWorkspace();
   const { documents, createDocument, deleteDocument, updateDocument } = useDocuments();
-  const { socket } = useCommunication();
   const { publishError } = useError();
-  const { wid } = useParams();
-
-  useEffect(() => {
-    socket.emit('joinWorkspace', wid);
-  }, [socket, wid]);
 
   return (
     <div className="workspace">
-      <h2>Workspace</h2>
+      <h2>Workspace {workspace?.name}</h2>
       <WorkspaceHeader onCreateNew={() => createDocument().catch(publishError)}></WorkspaceHeader>
       <ul className="items">
         {documents.map(document => (
-          <DocumentPreview
+          <DocumentView
             key={document.id}
             document={document}
             onDelete={() => deleteDocument(document.id).catch(publishError)}

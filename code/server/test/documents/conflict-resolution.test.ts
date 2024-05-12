@@ -86,8 +86,8 @@ describe('Operations must be commutative', () => {
     };
 
     // client 1 inserts 'a' and client 2 inserts 'b'
-    client1.emit('operation', [insert1]);
-    client2.emit('operation', [insert2]);
+    client1.emit('operations', [insert1]);
+    client2.emit('operations', [insert2]);
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -132,8 +132,8 @@ describe('Operations must be idempotent', () => {
     };
 
     // both clients insert 'a'
-    client1.emit('operation', [insert1]);
-    client2.emit('operation', [insert2]);
+    client1.emit('operations', [insert1]);
+    client2.emit('operations', [insert2]);
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -142,8 +142,8 @@ describe('Operations must be idempotent', () => {
       id: { sender: 'B', counter: 0 },
     };
     // both clients want to delete the same 'a'
-    client1.emit('operation', [delete1]);
-    // client2.emit('operation', [delete1]);
+    client1.emit('operations', [delete1]);
+    client2.emit('operations', [delete1]);
 
     await new Promise(resolve => setTimeout(resolve, 500));
 

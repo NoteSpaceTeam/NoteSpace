@@ -9,7 +9,7 @@ export class OperationEmitter {
   private readonly socket: Socket;
   private readonly operationBuffer: Operation[] = [];
   private readonly timeoutDuration;
-  private readonly chunkSize = 100;
+  private readonly chunkSize = 300;
   private readonly maxBufferedOperations = 20;
   private timeoutId: NodeJS.Timeout | null = null;
 
@@ -34,7 +34,7 @@ export class OperationEmitter {
     if (this.operationBuffer.length > this.chunkSize) {
       this.emitChunked();
     } else {
-      this.socket.emit('operation', this.operationBuffer);
+      this.socket.emit('operations', this.operationBuffer);
     }
     this.operationBuffer.length = 0;
   }
@@ -46,12 +46,12 @@ export class OperationEmitter {
     let chunkIndex = 0;
     const onAcknowledge = () => {
       if (chunkIndex < chunks.length) {
-        this.socket.emit('operation', chunks[chunkIndex++]);
+        this.socket.emit('operations', chunks[chunkIndex++]);
         return;
       }
       this.socket.off('ack', onAcknowledge);
     };
-    this.socket.emit('operation', chunks[chunkIndex++]);
+    this.socket.emit('operations', chunks[chunkIndex++]);
     this.socket.on('ack', onAcknowledge);
   }
 }

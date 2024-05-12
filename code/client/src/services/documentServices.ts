@@ -13,7 +13,7 @@ function documentServices(http: HttpCommunication, wid: string) {
   }
 
   async function deleteDocument(id: string) {
-    await http.delete(`/workspace/${wid}/${id}`);
+    await http.delete(`/workspaces/${wid}/${id}`);
   }
 
   async function updateDocument(id: string, name: string) {

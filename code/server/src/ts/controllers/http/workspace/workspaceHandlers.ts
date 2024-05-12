@@ -6,6 +6,7 @@ import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspa
 import { Services } from '@services/Services';
 import { Server } from 'socket.io';
 import { InvalidParameterError } from '@domain/errors/errors';
+import { isValidUUID } from '@src/utils/validators';
 
 function workspaceHandlers(services: Services, io: Server) {
   /**
@@ -36,8 +37,14 @@ function workspaceHandlers(services: Services, io: Server) {
    * @param res
    */
   const getWorkspace = async (req: Request, res: Response) => {
+    const { wid } = req.params;
     const { metaOnly } = req.query;
-    const workspace = await services.workspace.getWorkspace(req.params.wid, metaOnly === 'true');
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+    if (metaOnly && !['true', 'false'].includes(metaOnly as string))
+      throw new InvalidParameterError('Invalid metaOnly value');
+
+    const workspace = await services.workspace.getWorkspace(wid, metaOnly === 'true');
     httpResponse.ok(res).json(workspace);
   };
 
@@ -47,11 +54,15 @@ function workspaceHandlers(services: Services, io: Server) {
    * @param res
    */
   const updateWorkspace = async (req: Request, res: Response) => {
-    const { id, name } = req.body as WorkspaceMetaData;
-    if (!id) throw new InvalidParameterError('Workspace id is required');
+    const { wid } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+    const { name } = req.body as WorkspaceMetaData;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!name) throw new InvalidParameterError('Workspace name is required');
-    await services.workspace.updateWorkspace(id, name);
-    io.in(id).emit('updatedWorkspace', { id, name });
+
+    await services.workspace.updateWorkspace(wid, name);
+    io.in(wid).emit('updatedWorkspace', { id: wid, name });
     httpResponse.noContent(res).send();
   };
 
@@ -63,6 +74,8 @@ function workspaceHandlers(services: Services, io: Server) {
   const deleteWorkspace = async (req: Request, res: Response) => {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+
     await services.workspace.deleteWorkspace(wid);
     io.in(wid).emit('workspaceDeleted', { id: wid });
     httpResponse.noContent(res).send();

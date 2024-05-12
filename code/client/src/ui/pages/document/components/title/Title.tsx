@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Communication } from '@/services/communication/communication';
-import useWorkspace from '@domain/workspace/useWorkspace';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
+import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
@@ -11,12 +11,11 @@ interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 function Title(props: TitleProps) {
-  const [title, setTitle] = useState(props.title);
-  const [prevTitle, setPrevTitle] = useState(props.title);
   const editor = useSlate();
   const { wid, id } = useParams();
   const { http, socket } = props.communication;
-  const { setFilePath } = useWorkspace();
+  const [title, setTitle] = useState(props.title);
+  const [prevTitle, setPrevTitle] = useState(props.title);
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
@@ -26,9 +25,8 @@ function Title(props: TitleProps) {
 
   async function onConfirm() {
     if (title === prevTitle) return;
-    await http.put(`/workspaces/${wid}/documents/${id}`, { name: title });
+    await http.put(`/workspaces/${wid}/${id}`, { name: title });
     setPrevTitle(title);
-    setFilePath(`/documents/${title || 'Untitled'}`);
   }
 
   async function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -39,8 +37,16 @@ function Title(props: TitleProps) {
     }
   }
 
+  function onResourceUpdated(resource: Partial<WorkspaceResource>) {
+    const newName = resource.name || title;
+    if (resource.id === id && newName !== title) {
+      setTitle(newName);
+      setPrevTitle(newName);
+    }
+  }
+
   useSocketListeners(socket, {
-    documentUpdated: setTitle, // TODO: fix later
+    resourceUpdated: onResourceUpdated,
   });
 
   return (

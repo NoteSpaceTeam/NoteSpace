@@ -11,10 +11,10 @@ type DocumentPreviewProps = {
   onRename: (title: string) => void;
 };
 
-function DocumentPreview({ document, onDelete, onRename, onDuplicate }: DocumentPreviewProps) {
+function DocumentView({ document, onDelete, onRename, onDuplicate }: DocumentPreviewProps) {
   const { wid } = useParams();
   const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', onRename);
-  const DocumentView = (
+  const DocumentComponent = (
     <li>
       <div>
         <IoDocumentText />
@@ -24,7 +24,7 @@ function DocumentPreview({ document, onDelete, onRename, onDuplicate }: Document
   );
   return (
     <DocumentContextMenu
-      item={isEditing ? DocumentView : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentView}</Link>}
+      item={isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
       onRename={() => setIsEditing(true)}
       onDuplicate={onDuplicate}
       onDelete={onDelete}
@@ -32,4 +32,4 @@ function DocumentPreview({ document, onDelete, onRename, onDuplicate }: Document
   );
 }
 
-export default DocumentPreview;
+export default DocumentView;

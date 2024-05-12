@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { Server } from 'socket.io';
+import { isValidUUID } from '@src/utils/validators';
 
 function resourcesHandlers(service: ResourcesService, io: Server) {
   /**
@@ -14,14 +15,16 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    */
   const createResource = async (req: Request, res: Response) => {
     const { wid } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
     const resource = req.body as ResourceInputModel;
     if (!resource) throw new InvalidParameterError('Body is required');
     const { type, name, parent } = resource;
-    if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!type) throw new InvalidParameterError('Resource type is required');
     // if (!parent) throw new InvalidParameterError('Resource parent is required');
+
     const id = await service.createResource(wid, name, type, parent);
-    io.in(wid).emit('resourceCreated', { id, name, type, parent });
+    io.in(wid).emit('resourceCreated', { id, ...resource });
     httpResponse.created(res).json({ id });
   };
 
@@ -34,6 +37,9 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id, metaOnly } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
+
     const resource = await service.getResource(wid, id, metaOnly === 'true');
     httpResponse.ok(res).json(resource);
   };
@@ -47,10 +53,13 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
+
     const resource = req.body as Partial<WorkspaceResource>;
     if (!resource) throw new InvalidParameterError('Body is required');
     await service.updateResource(id, resource);
-    io.in(wid).emit('resourceUpdated', resource);
+    io.in(wid).emit('resourceUpdated', { id, ...resource });
     httpResponse.noContent(res).send();
   };
 
@@ -63,6 +72,9 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
+    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
+    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
+
     await service.deleteResource(id);
     io.in(wid).emit('resourceDeleted', { id });
     httpResponse.noContent(res).send();

@@ -5,43 +5,42 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@/services/communication/context/useCommunication';
 import useDocumentServices from '@/services/useDocumentServices';
 import useError from '@domain/error/useError';
-import useWorkspace from '@domain/workspace/useWorkspace';
 import './Document.scss';
 
 function Document() {
   const communication = useCommunication();
   const services = useDocumentServices();
-  const { http, socket } = communication;
   const fugue = useFugue();
   const { publishError } = useError();
-  const { wid, id } = useParams();
-  const [title, setTitle] = useState('');
+  const { id } = useParams();
   const [loaded, setLoaded] = useState(false);
-  const { setFilePath } = useWorkspace();
+  const [title, setTitle] = useState('');
+  const { http, socket } = communication;
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoaded(false); // reset state to load new document (useful for when navigating between documents)
+
     async function fetchDocument() {
       if (!id) return;
       const { content, name } = await services.getDocument(id);
-      fugue.applyOperations(content, true);
       setTitle(name);
-      setLoaded(true);
-      setFilePath(`/documents/${title || 'Untitled'}`);
-      socket.emit('joinWorkspace', wid);
+      fugue.applyOperations(content, true);
       socket.emit('joinDocument', id);
+      setLoaded(true);
     }
-    console.log('fetching document');
     fetchDocument().catch(e => {
       publishError(e);
-      // navigate('/');
+      navigate('/');
     });
     return () => {
       socket.emit('leaveDocument');
     };
-  }, [fugue, id, http, socket, publishError, services, setFilePath, navigate, title, wid]);
+  }, [fugue, id, http, socket, publishError, services, setTitle, navigate]);
 
-  return <div>{loaded && <Editor title={title} fugue={fugue} communication={communication} />}</div>;
+  if (!loaded) return null;
+
+  return <Editor title={title} fugue={fugue} communication={communication} />;
 }
 
 export default Document;

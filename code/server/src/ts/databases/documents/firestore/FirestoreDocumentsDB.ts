@@ -40,7 +40,7 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
     const workspace = await this.getWorkspace(wid);
     const docRef = workspace.doc(id);
     const doc = await docRef.get();
-    if (!doc.exists) throw new NotFoundError(`Document with id ${id} not found`);
+    if (!doc.exists) throw new NotFoundError(`Document not found`);
     return docRef;
   }
 

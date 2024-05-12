@@ -22,7 +22,7 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
 
   async getWorkspace(id: string): Promise<WorkspaceMetaData> {
     const results: WorkspaceMetaData[] = await sql`SELECT * FROM workspace WHERE id = ${id}`;
-    if (isEmpty(results)) throw new NotFoundError(`Workspace with id ${id} not found`);
+    if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
     return results[0];
   }
 
@@ -31,13 +31,17 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
         UPDATE workspace 
         SET name = ${name} 
         WHERE id = ${id}
+        RETURNING id
     `;
-    if (isEmpty(results)) throw new NotFoundError(`Workspace with id ${id} not found`);
+    if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
   async deleteWorkspace(id: string): Promise<void> {
-    const results = await sql`DELETE FROM workspace WHERE id = ${id}`;
-    if (isEmpty(results)) throw new NotFoundError(`Workspace with id ${id} not found`);
+    const results = await sql`
+        DELETE FROM workspace WHERE id = ${id}
+        RETURNING id
+    `;
+    if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
   async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {

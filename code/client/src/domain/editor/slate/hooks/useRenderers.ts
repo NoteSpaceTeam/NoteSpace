@@ -17,7 +17,7 @@ function useRenderers(editor: Editor, fugue: Fugue, { socket }: Communication) {
       const line = path[path.length - 1];
       const updateBlockStyle = (style: BlockStyle) => {
         const operation = fugue.updateBlockStyleLocal(line, style);
-        socket.emit('operation', [operation]);
+        socket.emit('operations', [operation]);
       };
       return getElementRenderer(type, props, updateBlockStyle);
     },

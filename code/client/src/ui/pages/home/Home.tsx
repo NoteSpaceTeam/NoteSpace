@@ -1,5 +1,5 @@
 import useWorkspaces from '@ui/pages/workspace/hooks/useWorkspaces.ts';
-import WorkspacePreview from '@ui/pages/home/components/WorkspacePreview.tsx';
+import WorkspaceView from '@ui/pages/home/components/WorkspaceView.tsx';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader.tsx';
 import CreateWorkspaceDialog from '@ui/pages/home/components/CreateWorkspaceDialog.tsx';
 import useError from '@domain/error/useError.ts';
@@ -17,7 +17,7 @@ function Home() {
       </WorkspaceHeader>
       <ul className="items">
         {workspaces.map(workspace => (
-          <WorkspacePreview
+          <WorkspaceView
             key={workspace.id}
             workspace={workspace}
             onDelete={() => deleteWorkspace(workspace.id).catch(publishError)}

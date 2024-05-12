@@ -37,7 +37,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(styleOperation);
 
     // emit operations
-    socket.emit('operation', operations);
+    socket.emit('operations', operations);
   }
 
   /**
@@ -64,7 +64,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(...styleOperations);
 
     // emit operations
-    socket.emit('operation', operations);
+    socket.emit('operations', operations);
   }
 
   function deleteBlockStyles(selection: Selection) {
@@ -75,7 +75,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     if ((start === end && start.column === 0) || start.line !== end.line) {
       const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
-      socket.emit('operation', operations);
+      socket.emit('operations', operations);
     }
   }
 

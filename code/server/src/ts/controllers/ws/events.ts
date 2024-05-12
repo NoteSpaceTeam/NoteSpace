@@ -12,7 +12,7 @@ export default function events(service: DocumentsService): Record<string, Socket
 
   return {
     // document events
-    operation: onOperation(service),
+    operations: onOperation(service),
     cursorChange: onCursorChange(),
     joinDocument: onJoinDocument(),
     leaveDocument: onLeaveDocument(),

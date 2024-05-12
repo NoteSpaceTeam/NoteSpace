@@ -7,20 +7,15 @@ import { useParams } from 'react-router-dom';
 
 export type WorkspaceContextType = {
   workspace?: Workspace;
-  filePath?: string;
-  setFilePath: (path: string) => void;
 };
 
 export const WorkspaceContext = createContext<WorkspaceContextType>({
   workspace: undefined,
-  filePath: undefined,
-  setFilePath: () => {},
 });
 
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [workspace, setWorkspace] = useState<Workspace | undefined>(undefined);
-  const [filePath, setFilePath] = useState<string | undefined>(undefined);
-  const { http } = useCommunication();
+  const { http, socket } = useCommunication();
   const { publishError } = useError();
   const { wid } = useParams();
 
@@ -30,8 +25,12 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       const ws = await http.get(`/workspaces/${wid}`);
       setWorkspace(ws);
     }
+    socket.emit('joinWorkspace', wid);
     getResources().catch(publishError);
-  }, [http, publishError, wid]);
+    return () => {
+      socket.emit('leaveWorkspace');
+    };
+  }, [wid, http, socket, publishError]);
 
-  return <WorkspaceContext.Provider value={{ workspace, filePath, setFilePath }}>{children}</WorkspaceContext.Provider>;
+  return <WorkspaceContext.Provider value={{ workspace }}>{children}</WorkspaceContext.Provider>;
 }

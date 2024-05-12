@@ -12,7 +12,7 @@ function onOperation(service: DocumentsService) {
     const { id, wid } = rooms.document.get(socket);
     if (!id) throw new ForbiddenError('Client not in a room');
 
-    socket.broadcast.to(id).emit('operation', operations);
+    socket.broadcast.to(id).emit('operations', operations);
     await service.updateDocument(wid, id, operations);
     socket.emit('ack');
   };

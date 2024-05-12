@@ -21,7 +21,7 @@ const operationEmitter = new OperationEmitter(socket, OPERATION_DELAY);
 
 function emit(event: string, data: any) {
   switch (event) {
-    case 'operation':
+    case 'operations':
       operationEmitter.addOperation(...data);
       break;
     case 'cursorChange':

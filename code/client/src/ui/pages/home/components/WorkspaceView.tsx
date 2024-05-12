@@ -11,9 +11,9 @@ type WorkspacePreviewProps = {
   onInvite: () => void;
 };
 
-function WorkspacePreview({ workspace, onDelete, onRename, onInvite }: WorkspacePreviewProps) {
+function WorkspaceView({ workspace, onDelete, onRename, onInvite }: WorkspacePreviewProps) {
   const { component, isEditing, setIsEditing } = useEditing(workspace.name, onRename);
-  const WorkspaceView = (
+  const WorkspaceComponent = (
     <li>
       <div>
         <RiComputerLine />
@@ -23,7 +23,7 @@ function WorkspacePreview({ workspace, onDelete, onRename, onInvite }: Workspace
   );
   return (
     <WorkspaceContextMenu
-      item={isEditing ? WorkspaceView : <Link to={`/workspaces/${workspace.id}`}>{WorkspaceView}</Link>}
+      item={isEditing ? WorkspaceComponent : <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>}
       onInvite={onInvite}
       onRename={() => setIsEditing(true)}
       onDelete={onDelete}
@@ -31,4 +31,4 @@ function WorkspacePreview({ workspace, onDelete, onRename, onInvite }: Workspace
   );
 }
 
-export default WorkspacePreview;
+export default WorkspaceView;

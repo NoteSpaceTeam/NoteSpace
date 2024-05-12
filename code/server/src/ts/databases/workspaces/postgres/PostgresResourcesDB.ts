@@ -1,6 +1,6 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourcesRepository } from '@databases/types';
-import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@domain/errors/errors';
 import { isEmpty } from 'lodash';
 import sql from '@databases/workspaces/postgres/config';
 
@@ -24,20 +24,21 @@ export class PostgresResourcesDB implements ResourcesRepository {
   }
 
   async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
-    if (!resource.id) throw new InvalidParameterError('Resource id not provided');
     const results = await sql`
         UPDATE resource
         SET ${sql(resource)}
         WHERE id = ${id}
+        RETURNING id
     `;
-    if (isEmpty(results)) throw new Error('Resource not updated');
+    if (isEmpty(results)) throw new NotFoundError('Resource not found');
   }
 
   async deleteResource(id: string) {
     const results = await sql`
         DELETE FROM resource
         WHERE id = ${id}
+        RETURNING id
     `;
-    if (isEmpty(results)) throw new Error('Resource not deleted');
+    if (isEmpty(results)) throw new NotFoundError('Resource not found');
   }
 }

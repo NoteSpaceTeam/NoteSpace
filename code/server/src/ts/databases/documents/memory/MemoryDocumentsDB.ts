@@ -27,9 +27,9 @@ export class MemoryDocumentsDB implements DocumentsRepository {
 
   private getDoc(wid: string, id: string) {
     const workspace = this.workspaces[wid];
-    if (!workspace) throw new NotFoundError(`Workspace with id ${wid} not found`);
+    if (!workspace) throw new NotFoundError(`Workspace not found`);
     const document = workspace[id];
-    if (!document) throw new NotFoundError(`Document with id ${id} not found`);
+    if (!document) throw new NotFoundError(`Document not found`);
     return document;
   }
 

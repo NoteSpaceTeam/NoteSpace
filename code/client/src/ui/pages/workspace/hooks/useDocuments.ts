@@ -24,8 +24,8 @@ export function useDocuments() {
     setDocuments(prev => [...prev, document]);
   }
 
-  async function createDocument(title?: string) {
-    const id = await services.createDocument(title || 'Untitled');
+  async function createDocument(title: string = '') {
+    const id = await services.createDocument(title);
     onCreateDocument(id, title);
   }
 

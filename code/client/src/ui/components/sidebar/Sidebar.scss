@@ -1,5 +1,5 @@
 .sidebar {
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
@@ -11,9 +11,9 @@
   overflow-y: scroll;
   transition: 0.5s;
   padding-top: 60px;
-  z-index: 2;
   color: black;
-  box-shadow: black 0 0 1px;
+  box-shadow: black 0 7vh 1px;
+  z-index: 2;
 
   ul {
     margin: 0;
@@ -41,6 +41,7 @@
     padding: 0;
     margin: 0;
     transition: transform 1s ease-in-out;
+    z-index: 5 !important;
 
     .icon {
       transition: opacity 1s ease-in-out;
@@ -53,5 +54,15 @@
 
   button:hover {
     color: dimgray;
+  }
+
+  .files {
+    li > * {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: left;
+      gap: 1vh;
+    }
   }
 }
