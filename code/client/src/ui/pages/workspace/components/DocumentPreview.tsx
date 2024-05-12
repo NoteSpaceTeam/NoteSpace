@@ -24,7 +24,7 @@ function DocumentPreview({ document, onDelete, onRename, onDuplicate }: Document
   );
   return (
     <DocumentContextMenu
-      item={isEditing ? DocumentView : <Link to={`/workspaces/${wid}/documents/${document.id}`}>{DocumentView}</Link>}
+      item={isEditing ? DocumentView : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentView}</Link>}
       onRename={() => setIsEditing(true)}
       onDuplicate={onDuplicate}
       onDelete={onDelete}

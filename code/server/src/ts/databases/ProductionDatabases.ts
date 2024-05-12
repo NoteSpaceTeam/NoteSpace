@@ -1,5 +1,5 @@
-import { PostgresResourcesDB } from '@databases/resources/postgres/PostgresResourcesDB';
-import { PostgresWorkspacesDB } from '@databases/resources/postgres/PostgresWorkspacesDB';
+import { PostgresResourcesDB } from '@databases/workspaces/postgres/PostgresResourcesDB';
+import { PostgresWorkspacesDB } from '@databases/workspaces/postgres/PostgresWorkspacesDB';
 import { DocumentsRepository, Databases, ResourcesRepository, WorkspacesRepository } from '@databases/types';
 import { FirestoreDocumentsDB } from '@databases/documents/firestore/FirestoreDocumentsDB';
 

@@ -1,8 +1,8 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourcesRepository } from '@databases/types';
 import { InvalidParameterError, NotFoundError } from '@domain/errors/errors';
-import sql from '@databases/resources/postgres/config';
 import { isEmpty } from 'lodash';
+import sql from '@databases/workspaces/postgres/config';
 
 export class PostgresResourcesDB implements ResourcesRepository {
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {

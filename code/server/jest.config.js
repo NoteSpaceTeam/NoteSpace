@@ -7,11 +7,9 @@ module.exports = {
   transform: {},
   moduleNameMapper: pathsToModuleNameMapper(
     {
-      /*Controllers*/
+      '@/*': ['./*'],
       '@controllers/*': ['./src/ts/controllers/*'],
-      /*Databases*/
       '@databases/*': ['./src/ts/databases/*'],
-      /*Others*/
       '@src/*': ['./src/ts/*'],
       '@domain/*': ['./src/ts/domain/*'],
       '@services/*': ['./src/ts/services/*'],

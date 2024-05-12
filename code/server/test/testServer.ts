@@ -3,11 +3,11 @@ import http = require('http');
 import cors = require('cors');
 import { Server } from 'socket.io';
 import { DocumentsService } from '../src/ts/services/DocumentsService';
-import eventsInit from '../src/ts/controllers/ws/events';
-import router from '../src/ts/controllers/http/router';
 import { Services } from '../src/ts/services/Services';
 import { TestDatabases } from '../src/ts/databases/TestDatabases';
 import config from '../src/ts/config';
+import eventsInit from '../src/ts/controllers/ws/events';
+import router from '../src/ts/controllers/http/router';
 import initSocketEvents from '../src/ts/controllers/ws/initSocketEvents';
 
 function setup() {

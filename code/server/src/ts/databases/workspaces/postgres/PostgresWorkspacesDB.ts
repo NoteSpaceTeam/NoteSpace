@@ -1,9 +1,9 @@
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
 import { NotFoundError } from '@domain/errors/errors';
-import sql from '@databases/resources/postgres/config';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
+import sql from '@databases/workspaces/postgres/config';
 
 export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string): Promise<string> {
