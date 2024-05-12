@@ -1,7 +1,7 @@
 import { DocumentsRepository, Databases, ResourcesRepository, WorkspacesRepository } from '@databases/types';
-import { MemoryResourcesDB } from '@databases/workspaces/memory/MemoryResourcesDB';
-import { MemoryWorkspacesDB } from '@databases/workspaces/memory/MemoryWorkspacesDB';
-import { MemoryDocumentsDB } from '@databases/documents/memory/MemoryDocumentsDB';
+import { MemoryResourcesDB } from '@databases/memory/MemoryResourcesDB';
+import { MemoryWorkspacesDB } from '@databases/memory/MemoryWorkspacesDB';
+import { MemoryDocumentsDB } from '@databases/memory/MemoryDocumentsDB';
 
 export class TestDatabases implements Databases {
   readonly document: DocumentsRepository;

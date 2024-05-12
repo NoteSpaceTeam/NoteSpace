@@ -8,3 +8,11 @@ export type WorkspaceMetaData = {
 export type Workspace = WorkspaceMetaData & {
   resources: WorkspaceResource[];
 };
+
+export interface WorkspaceInputModel {
+  name: string;
+  description: string;
+  visibility: string;
+  tags: string[];
+  members: string[];
+}

@@ -36,9 +36,11 @@ function Sidebar() {
         {workspace && (
           <>
             <hr />
-            <h3>My Files</h3>
+            <h3>
+              <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
+            </h3>
             <div className="files">
-              {workspace?.resources.map(resource => (
+              {workspace.resources.map(resource => (
                 <li key={resource.id}>
                   <Link to={`/workspaces/${workspace.id}/${resource.id}`}>
                     {resource.type === ResourceType.DOCUMENT ? <IoDocumentText /> : <FaFolder />}

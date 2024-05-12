@@ -1,6 +1,6 @@
 import { WorkspacesRepository } from '@databases/types';
 import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
-import { memoryDB } from '@databases/workspaces/memory/Memory';
+import { memoryDB } from '@databases/memory/Memory';
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 
 export class MemoryWorkspacesDB implements WorkspacesRepository {

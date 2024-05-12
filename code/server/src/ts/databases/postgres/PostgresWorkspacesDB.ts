@@ -3,7 +3,7 @@ import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspa
 import { NotFoundError } from '@domain/errors/errors';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
-import sql from '@databases/workspaces/postgres/config';
+import sql from '@databases/postgres/config';
 
 export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string): Promise<string> {

@@ -6,6 +6,11 @@ function useEditing(initialValue: string, onEdit: (value: string) => void) {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
+    // listen for changes in the initial value
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
     // set the cursor at the end of the title when editing
     if (isEditing && ref.current) {
       const range = document.createRange();

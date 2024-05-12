@@ -1,29 +1,24 @@
 import { useEffect, useState } from 'react';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
+import { WorkspaceInputModel, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
 import { useCommunication } from '@/services/communication/context/useCommunication.ts';
+import useWorkspaceService from '@/services/workspace/useWorkspaceService.ts';
 
 function useWorkspaces() {
-  const { http, socket } = useCommunication();
+  const { socket } = useCommunication();
+  const service = useWorkspaceService();
   const [workspaces, setWorkspaces] = useState<WorkspaceMetaData[]>([]);
 
-  useEffect(() => {
-    async function fetchWorkspaces() {
-      const workspaces = await http.get('/workspaces');
-      setWorkspaces(workspaces);
-    }
-    fetchWorkspaces();
-  }, [http]);
-
   function onCreateWorkspace(workspace: WorkspaceMetaData) {
-    setWorkspaces(prev => [...prev, workspace]);
+    setWorkspaces([...workspaces, workspace]);
   }
 
   async function createWorkspace(values: { [key: string]: string }) {
     if (!values.name) throw new Error('Workspace name is required');
-    // ... validate other fields
-    const workspace = await http.post('/workspaces', values);
-    onCreateWorkspace(workspace);
+    // ... TODO: validate other fields
+    const { name, description, visibility, tags, members } = values;
+    const workspace: WorkspaceInputModel = { name, description, visibility, tags: [tags], members: [members] }; // TODO: fix later
+    await service.createWorkspace(workspace);
   }
 
   function onDeleteWorkspace(id: string) {
@@ -31,24 +26,30 @@ function useWorkspaces() {
   }
 
   async function deleteWorkspace(id: string) {
-    await http.delete(`/workspaces/${id}`);
-    onDeleteWorkspace(id);
+    await service.deleteWorkspace(id);
   }
 
   function onUpdateWorkspace(workspace: WorkspaceMetaData) {
-    setWorkspaces(workspaces.map(ws => (ws.id === workspace.id ? workspace : ws)));
+    setWorkspaces(workspaces.map(w => (w.id === workspace.id ? workspace : w)));
   }
 
   async function updateWorkspace(workspace: WorkspaceMetaData) {
-    await http.put(`/workspaces/${workspace.id}`, workspace);
-    onUpdateWorkspace(workspace);
+    await service.updateWorkspace(workspace.id, workspace);
   }
 
   useSocketListeners(socket, {
-    workspaceCreated: onCreateWorkspace,
-    workspaceDeleted: onDeleteWorkspace,
-    workspaceUpdated: onUpdateWorkspace,
+    createdWorkspace: onCreateWorkspace,
+    deletedWorkspace: onDeleteWorkspace,
+    updatedWorkspace: onUpdateWorkspace,
   });
+
+  useEffect(() => {
+    async function fetchWorkspaces() {
+      const workspaces = await service.getWorkspaces();
+      setWorkspaces(workspaces);
+    }
+    fetchWorkspaces();
+  }, [service]);
 
   return {
     workspaces,

@@ -9,6 +9,7 @@ import '../workspace/Workspace.scss';
 function Home() {
   const { workspaces, createWorkspace, updateWorkspace, deleteWorkspace } = useWorkspaces();
   const { publishError } = useError();
+
   return (
     <div className="home">
       <h2>Home</h2>

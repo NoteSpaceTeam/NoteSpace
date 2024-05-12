@@ -3,13 +3,13 @@ import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@/services/communication/context/useCommunication';
-import useDocumentServices from '@/services/useDocumentServices';
+import useDocumentService from '@/services/document/useDocumentService.ts';
 import useError from '@domain/error/useError';
 import './Document.scss';
 
 function Document() {
   const communication = useCommunication();
-  const services = useDocumentServices();
+  const services = useDocumentService();
   const fugue = useFugue();
   const { publishError } = useError();
   const { id } = useParams();

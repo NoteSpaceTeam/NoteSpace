@@ -4,6 +4,7 @@ import { Communication } from '@/services/communication/communication';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
+import useDocumentService from '@/services/document/useDocumentService.ts';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
@@ -12,10 +13,11 @@ interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 function Title(props: TitleProps) {
   const editor = useSlate();
-  const { wid, id } = useParams();
-  const { http, socket } = props.communication;
+  const { id } = useParams();
+  const { socket } = props.communication;
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
+  const service = useDocumentService();
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
@@ -25,7 +27,7 @@ function Title(props: TitleProps) {
 
   async function onConfirm() {
     if (title === prevTitle) return;
-    await http.put(`/workspaces/${wid}/${id}`, { name: title });
+    await service.updateDocument(id!, { name: title });
     setPrevTitle(title);
   }
 

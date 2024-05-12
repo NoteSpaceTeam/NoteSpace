@@ -4,6 +4,7 @@ import { Workspace } from '@notespace/shared/src/workspace/types/workspace.ts';
 import { useCommunication } from '@/services/communication/context/useCommunication.ts';
 import useError from '@domain/error/useError.ts';
 import { useParams } from 'react-router-dom';
+import useWorkspaceService from '@/services/workspace/useWorkspaceService.ts';
 
 export type WorkspaceContextType = {
   workspace?: Workspace;
@@ -15,22 +16,23 @@ export const WorkspaceContext = createContext<WorkspaceContextType>({
 
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [workspace, setWorkspace] = useState<Workspace | undefined>(undefined);
-  const { http, socket } = useCommunication();
+  const { socket } = useCommunication();
   const { publishError } = useError();
   const { wid } = useParams();
+  const services = useWorkspaceService();
 
   useEffect(() => {
     if (!wid) return;
     async function getResources() {
-      const ws = await http.get(`/workspaces/${wid}`);
-      setWorkspace(ws);
+      const workspace = await services.getWorkspace(wid!);
+      setWorkspace(workspace);
     }
     socket.emit('joinWorkspace', wid);
     getResources().catch(publishError);
     return () => {
       socket.emit('leaveWorkspace');
     };
-  }, [wid, http, socket, publishError]);
+  }, [wid, socket, publishError, services]);
 
   return <WorkspaceContext.Provider value={{ workspace }}>{children}</WorkspaceContext.Provider>;
 }

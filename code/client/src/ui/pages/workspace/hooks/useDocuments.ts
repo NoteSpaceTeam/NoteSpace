@@ -4,12 +4,12 @@ import useSocketListeners from '@/services/communication/socket/useSocketListene
 import useWorkspace from '@domain/workspace/useWorkspace.ts';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource.ts';
 import { useCommunication } from '@/services/communication/context/useCommunication.ts';
-import useDocumentServices from '@/services/useDocumentServices.ts';
+import useDocumentService from '@/services/document/useDocumentService.ts';
 
 export function useDocuments() {
   const { socket } = useCommunication();
   const { workspace } = useWorkspace();
-  const services = useDocumentServices();
+  const services = useDocumentService();
   const [documents, setDocuments] = useState<DocumentResourceMetadata[]>([]);
 
   useEffect(() => {
@@ -43,14 +43,14 @@ export function useDocuments() {
   }
 
   async function updateDocument(id: string, title: string) {
-    await services.updateDocument(id, title);
+    await services.updateDocument(id, { name: title });
     onUpdateDocument(id, title);
   }
 
   useSocketListeners(socket, {
-    documentCreated: onCreateDocument,
-    documentDeleted: onDeleteDocument,
-    documentUpdated: onUpdateDocument,
+    resourceCreated: onCreateDocument,
+    resourceDeleted: onDeleteDocument,
+    resourceUpdated: onUpdateDocument,
   });
 
   return {

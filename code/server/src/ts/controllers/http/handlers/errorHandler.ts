@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { httpResponse } from '@controllers/http/httpResponse';
+import { httpResponse } from '@controllers/http/utils/httpResponse';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
