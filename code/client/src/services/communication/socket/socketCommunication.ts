@@ -4,7 +4,7 @@ import { OperationEmitter } from '@/services/communication/socket/operationEmitt
 
 type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;
-type ConnectionType = (namespace: string) => void;
+type ConnectionType = () => void;
 export type SocketEventHandlers = Record<string, (...args: any[]) => void>;
 
 export interface SocketCommunication {
@@ -24,11 +24,11 @@ function emit(event: string, data: any) {
     case 'operation':
       operationEmitter.addOperation(...data);
       break;
-    case 'cursor':
+    case 'cursorChange':
       setTimeout(() => socket.emit(event, data), OPERATION_DELAY);
       break;
     default:
-      socket.emit(event, ...data);
+      socket.emit(event, data);
       break;
   }
 }

@@ -9,12 +9,11 @@ function onOperation(service: DocumentsService) {
   return async (socket: Socket, operations: Operation[]) => {
     if (!operations) throw new InvalidParameterError('Operations are required');
 
-    const workspaceId = rooms.workspace.get(socket)?.id;
-    const documentId = rooms.document.get(socket)?.id;
-    if (!documentId) throw new ForbiddenError('Client not in a room');
+    const { id, wid } = rooms.document.get(socket);
+    if (!id) throw new ForbiddenError('Client not in a room');
 
-    socket.broadcast.to(documentId).emit('operation', operations);
-    await service.updateDocument(workspaceId, documentId, operations);
+    socket.broadcast.to(id).emit('operation', operations);
+    await service.updateDocument(wid, id, operations);
     socket.emit('ack');
   };
 }

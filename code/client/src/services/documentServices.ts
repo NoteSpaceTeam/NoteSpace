@@ -1,21 +1,32 @@
 import { HttpCommunication } from '@/services/communication/http/httpCommunication';
-import { DocumentResource } from '@notespace/shared/src/workspace/types/resource.ts';
+import { DocumentResource, ResourceInputModel, ResourceType } from '@notespace/shared/src/workspace/types/resource.ts';
 
-async function getDocument(http: HttpCommunication, id: string): Promise<DocumentResource> {
-  return await http.get(`/documents/${id}`);
+function documentServices(http: HttpCommunication, wid: string) {
+  async function getDocument(id: string): Promise<DocumentResource> {
+    return await http.get(`/workspaces/${wid}/${id}`);
+  }
+
+  async function createDocument(name: string): Promise<string> {
+    const resource: ResourceInputModel = { name, type: ResourceType.DOCUMENT };
+    const { id } = await http.post(`/workspaces/${wid}`, resource);
+    return id;
+  }
+
+  async function deleteDocument(id: string) {
+    await http.delete(`/workspace/${wid}/${id}`);
+  }
+
+  async function updateDocument(id: string, name: string) {
+    const resource: Partial<ResourceInputModel> = { name };
+    await http.put(`/workspaces/${wid}/${id}`, resource);
+  }
+
+  return {
+    getDocument,
+    createDocument,
+    deleteDocument,
+    updateDocument,
+  };
 }
 
-async function createDocument(http: HttpCommunication): Promise<string> {
-  const { id } = await http.post('/documents');
-  return id;
-}
-
-async function deleteDocument(http: HttpCommunication, id: string) {
-  await http.delete(`/documents/${id}`);
-}
-
-export default {
-  getDocument,
-  createDocument,
-  deleteDocument,
-};
+export default documentServices;

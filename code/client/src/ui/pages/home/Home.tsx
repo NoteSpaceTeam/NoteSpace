@@ -1,4 +1,3 @@
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
 import useWorkspaces from '@ui/pages/workspace/hooks/useWorkspaces.ts';
 import WorkspacePreview from '@ui/pages/home/components/WorkspacePreview.tsx';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader.tsx';
@@ -8,12 +7,7 @@ import './Home.scss';
 import '../workspace/Workspace.scss';
 
 function Home() {
-  const workspaces: WorkspaceMetaData[] = [
-    { id: '1', name: 'Workspace 1' },
-    { id: '2', name: 'Workspace 2' },
-    { id: '3', name: 'Workspace 3' },
-  ];
-  const { createWorkspace, updateWorkspace, deleteWorkspace } = useWorkspaces();
+  const { workspaces, createWorkspace, updateWorkspace, deleteWorkspace } = useWorkspaces();
   const { publishError } = useError();
   return (
     <div className="home">

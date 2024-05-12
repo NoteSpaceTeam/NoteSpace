@@ -35,7 +35,7 @@ function App() {
                           }
                         />
                         <Route
-                          path="/:id"
+                          path="documents/:id"
                           element={
                             <>
                               <Sidebar />

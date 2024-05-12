@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog as MaterialDialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
+import './Dialog.scss';
 
 interface Field {
   name: string;
@@ -37,7 +38,7 @@ function Dialog({ title, fields, onSubmit, children }: DialogProps) {
   };
 
   return (
-    <>
+    <div className="dialog">
       <Button onClick={handleOpen} className="button">
         {children}
       </Button>
@@ -66,7 +67,7 @@ function Dialog({ title, fields, onSubmit, children }: DialogProps) {
           </Button>
         </DialogActions>
       </MaterialDialog>
-    </>
+    </div>
   );
 }
 

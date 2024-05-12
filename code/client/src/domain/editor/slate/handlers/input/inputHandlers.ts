@@ -139,8 +139,10 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * Handles cursor selection
    */
   function onSelectionChange() {
+    const { selection } = editor;
+    if (!selection) return;
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    domainOperations.updateSelection(editor.selection, styles);
+    domainOperations.updateSelection(selection, styles);
   }
 
   function onBlur() {

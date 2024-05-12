@@ -12,14 +12,14 @@ function WorkspaceHeader({ onCreateNew, children }: WorkspaceHeaderProps) {
   return (
     <div className="header">
       <MdOutlineNotes />
-      <button onClick={onCreateNew}>
+      <>
         {children || (
-          <>
+          <button onClick={onCreateNew}>
             <p>New</p>
             <FaPlus />
-          </>
+          </button>
         )}
-      </button>
+      </>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
 
   async updateDocument(wid: string, id: string, newOperations: Operation[]) {
     const doc = await this.getDoc(wid, id);
-    await doc.update({ operations: FieldValue.arrayUnion(newOperations) });
+    await doc.update({ operations: FieldValue.arrayUnion(...newOperations) });
   }
 
   async getWorkspace(id: string): Promise<CollectionReference> {
@@ -37,11 +37,11 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
   }
 
   private async getDoc(wid: string, id: string): Promise<firestore.DocumentReference> {
-    const documents = await this.getWorkspace(wid);
-    const query = documents.where('id', '==', id);
-    const data = await query.get();
-    if (data.empty) throw new NotFoundError(`Document with id ${id} not found`);
-    return data.docs[0].ref;
+    const workspace = await this.getWorkspace(wid);
+    const docRef = workspace.doc(id);
+    const doc = await docRef.get();
+    if (!doc.exists) throw new NotFoundError(`Document with id ${id} not found`);
+    return docRef;
   }
 
   /**

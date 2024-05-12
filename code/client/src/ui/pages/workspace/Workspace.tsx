@@ -3,15 +3,20 @@ import DocumentPreview from '@ui/pages/workspace/components/DocumentPreview';
 import useError from '@domain/error/useError';
 import useDocuments from '@ui/pages/workspace/hooks/useDocuments.ts';
 import './Workspace.scss';
+import { useEffect } from 'react';
+import { useCommunication } from '@/services/communication/context/useCommunication.ts';
+import { useParams } from 'react-router-dom';
 
 function Workspace() {
-  const documents = [
-    { id: '1', name: 'Document 1' },
-    { id: '2', name: 'Document 2' },
-    { id: '3', name: 'Document 3' },
-  ];
-  const { createDocument, deleteDocument, updateDocument } = useDocuments();
+  const { documents, createDocument, deleteDocument, updateDocument } = useDocuments();
+  const { socket } = useCommunication();
   const { publishError } = useError();
+  const { wid } = useParams();
+
+  useEffect(() => {
+    socket.emit('joinWorkspace', wid);
+  }, [socket, wid]);
+
   return (
     <div className="workspace">
       <h2>Workspace</h2>

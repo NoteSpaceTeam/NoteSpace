@@ -1,9 +1,9 @@
 begin ;
 
     -- Delete all rows from the resources table
-    delete from resource ;
+    delete from resource;
 
     -- Delete all rows from the workspaces table
-    delete from workspace ;
+    delete from workspace;
 
 commit ;

@@ -13,7 +13,6 @@ function onCursorChange() {
   return (socket: Socket, range: any) => {
     const documentId = rooms.document.get(socket)?.id;
     if (!documentId) return;
-
     if (!range) {
       deleteCursor(socket, documentId);
     } else {
@@ -24,12 +23,12 @@ function onCursorChange() {
 
 function deleteCursor(socket: Socket, documentId: string) {
   cursorColorsMap.delete(socket.id);
-  socket.broadcast.to(documentId).emit('cursor', { id: socket.id });
+  socket.broadcast.to(documentId).emit('cursorChange', { id: socket.id });
 }
 
 function updateCursor(socket: Socket, data: CursorData, documentId: string) {
   const color = getColor(socket);
-  socket.broadcast.to(documentId).emit('cursor', { ...data, id: socket.id, color });
+  socket.broadcast.to(documentId).emit('cursorChange', { ...data, id: socket.id, color });
 }
 
 function getColor(socket: Socket) {

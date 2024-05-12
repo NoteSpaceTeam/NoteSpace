@@ -1,32 +1,13 @@
 import { IoMenu } from 'react-icons/io5';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Sidebar.scss';
 import { RiMenuFold2Line, RiMenuFoldLine } from 'react-icons/ri';
 import useWorkspace from '@domain/workspace/useWorkspace.ts';
+import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState.ts';
 
 function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
-  const [justClosed, setJustClosed] = useState(false);
-  const { resources } = useWorkspace();
-
-  const handleMouseEnter = () => {
-    if (justClosed) return;
-    setIsOpen(true);
-  };
-
-  const handleClick = () => {
-    setIsLocked(!isLocked && isOpen);
-    setIsOpen(!isLocked && !isOpen);
-    setJustClosed(isLocked);
-  };
-
-  const handleMouseLeave = () => {
-    if (isLocked) return;
-    setIsOpen(false);
-    setJustClosed(false);
-  };
+  const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
+  const { workspace } = useWorkspace();
 
   return (
     <div
@@ -51,7 +32,7 @@ function Sidebar() {
         <li>Workspaces</li>
         <li>Settings</li>
 
-        {resources?.map(resource => (
+        {workspace?.resources.map(resource => (
           <li key={resource.id}>
             <Link to={`/workspaces/${resource.id}`}>{resource.name}</Link>
           </li>

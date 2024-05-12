@@ -1,16 +1,13 @@
-import { HttpCommunication } from '@/services/communication/http/httpCommunication';
 import documentServices from '@/services/documentServices';
 import { useMemo } from 'react';
+import { useCommunication } from '@/services/communication/context/useCommunication.ts';
+import { useParams } from 'react-router-dom';
 
-function useDocumentServices(http: HttpCommunication) {
-  return useMemo(
-    () => ({
-      getDocument: (id: string) => documentServices.getDocument(http, id),
-      createDocument: () => documentServices.createDocument(http),
-      deleteDocument: (id: string) => documentServices.deleteDocument(http, id),
-    }),
-    [http]
-  );
+function useDocumentServices() {
+  const { http } = useCommunication();
+  const { wid } = useParams();
+  if (!wid) throw new Error('Cannot use document services outside of a workspace');
+  return useMemo(() => documentServices(http, wid), [http, wid]);
 }
 
 export default useDocumentServices;
