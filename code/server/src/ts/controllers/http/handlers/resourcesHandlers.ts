@@ -59,7 +59,7 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const resource = req.body as Partial<WorkspaceResource>;
     if (!resource) throw new InvalidParameterError('Body is required');
     await service.updateResource(id, resource);
-    io.in(wid).emit('updatedResource', { id, ...resource });
+    io.in(wid).emit('updatedResource', { ...resource, id });
     httpResponse.noContent(res).send();
   };
 

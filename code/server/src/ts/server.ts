@@ -11,7 +11,7 @@ import { DocumentsService } from '@services/DocumentsService';
 import { TestDatabases } from '@databases/TestDatabases';
 
 // databases
-const databases = new TestDatabases()
+const databases = new TestDatabases();
 
 // services
 const docService = new DocumentsService(databases.document);

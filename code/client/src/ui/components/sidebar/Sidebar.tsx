@@ -1,22 +1,15 @@
-import { useState } from 'react';
 import { IoMenu } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { RiMenuFold2Line, RiMenuFoldLine } from 'react-icons/ri';
-import useWorkspace from '@domain/workspace/useWorkspace.ts';
+import useWorkspace from '@domain/workspaces/hooks/useWorkspace.ts';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState.ts';
 import ResourceView from '@ui/components/sidebar/components/ResourceView.tsx';
-import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
 import './Sidebar.scss';
-import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
-import { useCommunication } from '@/services/communication/context/useCommunication.ts';
 
 function Sidebar() {
   const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
-  const { socket } = useCommunication();
-  const { workspace } = useWorkspace();
-  const [resources, setResources] = useState<WorkspaceResource[]>([]);
-
-  useSocketListeners(socket, {});
+  const { workspace, resources, operations } = useWorkspace();
+  const { wid } = useParams();
 
   return (
     <div
@@ -46,13 +39,15 @@ function Sidebar() {
             <h3>
               <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
             </h3>
-            <ul className="files">
-              {workspace.resources.map(resource => (
-                <li key={resource.id}>
-                  <ResourceView resource={resource} />
-                </li>
-              ))}
-            </ul>
+            {resources && (
+              <ul className="files">
+                {resources?.map(resource => (
+                  <li key={resource.id}>
+                    <ResourceView resource={{ ...resource, workspace: wid! }} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </>
         )}
       </ul>

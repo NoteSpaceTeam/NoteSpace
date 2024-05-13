@@ -13,28 +13,24 @@ function useWorkspaces() {
     setWorkspaces([...workspaces, workspace]);
   }
 
-  async function createWorkspace(values: { [key: string]: string }) {
-    if (!values.name) throw new Error('Workspace name is required');
-    // ... TODO: validate other fields
-    const { name, description, visibility, tags, members } = values;
-    const workspace: WorkspaceInputModel = { name, description, visibility, tags: [tags], members: [members] }; // TODO: fix later
-    await service.createWorkspace(workspace);
-  }
-
   function onDeleteWorkspace(id: string) {
     setWorkspaces(workspaces.filter(workspace => workspace.id !== id));
-  }
-
-  async function deleteWorkspace(id: string) {
-    await service.deleteWorkspace(id);
   }
 
   function onUpdateWorkspace(workspace: WorkspaceMetaData) {
     setWorkspaces(workspaces.map(w => (w.id === workspace.id ? workspace : w)));
   }
 
-  async function updateWorkspace(workspace: WorkspaceMetaData) {
-    await service.updateWorkspace(workspace.id, workspace);
+  async function createWorkspace(workspace: WorkspaceInputModel) {
+    return await service.createWorkspace(workspace);
+  }
+
+  async function deleteWorkspace(id: string) {
+    return await service.deleteWorkspace(id);
+  }
+
+  async function updateWorkspace(id: string, newProps: Partial<WorkspaceMetaData>) {
+    return await service.updateWorkspace(id, newProps);
   }
 
   useSocketListeners(socket, {

@@ -1,38 +1,32 @@
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader';
 import DocumentView from '@ui/pages/workspace/components/DocumentView.tsx';
-import useError from '@domain/error/useError';
-import useWorkspaceTreeOperations from '@ui/pages/workspace/hooks/useWorkspaceTreeOperations.ts';
+import useError from '@domain/error/hooks/useError.ts';
 import './Workspace.scss';
-import useWorkspace from '@domain/workspace/useWorkspace.ts';
+import useWorkspace from '@domain/workspaces/hooks/useWorkspace.ts';
 import { DocumentResourceMetadata, ResourceType } from '@notespace/shared/src/workspace/types/resource.ts';
 
 function Workspace() {
-  const { workspace } = useWorkspace()
+  const { workspace, resources, operations } = useWorkspace();
   const { publishError } = useError();
-
-  const {
-    resources,
-    createResource,
-    deleteResource,
-    updateResource
-  } = useWorkspaceTreeOperations();
 
   return (
     <div className="workspace">
       <h2>Workspace {workspace?.name}</h2>
-      <WorkspaceHeader onCreateNew={() => createResource(ResourceType.DOCUMENT).catch(publishError)}></WorkspaceHeader>
+      <WorkspaceHeader
+        onCreateNew={async () => operations?.createResource('Untitled', ResourceType.DOCUMENT).catch(publishError)}
+      ></WorkspaceHeader>
       <ul className="items">
-        {resources.map(resource => (
-          resource.type === ResourceType.DOCUMENT
-            ? <DocumentView
+        {resources
+          ?.filter(resource => resource.type === ResourceType.DOCUMENT)
+          .map(resource => (
+            <DocumentView
               key={resource.id}
               document={resource as DocumentResourceMetadata}
-              onDelete={() => deleteResource(resource.id).catch(publishError)}
-              onDuplicate={() => createResource(ResourceType.DOCUMENT, resource.name).catch(publishError)}
-              onRename={name => updateResource(resource.id, {name}).catch(publishError)}
+              onDelete={() => operations?.deleteResource(resource.id).catch(publishError)}
+              onDuplicate={() => operations?.createResource(resource.name, ResourceType.DOCUMENT).catch(publishError)}
+              onRename={name => operations?.updateResource(resource.id, { name }).catch(publishError)}
             />
-            : <></>
-        ))}
+          ))}
       </ul>
     </div>
   );

@@ -4,7 +4,7 @@ import { Communication } from '@/services/communication/communication';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
-import useDocumentService from '@/services/document/useDocumentService.ts';
+import useDocumentService from '@/services/resource/useResourceService.ts';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
@@ -27,7 +27,7 @@ function Title(props: TitleProps) {
 
   async function onConfirm() {
     if (title === prevTitle) return;
-    await service.updateDocument(id!, { name: title });
+    await service.updateResource(id!, { name: title });
     setPrevTitle(title);
   }
 
@@ -48,7 +48,7 @@ function Title(props: TitleProps) {
   }
 
   useSocketListeners(socket, {
-    resourceUpdated: onResourceUpdated,
+    updatedResource: onResourceUpdated,
   });
 
   return (

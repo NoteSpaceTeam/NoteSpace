@@ -138,16 +138,16 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
   /**
    * Handles cursor selection
    */
-  function onSelectionChange() {
+  function onSelectionChange(blur = false) {
     const { selection } = editor;
-    if (!selection) return;
+    if (!selection && !blur) return;
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
     domainOperations.updateSelection(selection, styles);
   }
 
   function onBlur() {
     ReactEditor.deselect(editor);
-    onSelectionChange();
+    onSelectionChange(true);
   }
 
   return { onInput, onPaste, onCut, onSelectionChange, onShortcut, onBlur };

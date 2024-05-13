@@ -3,9 +3,10 @@ import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@/services/communication/context/useCommunication';
-import useError from '@domain/error/useError';
+import useError from '@domain/error/hooks/useError.ts';
+import useDocumentService from '@/services/resource/useResourceService';
+import { DocumentResource } from '@notespace/shared/src/workspace/types/resource.ts';
 import './Document.scss';
-import useDocumentService from '@/services/document/useDocumentService.ts';
 
 function Document() {
   const communication = useCommunication();
@@ -23,7 +24,7 @@ function Document() {
 
     async function fetchDocument() {
       if (!id) return;
-      const { content, name } = await services.getDocument(id);
+      const { content, name } = (await services.getResource(id)) as DocumentResource;
       setTitle(name);
       fugue.applyOperations(content, true);
       socket.emit('joinDocument', id);

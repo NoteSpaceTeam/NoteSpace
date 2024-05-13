@@ -45,14 +45,14 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   }
 
   async getWorkspaceResources(wid: string): Promise<Record<string, WorkspaceResource>> {
-    const results : WorkspaceResource[]  = await sql`
+    const results: WorkspaceResource[] = await sql`
         SELECT json_object_agg(id, r) 
         FROM resources r
         WHERE workspace = ${wid}
-    `
-    const entries = results.map((entry) => [entry.id, entry])
+    `;
+    const entries = results.map(entry => [entry.id, entry]);
 
-    console.log("Resources:", Object.fromEntries(entries))
-    return Object.fromEntries(entries)
+    console.log('Resources:', Object.fromEntries(entries));
+    return Object.fromEntries(entries);
   }
 }

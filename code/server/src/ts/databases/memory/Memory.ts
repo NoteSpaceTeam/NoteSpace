@@ -1,5 +1,6 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { v4 as uuid } from 'uuid';
+import { NotFoundError } from '@domain/errors/errors';
 
 type Workspace = {
   id: string;
@@ -21,7 +22,7 @@ export function getWorkspaces(): Workspace[] {
 
 export function getWorkspace(id: string): Workspace {
   const workspace = workspaces.get(id);
-  if (!workspace) throw new Error(`Workspace not found`);
+  if (!workspace) throw new NotFoundError(`Workspace not found`);
   return workspace;
 }
 
@@ -31,13 +32,13 @@ export function updateWorkspace(id: string, name: string) {
 }
 
 export function deleteWorkspace(id: string) {
-  if (!workspaces.delete(id)) throw new Error(`Workspace not found`);
+  if (!workspaces.delete(id)) throw new NotFoundError(`Workspace not found`);
 }
 
 export function getResource(id: string): WorkspaceResource {
   const workspace = getResourceWorkspace(id);
   const resource = workspace.resources.find(r => r.id === id);
-  if (!resource) throw new Error(`Resource not found`);
+  if (!resource) throw new NotFoundError(`Resource not found`);
   return resource;
 }
 
@@ -72,7 +73,7 @@ function getResourceWorkspace(resourceId: string): Workspace {
       return workspace;
     }
   }
-  throw new Error(`Resource not found`);
+  throw new NotFoundError(`Resource not found`);
 }
 
 export const memoryDB = {

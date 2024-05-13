@@ -1,8 +1,8 @@
-import useWorkspaces from '@ui/pages/workspace/hooks/useWorkspaces.ts';
+import useWorkspaces from '@domain/workspaces/hooks/useWorkspaces.ts';
 import WorkspaceView from '@ui/pages/home/components/WorkspaceView.tsx';
 import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader.tsx';
 import CreateWorkspaceDialog from '@ui/pages/home/components/CreateWorkspaceDialog.tsx';
-import useError from '@domain/error/useError.ts';
+import useError from '@domain/error/hooks/useError.ts';
 import './Home.scss';
 import '../workspace/Workspace.scss';
 

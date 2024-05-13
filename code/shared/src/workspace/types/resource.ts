@@ -21,7 +21,8 @@ export enum ResourceType {
   FOLDER = "F",
 }
 
-export interface WorkspaceResourceMetadata extends Omit<WorkspaceResource, 'workspace'>{}
+export interface WorkspaceResourceMetadata
+  extends Omit<WorkspaceResource, "workspace"> {}
 
 export interface FolderResource extends WorkspaceResource {
   type: ResourceType.FOLDER;

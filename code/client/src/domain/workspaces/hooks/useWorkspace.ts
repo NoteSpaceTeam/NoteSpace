@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { WorkspaceContext } from '@domain/workspace/WorkspaceContext';
+import { WorkspaceContext } from '@domain/workspaces/hooks/WorkspaceContext.tsx';
 
 const useWorkspace = () => useContext(WorkspaceContext);
 

@@ -5,9 +5,9 @@ import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';
 import NotFound from '@ui/pages/notfound/NotFound';
 import './App.scss';
-import { ErrorProvider } from '@domain/error/ErrorContext';
+import { ErrorProvider } from '@domain/error/hooks/ErrorContext.tsx';
 import Sidebar from '@ui/components/sidebar/Sidebar';
-import { WorkspaceProvider } from '@domain/workspace/WorkspaceContext';
+import { WorkspaceProvider } from '@domain/workspaces/hooks/WorkspaceContext.tsx';
 import Home from '@ui/pages/home/Home.tsx';
 
 function App() {
@@ -25,18 +25,24 @@ function App() {
                   element={
                     <WorkspaceProvider>
                       <Routes>
-                        <Route path="/" element={
-                          <>
-                            <Sidebar />
-                            <Workspace />
-                          </>
-                        } />
-                        <Route path="/:id" element={
-                          <>
-                            <Sidebar />
-                            <Document />
-                          </>
-                        }/>
+                        <Route
+                          path="/"
+                          element={
+                            <>
+                              <Sidebar />
+                              <Workspace />
+                            </>
+                          }
+                        />
+                        <Route
+                          path="/:id"
+                          element={
+                            <>
+                              <Sidebar />
+                              <Document />
+                            </>
+                          }
+                        />
                       </Routes>
                     </WorkspaceProvider>
                   }
