@@ -7,11 +7,11 @@ import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
-import { ProductionDatabases } from '@databases/ProductionDatabases';
 import { DocumentsService } from '@services/DocumentsService';
+import { TestDatabases } from '@databases/TestDatabases';
 
 // databases
-const databases = new ProductionDatabases();
+const databases = new TestDatabases()
 
 // services
 const docService = new DocumentsService(databases.document);

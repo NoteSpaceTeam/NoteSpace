@@ -25,24 +25,18 @@ function App() {
                   element={
                     <WorkspaceProvider>
                       <Routes>
-                        <Route
-                          path="/"
-                          element={
-                            <>
-                              <Sidebar />
-                              <Workspace />
-                            </>
-                          }
-                        />
-                        <Route
-                          path="/:id"
-                          element={
-                            <>
-                              <Sidebar />
-                              <Document />
-                            </>
-                          }
-                        />
+                        <Route path="/" element={
+                          <>
+                            <Sidebar />
+                            <Workspace />
+                          </>
+                        } />
+                        <Route path="/:id" element={
+                          <>
+                            <Sidebar />
+                            <Document />
+                          </>
+                        }/>
                       </Routes>
                     </WorkspaceProvider>
                   }

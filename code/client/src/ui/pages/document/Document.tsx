@@ -3,9 +3,9 @@ import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@/services/communication/context/useCommunication';
-import useDocumentService from '@/services/document/useDocumentService.ts';
 import useError from '@domain/error/useError';
 import './Document.scss';
+import useDocumentService from '@/services/document/useDocumentService.ts';
 
 function Document() {
   const communication = useCommunication();

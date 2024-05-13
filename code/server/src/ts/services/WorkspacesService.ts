@@ -37,7 +37,7 @@ export class WorkspacesService {
     await this.documents.removeWorkspace(id);
   }
 
-  private async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {
+  private async getWorkspaceResources(id: string): Promise<Record<string, WorkspaceResource>> {
     return await this.workspaces.getWorkspaceResources(id);
   }
 }

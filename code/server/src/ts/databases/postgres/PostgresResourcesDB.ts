@@ -8,7 +8,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
     const resource = { workspace: wid, name, type };
     const results = await sql`
-        INSERT INTO resource ${sql(resource)}
+        INSERT INTO resources ${sql(resource)}
         RETURNING id
     `;
     if (isEmpty(results)) throw new Error('Resource not created');
@@ -17,7 +17,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
 
   async getResource(id: string): Promise<WorkspaceResource> {
     const results: WorkspaceResource[] = await sql`
-        SELECT * FROM resource WHERE id = ${id}
+        SELECT * FROM resources WHERE id = ${id}
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
@@ -25,7 +25,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
 
   async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
     const results = await sql`
-        UPDATE resource
+        UPDATE resources
         SET ${sql(resource)}
         WHERE id = ${id}
         RETURNING id
@@ -35,7 +35,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
 
   async deleteResource(id: string) {
     const results = await sql`
-        DELETE FROM resource
+        DELETE FROM resources
         WHERE id = ${id}
         RETURNING id
     `;

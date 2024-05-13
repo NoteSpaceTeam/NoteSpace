@@ -34,7 +34,7 @@ export interface WorkspacesRepository {
   getWorkspace: (id: string) => Promise<WorkspaceMetaData>;
   updateWorkspace: (id: string, name: string) => Promise<void>;
   deleteWorkspace: (id: string) => Promise<void>;
-  getWorkspaceResources: (id: string) => Promise<WorkspaceResource[]>;
+  getWorkspaceResources: (id: string) => Promise<Record<string, WorkspaceResource>>;
 }
 
 export interface Databases {
