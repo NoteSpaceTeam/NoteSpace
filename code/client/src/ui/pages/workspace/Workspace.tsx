@@ -23,7 +23,7 @@ function Workspace() {
               key={resource.id}
               document={resource as DocumentResourceMetadata}
               onDelete={() => operations?.deleteResource(resource.id).catch(publishError)}
-              onDuplicate={() => operations?.createResource(resource.name, ResourceType.DOCUMENT).catch(publishError)}
+              onDuplicate={() => operations?.createResource(resource.name + "-copy", ResourceType.DOCUMENT).catch(publishError)}
               onRename={name => operations?.updateResource(resource.id, { name }).catch(publishError)}
             />
           ))}

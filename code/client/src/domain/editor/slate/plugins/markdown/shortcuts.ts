@@ -16,8 +16,8 @@ export const shortcuts = [
   blockRules(BlockStyles.hr, '---'),
   blockRules(BlockStyles.checked, '-[x]'),
   blockRules(BlockStyles.unchecked, '-[]'),
-  inlineRules(InlineStyles.bold, '**', '__'),
+  inlineRules(InlineStyles.bold, '**'),
+  inlineRules(InlineStyles.underline, '__'),
   inlineRules(InlineStyles.italic, '*', '_'),
   inlineRules(InlineStyles.strikethrough, '~~'),
-  inlineRules(InlineStyles.underline, '=='),
 ];

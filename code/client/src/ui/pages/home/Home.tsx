@@ -22,7 +22,7 @@ function Home() {
             key={workspace.id}
             workspace={workspace}
             onDelete={() => deleteWorkspace(workspace.id).catch(publishError)}
-            onRename={name => updateWorkspace({ ...workspace, name }).catch(publishError)}
+            onRename={name => updateWorkspace(workspace.id, {...workspace, name: name + "-copy" }).catch(publishError)}
             onInvite={() => {}}
           />
         ))}
