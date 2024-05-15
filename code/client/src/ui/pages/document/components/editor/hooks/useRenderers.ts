@@ -4,7 +4,7 @@ import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugin
 import { Editor } from 'slate';
 import { Fugue } from '@domain/editor/crdt/fugue';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
-import { Communication } from '@services/communication/communication.ts';
+import { Communication } from '@services/communication/communication';
 
 /**
  * Returns the renderers for the editor.

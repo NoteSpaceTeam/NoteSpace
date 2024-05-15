@@ -1,4 +1,4 @@
-import { ResourceType, WorkspaceResourceMetadata } from '@notespace/shared/src/workspace/types/resource.ts';
+import { ResourceType, WorkspaceResourceMetadata } from '@notespace/shared/src/workspace/types/resource';
 
 type WorkspaceTreeNode = WorkspaceResourceMetadata;
 

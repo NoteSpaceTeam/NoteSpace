@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SocketCommunication, SocketEventHandlers } from '@services/communication/socket/socketCommunication.ts';
+import { SocketCommunication, SocketEventHandlers } from '@services/communication/socket/socketCommunication';
 
 function useSocketListeners(socket: SocketCommunication, eventHandlers: SocketEventHandlers) {
   useEffect(() => {

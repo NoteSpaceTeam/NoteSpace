@@ -1,4 +1,4 @@
-import { Operation } from '@notespace/shared/src/document/types/operations.ts';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 import { isEmpty, range } from 'lodash';
 import { Socket } from 'socket.io-client';
 

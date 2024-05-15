@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
-import config from '@/config.ts';
-import { OperationEmitter } from '@services/communication/socket/operationEmitter.ts';
+import config from '@/config';
+import { OperationEmitter } from '@services/communication/socket/operationEmitter';
 
 type EmitType = (event: string, data?: any) => void;
 type ListenType = (eventHandlers: SocketEventHandlers) => void;

@@ -7,7 +7,6 @@
     "skipLibCheck": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ES2022",
@@ -24,6 +23,7 @@
     "paths": {
       "@ui/*": ["./ui/*"],
       "@pwa/*": ["./pwa/*"],
+      "@services/*": ["./services/*"],
       "@domain/*": ["./domain/*"],
       "@assets/*": ["./assets/*"],
       "@tests/*": ["../tests/*"],
@@ -31,6 +31,5 @@
     }
   },
   "include": ["src", "tests"],
-  "exclude": ["vite.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["vite.config.ts"]
 }

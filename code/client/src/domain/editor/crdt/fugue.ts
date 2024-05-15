@@ -1,6 +1,6 @@
-import { type Id } from '@notespace/shared/src/document/types/nodes.ts';
+import { type Id } from '@notespace/shared/src/document/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { FugueTree } from '@notespace/shared/src/document/FugueTree.ts';
+import { FugueTree } from '@notespace/shared/src/document/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@domain/editor/crdt/types';
 import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
@@ -12,7 +12,7 @@ import {
   InsertOperation,
   Operation,
   ReviveOperation,
-} from '@notespace/shared/src/document/types/operations.ts';
+} from '@notespace/shared/src/document/types/operations';
 
 /**
  * Class that represents a local replica of a FugueTree

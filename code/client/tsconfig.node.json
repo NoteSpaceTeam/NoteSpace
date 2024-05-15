@@ -5,6 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
       "@domain/*": ["./domain/*"],

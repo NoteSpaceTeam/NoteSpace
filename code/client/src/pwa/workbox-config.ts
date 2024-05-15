@@ -47,6 +47,6 @@ export const workboxConfig: Partial<GenerateSWOptions> = {
       },
     },
   ],
-  //importScripts: ['./service-worker.ts'],
+  //importScripts: ['./service-worker'],
   //cleanupOutdatedCaches: true,
 };

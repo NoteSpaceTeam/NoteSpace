@@ -7,7 +7,6 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { qrcode } from 'vite-plugin-qrcode';
 import { config } from 'dotenv';
 // import { VitePWA } from 'vite-plugin-pwa';
-// import { pwaConfig } from './src/pwa/pwa-config.ts';
 
 config();
 

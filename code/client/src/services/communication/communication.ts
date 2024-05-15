@@ -1,5 +1,5 @@
-import { socketCommunication, SocketCommunication } from '@services/communication/socket/socketCommunication.ts';
-import { httpCommunication, HttpCommunication } from '@services/communication/http/httpCommunication.ts';
+import { socketCommunication, SocketCommunication } from '@services/communication/socket/socketCommunication';
+import { httpCommunication, HttpCommunication } from '@services/communication/http/httpCommunication';
 
 export interface Communication {
   socket: SocketCommunication;

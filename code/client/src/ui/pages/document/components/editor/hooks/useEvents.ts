@@ -1,5 +1,5 @@
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
-import { type Operation } from '@notespace/shared/src/document/types/operations.ts';
+import { type Operation } from '@notespace/shared/src/document/types/operations';
 import { Communication } from '@services/communication/communication';
 import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
 

@@ -4,7 +4,7 @@ import { InputDomainOperations } from '@domain/editor/operations/input/types';
 import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
 import { nodeInsert } from '@domain/editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { Operation } from '@notespace/shared/src/document/types/operations.ts';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Communication } from '@services/communication/communication';
 
 export default (fugue: Fugue, { socket }: Communication): InputDomainOperations => {

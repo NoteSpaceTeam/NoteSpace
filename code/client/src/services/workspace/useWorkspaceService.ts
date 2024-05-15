@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
-import workspaceService from '@services/workspace/workspaceService.ts';
+import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import workspaceService from '@services/workspace/workspaceService';
 
 function useWorkspaceService() {
   const { http } = useCommunication();

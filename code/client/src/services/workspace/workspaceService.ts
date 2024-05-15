@@ -1,6 +1,6 @@
-import { HttpCommunication } from '@services/communication/http/httpCommunication.ts';
-import { WorkspaceInputModel, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
-import { Workspace } from '@notespace/shared/src/workspace/types/workspace.ts';
+import { HttpCommunication } from '@services/communication/http/httpCommunication';
+import { WorkspaceInputModel, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
 
 function workspaceService(http: HttpCommunication) {
   async function getWorkspace(id: string): Promise<Workspace> {

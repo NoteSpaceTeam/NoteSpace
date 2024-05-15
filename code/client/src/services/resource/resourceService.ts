@@ -1,5 +1,5 @@
-import { HttpCommunication } from '@services/communication/http/httpCommunication.ts';
-import { ResourceInputModel, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
+import { HttpCommunication } from '@services/communication/http/httpCommunication';
+import { ResourceInputModel, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 
 function resourceService(http: HttpCommunication, wid: string) {
   async function getResource(id: string): Promise<WorkspaceResource> {

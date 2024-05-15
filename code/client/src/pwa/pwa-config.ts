@@ -1,7 +1,7 @@
-//import { injectConfig } from './inject-config.ts';
-import { manifestConfig } from './manifest-config.ts';
+//import { injectConfig } from './inject-config';
+import { manifestConfig } from '@pwa/manifest-config';
 import { VitePWAOptions } from 'vite-plugin-pwa';
-import { workboxConfig } from './workbox-config.ts';
+import { workboxConfig } from '@pwa/workbox-config';
 
 export const pwaConfig: Partial<VitePWAOptions> = {
   mode: 'development',
