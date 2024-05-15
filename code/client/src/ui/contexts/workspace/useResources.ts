@@ -1,7 +1,7 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
-import useResourceService from '@/services/resource/useResourceService.ts';
-import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
-import { useCommunication } from '@/services/communication/context/useCommunication.ts';
+import useResourceService from '@services/resource/useResourceService.ts';
+import useSocketListeners from '@services/communication/socket/useSocketListeners.ts';
+import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
 import { useState } from 'react';
 
 function useResources() {

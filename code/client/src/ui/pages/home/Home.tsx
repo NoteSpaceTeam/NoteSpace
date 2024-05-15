@@ -1,8 +1,8 @@
-import useWorkspaces from '@domain/workspaces/hooks/useWorkspaces.ts';
+import useWorkspaces from '@ui/pages/home/hooks/useWorkspaces';
 import WorkspaceView from '@ui/pages/home/components/WorkspaceView.tsx';
-import WorkspaceHeader from '@ui/pages/workspace/components/WorkspaceHeader.tsx';
+import WorkspaceHeader from '@ui/pages/workspace/components/header/WorkspaceHeader.tsx';
 import CreateWorkspaceDialog from '@ui/pages/home/components/CreateWorkspaceDialog.tsx';
-import useError from '@domain/error/hooks/useError.ts';
+import useError from '@ui/contexts/error/useError';
 import './Home.scss';
 import '../workspace/Workspace.scss';
 
@@ -22,7 +22,7 @@ function Home() {
             key={workspace.id}
             workspace={workspace}
             onDelete={() => deleteWorkspace(workspace.id).catch(publishError)}
-            onRename={name => updateWorkspace(workspace.id, {...workspace, name: name + "-copy" }).catch(publishError)}
+            onRename={name => updateWorkspace(workspace.id, { ...workspace, name: name + '-copy' }).catch(publishError)}
             onInvite={() => {}}
           />
         ))}

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useState, createContext, useEffect } from 'react';
 import { Workspace, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
-import { useCommunication } from '@/services/communication/context/useCommunication.ts';
-import useError from '@domain/error/hooks/useError.ts';
+import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
+import useError from '@ui/contexts/error/useError';
 import { useParams } from 'react-router-dom';
-import useWorkspaceService from '@/services/workspace/useWorkspaceService.ts';
-import useResources from '@domain/resources/hooks/useResources.ts';
+import useWorkspaceService from '@services/workspace/useWorkspaceService.ts';
+import useResources from '@ui/contexts/workspace/useResources';
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
 
 type ResourceOperationsType = {

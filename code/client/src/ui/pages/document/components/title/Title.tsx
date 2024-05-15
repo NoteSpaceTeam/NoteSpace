@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Communication } from '@/services/communication/communication';
+import { Communication } from '@services/communication/communication';
 import { useParams } from 'react-router-dom';
-import useSocketListeners from '@/services/communication/socket/useSocketListeners.ts';
+import useSocketListeners from '@services/communication/socket/useSocketListeners.ts';
 import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
-import useDocumentService from '@/services/resource/useResourceService.ts';
+import useDocumentService from '@services/resource/useResourceService.ts';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;

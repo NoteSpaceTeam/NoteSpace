@@ -44,6 +44,7 @@
     "knip": "^5.12.3",
     "prettier": "^3.2.5",
     "socket.io-client": "^4.7.5",
+    "superagent": "^9.0.0",
     "test-jest": "^1.0.1",
     "ts-jest": "^29.1.2",
     "tsconfig-paths": "^4.2.0",

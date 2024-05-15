@@ -1,4 +1,4 @@
-import { HttpCommunication } from '@/services/communication/http/httpCommunication.ts';
+import { HttpCommunication } from '@services/communication/http/httpCommunication.ts';
 import { ResourceInputModel, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource.ts';
 
 function resourceService(http: HttpCommunication, wid: string) {

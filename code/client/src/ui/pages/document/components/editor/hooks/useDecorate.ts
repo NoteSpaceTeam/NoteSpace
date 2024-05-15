@@ -1,4 +1,4 @@
-import { CursorData } from '@domain/editor/slate/hooks/useCursors';
+import { CursorData } from '@ui/pages/document/components/editor/hooks/useCursors';
 import { BaseRange, Editor, NodeEntry, Path, Range, Text } from 'slate';
 
 function useDecorate(editor: Editor, cursors: CursorData[]) {

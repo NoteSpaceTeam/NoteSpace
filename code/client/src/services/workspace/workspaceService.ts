@@ -1,4 +1,4 @@
-import { HttpCommunication } from '@/services/communication/http/httpCommunication.ts';
+import { HttpCommunication } from '@services/communication/http/httpCommunication.ts';
 import { WorkspaceInputModel, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
 import { Workspace } from '@notespace/shared/src/workspace/types/workspace.ts';
 

@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { CommunicationProvider } from '@/services/communication/context/CommunicationContext';
+import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext.tsx';
 import Document from '@ui/pages/document/Document';
 import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';
 import NotFound from '@ui/pages/notfound/NotFound';
 import './App.scss';
-import { ErrorProvider } from '@domain/error/hooks/ErrorContext.tsx';
+import { ErrorProvider } from '@ui/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
-import { WorkspaceProvider } from '@domain/workspaces/hooks/WorkspaceContext.tsx';
+import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Home from '@ui/pages/home/Home.tsx';
 
 function App() {

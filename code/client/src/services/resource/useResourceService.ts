@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { useCommunication } from '@/services/communication/context/useCommunication.ts';
+import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
 import { useParams } from 'react-router-dom';
-import resourceService from '@/services/resource/resourceService.ts';
+import resourceService from '@services/resource/resourceService.ts';
 
 function useResourceService() {
   const { http } = useCommunication();

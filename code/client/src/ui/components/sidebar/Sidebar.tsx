@@ -1,14 +1,14 @@
 import { IoMenu } from 'react-icons/io5';
 import { Link, useParams } from 'react-router-dom';
 import { RiMenuFold2Line, RiMenuFoldLine } from 'react-icons/ri';
-import useWorkspace from '@domain/workspaces/hooks/useWorkspace.ts';
+import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState.ts';
 import ResourceView from '@ui/components/sidebar/components/ResourceView.tsx';
 import './Sidebar.scss';
 
 function Sidebar() {
   const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
-  const { workspace, resources, operations } = useWorkspace();
+  const { workspace, resources } = useWorkspace();
   const { wid } = useParams();
 
   return (

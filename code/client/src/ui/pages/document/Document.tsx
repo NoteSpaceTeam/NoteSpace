@@ -2,9 +2,9 @@ import Editor from '@ui/pages/document/components/editor/Editor';
 import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCommunication } from '@/services/communication/context/useCommunication';
-import useError from '@domain/error/hooks/useError.ts';
-import useDocumentService from '@/services/resource/useResourceService';
+import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
+import useError from '@ui/contexts/error/useError';
+import useDocumentService from '@services/resource/useResourceService';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource.ts';
 import './Document.scss';
 

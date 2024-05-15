@@ -10,7 +10,7 @@ type DocumentContextMenuProps = {
   onDuplicate: () => void;
 };
 
-function DocumentContextMenu({ item, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
+function FileContextMenu({ item, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
   return (
     <ContextMenu item={item}>
       <button onClick={onRename}>
@@ -29,4 +29,4 @@ function DocumentContextMenu({ item, onRename, onDelete, onDuplicate }: Document
   );
 }
 
-export default DocumentContextMenu;
+export default FileContextMenu;

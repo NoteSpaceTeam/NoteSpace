@@ -1,6 +1,6 @@
 import { vitest } from 'vitest';
 
-import { Communication } from '@/services/communication/communication';
+import { Communication } from '@services/communication/communication';
 
 export const mockSocket: Communication = {
   socket: {

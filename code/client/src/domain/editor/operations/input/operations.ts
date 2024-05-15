@@ -5,7 +5,7 @@ import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
 import { nodeInsert } from '@domain/editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { Operation } from '@notespace/shared/src/document/types/operations.ts';
-import { Communication } from '@/services/communication/communication';
+import { Communication } from '@services/communication/communication';
 
 export default (fugue: Fugue, { socket }: Communication): InputDomainOperations => {
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {

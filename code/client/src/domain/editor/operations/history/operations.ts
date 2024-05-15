@@ -12,7 +12,7 @@ import {
   SplitNodeOperation,
   UnsetNodeOperation,
 } from '@domain/editor/operations/history/types';
-import { Communication } from '@/services/communication/communication';
+import { Communication } from '@services/communication/communication';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { getStyleType } from '@notespace/shared/src/document/types/styles';
 import { Text, Element } from 'slate';

@@ -1,6 +1,6 @@
 import { IoDocumentText } from 'react-icons/io5';
 import { Link, useParams } from 'react-router-dom';
-import DocumentContextMenu from '@ui/pages/workspace/components/DocumentContextMenu';
+import FileContextMenu from '@ui/pages/workspace/components/FileContextMenu.tsx';
 import { DocumentResourceMetadata } from '@notespace/shared/src/workspace/types/resource.ts';
 import useEditing from '@ui/hooks/useEditing.tsx';
 
@@ -11,7 +11,7 @@ type DocumentPreviewProps = {
   onRename: (title: string) => void;
 };
 
-function DocumentView({ document, onDelete, onRename, onDuplicate }: DocumentPreviewProps) {
+function FileView({ document, onDelete, onRename, onDuplicate }: DocumentPreviewProps) {
   const { wid } = useParams();
   const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', onRename);
   const DocumentComponent = (
@@ -23,7 +23,7 @@ function DocumentView({ document, onDelete, onRename, onDuplicate }: DocumentPre
     </li>
   );
   return (
-    <DocumentContextMenu
+    <FileContextMenu
       item={isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
       onRename={() => setIsEditing(true)}
       onDuplicate={onDuplicate}
@@ -32,4 +32,4 @@ function DocumentView({ document, onDelete, onRename, onDuplicate }: DocumentPre
   );
 }
 
-export default DocumentView;
+export default FileView;

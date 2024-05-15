@@ -22,12 +22,12 @@
     "baseUrl": "./src",
     "downlevelIteration": true,
     "paths": {
-      "@/*": ["./*"],
-      "@domain/*": ["./domain/*"],
-      "@pwa/*": ["./pwa/*"],
       "@ui/*": ["./ui/*"],
+      "@pwa/*": ["./pwa/*"],
+      "@domain/*": ["./domain/*"],
       "@assets/*": ["./assets/*"],
-      "@tests/*": ["../tests/*"]
+      "@tests/*": ["../tests/*"],
+      "@/*": ["./*"]
     }
   },
   "include": ["src", "tests"],

@@ -4,7 +4,7 @@ import { FugueNode } from '@domain/editor/crdt/types';
 import { Selection } from '@notespace/shared/src/document/types/cursor';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { deleteAroundSelection } from '@domain/editor/operations/markdown/utils';
-import { Communication } from '@/services/communication/communication';
+import { Communication } from '@services/communication/communication';
 import { Operation } from '@notespace/shared/src/document/types/operations.ts';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 
