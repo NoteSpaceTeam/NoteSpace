@@ -57,8 +57,6 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
     }
   }
 
-
-
   return cursor;
 }
 

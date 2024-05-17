@@ -1,9 +1,9 @@
-import WorkspaceHeader from '@ui/pages/workspace/components/header/WorkspaceHeader.tsx';
-import FileView from '@ui/pages/workspace/components/FileView.tsx';
+import { DocumentResourceMetadata, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import WorkspaceHeader from '@ui/pages/workspace/components/header/WorkspaceHeader';
+import FileView from '@ui/pages/workspace/components/FileView';
 import useError from '@ui/contexts/error/useError';
-import './Workspace.scss';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
-import { DocumentResourceMetadata, ResourceType } from '@notespace/shared/src/workspace/types/resource.ts';
+import './Workspace.scss';
 
 function Workspace() {
   const { workspace, resources, operations } = useWorkspace();

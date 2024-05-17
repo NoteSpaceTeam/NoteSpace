@@ -1,5 +1,5 @@
 import { createContext, ReactElement } from 'react';
-import { communication, Communication } from '@services/communication/communication.ts';
+import { communication, Communication } from '@services/communication/communication';
 
 export const CommunicationContext = createContext<Communication>(communication);
 

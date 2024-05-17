@@ -1,8 +1,8 @@
 import { IoDocumentText } from 'react-icons/io5';
 import { Link, useParams } from 'react-router-dom';
-import FileContextMenu from '@ui/pages/workspace/components/FileContextMenu.tsx';
-import { DocumentResourceMetadata } from '@notespace/shared/src/workspace/types/resource.ts';
-import useEditing from '@ui/hooks/useEditing.tsx';
+import FileContextMenu from '@ui/pages/workspace/components/FileContextMenu';
+import { DocumentResourceMetadata } from '@notespace/shared/src/workspace/types/resource';
+import useEditing from '@ui/hooks/useEditing';
 
 type DocumentPreviewProps = {
   document: DocumentResourceMetadata;

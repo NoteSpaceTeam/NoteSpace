@@ -1,15 +1,15 @@
 import { IoMenu } from 'react-icons/io5';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { RiMenuFold2Line, RiMenuFoldLine } from 'react-icons/ri';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
-import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState.ts';
-import ResourceView from '@ui/components/sidebar/components/ResourceView.tsx';
+import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import './Sidebar.scss';
+import WorkspaceTree from '@ui/components/sidebar/components/WorkspaceTree';
+import { useEffect } from 'react';
 
 function Sidebar() {
   const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
-  const { workspace, resources } = useWorkspace();
-  const { wid } = useParams();
+  const { workspace, tree } = useWorkspace();
 
   return (
     <div
@@ -31,7 +31,6 @@ function Sidebar() {
           <Link to="/">Home</Link>
         </li>
         <li>Recent</li>
-        <li>Workspaces</li>
         <li>Settings</li>
         {workspace && (
           <>
@@ -39,15 +38,7 @@ function Sidebar() {
             <h3>
               <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
             </h3>
-            {resources && (
-              <ul className="files">
-                {resources?.map(resource => (
-                  <li key={resource.id}>
-                    <ResourceView resource={{ ...resource, workspace: wid! }} />
-                  </li>
-                ))}
-              </ul>
-            )}
+            <WorkspaceTree workspace={workspace} tree={tree} />
           </>
         )}
       </ul>

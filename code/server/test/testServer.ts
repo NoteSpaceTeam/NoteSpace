@@ -2,7 +2,6 @@ import express = require('express');
 import http = require('http');
 import cors = require('cors');
 import { Server } from 'socket.io';
-import { DocumentsService } from '../src/ts/services/DocumentsService';
 import { Services } from '../src/ts/services/Services';
 import { TestDatabases } from '../src/ts/databases/TestDatabases';
 import config from '../src/ts/config';
@@ -11,14 +10,11 @@ import router from '../src/ts/controllers/http/router';
 import initSocketEvents from '../src/ts/controllers/ws/initSocketEvents';
 
 function setup() {
-  // databases
+  // setup services and databases
   const databases = new TestDatabases();
-
-  // services
-  const docService = new DocumentsService(databases.document);
   const services = new Services(databases);
 
-  // server and controllers
+  // setup express app
   const app = express();
   const server = http.createServer(app);
   const io = new Server(server, config.SERVER_OPTIONS);
@@ -28,8 +24,8 @@ function setup() {
   app.use(express.json());
   app.use('/', api);
 
-  // Setup event handlers
-  const events = eventsInit(docService);
+  // setup event handlers
+  const events = eventsInit(services.documents);
   const socketEvents = initSocketEvents(events);
 
   return {

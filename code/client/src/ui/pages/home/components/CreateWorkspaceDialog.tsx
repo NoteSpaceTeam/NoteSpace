@@ -1,4 +1,4 @@
-import Dialog from '@ui/components/dialog/Dialog.tsx';
+import Dialog from '@ui/components/dialog/Dialog';
 import { FaPlus } from 'react-icons/fa';
 
 type CreateWorkspaceDialogProps = {

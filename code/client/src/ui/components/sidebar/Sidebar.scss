@@ -55,14 +55,4 @@
   button:hover {
     color: dimgray;
   }
-
-  .files {
-    li > * {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: left;
-      gap: 1vh;
-    }
-  }
 }

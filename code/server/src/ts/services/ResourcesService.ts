@@ -5,18 +5,18 @@ export class ResourcesService {
   private readonly resources: ResourcesRepository;
   private readonly documents: DocumentsRepository;
 
-  constructor(resourcesDB: ResourcesRepository, documents: DocumentsRepository) {
-    this.resources = resourcesDB;
+  constructor(resources: ResourcesRepository, documents: DocumentsRepository) {
+    this.resources = resources;
     this.documents = documents;
   }
 
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
-    const id = await this.resources.createResource(wid, name, type, parent);
+    const id = await this.resources.createResource(wid, name, type, parent || 'root');
     if (type === ResourceType.DOCUMENT) await this.documents.createDocument(wid, id);
     return id;
   }
 
-  async getResource(wid: string, id: string, metaOnly: boolean): Promise<WorkspaceResource> {
+  async getResource(wid: string, id: string, metaOnly: boolean = false): Promise<WorkspaceResource> {
     const resource = await this.resources.getResource(id);
     if (resource.type === ResourceType.FOLDER || metaOnly) return resource;
     const { operations } = await this.documents.getDocument(wid, id);

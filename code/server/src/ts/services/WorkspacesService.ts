@@ -13,19 +13,8 @@ export class WorkspacesService {
 
   async createWorkspace(name: string): Promise<string> {
     const id = await this.workspaces.createWorkspace(name);
-    this.documents.addWorkspace(id);
+    await this.documents.addWorkspace(id);
     return id;
-  }
-
-  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
-    return await this.workspaces.getWorkspaces();
-  }
-
-  async getWorkspace(id: string, metaOnly: boolean): Promise<Workspace | WorkspaceMetaData> {
-    const metadata = await this.workspaces.getWorkspace(id);
-    if (metaOnly) return metadata;
-    const resources = await this.getWorkspaceResources(id);
-    return { ...metadata, resources };
   }
 
   async updateWorkspace(id: string, name: string) {
@@ -35,6 +24,17 @@ export class WorkspacesService {
   async deleteWorkspace(id: string) {
     await this.workspaces.deleteWorkspace(id);
     await this.documents.removeWorkspace(id);
+  }
+
+  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
+    return await this.workspaces.getWorkspaces();
+  }
+
+  async getWorkspace(id: string, metaOnly: boolean = false): Promise<Workspace> {
+    const metadata = await this.workspaces.getWorkspace(id);
+    if (metaOnly) return { ...metadata, resources: [] };
+    const resources = await this.getWorkspaceResources(id);
+    return { ...metadata, resources };
   }
 
   private async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {

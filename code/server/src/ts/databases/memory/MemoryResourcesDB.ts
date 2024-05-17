@@ -3,7 +3,7 @@ import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace
 import { memoryDB } from '@databases/memory/Memory';
 
 export class MemoryResourcesDB implements ResourcesRepository {
-  async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
+  async createResource(wid: string, name: string, type: ResourceType, parent: string): Promise<string> {
     return memoryDB.createResource(wid, name, type, parent);
   }
   async getResource(id: string): Promise<WorkspaceResource> {

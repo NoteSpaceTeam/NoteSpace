@@ -24,7 +24,7 @@ import {
   SplitNodeOperation,
   UnsetNodeOperation,
 } from '@domain/editor/operations/history/types';
-import {pointToCursor} from '@domain/editor/slate/utils/selection';
+import { pointToCursor } from '@domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
   insert_text: 'remove_text',
@@ -133,23 +133,23 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     const lineOffset = (line: number) => (line === 0 ? 0 : 1);
 
     // Remove whole line
-    if(operation.path.length === 1) {
-        const start = pointToCursor(editor, {path: operation.path, offset: 0});
-        const end = pointToCursor(editor, {path: [operation.path[0] + 1, 0], offset: 0});
+    if (operation.path.length === 1) {
+      const start = pointToCursor(editor, { path: operation.path, offset: 0 });
+      const end = pointToCursor(editor, { path: [operation.path[0] + 1, 0], offset: 0 });
 
-        const selection = { start, end };
-        return {
-            type: insert_mode ? 'insert_node' : 'remove_node',
-            selection,
-            node: operation.node,
-        };
+      const selection = { start, end };
+      return {
+        type: insert_mode ? 'insert_node' : 'remove_node',
+        selection,
+        node: operation.node,
+      };
     }
 
     if (!Text.isText(operation.node)) return;
 
     if (operation.node.text === '') return undefined;
 
-    if(!selectionBefore) return undefined
+    if (!selectionBefore) return undefined;
 
     const cursor = pointToCursor(editor, selectionBefore.anchor);
 

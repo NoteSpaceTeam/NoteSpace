@@ -21,7 +21,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     if (!resource) throw new InvalidParameterError('Body is required');
     const { type, name, parent } = resource;
     if (!type) throw new InvalidParameterError('Resource type is required');
-    // if (!parent) throw new InvalidParameterError('Resource parent is required');
 
     const id = await service.createResource(wid, name, type, parent);
     io.in(wid).emit('createdResource', { id, ...resource });

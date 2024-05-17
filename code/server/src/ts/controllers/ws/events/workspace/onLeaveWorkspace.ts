@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import rooms from '@controllers/ws/rooms/rooms';
-import {deleteCursor} from "@controllers/ws/events/document/onCursorChange";
+import { deleteCursor } from '@controllers/ws/events/document/onCursorChange';
 
 function onLeaveWorkspace() {
   return function (socket: Socket) {

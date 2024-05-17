@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';
 
 export class PostgresResourcesDB implements ResourcesRepository {
-  async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
+  async createResource(wid: string, name: string, type: ResourceType, parent: string): Promise<string> {
     const resource = { workspace: wid, name, parent: parent || '', type };
     const results = await sql`
         INSERT INTO resources ${sql(resource)}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, createContext, useEffect } from 'react';
-import ErrorComponent from '@ui/components/error/Error.tsx';
+import ErrorComponent from '@ui/components/error/Error';
 
 const ERROR_TIMEOUT = 5000;
 

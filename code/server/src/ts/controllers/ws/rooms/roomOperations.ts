@@ -15,7 +15,7 @@ export function leaveRoom(rooms: Map<string, Room>, socket: Socket) {
   room.leave(socket.id);
 }
 
-export function getRoom(rooms: Map<string, Room>, socketId : string): Room | null {
+export function getRoom(rooms: Map<string, Room>, socketId: string): Room | null {
   for (const room of rooms.values()) {
     if (room.has(socketId)) return room;
   }

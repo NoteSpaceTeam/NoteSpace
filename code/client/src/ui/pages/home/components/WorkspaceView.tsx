@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace.ts';
-import useEditing from '@ui/hooks/useEditing.tsx';
+import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import useEditing from '@ui/hooks/useEditing';
 import { RiComputerLine } from 'react-icons/ri';
-import WorkspaceContextMenu from '@ui/pages/home/components/WorkspaceContextMenu.tsx';
+import WorkspaceContextMenu from '@ui/pages/home/components/WorkspaceContextMenu';
 
 type WorkspacePreviewProps = {
   workspace: WorkspaceMetaData;

@@ -52,11 +52,13 @@ export const getLeafRenderer = ({ attributes, leaf, children }: RenderLeafProps)
     if (!renderer) continue;
     children = renderer(children);
   }
-  if(leaf.cursor){
+  if (leaf.cursor) {
     const { color, range, styles } = leaf.cursor;
-    children = Range.isCollapsed(range!)
-        ? <Cursor color={color} styles={styles} children={children} />
-        : <Selection color={color} children={children} />
+    children = Range.isCollapsed(range!) ? (
+      <Cursor color={color} styles={styles} children={children} />
+    ) : (
+      <Selection color={color} children={children} />
+    );
   }
   return <span {...attributes}>{children}</span>;
 };

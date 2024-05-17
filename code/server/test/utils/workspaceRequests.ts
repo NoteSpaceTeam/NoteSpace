@@ -15,7 +15,7 @@ export function workspaceRequests(app: Express) {
     return response.body;
   }
 
-  async function getWorkspace(id: string, metaOnly: boolean): Promise<WorkspaceMetaData> {
+  async function getWorkspace(id: string, metaOnly: boolean = false): Promise<WorkspaceMetaData> {
     const response = await request(app).get(`/workspaces/${id}?metaOnly=${metaOnly}`);
     expect(response.status).toBe(200);
     return response.body;

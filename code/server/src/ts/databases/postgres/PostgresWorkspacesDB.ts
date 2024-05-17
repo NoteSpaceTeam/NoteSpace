@@ -44,14 +44,11 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
-  async getWorkspaceResources(wid: string): Promise<Record<string, WorkspaceResource>> {
-    const results: WorkspaceResource[] = await sql`
-        SELECT json_object_agg(id, r) 
+  async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {
+    return sql`
+        SELECT json_object_agg(id, r)
         FROM resources r
-        WHERE workspace = ${wid}
+        WHERE workspace = ${id}
     `;
-    const entries = results.map(entry => [entry.id, entry]);
-
-    return Object.fromEntries(entries);
   }
 }

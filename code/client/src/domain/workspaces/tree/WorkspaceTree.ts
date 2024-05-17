@@ -1,26 +1,19 @@
 import { ResourceType, WorkspaceResourceMetadata } from '@notespace/shared/src/workspace/types/resource';
 
-type WorkspaceTreeNode = WorkspaceResourceMetadata;
+export type WorkspaceTreeNode = WorkspaceResourceMetadata;
 
 export class WorkspaceTree {
   private root: WorkspaceTreeNode;
   private nodes: Map<string, WorkspaceTreeNode> = new Map();
 
   constructor() {
-    this.root = {
-      id: 'root',
-      name: 'root',
-      parent: '',
-      children: [],
-      type: ResourceType.FOLDER,
-    };
+    this.root = this.rootNode();
   }
 
-  setNodes(nodes: Record<string, WorkspaceTreeNode>) {
-    const rootNode = nodes['root'];
-    if (!rootNode) throw new Error('Workspace tree root node missing');
-    this.root = rootNode;
-    this.nodes = new Map(Object.entries(nodes));
+  setNodes(nodes: WorkspaceTreeNode[]) {
+    this.nodes = new Map(nodes.map(node => [node.id, node]));
+    this.nodes.set('root', this.root);
+    this.root = this.rootNode();
   }
 
   addNode(node: WorkspaceTreeNode) {
@@ -32,13 +25,13 @@ export class WorkspaceTree {
 
   updateNode(id: string, props: Partial<WorkspaceResourceMetadata>) {
     const node = this.nodes.get(id);
-    if (!node) throw new Error('Invalid id:' + id);
+    if (!node) throw new Error('Invalid id: ' + id);
     Object.assign(node, props);
   }
 
   removeNode(id: string) {
     const node = this.nodes.get(id);
-    if (!node) throw new Error('Invalid id:' + id);
+    if (!node) throw new Error('Invalid id: ' + id);
     const { parent } = node;
     const parentNode = this.nodes.get(parent);
     if (parentNode) {
@@ -50,7 +43,7 @@ export class WorkspaceTree {
 
   moveNode(id: string, newParent: string) {
     const node = this.nodes.get(id);
-    if (!node) throw new Error('Invalid id:' + id);
+    if (!node) throw new Error('Invalid id: ' + id);
     const { parent } = node;
     const parentNode = this.nodes.get(parent);
 
@@ -59,24 +52,43 @@ export class WorkspaceTree {
       if (index !== -1) parentNode.children.splice(index, 1);
     }
     const newParentNode = this.nodes.get(newParent);
-    if (!newParentNode) throw new Error('Invalid parent id:' + newParent);
+    if (!newParentNode) throw new Error('Invalid parent id: ' + newParent);
     newParentNode.children.push(node.id);
-
     node.parent = newParent;
   }
 
-  *traverse(): IterableIterator<WorkspaceTreeNode> {
-    const stack: WorkspaceTreeNode[] = [];
-    stack.push(this.root);
-
-    while (stack.length > 0) {
-      const node = stack.pop()!;
-      yield node;
-      stack.push(...node.children.map(id => this.nodes.get(id)!).reverse());
+  *traverse(node = this.root, set = new Set()): IterableIterator<[WorkspaceTreeNode, WorkspaceTreeNode[]]> {
+    const children = (node.children?.map(id => this.nodes.get(id)) as WorkspaceTreeNode[]) || [];
+    if (node.id !== 'root' && !set.has(node.id)) {
+      children.forEach(child => set.add(child.id));
+      yield [node, children];
     }
+    for (const child of children) {
+      yield* this.traverse(child, set);
+    }
+  }
+
+  clone() {
+    const newTree = new WorkspaceTree();
+    newTree.root = { ...this.root }; // shallow copy guarantees re-render
+    newTree.nodes = this.nodes;
+    return newTree;
   }
 
   get resources() {
     return this.nodes;
+  }
+
+  rootNode() {
+    const children = Array.from(this.nodes.values())
+      .filter(node => node.parent === 'root')
+      .map(node => node.id);
+    return {
+      id: 'root',
+      name: 'root',
+      parent: '',
+      children: children,
+      type: ResourceType.FOLDER,
+    };
   }
 }
