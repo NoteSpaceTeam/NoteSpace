@@ -41,11 +41,13 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  */
 export function pointToCursor(editor: Editor, point: Point): Cursor {
   const line = point.path[0];
-  const children = Node.children(editor, [line]);
+  const children = Array.from(Node.children(editor, [line]));
   const cursor: Cursor = { line, column: point.offset };
+
   for (const entry of children) {
     // If path has only one element, and it is the same as the first element of the point path - same line
     if (point.path.length === 1 && point.path[0] === entry[1][0]) break;
+
     // Else verify if the path is the same
     if (Path.equals(entry[1], point.path)) break;
 
@@ -54,6 +56,9 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
       cursor.column += text.text.length;
     }
   }
+
+
+
   return cursor;
 }
 

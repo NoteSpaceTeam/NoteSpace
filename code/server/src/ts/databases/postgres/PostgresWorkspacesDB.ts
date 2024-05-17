@@ -52,7 +52,6 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     `;
     const entries = results.map(entry => [entry.id, entry]);
 
-    console.log('Resources:', Object.fromEntries(entries));
     return Object.fromEntries(entries);
   }
 }

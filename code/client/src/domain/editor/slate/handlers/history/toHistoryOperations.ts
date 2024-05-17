@@ -9,8 +9,8 @@ import {
   BaseSetNodeOperation,
   BaseSplitNodeOperation,
   Editor,
-  Range,
   Element,
+  Range,
   Text,
 } from 'slate';
 import {
@@ -24,7 +24,7 @@ import {
   SplitNodeOperation,
   UnsetNodeOperation,
 } from '@domain/editor/operations/history/types';
-import { pointToCursor } from '@domain/editor/slate/utils/selection';
+import {pointToCursor} from '@domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {
   insert_text: 'remove_text',
@@ -69,9 +69,9 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
       case 'remove_text':
         return removeTextOperation(operation as BaseRemoveTextOperation);
       case 'insert_node':
-        return nodeOperation(operation as BaseInsertNodeOperation, true);
+        return nodeOperation(operation as BaseInsertNodeOperation, selectionBefore, true);
       case 'remove_node':
-        return nodeOperation(operation as BaseRemoveNodeOperation, false);
+        return nodeOperation(operation as BaseRemoveNodeOperation, selectionBefore, false);
       case 'merge_node':
         return handleNodeOperation(operation as BaseMergeNodeOperation, selectionBefore?.anchor.offset, true);
       case 'split_node':
@@ -104,15 +104,15 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     if (operation.text === '') return undefined;
 
-    const cursor = pointToCursor(editor, { path: operation.path, offset: 0 });
+    const cursor = pointToCursor(editor, { path: operation.path, offset: operation.offset });
 
     const start = {
       line: operation.path[0],
-      column: cursor.column + operation.offset,
+      column: cursor.column + offset(cursor.line),
     };
     const end = {
       line: start.line,
-      column: start.column + operation.text.length - 1 + offset(start.line),
+      column: start.column + operation.text.length,
     };
 
     const selection = { start, end };
@@ -122,23 +122,45 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   /**
    * Handles a slate insert or remove node operation
    * @param operation
+   * @param selectionBefore
    * @param insert_mode
    */
   function nodeOperation(
     operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
+    selectionBefore: BaseRange | null,
     insert_mode: boolean
   ): InsertNodeOperation | RemoveNodeOperation | undefined {
+    const lineOffset = (line: number) => (line === 0 ? 0 : 1);
+
+    // Remove whole line
+    if(operation.path.length === 1) {
+        const start = pointToCursor(editor, {path: operation.path, offset: 0});
+        const end = pointToCursor(editor, {path: [operation.path[0] + 1, 0], offset: 0});
+
+        const selection = { start, end };
+        return {
+            type: insert_mode ? 'insert_node' : 'remove_node',
+            selection,
+            node: operation.node,
+        };
+    }
+
     if (!Text.isText(operation.node)) return;
 
     if (operation.node.text === '') return undefined;
 
-    const offset = (line: number) => (line === 0 ? 0 : 1);
+    if(!selectionBefore) return undefined
 
-    const start = pointToCursor(editor, { path: operation.path, offset: 0 });
+    const cursor = pointToCursor(editor, selectionBefore.anchor);
+
+    const start = {
+      ...cursor,
+      column: cursor.column + lineOffset(cursor.line),
+    };
 
     const end = {
       ...start,
-      column: start.column + operation.node.text.length - 1 + offset(start.line),
+      column: start.column + operation.node.text.length,
     };
 
     const selection = { start, end };
@@ -161,9 +183,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     offset: number | undefined,
     merge_mode: boolean
   ): MergeNodeOperation | SplitNodeOperation | undefined {
-    if (!Element.isElement(operation.properties)) return undefined;
-
-    if (!operation.properties.type) return undefined;
+    if (operation.path.length > 1) return undefined;
+    if (!(operation.properties as Element).type) return undefined;
 
     return merge_mode
       ? {

@@ -9,15 +9,15 @@ export function joinRoom(rooms: Map<string, Room>, socket: Socket, id: string) {
 }
 
 export function leaveRoom(rooms: Map<string, Room>, socket: Socket) {
-  const room = getRoom(rooms, socket);
+  const room = getRoom(rooms, socket.id);
   if (!room) return;
   socket.leave(room.id);
   room.leave(socket.id);
 }
 
-export function getRoom(rooms: Map<string, Room>, socket: Socket): Room | null {
+export function getRoom(rooms: Map<string, Room>, socketId : string): Room | null {
   for (const room of rooms.values()) {
-    if (room.has(socket.id)) return room;
+    if (room.has(socketId)) return room;
   }
   return null;
 }

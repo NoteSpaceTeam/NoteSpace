@@ -9,6 +9,12 @@ import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
 import { DocumentsService } from '@services/DocumentsService';
 import { TestDatabases } from '@databases/TestDatabases';
+import {ServiceLogCaller} from '@src/utils/logging';
+import getLogger from '@notespace/shared/src/utils/logging';
+import {Runtime} from "firebase-admin/extensions";
+
+const logger = getLogger(ServiceLogCaller.Server);
+logger.logWarning('Starting server...');
 
 // databases
 const databases = new TestDatabases();
@@ -23,6 +29,7 @@ const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
 const api = router(services, io);
 
+// setup middleware
 app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
@@ -33,5 +40,5 @@ const socketEvents = initSocketEvents(events);
 io.on('connection', socketEvents);
 
 server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
-  console.log(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+  logger.logSuccess(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
 });

@@ -54,7 +54,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
   return (
     <div className="editor">
       <div className="container">
-        <Slate editor={editor} initialValue={initialValue} onChange={onSelectionChange}>
+        <Slate editor={editor} initialValue={initialValue} onChange={() => onSelectionChange()}>
           <Title title={title} placeholder="Untitled" communication={communication} />
           <Toolbar onApplyMark={onFormat} />
           <Editable

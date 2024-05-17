@@ -2,10 +2,10 @@ import Editor from '@ui/pages/document/components/editor/Editor';
 import useFugue from '@domain/editor/crdt/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCommunication } from '@ui/contexts/communication/useCommunication.ts';
+import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import useError from '@ui/contexts/error/useError';
 import useDocumentService from '@services/resource/useResourceService';
-import { DocumentResource } from '@notespace/shared/src/workspace/types/resource.ts';
+import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import './Document.scss';
 
 function Document() {
