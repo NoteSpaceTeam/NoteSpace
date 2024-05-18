@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 320px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,7 +22,7 @@
 
   li {
     list-style-type: none;
-    padding: 8px 8px 8px 16px;
+    padding: 8px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;

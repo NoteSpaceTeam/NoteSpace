@@ -1,19 +1,20 @@
-import { WorkspaceTree as Tree } from '@domain/workspaces/tree/WorkspaceTree';
 import ResourceView from '@ui/components/sidebar/components/ResourceView';
 import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { getTree } from '@domain/workspaces/tree/utils';
+import { WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
 
 type WorkspaceTreeProps = {
   workspace: WorkspaceMetaData;
-  tree?: Tree;
+  nodes?: WorkspaceTreeNodes;
 };
 
-function WorkspaceTree({ workspace, tree }: WorkspaceTreeProps) {
-  if (!tree) return null;
+function WorkspaceTree({ workspace, nodes }: WorkspaceTreeProps) {
+  if (!nodes) return null;
   return (
     <ul>
-      {Array.from(tree.traverse()).map(([node, children]) => (
-        <li key={node.id}>
-          <ResourceView workspace={workspace.id} resource={node} children={children} />
+      {getTree(nodes).children.map(node => (
+        <li key={node.node.id}>
+          <ResourceView workspace={workspace.id} resource={node.node} children={node.children} />
         </li>
       ))}
     </ul>

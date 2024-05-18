@@ -13,7 +13,7 @@ export interface WorkspaceResource {
 export interface ResourceInputModel {
   name: string;
   type: ResourceType;
-  parent?: string;
+  parent: string;
 }
 
 export enum ResourceType {

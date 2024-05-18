@@ -7,20 +7,17 @@ import useResourceService from '@services/resource/useResourceService';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import { useState } from 'react';
-import { WorkspaceTree } from '@domain/workspaces/tree/WorkspaceTree';
+import useWorkspaceTree from '@domain/workspaces/tree/useWorkspaceTree';
 
 function useResources() {
   const service = useResourceService();
   const { socket } = useCommunication();
   const [resources, setResources] = useState<WorkspaceResource[]>([]);
-  const [tree, setTree] = useState(new WorkspaceTree());
+  const tree = useWorkspaceTree();
 
   function onCreateResource(resource: WorkspaceResource) {
     setResources([...resources, resource]);
-    setTree(prev => {
-      prev.addNode(resource);
-      return prev.clone();
-    });
+    tree.addNode(resource);
   }
 
   async function createResource(name: string, type: ResourceType, parent?: string) {
@@ -29,22 +26,17 @@ function useResources() {
 
   function onDeleteResource(id: string) {
     setResources(resources.filter(resource => resource.id !== id));
-    setTree(prev => {
-      prev.removeNode(id);
-      return prev.clone();
-    });
+    tree.removeNode(id);
   }
 
   async function deleteResource(id: string) {
     await service.deleteResource(id);
   }
 
-  function onUpdateResource(id: string, resource: Partial<WorkspaceResourceMetadata>) {
+  function onUpdateResource(resource: Partial<WorkspaceResourceMetadata>) {
+    if (!resource.id) throw new Error('Resource id is required');
     setResources(resources.map(res => (res.id === resource.id ? { ...res, ...resource } : res)));
-    setTree(prev => {
-      prev.updateNode(id, resource);
-      return prev.clone();
-    });
+    if (resource.name) tree.updateNode(resource.id, resource.name);
   }
 
   async function updateResource(id: string, newProps: Partial<WorkspaceResource>) {
@@ -61,7 +53,6 @@ function useResources() {
     resources,
     setResources,
     tree,
-    setTree,
     operations: {
       createResource,
       deleteResource,

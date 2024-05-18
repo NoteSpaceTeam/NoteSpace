@@ -1,5 +1,9 @@
 import PromiseRouter from 'express-promise-router';
-import { ResourceInputModel, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import {
+  ResourceInputModel,
+  WorkspaceResource,
+  WorkspaceResourceMetadata,
+} from '@notespace/shared/src/workspace/types/resource';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
@@ -23,7 +27,8 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     if (!type) throw new InvalidParameterError('Resource type is required');
 
     const id = await service.createResource(wid, name, type, parent);
-    io.in(wid).emit('createdResource', { id, ...resource });
+    const createdResource: WorkspaceResourceMetadata = { id, ...resource, children: [] };
+    io.in(wid).emit('createdResource', createdResource);
     httpResponse.created(res).json({ id });
   };
 
@@ -58,7 +63,7 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const resource = req.body as Partial<WorkspaceResource>;
     if (!resource) throw new InvalidParameterError('Body is required');
     await service.updateResource(id, resource);
-    io.in(wid).emit('updatedResource', { ...resource, id });
+    io.in(wid).emit('updatedResource', { id, ...resource });
     httpResponse.noContent(res).send();
   };
 

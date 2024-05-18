@@ -5,11 +5,10 @@ import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import './Sidebar.scss';
 import WorkspaceTree from '@ui/components/sidebar/components/WorkspaceTree';
-import { useEffect } from 'react';
 
 function Sidebar() {
   const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
-  const { workspace, tree } = useWorkspace();
+  const { workspace, nodes } = useWorkspace();
 
   return (
     <div
@@ -38,7 +37,7 @@ function Sidebar() {
             <h3>
               <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
             </h3>
-            <WorkspaceTree workspace={workspace} tree={tree} />
+            <WorkspaceTree workspace={workspace} nodes={nodes} />
           </>
         )}
       </ul>
