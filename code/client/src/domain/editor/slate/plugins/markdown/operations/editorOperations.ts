@@ -1,4 +1,4 @@
-import { Editor, Element, Node, Point, Range, Text, type TextUnit, Transforms } from 'slate';
+import { Editor, Element, Node, Point, Range, Text, Location, type TextUnit, Transforms } from 'slate';
 import { shortcuts } from '../shortcuts';
 import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isMultiBlock } from '@domain/editor/slate/utils/slate';
@@ -152,29 +152,41 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     const match = editor.above({
       match: (n: Node) => Element.isElement(n) && editor.isBlock(n),
     });
-    if (match) {
-      const [block, path] = match;
-      const start = Editor.start(editor, path);
-      if (
-        !Editor.isEditor(block) &&
-        Element.isElement(block) &&
-        block.type !== 'paragraph' &&
-        Point.equals(selection.anchor, start)
-      ) {
-        const { line } = getSelection(editor).start;
-        Transforms.setNodes(editor, { type: 'paragraph' });
-        handlers.applyBlockStyle('paragraph', line);
-        return;
-      }
+    if(!match) return;
+    const [block, path] = match;
+    const start = Editor.start(editor, path);
+
+    // If the block is not a paragraph and the selection is at the start of the block, delete the block style
+    if (Element.isElement(block) && block.type !== 'paragraph' && Point.equals(selection.anchor, start)) {
+      const newSelection = getSelection(editor);
+      Transforms.setNodes(editor, { type: 'paragraph' });
+      handlers.deleteBlockStyles(newSelection);
+      return;
     }
     deleteBackward(...args);
   };
 
   const deleteSelection = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
-    handlers.deleteBlockStyles(selection);
+
+    console.log("Selection: ", selection);
+    console.log("Editor: ", editor.selection);
+
+    // Iterate over the selected lines and delete the block styles
+    for (let i = selection.start.line + 1; i <= selection.end.line; i++) {
+      const block = editor.children[i];
+      if (Element.isElement(block)) {
+        // If the block is not a paragraph and the selection is at the start of the block, delete the block style
+        // Else remove both the block
+        if(block.type !== 'paragraph'){
+          const location : Location = {path: [i, 0], offset: 0};
+          Transforms.setNodes(editor, { type: 'paragraph' }, { at: location });
+          handlers.deleteBlockStyles(selection);
+        }
+      }
+    }
     deleteHandler(options);
-  };
+  }
 
   /**
    * Checks if the given node is an inline.

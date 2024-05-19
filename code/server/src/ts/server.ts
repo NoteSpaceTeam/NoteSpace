@@ -8,10 +8,10 @@ import router from '@src/controllers/http/router';
 import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
 import { TestDatabases } from '@databases/TestDatabases';
-import { ServiceLogCaller } from '@src/utils/logging';
+import {ServerLogCaller} from '@src/utils/logging';
 import getLogger from '@notespace/shared/src/utils/logging';
 
-const logger = getLogger(ServiceLogCaller.Server);
+const logger = ServerLogCaller;
 logger.logWarning('Starting server...');
 
 // setup services and databases

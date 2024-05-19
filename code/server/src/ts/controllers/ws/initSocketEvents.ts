@@ -1,10 +1,9 @@
 import { SocketHandler } from '@controllers/ws/types';
 import { Socket } from 'socket.io';
 
-import { ServiceLogCaller } from '@src/utils/logging';
-import getLogger, { ColorWrap, LogColor } from '@notespace/shared/src/utils/logging';
+import {ControllersLogCaller} from '@src/utils/logging';
 
-const logger = getLogger(ServiceLogCaller.Controllers + '-' + ColorWrap(LogColor.Red, 'ws'));
+const logger = ControllersLogCaller("ws")
 
 export default function initSocketEvents(events: Record<string, SocketHandler>) {
   // const onCursorChange = events['cursorChange'];

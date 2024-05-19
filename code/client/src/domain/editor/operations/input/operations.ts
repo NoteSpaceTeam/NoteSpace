@@ -31,8 +31,8 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   function deleteSelection(selection: Selection) {
     if (isEqual(selection.start, selection.end)) return;
 
-    if (selection.start.column === 0) selection.start.column += 1;
-    if (selection.end.column === 0) selection.end.column += 1;
+    // if(selection.start.column === 0) selection.start.column += 1;
+    // if(selection.end.column === 0) selection.end.column += 1;
 
     const operations = fugue.deleteLocal(selection);
     socket.emit('operations', operations);

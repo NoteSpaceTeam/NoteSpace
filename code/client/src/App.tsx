@@ -8,12 +8,12 @@ import { ErrorProvider } from '@ui/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
 import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Home from '@ui/pages/home/Home';
-import { ClientLogCaller } from '@/utils/logging';
-import getLogger from '@notespace/shared/src/utils/logging';
+import {ReactLogCaller} from '@/utils/logging';
+
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
 import { useEffect } from 'react';
 
-const logger = getLogger(ClientLogCaller.React);
+const logger = ReactLogCaller
 
 function App() {
   useEffect(() => {
