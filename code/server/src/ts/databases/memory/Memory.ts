@@ -41,8 +41,9 @@ export function getWorkspace(id: string): Workspace {
 }
 
 export function updateWorkspace(id: string, name: string) {
-  const workspace = getWorkspace(id);
-  workspace.name = name;
+  const workspace = workspaces[id];
+  if (!workspace) throw new NotFoundError(`Workspace not found`);
+  workspaces[id] = { ...workspace, name };
 }
 
 export function deleteWorkspace(id: string) {
@@ -87,6 +88,9 @@ export function deleteResource(id: string) {
   const parentResource = getResource(resource.parent);
   parentResource.children = parentResource.children.filter(childId => childId !== id);
 
+  for (const childId of resource.children) {
+    deleteResource(childId);
+  }
   delete workspaces[resource.workspace].resources[id];
 }
 

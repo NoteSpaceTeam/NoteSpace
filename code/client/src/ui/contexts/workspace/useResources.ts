@@ -25,7 +25,13 @@ function useResources() {
   }
 
   function onDeleteResource(id: string) {
-    setResources(resources.filter(resource => resource.id !== id));
+    const getChildren = (id: string): string[] => {
+      const resource = tree.getNode(id);
+      if (!resource) return [];
+      return [id, ...resource.children.flatMap(childId => getChildren(childId))];
+    };
+    const idsToRemove = getChildren(id);
+    setResources(resources.filter(resource => !idsToRemove.includes(resource.id)));
     tree.removeNode(id);
   }
 

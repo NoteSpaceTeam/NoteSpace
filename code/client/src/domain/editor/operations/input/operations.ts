@@ -6,7 +6,7 @@ import { nodeInsert } from '@domain/editor/crdt/utils';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Communication } from '@services/communication/communication';
-import {isEqual} from "lodash";
+import { isEqual } from 'lodash';
 
 export default (fugue: Fugue, { socket }: Communication): InputDomainOperations => {
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {
@@ -29,10 +29,10 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   }
 
   function deleteSelection(selection: Selection) {
-    if(isEqual(selection.start, selection.end)) return;
+    if (isEqual(selection.start, selection.end)) return;
 
-    if(selection.start.column === 0) selection.start.column += 1;
-    if(selection.end.column === 0) selection.end.column += 1;
+    if (selection.start.column === 0) selection.start.column += 1;
+    if (selection.end.column === 0) selection.end.column += 1;
 
     const operations = fugue.deleteLocal(selection);
     socket.emit('operations', operations);

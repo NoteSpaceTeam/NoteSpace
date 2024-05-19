@@ -13,7 +13,6 @@ function workspacesHandlers(services: Services, io: Server) {
    * Create a new workspace
    */
   const createWorkspace = async (req: Request, res: Response) => {
-    // TODO. use and validate other fields
     const { name } = req.body as WorkspaceInputModel;
     if (!name) throw new InvalidParameterError('Workspace name is required');
     const id = await services.workspace.createWorkspace(name);
@@ -49,7 +48,6 @@ function workspacesHandlers(services: Services, io: Server) {
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
     const { name } = req.body as WorkspaceMetaData;
-    if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!name) throw new InvalidParameterError('Workspace name is required');
 
     await services.workspace.updateWorkspace(wid, name);

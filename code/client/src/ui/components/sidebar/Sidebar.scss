@@ -3,10 +3,11 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 400px;
+  width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   overflow-x: hidden;
   overflow-y: scroll;
   transition: 0.5s;
@@ -18,19 +19,25 @@
   ul {
     margin: 0;
     padding: 0;
+    width: 90%;
   }
 
   li {
     list-style-type: none;
     padding: 8px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
-    display: block;
     transition: 0.3s;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
   }
 
-  button {
+  > button {
     position: fixed;
     top: 1vh;
     left: 1vh;
@@ -41,7 +48,7 @@
     padding: 0;
     margin: 0;
     transition: transform 1s ease-in-out;
-    z-index: 5 !important;
+    z-index: 1;
 
     .icon {
       transition: opacity 1s ease-in-out;
@@ -54,5 +61,71 @@
 
   button:hover {
     color: dimgray;
+  }
+
+  .workspace-tree {
+    li {
+      padding: 0;
+    }
+  }
+
+  .resource {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .resource-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.1s;
+
+      div {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        border-radius: 5px;
+        user-select: none;
+      }
+    }
+
+    .resource-header:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+
+    .resource-header > button {
+      display: none;
+    }
+
+    .resource-header:hover > button {
+      display: flex;
+      align-items: center;
+      padding: 0;
+      margin: 1vh;
+    }
+
+    .resource-header > button:hover {
+      color: gray;
+    }
+
+    .resource-children {
+      padding-left: 10px;
+    }
+
+    a {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      background-color: transparent;
+      color: black;
+      padding: 5px;
+      margin: 0;
+    }
   }
 }

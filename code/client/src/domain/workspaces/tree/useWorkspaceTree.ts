@@ -16,6 +16,10 @@ function useWorkspaceTree() {
     setNodes(nodesMap);
   }
 
+  function getNode(id: string) {
+    return nodes.get(id);
+  }
+
   function addNode(node: WorkspaceTreeNode) {
     const newNodes = new Map(nodes);
     const parentNode = newNodes.get(node.parent);
@@ -71,6 +75,7 @@ function useWorkspaceTree() {
     nodes,
     setNodes,
     setTree,
+    getNode,
     addNode,
     updateNode,
     removeNode,

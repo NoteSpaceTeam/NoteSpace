@@ -10,7 +10,7 @@ import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace
 import { WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
 
 export type ResourceOperationsType = {
-  createResource: (name: string, type: ResourceType) => Promise<void>;
+  createResource: (name: string, type: ResourceType, parent?: string) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;
   updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
 };

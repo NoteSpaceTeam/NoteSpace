@@ -100,14 +100,16 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
    * @param operation
    * @param selectionBefore
    */
-  function removeTextOperation(operation: BaseRemoveTextOperation, selectionBefore : BaseRange | null): RemoveTextOperation | undefined {
+  function removeTextOperation(
+    operation: BaseRemoveTextOperation,
+    selectionBefore: BaseRange | null
+  ): RemoveTextOperation | undefined {
     const offset = (line: number) => (line === 0 ? 0 : 1);
 
     if (operation.text === '') return undefined;
-    if(!selectionBefore) return undefined;
+    if (!selectionBefore) return undefined;
 
-    const cursor = pointToCursor(editor, {...selectionBefore?.anchor});
-
+    const cursor = pointToCursor(editor, { ...selectionBefore?.anchor });
 
     const start = {
       line: operation.path[0],
@@ -137,8 +139,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     // Remove whole line
     if (operation.path.length === 1) {
-      const start = { line: operation.path[0], column: 0}
-      const end = { line: operation.path[0], column: Infinity}
+      const start = { line: operation.path[0], column: 0 };
+      const end = { line: operation.path[0], column: Infinity };
 
       const selection = { start, end };
       return {
