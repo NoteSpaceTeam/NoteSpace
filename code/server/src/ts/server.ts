@@ -8,8 +8,7 @@ import router from '@src/controllers/http/router';
 import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
 import { TestDatabases } from '@databases/TestDatabases';
-import {ServerLogCaller} from '@src/utils/logging';
-import getLogger from '@notespace/shared/src/utils/logging';
+import { ServerLogCaller } from '@src/utils/logging';
 
 const logger = ServerLogCaller;
 logger.logWarning('Starting server...');

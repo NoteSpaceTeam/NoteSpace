@@ -9,10 +9,9 @@ export const ServiceLogCaller = {
 };
 
 export const ServerLogCaller = getLogger(ServiceLogCaller.Server);
-export const DatabaseLogCaller = (module : string) =>
-    getLogger(ServiceLogCaller.Database + '-' + ColorWrap(LogColor.Green, module));
-export const ServicesLogCaller = (module : string) =>
-    getLogger(ServiceLogCaller.Services + '-' + ColorWrap(LogColor.Yellow, module));
-export const ControllersLogCaller = (module : string) =>
-    getLogger(ServiceLogCaller.Controllers + '-' + ColorWrap(LogColor.Red, module));
-
+export const DatabaseLogCaller = (module: string) =>
+  getLogger(ServiceLogCaller.Database + '-' + ColorWrap(LogColor.Green, module));
+export const ServicesLogCaller = (module: string) =>
+  getLogger(ServiceLogCaller.Services + '-' + ColorWrap(LogColor.Yellow, module));
+export const ControllersLogCaller = (module: string) =>
+  getLogger(ServiceLogCaller.Controllers + '-' + ColorWrap(LogColor.Red, module));

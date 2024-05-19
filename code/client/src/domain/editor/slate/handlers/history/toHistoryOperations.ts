@@ -111,10 +111,11 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     const cursor = pointToCursor(editor, { ...selectionBefore?.anchor });
 
-    const start = {
-      line: operation.path[0],
-      column: cursor.column + offset(cursor.line),
-    };
+    const start = { ...cursor, column: cursor.column + offset(cursor.line) };
+    //     {
+    //   line: operation.path[0],
+    //   column: cursor.column + offset(cursor.line),
+    // };
     const end = {
       line: start.line,
       column: start.column + operation.text.length,
@@ -140,7 +141,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     // Remove whole line
     if (operation.path.length === 1) {
       const start = { line: operation.path[0], column: 0 };
-      const end = { line: operation.path[0], column: Infinity };
+      const end = { ...start, column: Infinity };
 
       const selection = { start, end };
       return {
@@ -158,15 +159,9 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     const cursor = pointToCursor(editor, selectionBefore.anchor);
 
-    const start = {
-      ...cursor,
-      column: cursor.column + lineOffset(cursor.line),
-    };
+    const start = { ...cursor, column: cursor.column + lineOffset(cursor.line) };
 
-    const end = {
-      ...start,
-      column: start.column + operation.node.text.length,
-    };
+    const end = { ...start, column: start.column + operation.node.text.length };
 
     const selection = { start, end };
 
@@ -219,10 +214,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     const start = pointToCursor(editor, { path: operation.path, offset: 0 });
 
-    const end = {
-      ...start,
-      column: start.column + (offset || 0),
-    };
+    const end = { ...start, column: start.column + (offset || 0) };
 
     return {
       type: set_mode ? 'set_node' : 'unset_node',

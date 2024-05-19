@@ -1,9 +1,9 @@
 import { SocketHandler } from '@controllers/ws/types';
 import { Socket } from 'socket.io';
 
-import {ControllersLogCaller} from '@src/utils/logging';
+import { ControllersLogCaller } from '@src/utils/logging';
 
-const logger = ControllersLogCaller("ws")
+const logger = ControllersLogCaller('ws');
 
 export default function initSocketEvents(events: Record<string, SocketHandler>) {
   // const onCursorChange = events['cursorChange'];

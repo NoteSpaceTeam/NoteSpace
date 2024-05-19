@@ -1,8 +1,4 @@
-export function isValidUUID(uuid: string): boolean {
-  const regex = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-([89ab])[0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
-  return regex.test(uuid);
-}
+import { validate } from 'uuid';
+export const isValidUUID = (uuid: string): boolean => validate(uuid);
 
-export function isValidMetaOnlyValue(metaOnly?: string): boolean {
-  return !metaOnly || ['true', 'false'].includes(metaOnly);
-}
+export const isValidMetaOnlyValue = (metaOnly?: string): boolean => !metaOnly || ['true', 'false'].includes(metaOnly);

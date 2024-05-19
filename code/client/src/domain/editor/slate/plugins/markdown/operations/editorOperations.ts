@@ -152,7 +152,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     const match = editor.above({
       match: (n: Node) => Element.isElement(n) && editor.isBlock(n),
     });
-    if(!match) return;
+    if (!match) return;
     const [block, path] = match;
     const start = Editor.start(editor, path);
 
@@ -169,24 +169,21 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
   const deleteSelection = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
 
-    console.log("Selection: ", selection);
-    console.log("Editor: ", editor.selection);
+    console.log('Selection: ', selection);
+    console.log('Editor: ', editor.selection);
 
     // Iterate over the selected lines and delete the block styles
     for (let i = selection.start.line + 1; i <= selection.end.line; i++) {
       const block = editor.children[i];
-      if (Element.isElement(block)) {
-        // If the block is not a paragraph and the selection is at the start of the block, delete the block style
-        // Else remove both the block
-        if(block.type !== 'paragraph'){
-          const location : Location = {path: [i, 0], offset: 0};
-          Transforms.setNodes(editor, { type: 'paragraph' }, { at: location });
-          handlers.deleteBlockStyles(selection);
-        }
-      }
+      if (!Element.isElement(block) || block.type === 'paragraph') continue;
+      // If the block is not a paragraph and the selection is at the start of the block, delete the block style
+      // Else remove both the block and the block style
+      const location: Location = { path: [i, 0], offset: 0 };
+      Transforms.setNodes(editor, { type: 'paragraph' }, { at: location });
+      handlers.deleteBlockStyles(selection);
     }
     deleteHandler(options);
-  }
+  };
 
   /**
    * Checks if the given node is an inline.

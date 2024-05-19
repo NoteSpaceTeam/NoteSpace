@@ -8,12 +8,12 @@ import { ErrorProvider } from '@ui/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
 import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Home from '@ui/pages/home/Home';
-import {ReactLogCaller} from '@/utils/logging';
+import { ReactLogCaller } from '@/utils/logging';
 
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
 import { useEffect } from 'react';
 
-const logger = ReactLogCaller
+const logger = ReactLogCaller;
 
 function App() {
   useEffect(() => {
