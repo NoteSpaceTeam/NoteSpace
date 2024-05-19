@@ -11,7 +11,7 @@ function Workspace() {
 
   return (
     <div className="workspace">
-      <h2>Workspace {workspace?.name}</h2>
+      <h2>{workspace?.name}</h2>
       <WorkspaceHeader
         onCreateNew={async () => operations?.createResource('Untitled', ResourceType.DOCUMENT).catch(publishError)}
       ></WorkspaceHeader>

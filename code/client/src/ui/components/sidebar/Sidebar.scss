@@ -18,8 +18,7 @@
 
   ul {
     margin: 0;
-    padding: 0;
-    width: 90%;
+    width: 100%;
   }
 
   li {
@@ -64,8 +63,39 @@
   }
 
   .workspace-tree {
-    li {
+    ul {
       padding: 0;
+      li {
+        padding: 1px;
+      }
+    }
+
+    .popup {
+      position: fixed;
+      background: black;
+      color: white;
+      border-radius: 15px;
+
+      margin-left: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: start;
+
+      button {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        border-radius: 15px;
+      }
+
+      button:hover {
+        color: white;
+        background-color: rgb(255, 255, 255, 0.1);
+      }
     }
   }
 
@@ -80,6 +110,8 @@
       justify-content: space-between;
       align-items: center;
       transition: 0.1s;
+      width: 90%;
+      border-radius: 5px;
 
       div {
         display: flex;
@@ -110,15 +142,23 @@
       color: gray;
     }
 
+    .resource-header > div {
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      max-width: max-content;
+    }
+
     .resource-children {
       padding-left: 10px;
     }
 
-    a {
+    .resource-name {
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
+      gap: 2px;
     }
 
     button {

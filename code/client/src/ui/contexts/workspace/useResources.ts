@@ -43,10 +43,15 @@ function useResources() {
     if (!resource.id) throw new Error('Resource id is required');
     setResources(resources.map(res => (res.id === resource.id ? { ...res, ...resource } : res)));
     if (resource.name) tree.updateNode(resource.id, resource.name);
+    if (resource.parent) tree.moveNode(resource.id, resource.parent);
   }
 
   async function updateResource(id: string, newProps: Partial<WorkspaceResource>) {
     await service.updateResource(id, newProps);
+  }
+
+  async function moveResource(id: string, parent: string) {
+    await service.updateResource(id, { parent });
   }
 
   useSocketListeners(socket, {
@@ -63,6 +68,7 @@ function useResources() {
       createResource,
       deleteResource,
       updateResource,
+      moveResource,
     },
   };
 }

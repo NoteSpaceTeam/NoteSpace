@@ -13,6 +13,7 @@ export type ResourceOperationsType = {
   createResource: (name: string, type: ResourceType, parent?: string) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;
   updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
+  moveResource: (id: string, parent: string) => Promise<void>;
 };
 
 export type WorkspaceContextType = {

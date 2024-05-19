@@ -81,6 +81,12 @@ export function createResource(wid: string, name: string, type: ResourceType, pa
 export function updateResource(id: string, newProps: Partial<WorkspaceResource>) {
   const resource = getResource(id);
   Object.assign(resource, newProps);
+  if (newProps.parent) {
+    const prevParent = getResource(resource.parent);
+    prevParent.children = prevParent.children.filter(childId => childId !== id);
+    const newParent = getResource(newProps.parent);
+    newParent.children.push(id);
+  }
 }
 
 export function deleteResource(id: string) {
