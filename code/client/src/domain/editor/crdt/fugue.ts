@@ -259,7 +259,10 @@ export class Fugue {
       inBounds = false;
 
     const lineRootNode = this.tree.getLineRoot(start.line);
-    for (const node of this.tree.traverse(lineRootNode, returnDeleted)) {
+
+    const root = lineRootNode || this.tree.root; // used when reversing a selection that starts at the beginning of a line
+
+    for (const node of this.tree.traverse(root, returnDeleted)) {
       // start condition
       if (lineCounter === start.line && columnCounter === start.column) inBounds = true;
 

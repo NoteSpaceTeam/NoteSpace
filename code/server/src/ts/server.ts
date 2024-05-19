@@ -35,5 +35,5 @@ const socketEvents = initSocketEvents(events);
 io.on('connection', socketEvents);
 
 server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
-  logger.logSuccess(`listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+  logger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
 });

@@ -67,7 +67,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
       case 'insert_text':
         return insertTextOperation(operation as BaseInsertTextOperation);
       case 'remove_text':
-        return removeTextOperation(operation as BaseRemoveTextOperation);
+        return removeTextOperation(operation as BaseRemoveTextOperation, selectionBefore);
       case 'insert_node':
         return nodeOperation(operation as BaseInsertNodeOperation, selectionBefore, true);
       case 'remove_node':
@@ -98,13 +98,16 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   /**
    * Converts a slate remove text operation to a history remove text operation
    * @param operation
+   * @param selectionBefore
    */
-  function removeTextOperation(operation: BaseRemoveTextOperation): RemoveTextOperation | undefined {
+  function removeTextOperation(operation: BaseRemoveTextOperation, selectionBefore : BaseRange | null): RemoveTextOperation | undefined {
     const offset = (line: number) => (line === 0 ? 0 : 1);
 
     if (operation.text === '') return undefined;
+    if(!selectionBefore) return undefined;
 
-    const cursor = pointToCursor(editor, { path: operation.path, offset: operation.offset });
+    const cursor = pointToCursor(editor, {...selectionBefore?.anchor});
+
 
     const start = {
       line: operation.path[0],
@@ -134,8 +137,8 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
 
     // Remove whole line
     if (operation.path.length === 1) {
-      const start = pointToCursor(editor, { path: operation.path, offset: 0 });
-      const end = pointToCursor(editor, { path: [operation.path[0] + 1, 0], offset: 0 });
+      const start = { line: operation.path[0], column: 0}
+      const end = { line: operation.path[0], column: Infinity}
 
       const selection = { start, end };
       return {
