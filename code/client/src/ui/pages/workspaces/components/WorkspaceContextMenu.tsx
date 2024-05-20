@@ -1,4 +1,4 @@
-import ContextMenu from '@ui/components/context-menu/ContextMenu';
+import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { RiShareBoxLine } from 'react-icons/ri';
@@ -12,7 +12,7 @@ type WorkspaceContextMenuProps = {
 
 function WorkspaceContextMenu({ children, onInvite, onRename, onDelete }: WorkspaceContextMenuProps) {
   return (
-    <ContextMenu item={children}>
+    <PopupMenu item={children}>
       <button onClick={onInvite}>
         <RiShareBoxLine />
         Invite
@@ -25,7 +25,7 @@ function WorkspaceContextMenu({ children, onInvite, onRename, onDelete }: Worksp
         <MdDelete />
         Delete
       </button>
-    </ContextMenu>
+    </PopupMenu>
   );
 }
 

@@ -71,6 +71,17 @@ function useWorkspaceTree() {
     setNodes(new Map(nodes));
   }
 
+  function isDescendant(parentId: string, nodeId: string): boolean {
+    let currentNode = getNode(parentId);
+    while (currentNode) {
+      if (currentNode.id === nodeId) {
+        return true;
+      }
+      currentNode = getNode(currentNode.parent);
+    }
+    return false;
+  }
+
   return {
     nodes,
     setNodes,
@@ -80,6 +91,7 @@ function useWorkspaceTree() {
     updateNode,
     removeNode,
     moveNode,
+    isDescendant,
   };
 }
 

@@ -16,7 +16,6 @@ function workspacesHandlers(services: Services, io: Server) {
     const { name } = req.body as WorkspaceInputModel;
     if (!name) throw new InvalidParameterError('Workspace name is required');
     const id = await services.workspace.createWorkspace(name);
-
     io.emit('createdWorkspace', { id, name });
     httpResponse.created(res).json({ id });
   };

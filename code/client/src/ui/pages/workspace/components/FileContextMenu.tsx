@@ -1,4 +1,4 @@
-import ContextMenu from '@ui/components/context-menu/ContextMenu';
+import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { HiDuplicate } from 'react-icons/hi';
@@ -12,7 +12,7 @@ type DocumentContextMenuProps = {
 
 function FileContextMenu({ children, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
   return (
-    <ContextMenu item={children}>
+    <PopupMenu item={children}>
       <button onClick={onRename}>
         <MdEdit />
         Rename
@@ -25,7 +25,7 @@ function FileContextMenu({ children, onRename, onDelete, onDuplicate }: Document
         <MdDelete />
         Delete
       </button>
-    </ContextMenu>
+    </PopupMenu>
   );
 }
 

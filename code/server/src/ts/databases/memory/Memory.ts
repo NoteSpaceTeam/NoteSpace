@@ -1,7 +1,7 @@
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { v4 as uuid } from 'uuid';
 import { NotFoundError } from '@domain/errors/errors';
-import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
+import { Workspace, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
 
 type WorkspaceStorage = {
   id: string;
@@ -25,12 +25,8 @@ export function createWorkspace(name: string): string {
   return id;
 }
 
-export function getWorkspaces(): Workspace[] {
-  return Object.values(workspaces).map(({ id, name, resources }) => ({
-    id,
-    name,
-    resources: Object.values(resources),
-  }));
+export function getWorkspaces(): WorkspaceMetaData[] {
+  return Object.values(workspaces).map(({ id, name }) => ({ id, name }));
 }
 
 export function getWorkspace(id: string): Workspace {

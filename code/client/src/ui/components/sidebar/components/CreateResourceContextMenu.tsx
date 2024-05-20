@@ -1,4 +1,4 @@
-import ContextMenu from '@ui/components/context-menu/ContextMenu';
+import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode } from 'react';
 import { MdCreateNewFolder } from 'react-icons/md';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
@@ -12,7 +12,7 @@ type CreateResourceContextMenuProps = {
 
 function CreateResourceContextMenu({ children, onCreateNew, trigger }: CreateResourceContextMenuProps) {
   return (
-    <ContextMenu item={children} trigger={trigger}>
+    <PopupMenu item={children} trigger={trigger}>
       <button onClick={() => onCreateNew(ResourceType.FOLDER)}>
         <MdCreateNewFolder />
         Folder
@@ -21,7 +21,7 @@ function CreateResourceContextMenu({ children, onCreateNew, trigger }: CreateRes
         <BsFileEarmarkPlusFill />
         Document
       </button>
-    </ContextMenu>
+    </PopupMenu>
   );
 }
 

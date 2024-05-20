@@ -51,6 +51,7 @@ function useResources() {
   }
 
   async function moveResource(id: string, parent: string) {
+    if (id === parent || tree.isDescendant(parent, id)) return;
     await service.updateResource(id, { parent });
   }
 

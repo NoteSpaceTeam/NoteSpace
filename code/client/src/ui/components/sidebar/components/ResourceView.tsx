@@ -24,10 +24,11 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
   };
 
   const props: React.HTMLProps<HTMLDivElement> = {
+    id: resource.id,
     draggable: true,
     onDragOver: (e: React.DragEvent) => e.preventDefault(),
     onDragStart: onDrag,
-    onDrop,
+    onDrop: onDrop,
   };
 
   return (
@@ -37,7 +38,7 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
           <button onClick={handleToggle}>{isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}</button>
           <CreateResourceContextMenu
             onCreateNew={(type: ResourceType) => onCreateResource!(resource.id, type)}
-            trigger="create-new-resource"
+            trigger={'create-new-resource-' + resource.id}
           >
             {resource.type === ResourceType.DOCUMENT ? (
               <div {...props}>
@@ -54,7 +55,7 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
             )}
           </CreateResourceContextMenu>
         </div>
-        <button className="create-new-resource">
+        <button id={'create-new-resource-' + resource.id}>
           <FaPlusSquare />
         </button>
       </div>

@@ -5,8 +5,8 @@ function useEditing(initialValue: string, onEdit: (value: string) => void) {
   const ref = useRef<HTMLSpanElement>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  // listen for changes in the initial value
   useEffect(() => {
-    // listen for changes in the initial value
     setValue(initialValue);
   }, [initialValue]);
 
