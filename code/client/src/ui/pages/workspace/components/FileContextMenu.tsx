@@ -4,15 +4,15 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { HiDuplicate } from 'react-icons/hi';
 
 type DocumentContextMenuProps = {
-  item: ReactNode;
+  children: ReactNode;
   onRename: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
 };
 
-function FileContextMenu({ item, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
+function FileContextMenu({ children, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
   return (
-    <ContextMenu item={item}>
+    <ContextMenu item={children}>
       <button onClick={onRename}>
         <MdEdit />
         Rename

@@ -9,24 +9,29 @@ import { FaHome } from 'react-icons/fa';
 import { IoMdSettings } from 'react-icons/io';
 
 function Sidebar() {
-  const { isOpen, isLocked, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
+  const { isOpen, isLocked, isLoaded, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
   const { workspace, nodes, operations } = useWorkspace();
 
+  if (!isLoaded) return null;
   return (
     <div
       className="sidebar"
       style={{ width: isOpen ? '20%' : '0', transition: '0.3s' }}
       onMouseLeave={handleMouseLeave}
     >
-      <button onMouseEnter={handleMouseEnter} onClick={handleClick}>
-        {isLocked ? (
-          <RiMenuFoldLine className="icon" />
-        ) : isOpen ? (
-          <RiMenuFold2Line className="icon" />
-        ) : (
-          <IoMenu className="icon-menu" />
-        )}
-      </button>
+      <div className="sidebar-header">
+        <button onMouseEnter={handleMouseEnter} onClick={handleClick}>
+          {isLocked ? (
+            <RiMenuFoldLine className="icon" />
+          ) : isOpen ? (
+            <RiMenuFold2Line className="icon" />
+          ) : (
+            <IoMenu className="icon-menu" />
+          )}
+        </button>
+        <Link to="/">NoteSpace</Link>
+      </div>
+
       <ul>
         <li>
           <FaHome />

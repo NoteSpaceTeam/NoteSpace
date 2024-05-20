@@ -1,8 +1,9 @@
 import Dialog from '@ui/components/dialog/Dialog';
 import { FaPlus } from 'react-icons/fa';
+import { WorkspaceInputModel } from '@notespace/shared/src/workspace/types/workspace';
 
 type CreateWorkspaceDialogProps = {
-  onCreate: (values: { [key: string]: string }) => void;
+  onCreate: (workspace: WorkspaceInputModel) => void;
 };
 
 function CreateWorkspaceDialog({ onCreate }: CreateWorkspaceDialogProps) {
@@ -16,7 +17,7 @@ function CreateWorkspaceDialog({ onCreate }: CreateWorkspaceDialogProps) {
         // { name: 'tags', label: 'Workspace Tags' },
         // { name: 'members', label: 'Workspace Members' },
       ]}
-      onSubmit={onCreate}
+      onSubmit={values => onCreate({ name: values.name })}
     >
       <p>New</p>
       <FaPlus />

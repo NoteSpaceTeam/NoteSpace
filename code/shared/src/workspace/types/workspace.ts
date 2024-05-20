@@ -11,10 +11,10 @@ export type Workspace = WorkspaceMetaData & {
 
 export interface WorkspaceInputModel {
   name: string;
-  description: string;
-  visibility: string;
-  tags: string[];
-  members: string[];
+  // description: string;
+  // visibility: string;
+  // tags: string[];
+  // members: string[];
 }
 
 export type WorkspaceResources = Map<string, WorkspaceResourceMetadata>;

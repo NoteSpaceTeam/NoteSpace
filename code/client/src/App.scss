@@ -37,6 +37,10 @@
       flex-direction: column;
       justify-content: start;
       align-items: center;
+
+      a {
+        text-decoration: underline;
+      }
     }
   }
 }

@@ -1,32 +1,12 @@
-import useWorkspaces from '@ui/pages/home/hooks/useWorkspaces';
-import WorkspaceView from '@ui/pages/home/components/WorkspaceView';
-import WorkspaceHeader from '@ui/pages/workspace/components/header/WorkspaceHeader';
-import CreateWorkspaceDialog from '@ui/pages/home/components/CreateWorkspaceDialog';
-import useError from '@ui/contexts/error/useError';
+import { Link } from 'react-router-dom';
 import './Home.scss';
-import '../workspace/Workspace.scss';
 
 function Home() {
-  const { workspaces, createWorkspace, updateWorkspace, deleteWorkspace } = useWorkspaces();
-  const { publishError } = useError();
-
   return (
     <div className="home">
       <h2>Home</h2>
-      <WorkspaceHeader>
-        <CreateWorkspaceDialog onCreate={values => createWorkspace(values).catch(publishError)} />
-      </WorkspaceHeader>
-      <ul className="items">
-        {workspaces.map(workspace => (
-          <WorkspaceView
-            key={workspace.id}
-            workspace={workspace}
-            onDelete={() => deleteWorkspace(workspace.id).catch(publishError)}
-            onRename={name => updateWorkspace(workspace.id, { ...workspace, name }).catch(publishError)}
-            onInvite={() => {}}
-          />
-        ))}
-      </ul>
+      <p>Welcome to the home page</p>
+      <Link to="/workspaces">Go to Workspaces</Link>
     </div>
   );
 }

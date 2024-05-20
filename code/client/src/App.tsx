@@ -7,19 +7,11 @@ import './App.scss';
 import { ErrorProvider } from '@ui/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
 import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
-import Home from '@ui/pages/home/Home';
-import { ReactLogCaller } from '@/utils/logging';
-
+import Workspaces from '@ui/pages/workspaces/Workspaces';
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
-import { useEffect } from 'react';
-
-const logger = ReactLogCaller;
+import Home from '@ui/pages/home/Home';
 
 function App() {
-  useEffect(() => {
-    logger.logSuccess('App started');
-  }, []);
-
   return (
     <div className="app">
       <ErrorProvider>
@@ -28,32 +20,41 @@ function App() {
             <Header />
             <div className="content">
               <Routes>
-                <Route path="/" element={<Home />} />
                 <Route
-                  path="/workspaces/:wid/*"
+                  path="/"
                   element={
-                    <WorkspaceProvider>
-                      <Routes>
-                        <Route
-                          path="/"
-                          element={
-                            <>
-                              <Sidebar />
-                              <Workspace />
-                            </>
-                          }
-                        />
-                        <Route
-                          path="/:id"
-                          element={
-                            <>
-                              <Sidebar />
-                              <Document />
-                            </>
-                          }
-                        />
-                      </Routes>
-                    </WorkspaceProvider>
+                    <>
+                      <Sidebar />
+                      <Home />
+                    </>
+                  }
+                />
+                <Route
+                  path="/workspaces/*"
+                  element={
+                    <Routes>
+                      <Route
+                        path="/"
+                        element={
+                          <>
+                            <Sidebar />
+                            <Workspaces />
+                          </>
+                        }
+                      />
+                      <Route
+                        path="/:wid/*"
+                        element={
+                          <WorkspaceProvider>
+                            <Sidebar />
+                            <Routes>
+                              <Route path="/" element={<Workspace />} />
+                              <Route path="/:id" element={<Document />} />
+                            </Routes>
+                          </WorkspaceProvider>
+                        }
+                      />
+                    </Routes>
                   }
                 />
                 <Route path="*" element={<NotFound />} />

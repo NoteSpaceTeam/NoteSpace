@@ -5,12 +5,14 @@ function useSidebarState() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [justClosed, setJustClosed] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const sidebarState = localStorage.getItem('sidebarState');
     if (sidebarState !== null) {
       setIsOpen(sidebarState);
       setIsLocked(sidebarState);
+      setIsLoaded(true);
     }
   }, []);
 
@@ -40,6 +42,7 @@ function useSidebarState() {
   return {
     isOpen,
     isLocked,
+    isLoaded,
     handleMouseEnter,
     handleClick,
     handleMouseLeave,

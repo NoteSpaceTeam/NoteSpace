@@ -23,12 +23,9 @@ function FileView({ document, onDelete, onRename, onDuplicate }: DocumentPreview
     </li>
   );
   return (
-    <FileContextMenu
-      item={isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
-      onRename={() => setIsEditing(true)}
-      onDuplicate={onDuplicate}
-      onDelete={onDelete}
-    />
+    <FileContextMenu onRename={() => setIsEditing(true)} onDuplicate={onDuplicate} onDelete={onDelete}>
+      {isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
+    </FileContextMenu>
   );
 }
 

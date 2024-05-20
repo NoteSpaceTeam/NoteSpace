@@ -1,7 +1,7 @@
 header {
   position: sticky;
   width: 100%;
-  height: 5vh;
+  height: 6vh;
   top: 0;
   left: 0;
   color: black;
@@ -10,11 +10,4 @@ header {
   box-shadow: black 0 0 1px;
   display: flex;
   align-items: center;
-
-  p {
-    font-size: 2.5vh;
-    padding: 1vh;
-    margin: 0 0 0 2vh;
-    font-weight: 500;
-  }
 }

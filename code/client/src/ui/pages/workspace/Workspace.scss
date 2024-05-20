@@ -11,6 +11,10 @@
   text-align: left;
   width: 30%;
 
+  a {
+    text-decoration: none !important;
+  }
+
   li {
     display: flex;
     align-items: center;
