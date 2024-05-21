@@ -14,7 +14,7 @@ const workspaces: Record<string, WorkspaceStorage> = {};
 export function createWorkspace(name: string): string {
   const id = uuid();
   const root: WorkspaceResource = {
-    id: 'root',
+    id,
     name: 'root',
     workspace: id,
     type: ResourceType.FOLDER,
@@ -32,7 +32,7 @@ export function getWorkspaces(): WorkspaceMetaData[] {
 export function getWorkspace(id: string): Workspace {
   const workspace = workspaces[id];
   if (!workspace) throw new NotFoundError(`Workspace not found`);
-  const resources = Object.values(workspace.resources).filter(r => r.id !== 'root');
+  const resources = Object.values(workspace.resources).filter(r => r.id !== id); // exclude root
   return { ...workspace, resources };
 }
 
@@ -55,7 +55,7 @@ export function getResource(id: string): WorkspaceResource {
   throw new NotFoundError(`Resource not found`);
 }
 
-export function createResource(wid: string, name: string, type: ResourceType, parent: string): string {
+export function createResource(wid: string, name: string, type: ResourceType, parent?: string): string {
   if (!workspaces[wid]) throw new NotFoundError(`Workspace not found`);
   const id = uuid();
   workspaces[wid].resources[id] = {
@@ -63,14 +63,14 @@ export function createResource(wid: string, name: string, type: ResourceType, pa
     name,
     workspace: wid,
     type,
-    parent,
+    parent: parent || wid,
     children: [],
   };
-
   // update parent
-  const parentResource = getResource(parent);
-  parentResource.children.push(id);
-
+  if (parent) {
+    const parentResource = getResource(parent);
+    parentResource.children.push(id);
+  }
   return id;
 }
 

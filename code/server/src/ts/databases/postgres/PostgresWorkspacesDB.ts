@@ -8,47 +8,47 @@ import sql from '@databases/postgres/config';
 export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string): Promise<string> {
     const results = await sql`
-        INSERT INTO workspaces (name) 
-        VALUES (${name}) 
-        RETURNING id
+        insert into workspace (name) 
+        values (${name}) 
+        returning id
     `;
     if (isEmpty(results)) throw new Error('Workspace not created');
     return results[0].id;
   }
 
   async getWorkspaces(): Promise<WorkspaceMetaData[]> {
-    return sql`SELECT * FROM workspaces`;
+    return sql`select * from workspace`;
   }
 
   async getWorkspace(id: string): Promise<WorkspaceMetaData> {
-    const results: WorkspaceMetaData[] = await sql`SELECT * FROM workspaces WHERE id = ${id}`;
+    const results: WorkspaceMetaData[] = await sql`select * from workspace where id = ${id}`;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
     return results[0];
   }
 
   async updateWorkspace(id: string, name: string): Promise<void> {
     const results = await sql`
-        UPDATE workspaces
-        SET name = ${name} 
-        WHERE id = ${id}
-        RETURNING id
+        update workspace
+        set name = ${name} 
+        where id = ${id}
+        returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
   async deleteWorkspace(id: string): Promise<void> {
     const results = await sql`
-        DELETE FROM workspaces WHERE id = ${id}
-        RETURNING id
+        delete from workspace where id = ${id}
+        returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
   async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {
     return sql`
-        SELECT json_object_agg(id, r)
-        FROM resources r
-        WHERE workspace = ${id}
+        select json_object_agg(id, r)
+        from resource r
+        where workspace = ${id} and id != ${id}
     `;
   }
 }

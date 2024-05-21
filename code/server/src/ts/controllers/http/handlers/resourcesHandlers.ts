@@ -9,7 +9,6 @@ import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { Server } from 'socket.io';
-import { isValidMetaOnlyValue, isValidUUID } from '@src/utils/validators';
 
 function resourcesHandlers(service: ResourcesService, io: Server) {
   /**
@@ -21,7 +20,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     // Validate workspace id
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
 
     // Get resource input model
     const resource = req.body as ResourceInputModel;
@@ -30,7 +28,7 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     if (!type) throw new InvalidParameterError('Resource type is required');
 
     const id = await service.createResource(wid, name, type, parent);
-    const createdResource: WorkspaceResourceMetadata = { id, ...resource, children: [] };
+    const createdResource: WorkspaceResourceMetadata = { id, ...resource, children: [], parent: parent || wid };
     io.in(wid).emit('createdResource', createdResource);
     httpResponse.created(res).json({ id });
   };
@@ -45,13 +43,9 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
-    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
-    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
 
     // Get resource metadata query parameter
     const { metaOnly } = req.query;
-    if (!isValidMetaOnlyValue(metaOnly as string)) throw new InvalidParameterError('Invalid metaOnly value');
-
     const resource = await service.getResource(wid, id, metaOnly === 'true');
     httpResponse.ok(res).json(resource);
   };
@@ -66,8 +60,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
-    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
-    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
 
     // Get resource input model
     const resource = req.body as Partial<WorkspaceResource>;
@@ -88,8 +80,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
-    if (!isValidUUID(wid)) throw new InvalidParameterError('Invalid workspace id');
-    if (!isValidUUID(id)) throw new InvalidParameterError('Invalid resource id');
 
     await service.deleteResource(id);
     io.in(wid).emit('deletedResource', id);

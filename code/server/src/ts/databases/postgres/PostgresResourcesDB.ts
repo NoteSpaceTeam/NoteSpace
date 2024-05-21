@@ -5,11 +5,12 @@ import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';
 
 export class PostgresResourcesDB implements ResourcesRepository {
-  async createResource(wid: string, name: string, type: ResourceType, parent: string): Promise<string> {
-    const resource = { workspace: wid, name, parent: parent || '', type };
+  async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
+    const resource = { workspace: wid, name, parent: parent || wid, type };
+    console.log('resource', resource);
     const results = await sql`
-        INSERT INTO resources ${sql(resource)}
-        RETURNING id
+        insert into resource ${sql(resource)}
+        returning id
     `;
     if (isEmpty(results)) throw new Error('Resource not created');
     return results[0].id;
@@ -17,7 +18,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
 
   async getResource(id: string): Promise<WorkspaceResource> {
     const results: WorkspaceResource[] = await sql`
-        SELECT * FROM resources WHERE id = ${id}
+        select * from resource where id = ${id}
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
@@ -25,19 +26,19 @@ export class PostgresResourcesDB implements ResourcesRepository {
 
   async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
     const results = await sql`
-        UPDATE resources
-        SET ${sql(resource)}
-        WHERE id = ${id}
-        RETURNING id
+        update resource
+        set ${sql(resource)}
+        where id = ${id}
+        returning id
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
   }
 
   async deleteResource(id: string) {
     const results = await sql`
-        DELETE FROM resources
-        WHERE id = ${id}
-        RETURNING id
+        delete from resource
+        where id = ${id}
+        returning id
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
   }

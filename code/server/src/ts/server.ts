@@ -7,14 +7,14 @@ import eventsInit from '@controllers/ws/events';
 import router from '@src/controllers/http/router';
 import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
-import { TestDatabases } from '@databases/TestDatabases';
-import { ServerLogCaller } from '@src/utils/logging';
+import { ServerLogger } from '@src/utils/logging';
+import { ProductionDatabases } from '@databases/ProductionDatabases';
 
-const logger = ServerLogCaller;
+const logger = ServerLogger;
 logger.logWarning('Starting server...');
 
 // setup services and databases
-const databases = new TestDatabases();
+const databases = new ProductionDatabases();
 const services = new Services(databases);
 
 // setup server and controllers

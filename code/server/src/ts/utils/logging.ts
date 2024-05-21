@@ -1,17 +1,18 @@
 import { ColorWrap, LogColor } from '@notespace/shared/src/utils/logging';
 import getLogger from '@notespace/shared/src/utils/logging';
 
-export const ServiceLogCaller = {
+export const Loggers = {
   Server: ColorWrap(LogColor.Blue, 'Server'),
   Database: ColorWrap(LogColor.Green, 'Database'),
   Services: ColorWrap(LogColor.Yellow, 'Services'),
   Controllers: ColorWrap(LogColor.Red, 'Controllers'),
+  Error: ColorWrap(LogColor.Red, 'Error'),
 };
 
-export const ServerLogCaller = getLogger(ServiceLogCaller.Server);
-export const DatabaseLogCaller = (module: string) =>
-  getLogger(ServiceLogCaller.Database + '-' + ColorWrap(LogColor.Green, module));
-export const ServicesLogCaller = (module: string) =>
-  getLogger(ServiceLogCaller.Services + '-' + ColorWrap(LogColor.Yellow, module));
-export const ControllersLogCaller = (module: string) =>
-  getLogger(ServiceLogCaller.Controllers + '-' + ColorWrap(LogColor.Red, module));
+export const ServerLogger = getLogger(Loggers.Server);
+export const DatabaseLogger = (module: string) => getLogger(Loggers.Database + '-' + ColorWrap(LogColor.Green, module));
+export const ServicesLogger = (module: string) =>
+  getLogger(Loggers.Services + '-' + ColorWrap(LogColor.Yellow, module));
+export const ControllersLogger = (module: string) =>
+  getLogger(Loggers.Controllers + '-' + ColorWrap(LogColor.Red, module));
+export const ErrorLogger = getLogger(Loggers.Error);

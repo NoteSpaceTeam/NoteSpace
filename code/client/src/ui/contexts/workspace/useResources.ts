@@ -21,7 +21,7 @@ function useResources() {
   }
 
   async function createResource(name: string, type: ResourceType, parent?: string) {
-    await service.createResource(name, type, parent || 'root');
+    await service.createResource(name, type, parent);
   }
 
   function onDeleteResource(id: string) {

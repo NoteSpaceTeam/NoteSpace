@@ -19,7 +19,7 @@ export interface DocumentsRepository {
  * Resource Repository - Interface for handling resources metadata management
  */
 export interface ResourcesRepository {
-  createResource: (wid: string, name: string, type: ResourceType, parent: string) => Promise<string>;
+  createResource: (wid: string, name: string, type: ResourceType, parent?: string) => Promise<string>;
   getResource: (id: string) => Promise<WorkspaceResource>;
   updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;

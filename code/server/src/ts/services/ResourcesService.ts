@@ -11,7 +11,7 @@ export class ResourcesService {
   }
 
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
-    const id = await this.resources.createResource(wid, name, type, parent || 'root');
+    const id = await this.resources.createResource(wid, name, type, parent);
     if (type === ResourceType.DOCUMENT) await this.documents.createDocument(wid, id);
     return id;
   }
