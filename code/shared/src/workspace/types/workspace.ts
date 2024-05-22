@@ -1,4 +1,4 @@
-import { WorkspaceResource, WorkspaceResourceMetadata } from "./resource";
+import { WorkspaceResource } from "./resource";
 
 export type WorkspaceMetaData = {
   name: string;
@@ -6,7 +6,7 @@ export type WorkspaceMetaData = {
 };
 
 export type Workspace = WorkspaceMetaData & {
-  resources: WorkspaceResource[];
+  resources: WorkspaceResources;
 };
 
 export interface WorkspaceInputModel {
@@ -17,4 +17,4 @@ export interface WorkspaceInputModel {
   // members: string[];
 }
 
-export type WorkspaceResources = Map<string, WorkspaceResourceMetadata>;
+export type WorkspaceResources = Record<string, WorkspaceResource>;

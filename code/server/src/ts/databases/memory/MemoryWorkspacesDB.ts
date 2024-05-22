@@ -1,7 +1,6 @@
 import { WorkspacesRepository } from '@databases/types';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMetaData, WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
 import { memoryDB } from '@databases/memory/Memory';
-import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 
 export class MemoryWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string): Promise<string> {
@@ -13,7 +12,7 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   async getWorkspace(id: string): Promise<WorkspaceMetaData> {
     return memoryDB.getWorkspace(id);
   }
-  async getWorkspaceResources(id: string): Promise<WorkspaceResource[]> {
+  async getWorkspaceResources(id: string): Promise<WorkspaceResources> {
     return memoryDB.getWorkspace(id).resources;
   }
   async updateWorkspace(id: string, name: string): Promise<void> {

@@ -6,20 +6,25 @@ import sql from '@databases/postgres/config';
 
 export class PostgresResourcesDB implements ResourcesRepository {
   async createResource(wid: string, name: string, type: ResourceType, parent?: string): Promise<string> {
-    const resource = { workspace: wid, name, parent: parent || wid, type };
-    console.log('resource', resource);
+    const resource = {
+      workspace: wid,
+      parent: parent || wid,
+      name,
+      type,
+    };
+
     const results = await sql`
-        insert into resource ${sql(resource)}
+        insert into resource ${sql(resource)} 
         returning id
     `;
+
     if (isEmpty(results)) throw new Error('Resource not created');
     return results[0].id;
   }
 
   async getResource(id: string): Promise<WorkspaceResource> {
-    const results: WorkspaceResource[] = await sql`
-        select * from resource where id = ${id}
-    `;
+    const results: WorkspaceResource[] = await sql`select * from resource where id = ${id}`;
+
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }

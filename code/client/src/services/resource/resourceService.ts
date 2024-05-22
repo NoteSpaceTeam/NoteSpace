@@ -7,7 +7,7 @@ function resourceService(http: HttpCommunication, wid: string) {
   }
 
   async function createResource(name: string, type: ResourceType, parent?: string): Promise<string> {
-    const resource: ResourceInputModel = { name, type, parent };
+    const resource: ResourceInputModel = { name, type, parent: parent || wid };
     const { id } = await http.post(`/workspaces/${wid}`, resource);
     return id;
   }

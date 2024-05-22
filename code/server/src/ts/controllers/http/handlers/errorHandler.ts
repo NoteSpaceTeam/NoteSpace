@@ -22,4 +22,5 @@ export default function errorHandler(error: Error, req: Request, res: Response, 
   const message = response.statusCode === 500 ? 'Internal server error' : error.message;
   response.send({ error: message });
   ErrorLogger.logError(error.message);
+  console.error(error.stack);
 }

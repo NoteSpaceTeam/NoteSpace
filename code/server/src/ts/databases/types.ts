@@ -1,7 +1,7 @@
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMetaData, WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
 
 /**
  * Document Repository - Interface for handling resources content management
@@ -34,7 +34,7 @@ export interface WorkspacesRepository {
   getWorkspace: (id: string) => Promise<WorkspaceMetaData>;
   updateWorkspace: (id: string, name: string) => Promise<void>;
   deleteWorkspace: (id: string) => Promise<void>;
-  getWorkspaceResources: (id: string) => Promise<WorkspaceResource[]>;
+  getWorkspaceResources: (id: string) => Promise<WorkspaceResources>;
 }
 
 export interface Databases {

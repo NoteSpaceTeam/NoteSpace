@@ -14,6 +14,7 @@ function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
     const { name } = req.body as WorkspaceInputModel;
     if (!name) throw new InvalidParameterError('Workspace name is required');
+
     const id = await services.workspace.createWorkspace(name);
     io.emit('createdWorkspace', { id, name });
     httpResponse.created(res).json({ id });
@@ -32,8 +33,9 @@ function workspacesHandlers(services: Services, io: Server) {
    */
   const getWorkspace = async (req: Request, res: Response) => {
     const { wid } = req.params;
-    const { metaOnly } = req.query;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
+
+    const { metaOnly } = req.query;
     const workspace = await services.workspace.getWorkspace(wid, metaOnly === 'true');
     httpResponse.ok(res).json(workspace);
   };
@@ -41,6 +43,7 @@ function workspacesHandlers(services: Services, io: Server) {
   const updateWorkspace = async (req: Request, res: Response) => {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
+
     const { name } = req.body as WorkspaceMetaData;
     if (!name) throw new InvalidParameterError('Workspace name is required');
 
@@ -57,6 +60,7 @@ function workspacesHandlers(services: Services, io: Server) {
   const deleteWorkspace = async (req: Request, res: Response) => {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
+
     await services.workspace.deleteWorkspace(wid);
     io.emit('deletedWorkspace', wid);
     httpResponse.noContent(res).send();

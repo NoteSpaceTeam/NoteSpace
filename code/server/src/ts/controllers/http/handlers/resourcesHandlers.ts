@@ -1,9 +1,5 @@
 import PromiseRouter from 'express-promise-router';
-import {
-  ResourceInputModel,
-  WorkspaceResource,
-  WorkspaceResourceMetadata,
-} from '@notespace/shared/src/workspace/types/resource';
+import { ResourceInputModel, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
@@ -28,7 +24,8 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     if (!type) throw new InvalidParameterError('Resource type is required');
 
     const id = await service.createResource(wid, name, type, parent);
-    const createdResource: WorkspaceResourceMetadata = { id, ...resource, children: [], parent: parent || wid };
+    console.log('created resource', id, wid, resource, parent);
+    const createdResource: WorkspaceResource = { id, workspace: wid, ...resource, children: [], parent: parent || wid };
     io.in(wid).emit('createdResource', createdResource);
     httpResponse.created(res).json({ id });
   };

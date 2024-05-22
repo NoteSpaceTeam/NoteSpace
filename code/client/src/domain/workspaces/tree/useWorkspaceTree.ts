@@ -1,74 +1,73 @@
 import { useState } from 'react';
 import { rootNode } from '@domain/workspaces/tree/utils';
-import { WorkspaceTreeNode } from '@domain/workspaces/tree/types';
+import { WorkspaceTreeNode, WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
+import { WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
 
 function useWorkspaceTree() {
-  const [nodes, setNodes] = useState<Map<string, WorkspaceTreeNode>>(new Map());
+  const [nodes, setNodes] = useState<WorkspaceTreeNodes>({});
 
-  function setTree(nodes: WorkspaceTreeNode[]) {
-    const nodesMap = new Map(nodes.map(node => [node.id, node]));
-    const root = rootNode(
-      Array.from(nodes?.values() || [])
-        .filter(node => node.parent === 'root')
-        .map(node => node.id)
-    );
-    nodesMap.set('root', root);
-    setNodes(nodesMap);
+  function setTree(nodes: WorkspaceResources) {
+    const wid = Object.values(nodes)[0].workspace;
+    const newNodes = { ...nodes };
+    newNodes[wid] = rootNode(newNodes[wid] ? newNodes[wid].children : []);
+    setNodes(newNodes);
   }
 
-  function getNode(id: string) {
-    return nodes.get(id);
-  }
+  const getNode = (id: string) => nodes[id];
 
   function addNode(node: WorkspaceTreeNode) {
-    const newNodes = new Map(nodes);
-    const parentNode = newNodes.get(node.parent);
+    const newNodes = { ...nodes };
+    const parentNode = newNodes[node.parent];
     if (!parentNode) throw new Error('Invalid parent id: ' + node.parent);
-    newNodes.set(node.id, node);
-    newNodes.set(node.parent, { ...parentNode, children: [...parentNode.children, node.id] });
+    newNodes[node.id] = node;
+    newNodes[node.parent] = { ...parentNode, children: [...parentNode.children, node.id] };
     setNodes(newNodes);
   }
 
   function removeNode(id: string) {
-    const node = nodes.get(id);
+    const node = nodes[id];
+
     if (!node) throw new Error('Invalid id: ' + id);
     const { parent } = node;
-    const parentNode = nodes.get(parent);
+    const parentNode = nodes[parent];
+
     if (!parentNode) throw new Error('Invalid parent id: ' + parent);
-    const newNodes = new Map(nodes);
+    const newNodes = { ...nodes };
     const index = parentNode.children.indexOf(id);
+
     if (index !== -1) parentNode.children.splice(index, 1);
-    newNodes.delete(id);
-    newNodes.set(parent, parentNode);
+
+    delete newNodes[id];
+
+    newNodes[parent] = parentNode;
     setNodes(newNodes);
   }
 
   function updateNode(id: string, name: string) {
-    const node = nodes.get(id);
+    const node = nodes[id];
     if (!node) throw new Error('Invalid id: ' + id);
-    const newNode = { ...node, name };
-    nodes.set(id, newNode);
-    setNodes(new Map(nodes));
+    nodes[id] = { ...node, name };
+    setNodes({ ...nodes });
   }
 
   function moveNode(id: string, newParent: string) {
-    const node = nodes.get(id);
+    const node = nodes[id];
     if (!node) throw new Error('Invalid id: ' + id);
     const { parent } = node;
-    const parentNode = nodes.get(parent);
+    const parentNode = nodes[parent];
 
     if (parentNode) {
       const index = parentNode.children.indexOf(node.id);
       if (index !== -1) parentNode.children.splice(index, 1);
-      nodes.set(parent, parentNode);
+      nodes[parent] = parentNode;
     }
-    const newParentNode = nodes.get(newParent);
+    const newParentNode = nodes[newParent];
     if (!newParentNode) throw new Error('Invalid parent id: ' + newParent);
     newParentNode.children.push(node.id);
     node.parent = newParent;
-    nodes.set(id, node);
-    nodes.set(newParent, newParentNode);
-    setNodes(new Map(nodes));
+    nodes[id] = node;
+    nodes[newParent] = newParentNode;
+    setNodes({ ...nodes });
   }
 
   function isDescendant(parentId: string, nodeId: string): boolean {

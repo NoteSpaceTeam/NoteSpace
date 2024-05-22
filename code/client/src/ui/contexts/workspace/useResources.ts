@@ -1,22 +1,36 @@
-import {
-  ResourceType,
-  WorkspaceResource,
-  WorkspaceResourceMetadata,
-} from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
 import useResourceService from '@services/resource/useResourceService';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import { useState } from 'react';
 import useWorkspaceTree from '@domain/workspaces/tree/useWorkspaceTree';
+import { WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
 
-function useResources() {
+export type UseResourcesType = {
+  resources: WorkspaceTreeNodes;
+  tree: ReturnType<typeof useWorkspaceTree>;
+  operations: {
+    setResources: (resources: WorkspaceTreeNodes) => void;
+    createResource: (name: string, type: ResourceType, parent?: string) => Promise<void>;
+    deleteResource: (id: string) => Promise<void>;
+    updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
+    moveResource: (id: string, parent: string) => Promise<void>;
+  };
+};
+
+function useResources(): UseResourcesType {
   const service = useResourceService();
   const { socket } = useCommunication();
-  const [resources, setResources] = useState<WorkspaceResource[]>([]);
+  const [resources, setResources] = useState<WorkspaceTreeNodes>({});
   const tree = useWorkspaceTree();
 
+  function onSetResources(resources: WorkspaceTreeNodes) {
+    setResources(resources);
+    tree.setTree(resources);
+  }
+
   function onCreateResource(resource: WorkspaceResource) {
-    setResources([...resources, resource]);
+    setResources({ ...resources, [resource.id]: resource });
     tree.addNode(resource);
   }
 
@@ -31,7 +45,9 @@ function useResources() {
       return [id, ...resource.children.flatMap(childId => getChildren(childId))];
     };
     const idsToRemove = getChildren(id);
-    setResources(resources.filter(resource => !idsToRemove.includes(resource.id)));
+    const newResources = { ...resources };
+    idsToRemove.forEach(id => delete newResources[id]);
+    setResources(newResources);
     tree.removeNode(id);
   }
 
@@ -39,9 +55,9 @@ function useResources() {
     await service.deleteResource(id);
   }
 
-  function onUpdateResource(resource: Partial<WorkspaceResourceMetadata>) {
+  function onUpdateResource(resource: Partial<WorkspaceResource>) {
     if (!resource.id) throw new Error('Resource id is required');
-    setResources(resources.map(res => (res.id === resource.id ? { ...res, ...resource } : res)));
+    setResources({ ...resources, [resource.id]: { ...resources[resource.id], ...resource } });
     if (resource.name) tree.updateNode(resource.id, resource.name);
     if (resource.parent) tree.moveNode(resource.id, resource.parent);
   }
@@ -63,9 +79,9 @@ function useResources() {
 
   return {
     resources,
-    setResources,
     tree,
     operations: {
+      setResources: onSetResources,
       createResource,
       deleteResource,
       updateResource,
