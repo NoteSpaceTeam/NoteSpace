@@ -1,7 +1,6 @@
-// type definitions for the workspace resource and its subtypes
 import { Operation } from "../../document/types/operations";
 
-export interface WorkspaceResource {
+export interface Resource {
   id: string;
   workspace: string;
   name: string;
@@ -21,53 +20,7 @@ export enum ResourceType {
   FOLDER = "F",
 }
 
-export interface FolderResource extends WorkspaceResource {
-  type: ResourceType.FOLDER;
-}
-
-export interface DocumentResource extends WorkspaceResource {
+export interface DocumentResource extends Resource {
   type: ResourceType.DOCUMENT;
   content: Operation[];
 }
-
-// const doc = (resource: ResourceInputModel): DocumentResource => ({
-//   id: "",
-//   ...resource,
-//   type: ResourceType.DOCUMENT,
-//   children: [],
-// });
-//
-// const folder = (resource: ResourceInputModel): FolderResource => ({
-//   id: "",
-//   ...resource,
-//   type: ResourceType.FOLDER,
-//   children: [],
-// });
-
-export interface DocumentResourceMetadata extends WorkspaceResource {
-  type: ResourceType.DOCUMENT;
-}
-
-export interface FolderResourceMetadata extends WorkspaceResource {
-  type: ResourceType.FOLDER;
-}
-
-export const WorkspaceResourceFactory = (workspace: string) => ({
-  Doc: (id: string, name: string, parent?: string): DocumentResource => ({
-    type: ResourceType.DOCUMENT,
-    id: id || "",
-    workspace,
-    name: name || "",
-    parent: parent || "",
-    children: [],
-    content: [],
-  }),
-  Folder: (id: string, name: string, parent?: string): FolderResource => ({
-    type: ResourceType.FOLDER,
-    id: id || "",
-    workspace,
-    name: name || "",
-    parent: parent || "",
-    children: [],
-  }),
-});

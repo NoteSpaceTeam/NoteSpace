@@ -1,20 +1,18 @@
-import { WorkspaceResource } from "./resource";
+import { Resource } from "./resource";
 
-export type WorkspaceMetaData = {
+export type WorkspaceMeta = {
   name: string;
   id: string;
 };
 
-export type Workspace = WorkspaceMetaData & {
-  resources: WorkspaceResources;
+export type Workspace = WorkspaceMeta & {
+  resources: Resource[];
 };
 
 export interface WorkspaceInputModel {
   name: string;
-  // description: string;
-  // visibility: string;
-  // tags: string[];
-  // members: string[];
+  description?: string;
+  visibility?: string;
+  tags?: string[];
+  members?: string[];
 }
-
-export type WorkspaceResources = Record<string, WorkspaceResource>;

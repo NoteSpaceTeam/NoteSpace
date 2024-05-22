@@ -1,4 +1,4 @@
-import { Workspace, WorkspaceMetaData, WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { DocumentsRepository, WorkspacesRepository } from '@databases/types';
 
 export class WorkspacesService {
@@ -25,18 +25,11 @@ export class WorkspacesService {
     await this.documents.removeWorkspace(id);
   }
 
-  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
+  async getWorkspaces(): Promise<WorkspaceMeta[]> {
     return await this.workspaces.getWorkspaces();
   }
 
-  async getWorkspace(id: string, metaOnly: boolean = false): Promise<Workspace> {
-    const metadata = await this.workspaces.getWorkspace(id);
-    if (metaOnly) return { ...metadata, resources: {} };
-    const resources = await this.getWorkspaceResources(id);
-    return { ...metadata, resources };
-  }
-
-  private async getWorkspaceResources(id: string): Promise<WorkspaceResources> {
-    return await this.workspaces.getWorkspaceResources(id);
+  async getWorkspace(id: string): Promise<WorkspaceMeta> {
+    return await this.workspaces.getWorkspace(id);
   }
 }

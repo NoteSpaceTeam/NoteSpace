@@ -32,7 +32,6 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
 
   async updateDocument(wid: string, id: string, newOperations: Operation[]) {
     const doc = await this.getDoc(wid, id);
-    console.log('updating document', id, newOperations);
     await doc.update({ operations: FieldValue.arrayUnion(...newOperations) });
   }
 
@@ -55,7 +54,8 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
    */
   async addWorkspace(wid: string) {
     const workspace = db.collection(wid);
-    await workspace.doc('init').set({ initialized: true });
+    const doc = workspace.doc('init');
+    await doc.set({ initialized: true });
   }
 
   /**

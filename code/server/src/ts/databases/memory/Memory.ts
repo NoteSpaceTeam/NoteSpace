@@ -1,19 +1,19 @@
-import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { v4 as uuid } from 'uuid';
 import { NotFoundError } from '@domain/errors/errors';
-import { Workspace, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
 type WorkspaceStorage = {
   id: string;
   name: string;
-  resources: Record<string, WorkspaceResource>;
+  resources: Record<string, Resource>;
 };
 
 const workspaces: Record<string, WorkspaceStorage> = {};
 
 export function createWorkspace(name: string): string {
   const id = uuid();
-  const root: WorkspaceResource = {
+  const root: Resource = {
     id,
     name: 'root',
     workspace: id,
@@ -21,18 +21,18 @@ export function createWorkspace(name: string): string {
     parent: '',
     children: [],
   };
-  workspaces[id] = { id, name, resources: { root } };
+  workspaces[id] = { id, name, resources: { [id]: root } };
   return id;
 }
 
-export function getWorkspaces(): WorkspaceMetaData[] {
+export function getWorkspaces(): WorkspaceMeta[] {
   return Object.values(workspaces).map(({ id, name }) => ({ id, name }));
 }
 
 export function getWorkspace(id: string): Workspace {
   const workspace = workspaces[id];
   if (!workspace) throw new NotFoundError(`Workspace not found`);
-  const resources = Object.values(workspace.resources).filter(r => r.id !== id); // exclude root
+  const resources = Object.values(workspace.resources);
   return { ...workspace, resources };
 }
 
@@ -45,14 +45,6 @@ export function updateWorkspace(id: string, name: string) {
 export function deleteWorkspace(id: string) {
   if (!workspaces[id]) throw new NotFoundError(`Workspace not found`);
   delete workspaces[id];
-}
-
-export function getResource(id: string): WorkspaceResource {
-  for (const workspace of Object.values(workspaces)) {
-    const resource = workspace.resources[id];
-    if (resource) return resource;
-  }
-  throw new NotFoundError(`Resource not found`);
 }
 
 export function createResource(wid: string, name: string, type: ResourceType, parent?: string): string {
@@ -74,7 +66,15 @@ export function createResource(wid: string, name: string, type: ResourceType, pa
   return id;
 }
 
-export function updateResource(id: string, newProps: Partial<WorkspaceResource>) {
+export function getResource(id: string): Resource {
+  for (const workspace of Object.values(workspaces)) {
+    const resource = workspace.resources[id];
+    if (resource) return resource;
+  }
+  throw new NotFoundError(`Resource not found`);
+}
+
+export function updateResource(id: string, newProps: Partial<Resource>) {
   const resource = getResource(id);
   Object.assign(resource, newProps);
   if (newProps.parent) {
@@ -87,13 +87,26 @@ export function updateResource(id: string, newProps: Partial<WorkspaceResource>)
 
 export function deleteResource(id: string) {
   const resource = getResource(id);
-  const parentResource = getResource(resource.parent);
-  parentResource.children = parentResource.children.filter(childId => childId !== id);
 
+  // if parent not root
+  if (resource.workspace !== resource.parent) {
+    const parentResource = getResource(resource.parent);
+    parentResource.children = parentResource.children.filter(childId => childId !== id);
+  }
+
+  // delete children
   for (const childId of resource.children) {
     deleteResource(childId);
   }
+
+  // delete resource
   delete workspaces[resource.workspace].resources[id];
+}
+
+export function reset() {
+  for (const id of Object.keys(workspaces)) {
+    delete workspaces[id];
+  }
 }
 
 export const memoryDB = {
@@ -106,4 +119,5 @@ export const memoryDB = {
   createResource,
   updateResource,
   deleteResource,
+  reset,
 };

@@ -1,21 +1,10 @@
-import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
-import { TreeNode, WorkspaceTreeNode, WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
+import { TreeNode } from '@domain/workspaces/tree/types';
+import { Resources } from '@ui/contexts/workspace/WorkspaceContext';
 
-export function getTree(nodes: WorkspaceTreeNodes, id: string): TreeNode {
-  const root = nodes[id];
+export function getTree(id: string, nodes: Resources): TreeNode {
+  const node = nodes[id];
   return {
-    node: root,
-    children: root.children.map(id => getTree(nodes, id)),
-  };
-}
-
-export function rootNode(wid: string, children?: string[]): WorkspaceTreeNode {
-  return {
-    id: wid,
-    workspace: wid,
-    name: 'root',
-    parent: '',
-    children: children || [],
-    type: ResourceType.FOLDER,
+    node,
+    children: node.children.map(id => getTree(id, nodes)),
   };
 }

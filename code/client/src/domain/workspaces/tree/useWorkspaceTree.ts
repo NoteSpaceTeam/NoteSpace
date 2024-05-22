@@ -1,21 +1,16 @@
 import { useState } from 'react';
-import { rootNode } from '@domain/workspaces/tree/utils';
-import { WorkspaceTreeNode, WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
-import { WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
+import { Resource } from '@notespace/shared/src/workspace/types/resource';
+import { Resources } from '@ui/contexts/workspace/WorkspaceContext';
 
 function useWorkspaceTree() {
-  const [nodes, setNodes] = useState<WorkspaceTreeNodes>({});
+  const [nodes, setNodes] = useState<Resources>({});
 
-  function setTree(nodes: WorkspaceResources) {
-    const wid = Object.values(nodes)[0].workspace;
-    const newNodes = { ...nodes };
-    newNodes[wid] = rootNode(newNodes[wid] ? newNodes[wid].children : []);
-    setNodes(newNodes);
+  function setTree(resources: Resource[]) {
+    const nodesRecord = Object.fromEntries(resources.map(node => [node.id, node]));
+    setNodes(nodesRecord);
   }
 
-  const getNode = (id: string) => nodes[id];
-
-  function addNode(node: WorkspaceTreeNode) {
+  function addNode(node: Resource) {
     const newNodes = { ...nodes };
     const parentNode = newNodes[node.parent];
     if (!parentNode) throw new Error('Invalid parent id: ' + node.parent);
@@ -26,7 +21,6 @@ function useWorkspaceTree() {
 
   function removeNode(id: string) {
     const node = nodes[id];
-
     if (!node) throw new Error('Invalid id: ' + id);
     const { parent } = node;
     const parentNode = nodes[parent];
@@ -34,11 +28,9 @@ function useWorkspaceTree() {
     if (!parentNode) throw new Error('Invalid parent id: ' + parent);
     const newNodes = { ...nodes };
     const index = parentNode.children.indexOf(id);
-
     if (index !== -1) parentNode.children.splice(index, 1);
 
     delete newNodes[id];
-
     newNodes[parent] = parentNode;
     setNodes(newNodes);
   }
@@ -71,12 +63,12 @@ function useWorkspaceTree() {
   }
 
   function isDescendant(parentId: string, nodeId: string): boolean {
-    let currentNode = getNode(parentId);
+    let currentNode = nodes[parentId];
     while (currentNode) {
       if (currentNode.id === nodeId) {
         return true;
       }
-      currentNode = getNode(currentNode.parent);
+      currentNode = nodes[currentNode.parent];
     }
     return false;
   }
@@ -85,7 +77,6 @@ function useWorkspaceTree() {
     nodes,
     setNodes,
     setTree,
-    getNode,
     addNode,
     updateNode,
     removeNode,

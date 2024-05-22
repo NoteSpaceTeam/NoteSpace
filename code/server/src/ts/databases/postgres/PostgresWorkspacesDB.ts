@@ -1,5 +1,4 @@
-import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
-import { WorkspaceMetaData, WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { NotFoundError } from '@domain/errors/errors';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
@@ -16,12 +15,12 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     return results[0].id;
   }
 
-  async getWorkspaces(): Promise<WorkspaceMetaData[]> {
+  async getWorkspaces(): Promise<WorkspaceMeta[]> {
     return sql`select * from workspace`;
   }
 
-  async getWorkspace(id: string): Promise<WorkspaceMetaData> {
-    const results: WorkspaceMetaData[] = await sql`select * from workspace where id = ${id}`;
+  async getWorkspace(id: string): Promise<WorkspaceMeta> {
+    const results: WorkspaceMeta[] = await sql`select *from workspace where id = ${id}`;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
     return results[0];
   }
@@ -42,22 +41,5 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
         returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
-  }
-
-  async getWorkspaceResources(id: string): Promise<WorkspaceResources> {
-    const results: WorkspaceResource[] = (
-      await sql`
-      select row_to_json(t) as resources
-      from(
-            select id, name, type, parent, children
-            from resource
-            where workspace = ${id}
-            group by id
-            order by created_at desc
-          ) as t
-    `
-    ).map(r => r.resources);
-
-    return Object.fromEntries(results.map(r => [r.id, r]));
   }
 }

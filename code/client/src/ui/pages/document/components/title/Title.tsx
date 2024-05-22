@@ -3,7 +3,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { Communication } from '@services/communication/communication';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
-import { WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { Resource } from '@notespace/shared/src/workspace/types/resource';
 import useDocumentService from '@services/resource/useResourceService';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -39,7 +39,7 @@ function Title(props: TitleProps) {
     }
   }
 
-  function onResourceUpdated(resource: Partial<WorkspaceResource>) {
+  function onResourceUpdated(resource: Partial<Resource>) {
     const newName = resource.name || title;
     if (resource.id === id && newName !== title) {
       setTitle(newName);

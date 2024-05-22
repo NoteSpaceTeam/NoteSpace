@@ -7,7 +7,6 @@ export function documentRequests(app: Express) {
     const resource: ResourceInputModel = {
       name: name || 'Untitled',
       type: ResourceType.DOCUMENT,
-      parent: wid,
     };
     const response = await request(app).post(`/workspaces/${wid}`).send(resource);
     expect(response.status).toBe(201);

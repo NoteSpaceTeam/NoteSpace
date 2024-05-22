@@ -7,17 +7,10 @@ import './Sidebar.scss';
 import WorkspaceTree from '@ui/components/sidebar/components/WorkspaceTree';
 import { FaHome } from 'react-icons/fa';
 import { IoMdSettings } from 'react-icons/io';
-import { useEffect } from 'react';
 
 function Sidebar() {
   const { isOpen, isLocked, isLoaded, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
-  const { workspace, nodes, operations } = useWorkspace();
-
-  useEffect(() => {
-    if (workspace) {
-      console.log('nodes', nodes);
-    }
-  }, [nodes, workspace]);
+  const { workspace, resources, operations } = useWorkspace();
 
   if (!isLoaded) return null;
   return (
@@ -57,12 +50,12 @@ function Sidebar() {
           <Link to="/settings">Settings</Link>
         </li>
         <hr />
-        {workspace && operations && (
+        {workspace && operations && resources && (
           <>
             <h3>
               <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
             </h3>
-            <WorkspaceTree workspace={workspace} nodes={nodes} operations={operations} />
+            <WorkspaceTree workspace={workspace} resources={resources} operations={operations} />
           </>
         )}
       </ul>

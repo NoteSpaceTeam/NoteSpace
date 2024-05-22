@@ -1,18 +1,17 @@
 import ResourceView from '@ui/components/sidebar/components/ResourceView';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { getTree } from '@domain/workspaces/tree/utils';
-import { WorkspaceTreeNodes } from '@domain/workspaces/tree/types';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { DragEvent, useState } from 'react';
-import { UseResourcesType } from '@ui/contexts/workspace/useResources';
+import { Resources, WorkspaceOperations } from '@ui/contexts/workspace/WorkspaceContext';
 
 type WorkspaceTreeProps = {
-  workspace: WorkspaceMetaData;
-  operations: Omit<UseResourcesType['operations'], 'setResources'>;
-  nodes?: WorkspaceTreeNodes;
+  workspace: WorkspaceMeta;
+  resources: Resources;
+  operations: WorkspaceOperations;
 };
 
-function WorkspaceTree({ workspace, nodes, operations }: WorkspaceTreeProps) {
+function WorkspaceTree({ workspace, resources, operations }: WorkspaceTreeProps) {
   const [dragId, setDragId] = useState<string | null>(null);
 
   async function onCreateResource(parent: string, type: ResourceType) {
@@ -32,8 +31,8 @@ function WorkspaceTree({ workspace, nodes, operations }: WorkspaceTreeProps) {
   return (
     <div className="workspace-tree">
       <ul>
-        {nodes &&
-          getTree(nodes, workspace.id).children.map(node => (
+        {resources[workspace.id] &&
+          getTree(workspace.id, resources).children.map(node => (
             <li key={node.node.id}>
               <ResourceView
                 workspace={workspace.id}

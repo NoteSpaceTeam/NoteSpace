@@ -2,10 +2,10 @@ import { Link, useParams } from 'react-router-dom';
 import { FaFile } from 'react-icons/fa6';
 import FileContextMenu from '@ui/pages/workspace/components/FileContextMenu';
 import useEditing from '@ui/hooks/useEditing';
-import { DocumentResourceMetadata } from '@notespace/shared/src/workspace/types/resource';
+import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 
 type DocumentPreviewProps = {
-  document: DocumentResourceMetadata;
+  document: DocumentResource;
   onDelete: () => void;
   onDuplicate: () => void;
   onRename: (title: string) => void;

@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import request = require('supertest');
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
 export function workspaceRequests(app: Express) {
   async function createWorkspace(name: string): Promise<string> {
@@ -9,13 +9,13 @@ export function workspaceRequests(app: Express) {
     return response.body.id;
   }
 
-  async function getWorkspaces(): Promise<WorkspaceMetaData[]> {
+  async function getWorkspaces(): Promise<WorkspaceMeta[]> {
     const response = await request(app).get('/workspaces');
     expect(response.status).toBe(200);
     return response.body;
   }
 
-  async function getWorkspace(id: string, metaOnly: boolean = false): Promise<WorkspaceMetaData> {
+  async function getWorkspace(id: string, metaOnly: boolean = false): Promise<WorkspaceMeta> {
     const response = await request(app).get(`/workspaces/${id}?metaOnly=${metaOnly}`);
     expect(response.status).toBe(200);
     return response.body;

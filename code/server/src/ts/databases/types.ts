@@ -1,11 +1,8 @@
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 import { Operation } from '@notespace/shared/src/document/types/operations';
-import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
-import { WorkspaceMetaData, WorkspaceResources } from '@notespace/shared/src/workspace/types/workspace';
+import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
-/**
- * Document Repository - Interface for handling resources content management
- */
 export interface DocumentsRepository {
   createDocument: (wid: string, id: string) => Promise<string>;
   getDocument: (wid: string, id: string) => Promise<DocumentContent>;
@@ -15,26 +12,20 @@ export interface DocumentsRepository {
   removeWorkspace: (wid: string) => Promise<void>;
 }
 
-/**
- * Resource Repository - Interface for handling resources metadata management
- */
 export interface ResourcesRepository {
   createResource: (wid: string, name: string, type: ResourceType, parent?: string) => Promise<string>;
-  getResource: (id: string) => Promise<WorkspaceResource>;
-  updateResource: (id: string, newProps: Partial<WorkspaceResource>) => Promise<void>;
+  getResource: (id: string) => Promise<Resource>;
+  updateResource: (id: string, newProps: Partial<Resource>) => Promise<void>;
   deleteResource: (id: string) => Promise<void>;
+  getResources: (wid: string) => Promise<Resource[]>;
 }
 
-/**
- * Workspace Repository - Interface for handling workspace management
- */
 export interface WorkspacesRepository {
   createWorkspace: (name: string) => Promise<string>;
-  getWorkspaces: () => Promise<WorkspaceMetaData[]>;
-  getWorkspace: (id: string) => Promise<WorkspaceMetaData>;
+  getWorkspaces: () => Promise<WorkspaceMeta[]>;
+  getWorkspace: (id: string) => Promise<WorkspaceMeta>;
   updateWorkspace: (id: string, name: string) => Promise<void>;
   deleteWorkspace: (id: string) => Promise<void>;
-  getWorkspaceResources: (id: string) => Promise<WorkspaceResources>;
 }
 
 export interface Databases {

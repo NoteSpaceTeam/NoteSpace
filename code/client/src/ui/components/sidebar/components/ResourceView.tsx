@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { FaFile, FaFolder } from 'react-icons/fa6';
-import { TreeNode, WorkspaceTreeNode } from '@domain/workspaces/tree/types';
+import { TreeNode } from '@domain/workspaces/tree/types';
 import React, { useState } from 'react';
 import { RiArrowDownSFill, RiArrowRightSFill } from 'react-icons/ri';
 import { FaPlusSquare } from 'react-icons/fa';
@@ -9,7 +9,7 @@ import CreateResourceContextMenu from '@ui/components/sidebar/components/CreateR
 
 type ResourceViewProps = {
   workspace: string;
-  resource: WorkspaceTreeNode;
+  resource: Resource;
   onCreateResource?: (parent: string, type: ResourceType) => void;
   onDrag?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;

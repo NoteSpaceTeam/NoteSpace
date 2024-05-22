@@ -6,7 +6,6 @@ import { io, Socket } from 'socket.io-client';
 import { InsertOperation, DeleteOperation } from '@notespace/shared/src/document/types/operations';
 import { FugueTree } from '@notespace/shared/src/document/FugueTree';
 import { requests as requestOperations } from '../utils/requests';
-import { randomString } from '../utils';
 
 const PORT = process.env.PORT || 8080;
 const HOST_IP = process.env.HOST_IP || 'localhost';
@@ -48,17 +47,17 @@ beforeEach(() => {
   tree.clear();
 });
 
-afterEach(() => {
+afterEach(async () => {
   client1.emit('leaveDocument');
   client2.emit('leaveDocument');
   client1.emit('leaveWorkspace');
   client2.emit('leaveWorkspace');
 });
 
-describe('Operations must be commutative', () => {
+describe('Conflict resolution tests', () => {
   test('insert operations should be commutative', async () => {
     // setup document
-    const wid = await requests.workspace.createWorkspace(randomString());
+    const wid = await requests.workspace.createWorkspace('test');
     const id = await requests.document.createDocument(wid);
 
     // clients join the workspace
@@ -99,12 +98,10 @@ describe('Operations must be commutative', () => {
 
     expect(tree.toString()).toBe('ab');
   });
-});
 
-describe('Operations must be idempotent', () => {
   test('delete operations should be idempotent', async () => {
     // setup document
-    const wid = await requests.workspace.createWorkspace(randomString());
+    const wid = await requests.workspace.createWorkspace('test');
     const id = await requests.document.createDocument(wid);
 
     // clients join the workspace

@@ -1,5 +1,5 @@
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
-import { WorkspaceInputModel, WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
 
 function workspaceService(http: HttpCommunication) {
@@ -7,7 +7,7 @@ function workspaceService(http: HttpCommunication) {
     return await http.get(`/workspaces/${id}`);
   }
 
-  async function getWorkspaces(): Promise<WorkspaceMetaData[]> {
+  async function getWorkspaces(): Promise<WorkspaceMeta[]> {
     return await http.get('/workspaces');
   }
 
@@ -19,7 +19,7 @@ function workspaceService(http: HttpCommunication) {
     await http.delete(`/workspaces/${id}`);
   }
 
-  async function updateWorkspace(id: string, newProps: Partial<WorkspaceMetaData>): Promise<void> {
+  async function updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
     await http.put(`/workspaces/${id}`, newProps);
   }
 

@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceMetaData } from '@notespace/shared/src/workspace/types/workspace';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import useEditing from '@ui/hooks/useEditing';
 import { RiComputerLine } from 'react-icons/ri';
 import WorkspaceContextMenu from '@ui/pages/workspaces/components/WorkspaceContextMenu';
 
 type WorkspacePreviewProps = {
-  workspace: WorkspaceMetaData;
+  workspace: WorkspaceMeta;
   onDelete: () => void;
   onRename: (title: string) => void;
   onInvite: () => void;

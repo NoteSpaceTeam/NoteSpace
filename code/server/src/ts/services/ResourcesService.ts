@@ -1,4 +1,4 @@
-import { DocumentResource, ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { DocumentResource, ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { DocumentsRepository, ResourcesRepository } from '@databases/types';
 
 export class ResourcesService {
@@ -16,7 +16,7 @@ export class ResourcesService {
     return id;
   }
 
-  async getResource(wid: string, id: string, metaOnly: boolean = false): Promise<WorkspaceResource> {
+  async getResource(wid: string, id: string, metaOnly: boolean = false): Promise<Resource> {
     const resource = await this.resources.getResource(id);
     if (resource.type === ResourceType.FOLDER || metaOnly) return resource;
     const { operations } = await this.documents.getDocument(wid, id);
@@ -26,7 +26,7 @@ export class ResourcesService {
     } as DocumentResource;
   }
 
-  async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
+  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
     await this.resources.updateResource(id, resource);
   }
 
@@ -34,5 +34,11 @@ export class ResourcesService {
     const { type, workspace } = await this.resources.getResource(id);
     await this.resources.deleteResource(id);
     if (type === ResourceType.DOCUMENT) await this.documents.deleteDocument(workspace, id);
+  }
+
+  async getResources(wid: string, type?: ResourceType): Promise<Resource[]> {
+    const resources = await this.resources.getResources(wid);
+    if (!type) return resources;
+    return resources.filter(resource => resource.type === type);
   }
 }

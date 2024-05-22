@@ -6,14 +6,13 @@ import { ControllersLogger } from '@src/utils/logging';
 const logger = ControllersLogger('ws');
 
 export default function initSocketEvents(events: Record<string, SocketHandler>) {
-  // const onCursorChange = events['cursorChange'];
   return async (socket: Socket) => {
     logger.logInfo('Client connected:' + socket.id);
 
     Object.entries(events).forEach(([event, handler]) => {
       socket.on(event, async data => {
         try {
-          logger.logInfo('Event: ' + event + '| Data: ' + JSON.stringify(data));
+          logger.logInfo('Event: ' + event + ': ' + JSON.stringify(data));
           await handler(socket, data);
         } catch (e: any) {
           logger.logError(e);
@@ -23,7 +22,6 @@ export default function initSocketEvents(events: Record<string, SocketHandler>) 
     });
 
     socket.on('disconnect', reason => {
-      // onCursorChange(socket, null); // remove cursor
       logger.logInfo('Client disconnected: ' + reason);
     });
   };

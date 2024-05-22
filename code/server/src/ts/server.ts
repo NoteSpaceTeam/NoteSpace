@@ -8,13 +8,12 @@ import router from '@src/controllers/http/router';
 import config from '@src/config';
 import initSocketEvents from '@controllers/ws/initSocketEvents';
 import { ServerLogger } from '@src/utils/logging';
-import { ProductionDatabases } from '@databases/ProductionDatabases';
+import { TestDatabases } from '@databases/TestDatabases';
 
-const logger = ServerLogger;
-logger.logWarning('Starting server...');
+ServerLogger.logWarning('Starting server...');
 
 // setup services and databases
-const databases = new ProductionDatabases();
+const databases = new TestDatabases();
 const services = new Services(databases);
 
 // setup server and controllers
@@ -23,7 +22,7 @@ const server = http.createServer(app);
 const io = new Server(server, config.SERVER_OPTIONS);
 const api = router(services, io);
 
-// setup middleware
+// setup middlewares
 app.use(cors({ origin: config.ORIGIN }));
 app.use(express.json());
 app.use('/', api);
@@ -34,5 +33,5 @@ const socketEvents = initSocketEvents(events);
 io.on('connection', socketEvents);
 
 server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
-  logger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+  ServerLogger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
 });

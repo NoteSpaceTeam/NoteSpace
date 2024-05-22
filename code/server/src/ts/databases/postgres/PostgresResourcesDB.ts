@@ -1,4 +1,4 @@
-import { ResourceType, WorkspaceResource } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourcesRepository } from '@databases/types';
 import { NotFoundError } from '@domain/errors/errors';
 import { isEmpty } from 'lodash';
@@ -22,14 +22,14 @@ export class PostgresResourcesDB implements ResourcesRepository {
     return results[0].id;
   }
 
-  async getResource(id: string): Promise<WorkspaceResource> {
-    const results: WorkspaceResource[] = await sql`select * from resource where id = ${id}`;
+  async getResource(id: string): Promise<Resource> {
+    const results: Resource[] = await sql`select *from resource where id = ${id}`;
 
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }
 
-  async updateResource(id: string, resource: Partial<WorkspaceResource>): Promise<void> {
+  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
     const results = await sql`
         update resource
         set ${sql(resource)}
@@ -46,5 +46,20 @@ export class PostgresResourcesDB implements ResourcesRepository {
         returning id
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
+  }
+
+  async getResources(wid: string): Promise<Resource[]> {
+    return (
+      await sql`
+          select row_to_json(t) as resources
+          from(
+                  select id, name, type, parent, children
+                  from resource
+                  where workspace = ${wid}
+                  group by id
+                  order by created_at desc
+              ) as t
+      `
+    ).map(r => r.resources);
   }
 }

@@ -6,7 +6,7 @@ function onLeaveDocument() {
   return function (socket: Socket) {
     const documentId = rooms.document.get(socket.id)?.id;
     if (!documentId) return;
-    deleteCursor(socket, documentId); // Done so that the cursor is removed when the user leaves the document
+    deleteCursor(socket, documentId);
     rooms.document.leave(socket);
   };
 }

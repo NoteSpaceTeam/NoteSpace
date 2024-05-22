@@ -169,9 +169,6 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
   const deleteSelection = (deleteHandler: DeleteFunction, options?: TextDeleteOptions) => {
     const selection = getSelection(editor);
 
-    console.log('Selection: ', selection);
-    console.log('Editor: ', editor.selection);
-
     // Iterate over the selected lines and delete the block styles
     for (let i = selection.start.line + 1; i <= selection.end.line; i++) {
       const block = editor.children[i];
