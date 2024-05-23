@@ -1,5 +1,5 @@
 import { Editor, Node, Path, Point, Range, Text } from 'slate';
-import { Cursor, emptyCursor, emptySelection, Selection } from '@notespace/shared/src/document/types/cursor';
+import { Cursor, emptyCursor, emptySelection, Selection } from '@domain/editor/cursor';
 import { first, isEqual } from 'lodash';
 
 /**

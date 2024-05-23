@@ -2,8 +2,8 @@ import { type Id } from '@notespace/shared/src/document/types/nodes';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { FugueTree } from '@notespace/shared/src/document/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
-import { type FugueNode, type NodeInsert } from '@domain/editor/crdt/types';
-import { Cursor, Selection } from '@notespace/shared/src/document/types/cursor';
+import { type FugueNode, type NodeInsert } from '@domain/editor/fugue/types';
+import { Cursor, Selection } from '@domain/editor/cursor';
 import { isEmpty, last, range } from 'lodash';
 import {
   BlockStyleOperation,

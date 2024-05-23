@@ -1,7 +1,7 @@
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { FugueNode } from '@domain/editor/crdt/types';
-import { Selection } from '@notespace/shared/src/document/types/cursor';
+import { FugueNode } from '@domain/editor/fugue/types';
+import { Selection } from '@domain/editor/cursor';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
 import { deleteAroundSelection } from '@domain/editor/operations/markdown/utils';
 import { Communication } from '@services/communication/communication';

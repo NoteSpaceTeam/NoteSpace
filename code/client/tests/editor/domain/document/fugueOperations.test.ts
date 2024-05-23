@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import {
   InsertOperation,
   DeleteOperation,

@@ -1,6 +1,6 @@
 import { type Editor } from 'slate';
 import inputHandlers from '@domain/editor/slate/handlers/input/inputHandlers';
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import inputDomainOperations from '@domain/editor/operations/input/operations';
 import markdownDomainOperations from '@domain/editor/operations/markdown/operations';
 import { Communication } from '@services/communication/communication';

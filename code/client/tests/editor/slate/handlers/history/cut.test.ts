@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { BaseRemoveTextOperation, Editor } from 'slate';
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import {
   removeText,
   mockEditor,
@@ -13,7 +13,7 @@ import {
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import { InsertTextOperation, RemoveTextOperation } from '@domain/editor/operations/history/types';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
-import { nodeInsert } from '@domain/editor/crdt/utils';
+import { nodeInsert } from '@domain/editor/fugue/utils';
 
 let editor: Editor;
 let fugue: Fugue;

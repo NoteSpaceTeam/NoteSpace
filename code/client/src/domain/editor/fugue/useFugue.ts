@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 
 const useFugue = () => useMemo(() => new Fugue(), []);
 

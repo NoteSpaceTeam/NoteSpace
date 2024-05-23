@@ -1,13 +1,13 @@
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/src/document/types/operations';
-import { Selection, Cursor } from '@notespace/shared/src/document/types/cursor';
+import { Selection, Cursor } from '@domain/editor/cursor';
 import { describe, test, expect, beforeEach } from 'vitest';
-import { FugueNode } from '@domain/editor/crdt/types';
+import { FugueNode } from '@domain/editor/fugue/types';
 
 describe('Fugue', () => {
   let fugue: Fugue;

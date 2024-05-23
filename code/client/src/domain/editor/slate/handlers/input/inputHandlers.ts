@@ -4,7 +4,7 @@ import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isEqual } from 'lodash';
 import { getKeyFromInputEvent } from '@domain/editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
-import { Cursor, emptyCursor } from '@notespace/shared/src/document/types/cursor';
+import { Cursor, emptyCursor } from '@domain/editor/cursor';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { InputDomainOperations } from '@domain/editor/operations/input/types';
 

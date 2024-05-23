@@ -1,4 +1,4 @@
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,

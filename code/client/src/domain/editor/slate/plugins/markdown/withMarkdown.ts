@@ -2,7 +2,7 @@ import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
 import markdownHandlers from '@domain/editor/operations/markdown/operations';
 import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
-import { Fugue } from '@domain/editor/crdt/fugue';
+import { Fugue } from '@domain/editor/fugue/fugue';
 import { Communication } from '@services/communication/communication';
 
 /**

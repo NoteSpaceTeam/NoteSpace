@@ -1,5 +1,5 @@
 import Editor from '@ui/pages/document/components/editor/Editor';
-import useFugue from '@domain/editor/crdt/useFugue';
+import useFugue from '@domain/editor/fugue/useFugue';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
