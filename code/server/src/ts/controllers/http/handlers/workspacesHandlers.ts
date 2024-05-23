@@ -9,11 +9,19 @@ import { InvalidParameterError } from '@domain/errors/errors';
 
 function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
-    const { name } = req.body as WorkspaceInputModel;
+    const { name, isPrivate } = req.body as WorkspaceInputModel;
     if (!name) throw new InvalidParameterError('Workspace name is required');
+    if (isPrivate === undefined) throw new InvalidParameterError('Workspace visibility is required');
 
-    const id = await services.workspace.createWorkspace(name);
-    io.emit('createdWorkspace', { id, name });
+    const id = await services.workspace.createWorkspace(name, isPrivate);
+    const workspace: WorkspaceMeta = {
+      id,
+      name,
+      createdAt: new Date().toISOString(),
+      members: [],
+      isPrivate,
+    };
+    io.emit('createdWorkspace', workspace);
     httpResponse.created(res).json({ id });
   };
 

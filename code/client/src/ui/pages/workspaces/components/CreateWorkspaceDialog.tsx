@@ -12,14 +12,10 @@ function CreateWorkspaceDialog({ onCreate }: CreateWorkspaceDialogProps) {
       title="Create a new workspace"
       fields={[
         { name: 'name', label: 'Workspace Name' },
-        // { name: 'description', label: 'Workspace Description' },
-        // { name: 'visibility', label: 'Workspace Visibility' },
-        // { name: 'tags', label: 'Workspace Tags' },
-        // { name: 'members', label: 'Workspace Members' },
+        { name: 'isPrivate', label: 'Make Private', type: 'checkbox' },
       ]}
-      onSubmit={values => onCreate({ name: values.name })}
+      onSubmit={values => onCreate(values as WorkspaceInputModel)}
     >
-      <p>New</p>
       <FaPlus />
     </Dialog>
   );

@@ -6,12 +6,15 @@ import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/
 type WorkspaceStorage = {
   id: string;
   name: string;
+  isPrivate: boolean;
+  createdAt: string;
+  members: string[];
   resources: Record<string, Resource>;
 };
 
 const workspaces: Record<string, WorkspaceStorage> = {};
 
-export function createWorkspace(name: string): string {
+export function createWorkspace(name: string, isPrivate: boolean): string {
   const id = uuid();
   const root: Resource = {
     id,
@@ -20,13 +23,20 @@ export function createWorkspace(name: string): string {
     type: ResourceType.FOLDER,
     parent: '',
     children: [],
+    createdAt: '',
+    updatedAt: '',
   };
-  workspaces[id] = { id, name, resources: { [id]: root } };
+  const now = new Date().toISOString();
+  workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [] };
   return id;
 }
 
 export function getWorkspaces(): WorkspaceMeta[] {
-  return Object.values(workspaces).map(({ id, name }) => ({ id, name }));
+  return Object.values(workspaces).map(props => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { resources, ...meta } = props;
+    return meta;
+  });
 }
 
 export function getWorkspace(id: string): Workspace {
@@ -57,6 +67,8 @@ export function createResource(wid: string, name: string, type: ResourceType, pa
     type,
     parent: parent || wid,
     children: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
   // update parent
   if (parent) {

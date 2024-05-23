@@ -2,10 +2,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 30%;
   border-radius: 5px;
-  background-color: black;
+  background-color: black !important;
   color: white;
+  font-size: 2vh;
 
   > * {
     padding: 0 2vh 0 2vh;

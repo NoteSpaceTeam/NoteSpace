@@ -13,18 +13,25 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    * @param res
    */
   const createResource = async (req: Request, res: Response) => {
-    // Validate workspace id
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
 
-    // Get resource input model
     const resource = req.body as ResourceInputModel;
     if (!resource) throw new InvalidParameterError('Body is required');
     const { type, name, parent } = resource;
     if (!type) throw new InvalidParameterError('Resource type is required');
 
     const id = await service.createResource(wid, name, type, parent);
-    const createdResource: Resource = { id, workspace: wid, ...resource, children: [], parent: parent || wid };
+    const now = new Date().toISOString();
+    const createdResource: Resource = {
+      id,
+      workspace: wid,
+      ...resource,
+      children: [],
+      parent: parent || wid,
+      createdAt: now,
+      updatedAt: now,
+    };
     io.in(wid).emit('createdResource', createdResource);
     httpResponse.created(res).json({ id });
   };
@@ -35,12 +42,10 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    * @param res
    */
   const getResource = async (req: Request, res: Response) => {
-    // Validate workspace id and resource id
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
 
-    // Get resource metadata query parameter
     const { metaOnly } = req.query;
     const resource = await service.getResource(wid, id, metaOnly === 'true');
     httpResponse.ok(res).json(resource);
@@ -52,12 +57,10 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    * @param res
    */
   const updateResource = async (req: Request, res: Response) => {
-    // Validate workspace id and resource id
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
 
-    // Get resource input model
     const resource = req.body as Partial<Resource>;
     if (!resource) throw new InvalidParameterError('Body is required');
 
@@ -72,7 +75,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
    * @param res
    */
   const deleteResource = async (req: Request, res: Response) => {
-    // Validate workspace id and resource id
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');

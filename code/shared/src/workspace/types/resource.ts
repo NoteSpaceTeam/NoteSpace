@@ -7,6 +7,8 @@ export interface Resource {
   type: ResourceType;
   parent: string;
   children: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ResourceInputModel {

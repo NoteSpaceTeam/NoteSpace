@@ -9,6 +9,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #f7f9fa;
+  --blue: #1976d2;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -39,11 +40,24 @@ h1 {
 }
 
 button {
+  color: white;
   background-color: black;
   border-radius: 8px;
   cursor: pointer;
-  padding: 2vh;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5vh;
+  padding: 2vh;
+}
+
+.MuiCheckbox-root {
+  transition: background-color 0.2s;
+}
+
+.MuiCheckbox-root:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 @media (prefers-color-scheme: light) {

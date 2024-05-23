@@ -1,13 +1,14 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { FaFile, FaFolder } from 'react-icons/fa6';
 import { TreeNode } from '@domain/workspaces/tree/types';
-import React, { useState } from 'react';
+import { PiDotOutlineFill } from 'react-icons/pi';
 import { RiArrowDownSFill, RiArrowRightSFill } from 'react-icons/ri';
 import { FaPlusSquare } from 'react-icons/fa';
 import CreateResourceContextMenu from '@ui/components/sidebar/components/CreateResourceContextMenu';
 
-type ResourceViewProps = {
+type TreeResourceViewProps = {
   workspace: string;
   resource: Resource;
   onCreateResource?: (parent: string, type: ResourceType) => void;
@@ -16,7 +17,7 @@ type ResourceViewProps = {
   children?: TreeNode[];
 };
 
-function ResourceView({ resource, workspace, children, onCreateResource, onDrag, onDrop }: ResourceViewProps) {
+function TreeResourceView({ resource, workspace, children, onCreateResource, onDrag, onDrop }: TreeResourceViewProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
@@ -35,7 +36,14 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
     <div className="resource">
       <div className="resource-header">
         <div>
-          <button onClick={handleToggle}>{isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}</button>
+          <div>
+            {resource.children.length > 0 ? (
+              <button onClick={handleToggle}>{isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}</button>
+            ) : (
+              <PiDotOutlineFill />
+            )}
+          </div>
+
           <CreateResourceContextMenu
             onCreateNew={(type: ResourceType) => onCreateResource!(resource.id, type)}
             trigger={'create-new-resource-' + resource.id}
@@ -62,7 +70,7 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
       <div className="resource-children">
         {isOpen &&
           children?.map(child => (
-            <ResourceView
+            <TreeResourceView
               key={child.node.id}
               workspace={workspace}
               resource={child.node}
@@ -77,4 +85,4 @@ function ResourceView({ resource, workspace, children, onCreateResource, onDrag,
   );
 }
 
-export default ResourceView;
+export default TreeResourceView;

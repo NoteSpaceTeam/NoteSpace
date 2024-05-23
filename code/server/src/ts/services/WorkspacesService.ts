@@ -10,8 +10,8 @@ export class WorkspacesService {
     this.documents = documents;
   }
 
-  async createWorkspace(name: string): Promise<string> {
-    const id = await this.workspaces.createWorkspace(name);
+  async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
+    const id = await this.workspaces.createWorkspace(name, isPrivate);
     await this.documents.addWorkspace(id);
     return id;
   }

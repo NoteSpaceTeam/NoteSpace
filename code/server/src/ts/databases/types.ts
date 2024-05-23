@@ -21,7 +21,7 @@ export interface ResourcesRepository {
 }
 
 export interface WorkspacesRepository {
-  createWorkspace: (name: string) => Promise<string>;
+  createWorkspace: (name: string, isPrivate: boolean) => Promise<string>;
   getWorkspaces: () => Promise<WorkspaceMeta[]>;
   getWorkspace: (id: string) => Promise<WorkspaceMeta>;
   updateWorkspace: (id: string, name: string) => Promise<void>;

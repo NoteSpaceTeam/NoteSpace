@@ -22,6 +22,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.16",
+    "@mui/styles": "^5.15.18",
     "@notespace/shared": "file:..\\shared",
     "@testing-library/jest-dom": "^6.4.5",
     "dotenv": "^16.4.5",

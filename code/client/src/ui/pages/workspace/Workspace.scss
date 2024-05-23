@@ -4,40 +4,60 @@
   align-items: center;
   justify-content: center;
   padding: 2vh;
-}
 
-.items {
-  padding: 1vh;
-  text-align: left;
-  width: 30%;
+  .table {
+    padding: 1vh;
+    width: 50%;
+    position: relative;
 
-  a {
-    text-decoration: none !important;
-  }
+    > div:first-child {
+      background-color: black;
+      color: white;
+    }
 
-  li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4vh;
-    list-style-type: none;
-    margin: 1vh;
-    padding: 1vh 2vh 1vh 2vh;
-    background-color: lightgray;
-    border-radius: 5px;
-    transition: background-color 0.2s;
-    overflow: clip;
+    .table-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 5vh;
+      row-gap: 10vh;
+      grid-gap: 1vh;
+      margin: 5px;
 
-    div {
-      display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2vh;
-    }
-  }
+      gap: 4vh;
+      padding: 1vh;
+      background-color: lightgray;
+      border-radius: 5px;
+      transition: background-color 0.2s;
 
-  li:hover {
-    background-color: rgb(180, 180, 180);
-    cursor: pointer;
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      :first-child {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 1vh;
+        padding-left: 2vh;
+      }
+    }
+
+    .document:hover {
+      background-color: rgb(180, 180, 180);
+      cursor: pointer;
+    }
+
+    .document-checkbox {
+      position: absolute;
+    }
+
+    a {
+      text-decoration: none !important;
+    }
   }
 }

@@ -5,8 +5,8 @@ import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import './Sidebar.scss';
 import WorkspaceTree from '@ui/components/sidebar/components/WorkspaceTree';
-import { FaHome } from 'react-icons/fa';
 import { IoMdSettings } from 'react-icons/io';
+import { TiHome } from 'react-icons/ti';
 
 function Sidebar() {
   const { isOpen, isLocked, isLoaded, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
@@ -34,7 +34,7 @@ function Sidebar() {
 
       <ul>
         <li>
-          <FaHome />
+          <TiHome />
           <Link to="/">Home</Link>
         </li>
         <li>

@@ -1,6 +1,5 @@
 import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
-import WorkspaceHeader from '@ui/pages/workspace/components/header/WorkspaceHeader';
-import FileView from '@ui/pages/workspace/components/FileView';
+import DocumentView from '@ui/pages/workspace/components/DocumentView';
 import useError from '@ui/contexts/error/useError';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import './Workspace.scss';
@@ -12,14 +11,17 @@ function Workspace() {
   return (
     <div className="workspace">
       <h2>{workspace?.name}</h2>
-      <WorkspaceHeader
-        onCreateNew={async () => operations?.createResource('Untitled', ResourceType.DOCUMENT).catch(publishError)}
-      ></WorkspaceHeader>
-      <ul className="items">
+
+      <div className="table">
+        <div className="table-row">
+          <p>Name</p>
+          <p>Created</p>
+          <p>Modified</p>
+        </div>
         {Object.values(resources || [])
-          ?.filter(resource => resource.type === ResourceType.DOCUMENT)
+          .filter(resource => resource.type === ResourceType.DOCUMENT)
           .map(resource => (
-            <FileView
+            <DocumentView
               key={resource.id}
               document={resource as DocumentResource}
               onDelete={() => operations?.deleteResource(resource.id).catch(publishError)}
@@ -29,7 +31,7 @@ function Workspace() {
               onRename={name => operations?.updateResource(resource.id, { name }).catch(publishError)}
             />
           ))}
-      </ul>
+      </div>
     </div>
   );
 }

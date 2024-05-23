@@ -1,4 +1,4 @@
-import ResourceView from '@ui/components/sidebar/components/ResourceView';
+import TreeResourceView from '@ui/components/sidebar/components/TreeResourceView';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { getTree } from '@domain/workspaces/tree/utils';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
@@ -34,7 +34,7 @@ function WorkspaceTree({ workspace, resources, operations }: WorkspaceTreeProps)
         {resources[workspace.id] &&
           getTree(workspace.id, resources).children.map(node => (
             <li key={node.node.id}>
-              <ResourceView
+              <TreeResourceView
                 workspace={workspace.id}
                 resource={node.node}
                 children={node.children}

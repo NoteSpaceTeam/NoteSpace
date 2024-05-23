@@ -44,13 +44,3 @@
     }
   }
 }
-
-.button > * {
-  text-transform: capitalize;
-  color: white;
-  transition: color 0.3s;
-}
-
-.button:hover > * {
-  color: lightgray;
-}

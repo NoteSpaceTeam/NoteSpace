@@ -118,6 +118,13 @@
       width: 90%;
       border-radius: 5px;
 
+      :first-child {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+
       div {
         display: flex;
         flex-direction: row;
@@ -137,9 +144,7 @@
     }
 
     .resource-header:hover > button {
-      display: flex;
-      align-items: center;
-      padding: 0;
+      display: block;
     }
 
     .resource-header > button:hover {

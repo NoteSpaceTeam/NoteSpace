@@ -10,8 +10,10 @@ begin;
     create table if not exists workspace (
         id char(12) primary key default encode(gen_random_bytes(8), 'base64'),
         name text not null,
+        private boolean not null,
         created_at timestamp not null default now(),
-        updated_at timestamp not null default now()
+        members char(12)[] not null default '{}'::char(12)[]
+
     );
 
     -- Create the resource table

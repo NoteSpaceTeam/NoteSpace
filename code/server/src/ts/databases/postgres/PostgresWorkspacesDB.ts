@@ -5,10 +5,10 @@ import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';
 
 export class PostgresWorkspacesDB implements WorkspacesRepository {
-  async createWorkspace(name: string): Promise<string> {
+  async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
     const results = await sql`
-        insert into workspace (name) 
-        values (${name}) 
+        insert into workspace (name, private) 
+        values (${name}, ${isPrivate}) 
         returning id
     `;
     if (isEmpty(results)) throw new Error('Workspace not created');

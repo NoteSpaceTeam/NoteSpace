@@ -3,6 +3,9 @@ import { Resource } from "./resource";
 export type WorkspaceMeta = {
   name: string;
   id: string;
+  createdAt: string;
+  members: string[];
+  isPrivate: boolean;
 };
 
 export type Workspace = WorkspaceMeta & {
@@ -11,8 +14,5 @@ export type Workspace = WorkspaceMeta & {
 
 export interface WorkspaceInputModel {
   name: string;
-  description?: string;
-  visibility?: string;
-  tags?: string[];
-  members?: string[];
+  isPrivate: boolean;
 }
