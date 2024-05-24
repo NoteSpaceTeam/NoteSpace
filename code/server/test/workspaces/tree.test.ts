@@ -10,13 +10,13 @@ beforeEach(() => {
 
 describe('Workspace tree operations', () => {
   test('should return an empty tree', async () => {
-    const id = await services.workspace.createWorkspace('test');
+    const id = await services.workspace.createWorkspace('test', false);
     const resources = await services.resources.getResources(id);
     expect(resources.length).toBe(1);
   });
 
   test('should return a tree with one document', async () => {
-    const id = await services.workspace.createWorkspace('test');
+    const id = await services.workspace.createWorkspace('test', false);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT);
     const resources = (await services.resources.getResources(id)).filter(r => r.id != id);
     expect(resources.length).toBe(1);
@@ -25,7 +25,7 @@ describe('Workspace tree operations', () => {
   });
 
   test('should return a tree with one document inside a folder', async () => {
-    const id = await services.workspace.createWorkspace('test');
+    const id = await services.workspace.createWorkspace('test', false);
     const folderId = await services.resources.createResource(id, 'testFolder', ResourceType.FOLDER);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT, folderId);
     const resources = (await services.resources.getResources(id)).filter(r => r.id != id);
@@ -40,7 +40,7 @@ describe('Workspace tree operations', () => {
   });
 
   test('should return a tree with one document inside a folder inside a folder', async () => {
-    const id = await services.workspace.createWorkspace('test');
+    const id = await services.workspace.createWorkspace('test', false);
     const folderId1 = await services.resources.createResource(id, 'testFolder1', ResourceType.FOLDER);
     const folderId2 = await services.resources.createResource(id, 'testFolder2', ResourceType.FOLDER, folderId1);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT, folderId2);

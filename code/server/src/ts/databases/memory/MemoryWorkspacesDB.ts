@@ -7,8 +7,8 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     memoryDB.reset();
   }
 
-  async createWorkspace(name: string): Promise<string> {
-    return memoryDB.createWorkspace(name);
+  async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
+    return memoryDB.createWorkspace(name, isPrivate);
   }
   async getWorkspaces(): Promise<WorkspaceMeta[]> {
     return memoryDB.getWorkspaces();

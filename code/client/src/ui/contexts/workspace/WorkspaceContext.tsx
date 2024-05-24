@@ -38,8 +38,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     if (!wid) return;
 
     async function fetchWorkspace() {
-      const { id, name, resources } = await services.getWorkspace(wid!);
-      setWorkspace({ id, name });
+      const { resources, ...workspace } = await services.getWorkspace(wid!);
+      setWorkspace(workspace);
       setResources(resources);
     }
     socket.emit('joinWorkspace', wid);

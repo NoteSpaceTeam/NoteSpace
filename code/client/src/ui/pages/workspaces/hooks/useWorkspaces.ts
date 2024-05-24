@@ -51,9 +51,11 @@ function useWorkspaces() {
 
   return {
     workspaces,
-    createWorkspace,
-    deleteWorkspace,
-    updateWorkspace,
+    operations: {
+      createWorkspace,
+      deleteWorkspace,
+      updateWorkspace,
+    },
   };
 }
 

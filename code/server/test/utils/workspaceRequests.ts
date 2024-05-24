@@ -3,8 +3,8 @@ import request = require('supertest');
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
 export function workspaceRequests(app: Express) {
-  async function createWorkspace(name: string): Promise<string> {
-    const response = await request(app).post('/workspaces').send({ name });
+  async function createWorkspace(name: string, isPrivate: boolean = false): Promise<string> {
+    const response = await request(app).post('/workspaces').send({ name, isPrivate });
     expect(response.status).toBe(201);
     return response.body.id;
   }

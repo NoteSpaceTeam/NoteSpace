@@ -24,12 +24,7 @@ function WorkspaceView({ workspace, selected, onDelete, onRename, onInvite }: Wo
 
   const WorkspaceComponent = (
     <div className="table-row">
-      <Checkbox
-        className="document-checkbox"
-        checked={isSelected}
-        onChange={() => setSelected(!isSelected)}
-        onClick={e => e.stopPropagation()}
-      />
+      <Checkbox checked={isSelected} onChange={() => setSelected(!isSelected)} onClick={e => e.stopPropagation()} />
       {component}
       <p>{workspace.members.length}</p>
       <p>{formatDate(workspace.createdAt)}</p>
