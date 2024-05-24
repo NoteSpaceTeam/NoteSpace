@@ -11,7 +11,7 @@ import './Workspaces.scss';
 function Workspaces() {
   const { workspaces, operations } = useWorkspaces();
   const { publishError } = useError();
-  const [selectedAll, setSelectedAll] = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(workspaces);
 
   useEffect(() => {
@@ -23,20 +23,23 @@ function Workspaces() {
       <h2>Workspaces</h2>
       <DataTable
         columns={['Name', 'Members', 'Created', 'Privacy']}
+        hasSelected={selected.length > 0}
         createButton={
           <CreateWorkspaceDialog onCreate={workspace => operations.createWorkspace(workspace).catch(publishError)} />
         }
         deleteButton={
           <button
             onClick={() => {
-              /* TODO */
+              selected.forEach(workspace => {
+                operations.deleteWorkspace(workspace).catch(publishError);
+              });
+              setSelected([]);
             }}
           >
             <MdDelete />
           </button>
         }
-        selectedAll={selectedAll}
-        setSelectedAll={setSelectedAll}
+        onSelectAll={value => setSelected(value ? workspaces.map(workspace => workspace.id) : [])}
         sortRows={(column, ascending) => {
           setRows(() => sortWorkspaces([...rows], column, ascending));
         }}
@@ -45,7 +48,10 @@ function Workspaces() {
           <WorkspaceView
             key={workspace.id}
             workspace={workspace}
-            selected={selectedAll}
+            selected={selected.includes(workspace.id)}
+            onSelect={value =>
+              setSelected(prev => (value ? [...prev, workspace.id] : prev.filter(id => id !== workspace.id)))
+            }
             onDelete={() => operations.deleteWorkspace(workspace.id).catch(publishError)}
             onRename={name => operations.updateWorkspace(workspace.id, { ...workspace, name }).catch(publishError)}
             onInvite={() => {}}

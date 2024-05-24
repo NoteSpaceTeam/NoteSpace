@@ -4,7 +4,7 @@ import { RiMenuFold2Line, RiMenuFoldLine, RiTeamFill } from 'react-icons/ri';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import './Sidebar.scss';
-import WorkspaceTree from '@ui/components/sidebar/components/WorkspaceTree';
+import WorkspaceTree from '@ui/components/sidebar/components/workspace-tree/WorkspaceTree';
 import { IoMdSettings } from 'react-icons/io';
 import { TiHome } from 'react-icons/ti';
 

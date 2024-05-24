@@ -1,11 +1,12 @@
 import { ReactNode, useState } from 'react';
 import { Checkbox } from '@mui/material';
-import { FaSortDown, FaSortUp } from 'react-icons/fa6';
+import { GoSortAsc, GoSortDesc } from 'react-icons/go';
+import './DataTable.scss';
 
 type DataTableProps = {
   columns: string[];
-  selectedAll: boolean;
-  setSelectedAll: (selected: boolean) => void;
+  hasSelected: boolean;
+  onSelectAll: (value: boolean) => void;
   createButton: ReactNode;
   deleteButton: ReactNode;
   sortRows: (column: string, ascending: boolean) => void;
@@ -16,19 +17,26 @@ function DataTable({
   columns,
   createButton,
   deleteButton,
-  setSelectedAll,
-  selectedAll,
+  hasSelected,
+  onSelectAll,
   sortRows,
   children,
 }: DataTableProps) {
+  const [selectedAll, setSelectedAll] = useState(false);
   const [sortColumn, setSortColumn] = useState('');
   const [ascending, setAscending] = useState(true);
+
+  function onSelectAllRows() {
+    setSelectedAll(!selectedAll);
+    onSelectAll(!selectedAll);
+  }
+
   return (
     <div className="table">
-      {selectedAll ? deleteButton : createButton}
+      {hasSelected ? deleteButton : createButton}
       <div className="table-content">
         <div className="table-header">
-          <Checkbox checked={selectedAll} onChange={() => setSelectedAll(!selectedAll)} />
+          <Checkbox checked={selectedAll} onChange={onSelectAllRows} />
           {columns.map(column => (
             <div key={column}>
               <button
@@ -43,7 +51,7 @@ function DataTable({
                 }}
               >
                 {column}
-                {sortColumn === column && (ascending ? <FaSortUp /> : <FaSortDown />)}
+                {sortColumn === column && (ascending ? <GoSortAsc /> : <GoSortDesc />)}
               </button>
             </div>
           ))}

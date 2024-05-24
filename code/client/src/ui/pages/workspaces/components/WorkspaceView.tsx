@@ -9,12 +9,13 @@ import { formatDate } from '@/utils/utils';
 type WorkspacePreviewProps = {
   workspace: WorkspaceMeta;
   selected: boolean;
+  onSelect: (value: boolean) => void;
   onDelete: () => void;
   onRename: (title: string) => void;
   onInvite: () => void;
 };
 
-function WorkspaceView({ workspace, selected, onDelete, onRename, onInvite }: WorkspacePreviewProps) {
+function WorkspaceView({ workspace, selected, onSelect, onDelete, onRename, onInvite }: WorkspacePreviewProps) {
   const { component, isEditing, setIsEditing } = useEditing(workspace.name, onRename);
   const [isSelected, setSelected] = useState(selected);
 
@@ -22,9 +23,14 @@ function WorkspaceView({ workspace, selected, onDelete, onRename, onInvite }: Wo
     setSelected(selected);
   }, [selected]);
 
+  function onCheckboxSelected() {
+    setSelected(!isSelected);
+    onSelect(!isSelected);
+  }
+
   const WorkspaceComponent = (
-    <div className="table-row">
-      <Checkbox checked={isSelected} onChange={() => setSelected(!isSelected)} onClick={e => e.stopPropagation()} />
+    <div className={`table-row ${isSelected && 'selected'}`} id={workspace.id}>
+      <Checkbox checked={isSelected} onChange={onCheckboxSelected} onClick={e => e.stopPropagation()} />
       {component}
       <p>{workspace.members.length}</p>
       <p>{formatDate(workspace.createdAt)}</p>

@@ -18,7 +18,7 @@ function workspacesHandlers(services: Services, io: Server) {
       id,
       name,
       createdAt: new Date().toISOString(),
-      members: [],
+      members: [''],
       isPrivate,
     };
     io.emit('createdWorkspace', workspace);

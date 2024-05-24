@@ -3,19 +3,19 @@ import DocumentContextMenu from '@ui/pages/workspace/components/DocumentContextM
 import useEditing from '@ui/hooks/useEditing';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Checkbox } from '@mui/material';
-import '../../../components/table/DataTable.scss';
-import { formatDate } from '@/utils/utils';
+import { formatDate, formatTimePassed } from '@/utils/utils';
 import { useEffect, useState } from 'react';
 
 type DocumentViewProps = {
   document: DocumentResource;
   selected: boolean;
+  onSelect: (value: boolean) => void;
   onDelete: () => void;
   onDuplicate: () => void;
   onRename: (title: string) => void;
 };
 
-function DocumentView({ document, onDelete, onRename, onDuplicate, selected }: DocumentViewProps) {
+function DocumentView({ document, onSelect, onDelete, onRename, onDuplicate, selected }: DocumentViewProps) {
   const { wid } = useParams();
   const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', onRename);
   const [isSelected, setSelected] = useState(selected);
@@ -24,12 +24,17 @@ function DocumentView({ document, onDelete, onRename, onDuplicate, selected }: D
     setSelected(selected);
   }, [selected]);
 
+  function onCheckboxSelected() {
+    setSelected(!isSelected);
+    onSelect(!isSelected);
+  }
+
   const DocumentComponent = (
     <div className="table-row">
-      <Checkbox checked={isSelected} onChange={() => setSelected(!isSelected)} onClick={e => e.stopPropagation()} />
+      <Checkbox checked={isSelected} onChange={onCheckboxSelected} onClick={e => e.stopPropagation()} />
       {component}
       <p>{formatDate(document.createdAt)}</p>
-      <p>{formatDate(document.updatedAt)}</p>
+      <p>{formatTimePassed(document.updatedAt)}</p>
     </div>
   );
   return (

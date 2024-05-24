@@ -36,13 +36,13 @@ function TreeResourceView({ resource, workspace, children, onCreateResource, onD
     <div className="resource">
       <div className="resource-header">
         <div>
-          <div>
+          <>
             {resource.children.length > 0 ? (
               <button onClick={handleToggle}>{isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}</button>
             ) : (
               <PiDotOutlineFill />
             )}
-          </div>
+          </>
 
           <CreateResourceContextMenu
             onCreateNew={(type: ResourceType) => onCreateResource!(resource.id, type)}

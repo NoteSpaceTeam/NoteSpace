@@ -8,12 +8,11 @@ import DataTable from '@ui/components/table/DataTable';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { getDocuments, sortDocuments } from '@domain/workspaces/utils';
-import '../../components/table/DataTable.scss';
 
 function Workspace() {
   const { workspace, resources, operations } = useWorkspace();
   const { publishError } = useError();
-  const [selectedAll, setSelectedAll] = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(getDocuments(resources));
 
   useEffect(() => {
@@ -25,8 +24,8 @@ function Workspace() {
       <h2>Documents in {workspace?.name}</h2>
       <DataTable
         columns={['Name', 'Created', 'Modified']}
-        selectedAll={selectedAll}
-        setSelectedAll={setSelectedAll}
+        hasSelected={selected.length > 0}
+        onSelectAll={value => setSelected(value ? rows.map(document => document.id) : [])}
         createButton={
           <button onClick={() => operations?.createResource('Untitled', ResourceType.DOCUMENT).catch(publishError)}>
             <FaPlus />
@@ -35,7 +34,10 @@ function Workspace() {
         deleteButton={
           <button
             onClick={() => {
-              /* TODO */
+              selected.forEach(document => {
+                operations?.deleteResource(document).catch(publishError);
+              });
+              setSelected([]);
             }}
           >
             <MdDelete />
@@ -49,7 +51,10 @@ function Workspace() {
           <DocumentView
             key={document.id}
             document={document}
-            selected={selectedAll}
+            selected={selected.includes(document.id)}
+            onSelect={value =>
+              setSelected(prev => (value ? [...prev, document.id] : prev.filter(id => id !== document.id)))
+            }
             onDelete={() => operations?.deleteResource(document.id).catch(publishError)}
             onDuplicate={() =>
               operations?.createResource(document.name + '-copy', ResourceType.DOCUMENT).catch(publishError)

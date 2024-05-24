@@ -18,15 +18,25 @@
       color: white;
     }
 
-    .table-header button {
-      padding: 0;
-      margin: 0;
+    .table-header {
+      grid-template-rows: 4vh !important;
+
+      button {
+        padding: 0;
+        margin: 0;
+        font-weight: 500;
+
+        svg {
+          font-size: 3vh;
+          margin-left: -3vh;
+        }
+      }
     }
 
     .table-row,
     .table-header {
       display: grid;
-      grid-template-columns: 50px repeat(4, 1fr);
+      grid-template-columns: 50px repeat(auto-fit, minmax(100px, 1fr));
       grid-template-rows: 5vh;
       row-gap: 10vh;
       grid-gap: 1vh;
@@ -38,9 +48,14 @@
       background-color: lightgray;
       border-radius: 5px;
       transition: background-color 0.2s;
+      white-space: nowrap;
 
       span {
-        width: min-content;
+        width: 100%;
+        display: inline-block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
     }
 

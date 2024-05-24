@@ -27,7 +27,7 @@ export function createWorkspace(name: string, isPrivate: boolean): string {
     updatedAt: '',
   };
   const now = new Date().toISOString();
-  workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [] };
+  workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [''] };
   return id;
 }
 
