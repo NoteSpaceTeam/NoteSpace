@@ -15,6 +15,7 @@ function CreateWorkspaceDialog({ onCreate }: CreateWorkspaceDialogProps) {
         { name: 'isPrivate', label: 'Make Private', type: 'checkbox' },
       ]}
       onSubmit={values => onCreate(values as WorkspaceInputModel)}
+      submitText="Create"
     >
       <FaPlus />
     </Dialog>

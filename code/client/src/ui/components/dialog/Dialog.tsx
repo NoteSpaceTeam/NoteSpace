@@ -8,7 +8,6 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import './Dialog.scss';
 
 interface Field {
@@ -21,27 +20,11 @@ interface DialogProps {
   title: string;
   fields: Field[];
   onSubmit: (values: { [key: string]: any }) => void;
+  submitText?: string;
   children: React.ReactNode;
 }
 
-const useStyles = makeStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: 'black',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'black',
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: 'black',
-      },
-    },
-  },
-});
-
-function Dialog({ title, fields, onSubmit, children }: DialogProps) {
-  const classes = useStyles();
+function Dialog({ title, fields, onSubmit, submitText, children }: DialogProps) {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<{ [key: string]: any }>(
     fields.reduce((obj, item) => ({ ...obj, [item.name]: item.type === 'checkbox' ? false : '' }), {})
@@ -87,7 +70,7 @@ function Dialog({ title, fields, onSubmit, children }: DialogProps) {
               />
             ) : (
               <TextField
-                className={classes.root}
+                className="text-field"
                 key={field.name}
                 autoFocus
                 margin="dense"
@@ -102,7 +85,7 @@ function Dialog({ title, fields, onSubmit, children }: DialogProps) {
         </DialogContent>
         <DialogActions>
           <button onClick={handleClose}>Cancel</button>
-          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={handleSubmit}>{submitText || 'Submit'}</button>
         </DialogActions>
       </MaterialDialog>
     </div>

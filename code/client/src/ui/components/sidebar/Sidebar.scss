@@ -45,6 +45,22 @@
     }
   }
 
+  .workspace-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+
+    button {
+      background-color: transparent;
+      color: black;
+      font-size: 3vh;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
   a {
     text-decoration: none !important;
   }

@@ -5,7 +5,7 @@ import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import useError from '@ui/contexts/error/useError';
 import { useParams } from 'react-router-dom';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
-import useResources from '@ui/contexts/workspace/useResources';
+import useResources from '@domain/workspaces/useResources';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
 export type Resources = Record<string, Resource>;

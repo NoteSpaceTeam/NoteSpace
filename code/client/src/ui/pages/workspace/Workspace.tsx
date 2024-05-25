@@ -2,12 +2,12 @@ import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import DocumentView from '@ui/pages/workspace/components/DocumentView';
 import useError from '@ui/contexts/error/useError';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
-import './Workspace.scss';
 import { useEffect, useState } from 'react';
 import DataTable from '@ui/components/table/DataTable';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { getDocuments, sortDocuments } from '@domain/workspaces/utils';
+import './Workspace.scss';
 
 function Workspace() {
   const { workspace, resources, operations } = useWorkspace();

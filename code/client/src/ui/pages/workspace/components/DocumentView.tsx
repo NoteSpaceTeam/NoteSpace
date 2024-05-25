@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import DocumentContextMenu from '@ui/pages/workspace/components/DocumentContextMenu';
+import ResourceContextMenu from '@ui/pages/workspace/components/ResourceContextMenu';
 import useEditing from '@ui/hooks/useEditing';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Checkbox } from '@mui/material';
@@ -38,9 +38,14 @@ function DocumentView({ document, onSelect, onDelete, onRename, onDuplicate, sel
     </div>
   );
   return (
-    <DocumentContextMenu onRename={() => setIsEditing(true)} onDuplicate={onDuplicate} onDelete={onDelete}>
+    <ResourceContextMenu
+      onRename={() => setIsEditing(true)}
+      onOpenInNewTab={() => window.open(`/workspaces/${wid}/${document.id}`, '_blank')}
+      onDuplicate={onDuplicate}
+      onDelete={onDelete}
+    >
       {isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
-    </DocumentContextMenu>
+    </ResourceContextMenu>
   );
 }
 

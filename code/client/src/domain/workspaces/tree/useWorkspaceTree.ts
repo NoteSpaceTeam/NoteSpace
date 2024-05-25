@@ -27,10 +27,24 @@ function useWorkspaceTree() {
 
     if (!parentNode) throw new Error('Invalid parent id: ' + parent);
     const newNodes = { ...nodes };
+
+    const deleteDescendants = (node: Resource) => {
+      node.children.forEach(childId => {
+        const childNode = newNodes[childId];
+        if (childNode) {
+          deleteDescendants(childNode);
+        }
+      });
+      delete newNodes[node.id];
+    };
+
+    // delete node and its descendants recursively
+    deleteDescendants(node);
+
+    // remove the node from its parent's children array
     const index = parentNode.children.indexOf(id);
     if (index !== -1) parentNode.children.splice(index, 1);
 
-    delete newNodes[id];
     newNodes[parent] = parentNode;
     setNodes(newNodes);
   }

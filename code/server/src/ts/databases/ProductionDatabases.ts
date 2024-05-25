@@ -4,13 +4,13 @@ import { DocumentsRepository, Databases, ResourcesRepository, WorkspacesReposito
 import { FirestoreDocumentsDB } from '@databases/firestore/FirestoreDocumentsDB';
 
 export class ProductionDatabases implements Databases {
-  readonly document: DocumentsRepository;
-  readonly resource: ResourcesRepository;
-  readonly workspace: WorkspacesRepository;
+  readonly documents: DocumentsRepository;
+  readonly resources: ResourcesRepository;
+  readonly workspaces: WorkspacesRepository;
 
   constructor() {
-    this.document = new FirestoreDocumentsDB();
-    this.resource = new PostgresResourcesDB();
-    this.workspace = new PostgresWorkspacesDB();
+    this.documents = new FirestoreDocumentsDB();
+    this.resources = new PostgresResourcesDB();
+    this.workspaces = new PostgresWorkspacesDB();
   }
 }

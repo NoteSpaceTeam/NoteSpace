@@ -19,20 +19,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@mui/material": "^5.15.16",
-    "@mui/styles": "^5.15.18",
     "@notespace/shared": "file:..\\shared",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.23.0",
+    "@mui/material": "^5.15.16",
     "@testing-library/jest-dom": "^6.4.5",
     "dotenv": "^16.4.5",
     "eslint-plugin-playwright": "^1.6.0",
     "lodash": "^4.17.21",
     "msw": "^2.2.14",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.2.1",
-    "react-router-dom": "^6.23.0",
     "slate": "^0.103.0",
     "slate-history": "^0.100.0",
     "slate-react": "^0.102.0",
@@ -69,9 +66,7 @@
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vite-plugin-pwa": "^0.20.0",
-    "vite-plugin-qrcode": "^0.2.3",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
-  },
-  "packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394"
+  }
 }

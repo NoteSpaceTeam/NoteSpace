@@ -1,4 +1,4 @@
-import useWorkspaces from '@ui/pages/workspaces/hooks/useWorkspaces';
+import useWorkspaces from '@domain/workspaces/useWorkspaces';
 import WorkspaceView from '@ui/pages/workspaces/components/WorkspaceView';
 import CreateWorkspaceDialog from '@ui/pages/workspaces/components/CreateWorkspaceDialog';
 import useError from '@ui/contexts/error/useError';

@@ -27,7 +27,7 @@ function useEditing(initialValue: string, onEdit: (value: string) => void) {
       }}
     />
   ) : (
-    <span onClick={() => setIsEditing(true)}>{value || 'Untitled'}</span>
+    <span>{value || 'Untitled'}</span>
   );
 
   return {

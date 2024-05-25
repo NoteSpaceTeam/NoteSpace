@@ -1,14 +1,20 @@
 import { Operation } from '@notespace/shared/src/document/types/operations';
-import { DocumentsRepository } from '@databases/types';
+import { DocumentsRepository, ResourcesRepository } from '@databases/types';
 
 export class DocumentsService {
-  private readonly database: DocumentsRepository;
+  private readonly documents: DocumentsRepository;
+  private readonly resources: ResourcesRepository;
 
-  constructor(database: DocumentsRepository) {
-    this.database = database;
+  constructor(documents: DocumentsRepository, resources: ResourcesRepository) {
+    this.documents = documents;
+    this.resources = resources;
   }
 
   async updateDocument(wid: string, id: string, operations: Operation[]) {
-    await this.database.updateDocument(wid, id, operations);
+    // update document operations
+    await this.documents.updateDocument(wid, id, operations);
+
+    // update resource modified time
+    await this.resources.updateResource(id, { updatedAt: new Date().toISOString() });
   }
 }

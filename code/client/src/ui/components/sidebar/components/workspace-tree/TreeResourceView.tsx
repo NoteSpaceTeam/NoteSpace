@@ -3,22 +3,41 @@ import { Link } from 'react-router-dom';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { FaFile, FaFolder } from 'react-icons/fa6';
 import { TreeNode } from '@domain/workspaces/tree/types';
-import { PiDotOutlineFill } from 'react-icons/pi';
 import { RiArrowDownSFill, RiArrowRightSFill } from 'react-icons/ri';
-import { FaPlusSquare } from 'react-icons/fa';
-import CreateResourceContextMenu from '@ui/components/sidebar/components/CreateResourceContextMenu';
+import CreateResourceMenu from '@ui/components/sidebar/components/CreateResourceMenu';
+import { GoPlus } from 'react-icons/go';
+import ResourceContextMenu from '@ui/pages/workspace/components/ResourceContextMenu';
+import useEditing from '@ui/hooks/useEditing';
 
 type TreeResourceViewProps = {
   workspace: string;
   resource: Resource;
   onCreateResource?: (parent: string, type: ResourceType) => void;
+  onDeleteResource?: (id: string) => void;
+  onRenameResource?: (id: string, name: string) => void;
+  onDuplicateResource?: (id: string, name: string, type: ResourceType) => void;
+  onOpenInNewTab?: (id: string) => void;
   onDrag?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
   children?: TreeNode[];
 };
 
-function TreeResourceView({ resource, workspace, children, onCreateResource, onDrag, onDrop }: TreeResourceViewProps) {
+function TreeResourceView({
+  resource,
+  workspace,
+  children,
+  onCreateResource,
+  onDeleteResource,
+  onRenameResource,
+  onDuplicateResource,
+  onOpenInNewTab,
+  onDrag,
+  onDrop,
+}: TreeResourceViewProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const { component, isEditing, setIsEditing } = useEditing(resource.name || 'Untitled', (name: string) =>
+    onRenameResource!(resource.id, name)
+  );
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -35,37 +54,49 @@ function TreeResourceView({ resource, workspace, children, onCreateResource, onD
   return (
     <div className="resource">
       <div className="resource-header">
-        <div>
-          <>
-            {resource.children.length > 0 ? (
-              <button onClick={handleToggle}>{isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}</button>
-            ) : (
-              <PiDotOutlineFill />
-            )}
-          </>
-
-          <CreateResourceContextMenu
+        <ResourceContextMenu
+          onRename={() => setIsEditing(true)}
+          onDelete={() => onDeleteResource!(resource.id)}
+          onDuplicate={() => onDuplicateResource!(resource.parent, resource.name, resource.type)}
+          onOpenInNewTab={resource.type === ResourceType.DOCUMENT ? () => onOpenInNewTab!(resource.id) : undefined}
+        >
+          <div className="expand-icon">
+            <button className={resource.children.length === 0 ? 'hide-button' : ''} onClick={handleToggle}>
+              {isOpen ? <RiArrowDownSFill /> : <RiArrowRightSFill />}
+            </button>
+          </div>
+          <CreateResourceMenu
             onCreateNew={(type: ResourceType) => onCreateResource!(resource.id, type)}
             trigger={'create-new-resource-' + resource.id}
-          >
-            {resource.type === ResourceType.DOCUMENT ? (
-              <div {...props}>
-                <Link to={`/workspaces/${workspace}/${resource.id}`} className="resource-name document">
+          />
+          {resource.type === ResourceType.DOCUMENT ? (
+            <div {...props} className="resource-name document">
+              {isEditing ? (
+                <div>
                   <FaFile />
-                  {resource.name}
+                  {component}
+                </div>
+              ) : (
+                <Link to={`/workspaces/${workspace}/${resource.id}`}>
+                  <FaFile />
+                  {component}
                 </Link>
-              </div>
-            ) : (
-              <div {...props} className="resource-name folder">
+              )}
+            </div>
+          ) : (
+            <div {...props} className="resource-name folder">
+              <div>
                 <FaFolder />
-                {resource.name}
+                {component}
               </div>
-            )}
-          </CreateResourceContextMenu>
-        </div>
-        <button id={'create-new-resource-' + resource.id}>
-          <FaPlusSquare />
-        </button>
+            </div>
+          )}
+        </ResourceContextMenu>
+        {!isEditing && (
+          <button id={'create-new-resource-' + resource.id}>
+            <GoPlus />
+          </button>
+        )}
       </div>
       <div className="resource-children">
         {isOpen &&
@@ -76,6 +107,10 @@ function TreeResourceView({ resource, workspace, children, onCreateResource, onD
               resource={child.node}
               children={child.children}
               onCreateResource={onCreateResource}
+              onDeleteResource={onDeleteResource}
+              onRenameResource={onRenameResource}
+              onDuplicateResource={onDuplicateResource}
+              onOpenInNewTab={onOpenInNewTab}
               onDrag={onDrag}
               onDrop={onDrop}
             />

@@ -13,13 +13,13 @@ type WorkspaceContextMenuProps = {
 function WorkspaceContextMenu({ children, onInvite, onRename, onDelete }: WorkspaceContextMenuProps) {
   return (
     <PopupMenu item={children}>
-      <button onClick={onInvite}>
-        <RiShareBoxLine />
-        Invite
-      </button>
       <button onClick={onRename}>
         <MdEdit />
         Rename
+      </button>
+      <button onClick={onInvite}>
+        <RiShareBoxLine />
+        Invite
       </button>
       <button onClick={onDelete}>
         <MdDelete />

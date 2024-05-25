@@ -29,7 +29,7 @@ export interface WorkspacesRepository {
 }
 
 export interface Databases {
-  readonly document: DocumentsRepository;
-  readonly resource: ResourcesRepository;
-  readonly workspace: WorkspacesRepository;
+  readonly documents: DocumentsRepository;
+  readonly resources: ResourcesRepository;
+  readonly workspaces: WorkspacesRepository;
 }

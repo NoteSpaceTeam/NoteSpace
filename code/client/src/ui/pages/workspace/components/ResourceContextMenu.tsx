@@ -1,18 +1,25 @@
 import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import { HiDuplicate } from 'react-icons/hi';
+import { HiDuplicate, HiOutlineExternalLink } from 'react-icons/hi';
 
-type DocumentContextMenuProps = {
+type ResourceContextMenuProps = {
   children: ReactNode;
   onRename: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
+  onOpenInNewTab?: () => void;
 };
 
-function DocumentContextMenu({ children, onRename, onDelete, onDuplicate }: DocumentContextMenuProps) {
+function ResourceContextMenu({ children, onOpenInNewTab, onRename, onDelete, onDuplicate }: ResourceContextMenuProps) {
   return (
     <PopupMenu item={children}>
+      {onOpenInNewTab && (
+        <button onClick={onOpenInNewTab}>
+          <HiOutlineExternalLink />
+          Open
+        </button>
+      )}
       <button onClick={onRename}>
         <MdEdit />
         Rename
@@ -29,4 +36,4 @@ function DocumentContextMenu({ children, onRename, onDelete, onDuplicate }: Docu
   );
 }
 
-export default DocumentContextMenu;
+export default ResourceContextMenu;

@@ -52,3 +52,9 @@
   font-size: 16px;
   font-weight: 500;
 }
+
+.text-field * {
+  outline: none;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+}

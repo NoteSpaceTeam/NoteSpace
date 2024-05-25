@@ -54,10 +54,37 @@ button {
 
 .MuiCheckbox-root {
   transition: background-color 0.2s;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.MuiCheckbox-root:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .MuiCheckbox-root:hover {
   background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.root .MuiOutlinedInput-root:focus-within {
+  outline: none;
+  box-shadow: none;
+  border-color: black !important;
+}
+
+.Mui-focused {
+  color: black;
+}
+
+.MuiInput-underline:after {
+  border-bottom-color: black;
+}
+
+.MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: black;
 }
 
 ::selection {

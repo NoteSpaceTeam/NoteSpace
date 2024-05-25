@@ -7,6 +7,9 @@ import './Sidebar.scss';
 import WorkspaceTree from '@ui/components/sidebar/components/workspace-tree/WorkspaceTree';
 import { IoMdSettings } from 'react-icons/io';
 import { TiHome } from 'react-icons/ti';
+import { GoPlus } from 'react-icons/go';
+import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import CreateResourceMenu from '@ui/components/sidebar/components/CreateResourceMenu';
 
 function Sidebar() {
   const { isOpen, isLocked, isLoaded, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
@@ -52,9 +55,19 @@ function Sidebar() {
         <hr />
         {workspace && operations && resources && (
           <>
-            <h3>
-              <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
-            </h3>
+            <div className="workspace-header">
+              <h3>
+                <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
+              </h3>
+              <CreateResourceMenu
+                onCreateNew={(type: ResourceType) => operations.createResource('Untitled', type, workspace.id)}
+                trigger="sidebar-create-resource"
+              />
+              <button id="sidebar-create-resource">
+                <GoPlus />
+              </button>
+            </div>
+
             <WorkspaceTree workspace={workspace} resources={resources} operations={operations} />
           </>
         )}

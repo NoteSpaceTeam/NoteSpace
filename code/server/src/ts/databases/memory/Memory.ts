@@ -99,17 +99,13 @@ export function updateResource(id: string, newProps: Partial<Resource>) {
 
 export function deleteResource(id: string) {
   const resource = getResource(id);
+  const parentResource = getResource(resource.parent);
 
-  // if parent not root
-  if (resource.workspace !== resource.parent) {
-    const parentResource = getResource(resource.parent);
-    parentResource.children = parentResource.children.filter(childId => childId !== id);
-  }
+  // remove from parent
+  parentResource.children = parentResource.children.filter(childId => childId !== id);
 
-  // delete children
-  for (const childId of resource.children) {
-    deleteResource(childId);
-  }
+  // do the same for all children recursively
+  resource.children.forEach(childId => deleteResource(childId));
 
   // delete resource
   delete workspaces[resource.workspace].resources[id];

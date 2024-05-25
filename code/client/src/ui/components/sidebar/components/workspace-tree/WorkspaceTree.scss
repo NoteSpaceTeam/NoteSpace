@@ -46,6 +46,7 @@
       transition: 0.1s;
       width: 90%;
       border-radius: 5px;
+      padding: 0.5vh;
 
       :first-child {
         display: flex;
@@ -61,6 +62,10 @@
         border-radius: 5px;
         user-select: none;
       }
+
+      .hide-button {
+        visibility: hidden;
+      }
     }
 
     .resource-header:hover {
@@ -70,6 +75,8 @@
 
     .resource-header > button {
       display: none;
+      font-size: larger;
+      padding: 1px 5px;
     }
 
     .resource-header:hover > button {
@@ -95,12 +102,12 @@
       padding-left: 10px;
     }
 
-    .resource-name {
+    .resource-name > * {
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      gap: 2px;
+      gap: 4px;
     }
 
     .folder svg {

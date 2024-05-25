@@ -29,7 +29,7 @@ function WorkspaceView({ workspace, selected, onSelect, onDelete, onRename, onIn
   }
 
   const WorkspaceComponent = (
-    <div className={`table-row ${isSelected && 'selected'}`} id={workspace.id}>
+    <div className="table-row">
       <Checkbox checked={isSelected} onChange={onCheckboxSelected} onClick={e => e.stopPropagation()} />
       {component}
       <p>{workspace.members.length}</p>
@@ -37,9 +37,11 @@ function WorkspaceView({ workspace, selected, onSelect, onDelete, onRename, onIn
       <p>{workspace.isPrivate ? 'Private' : 'Public'}</p>
     </div>
   );
-  return (
+  return isEditing ? (
+    WorkspaceComponent
+  ) : (
     <WorkspaceContextMenu onInvite={onInvite} onRename={() => setIsEditing(true)} onDelete={onDelete}>
-      {isEditing ? WorkspaceComponent : <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>}
+      <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>
     </WorkspaceContextMenu>
   );
 }

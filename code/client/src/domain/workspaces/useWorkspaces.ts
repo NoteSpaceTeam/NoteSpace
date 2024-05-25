@@ -19,8 +19,15 @@ function useWorkspaces() {
     setWorkspaces(workspaces.filter(workspace => workspace.id !== id));
   }
 
-  function onUpdateWorkspace(workspace: WorkspaceMeta) {
-    setWorkspaces(workspaces.map(w => (w.id === workspace.id ? workspace : w)));
+  function onUpdateWorkspace(newProps: Partial<WorkspaceMeta>) {
+    setWorkspaces(
+      workspaces.map(workspace => {
+        if (workspace.id === newProps.id) {
+          return { ...workspace, ...newProps };
+        }
+        return workspace;
+      })
+    );
   }
 
   async function createWorkspace(workspace: WorkspaceInputModel) {
