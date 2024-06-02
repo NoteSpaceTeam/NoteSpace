@@ -24,10 +24,10 @@ Because **every idea matters**, _NoteSpace_ supports **offline mode**. This way,
 ## Technologies
 ## Frontend
 
-![](https://skillicons.dev/icons?i=typescript,react,vite,scss)
+![](https://skillicons.dev/icons?i=typescript,react,vite,vitest,scss,mui)
 
 ## Backend
-![](https://skillicons.dev/icons?i=typescript,nodejs,express,firebase,postgresql)
+![](https://skillicons.dev/icons?i=typescript,nodejs,express,firebase,postgresql,docker)
 
 ## Developers
 
