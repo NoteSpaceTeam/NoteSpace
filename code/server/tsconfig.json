@@ -13,11 +13,11 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["../*"],
-      "@src/*": ["./ts/*"],
-      "@controllers/*": ["./ts/controllers/*"],
-      "@databases/*": ["./ts/databases/*"],
-      "@domain/*": ["./ts/domain/*"],
-      "@services/*": ["./ts/services/*"]
+      "@src/*": ["./*"],
+      "@controllers/*": ["./controllers/*"],
+      "@databases/*": ["./databases/*"],
+      "@domain/*": ["./domain/*"],
+      "@services/*": ["./services/*"]
     }
   },
   "include": ["src/**/*"],

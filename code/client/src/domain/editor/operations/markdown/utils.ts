@@ -1,7 +1,7 @@
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { DeleteOperation } from '@notespace/shared/src/document/types/operations';
-import { Id } from '@notespace/shared/src/document/types/nodes';
 import { Selection } from '@domain/editor/cursor';
+import { Id } from '@notespace/shared/src/document/types/types';
 
 /**
  * Deletes characters around the selection

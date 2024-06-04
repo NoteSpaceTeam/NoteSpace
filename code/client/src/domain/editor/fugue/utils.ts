@@ -1,5 +1,8 @@
 import { range } from 'lodash';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
+import { RootNode } from '@domain/editor/fugue/nodes';
+import { Id } from '@notespace/shared/src/document/types/types';
+import { Node } from '@domain/editor/fugue/nodes';
 
 const BASE64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const DEFAULT_REPLICA_ID_LENGTH = 10;
@@ -25,3 +28,38 @@ export function generateReplicaId() {
  * @returns the insert node
  */
 export const nodeInsert = (value: string, styles: InlineStyle[]) => ({ value, styles });
+
+export function rootNode<T>(): RootNode<T> {
+  return {
+    id: { sender: 'root', counter: 0 },
+    value: [],
+    isDeleted: true,
+    parent: null,
+    side: 'R',
+    leftChildren: [],
+    rightChildren: [],
+    depth: 0,
+    styles: [],
+  };
+}
+
+export function treeNode<T>(
+  id: Id,
+  value: T,
+  parent: Id | null,
+  side: 'L' | 'R',
+  depth: number,
+  styles: InlineStyle[] = []
+): Node<T> {
+  return {
+    id,
+    value,
+    parent,
+    side,
+    isDeleted: false,
+    leftChildren: [],
+    rightChildren: [],
+    depth,
+    styles,
+  };
+}

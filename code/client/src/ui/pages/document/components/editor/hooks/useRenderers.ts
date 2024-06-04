@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { ReactEditor, type RenderElementProps, type RenderLeafProps } from 'slate-react';
 import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugins/markdown/rendering/renderers';
 import { Editor } from 'slate';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
 import { Communication } from '@services/communication/communication';
 

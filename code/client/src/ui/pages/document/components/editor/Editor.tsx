@@ -5,7 +5,7 @@ import { toSlate } from '@domain/editor/slate/utils/slate';
 import { descendant } from '@domain/editor/slate/utils/slate';
 import { Communication } from '@services/communication/communication';
 import { getMarkdownPlugin } from '@domain/editor/slate/plugins/markdown/withMarkdown';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import useEvents from '@ui/pages/document/components/editor/hooks/useEvents';
 import useRenderers from '@ui/pages/document/components/editor/hooks/useRenderers';
 import Toolbar from '@ui/pages/document/components/toolbar/Toolbar';

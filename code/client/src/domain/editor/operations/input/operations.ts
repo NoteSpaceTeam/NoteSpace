@@ -1,5 +1,5 @@
 import { BaseSelection } from 'slate';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { InputDomainOperations } from '@domain/editor/operations/input/types';
 import { Cursor, Selection } from '@domain/editor/cursor';
 import { nodeInsert } from '@domain/editor/fugue/utils';

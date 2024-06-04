@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { Cursor, Selection } from '@domain/editor/cursor';
 import { Descendant } from 'slate';
 import { toSlate } from '@domain/editor/slate/utils/slate';

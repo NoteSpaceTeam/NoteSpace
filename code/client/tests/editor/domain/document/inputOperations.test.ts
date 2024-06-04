@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import getInputOperations from '@domain/editor/operations/input/operations';
 import { InputDomainOperations } from '@domain/editor/operations/input/types';
 import { mockCommunication } from '@tests/mocks/mockCommunication';

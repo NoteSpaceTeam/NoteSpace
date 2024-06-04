@@ -3,7 +3,7 @@ import type { BlockStyle, InlineStyle } from '@notespace/shared/src/document/typ
 import type { CustomText } from '@domain/editor/slate/types';
 import { isEqual, last } from 'lodash';
 import { BlockStyles } from '@notespace/shared/src/document/types/styles';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 
 const multiBlocks: BlockStyle[] = [
   BlockStyles.li,

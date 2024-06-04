@@ -1,5 +1,5 @@
-import { TestDatabases } from '../../src/ts/databases/TestDatabases';
-import { Services } from '../../src/ts/services/Services';
+import { TestDatabases } from '../../src/databases/TestDatabases';
+import { Services } from '../../src/services/Services';
 
 let services: Services;
 

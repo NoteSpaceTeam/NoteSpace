@@ -1,17 +1,18 @@
 {
   "name": "@notespace/server",
-  "private": true,
+  "author": "notespace-team",
   "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "keywords": [],
   "scripts": {
     "serve": "tsc && node dist/server.js",
     "start": "tsx watch -r tsconfig-paths/register src/ts/server.ts",
+    "start:dev": "tsx watch -r tsconfig-paths/register src/ts/server.ts -test",
     "test": "jest --detectOpenHandles --config jest.config.js",
     "knip": "knip",
     "format": "prettier --write . && eslint . --ext .ts"
   },
-  "keywords": [],
-  "author": "notespace-team",
-  "license": "MIT",
   "dependencies": {
     "@notespace/shared": "file:..\\shared",
     "cors": "^2.8.5",

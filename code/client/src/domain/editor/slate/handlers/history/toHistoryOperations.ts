@@ -90,7 +90,9 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   function insertTextOperation(operation: BaseInsertTextOperation): InsertTextOperation | undefined {
     if (operation.text === '') return undefined;
 
+    // Get the cursor position to insert the text
     const start = pointToCursor(editor, { path: operation.path, offset: operation.offset });
+
     const text = operation.text.split('');
     return { type: 'insert_text', cursor: { ...start, column: start.column }, text };
   }
@@ -104,20 +106,14 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     operation: BaseRemoveTextOperation,
     selectionBefore: BaseRange | null
   ): RemoveTextOperation | undefined {
-    const offset = (line: number) => (line === 0 ? 0 : 1);
-
     if (operation.text === '') return undefined;
     if (!selectionBefore) return undefined;
 
-    const cursor = pointToCursor(editor, { ...selectionBefore?.anchor });
+    // Normalize selection to account for line root nodes
+    const start = pointToCursor(editor, { ...selectionBefore.anchor });
 
-    const start = { ...cursor, column: cursor.column + offset(cursor.line) };
-    //     {
-    //   line: operation.path[0],
-    //   column: cursor.column + offset(cursor.line),
-    // };
     const end = {
-      line: start.line,
+      ...start,
       column: start.column + operation.text.length,
     };
 
@@ -136,38 +132,48 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     selectionBefore: BaseRange | null,
     insert_mode: boolean
   ): InsertNodeOperation | RemoveNodeOperation | undefined {
-    const lineOffset = (line: number) => (line === 0 ? 0 : 1);
+    const lineOperation = operation.path.length === 1;
 
-    // Remove whole line
-    if (operation.path.length === 1) {
+    // Whole line operation - insert or remove a line
+    if (lineOperation) {
       const start = { line: operation.path[0], column: 0 };
-      const end = { ...start, column: Infinity };
 
-      const selection = { start, end };
+      const selection = { start, end: start }; // End is the same as start for whole line operations
+
+      if (insert_mode) return undefined; // Whole line insert operation is ignored
+
       return {
         type: insert_mode ? 'insert_node' : 'remove_node',
         selection,
+        lineOperation,
         node: operation.node,
       };
     }
 
-    if (!Text.isText(operation.node)) return;
+    if (!Text.isText(operation.node)) return; // Only text nodes are supported
 
-    if (operation.node.text === '') return undefined;
+    if (operation.node.text === '') return undefined; // Empty text nodes are ignored
 
-    if (!selectionBefore) return undefined;
+    if (!selectionBefore) return undefined; // No selection before operation - ignore
 
     const cursor = pointToCursor(editor, selectionBefore.anchor);
 
-    const start = { ...cursor, column: cursor.column + lineOffset(cursor.line) };
+    const start = {
+      ...cursor,
+      column: cursor.column + lineOffset(cursor.line),
+    };
 
-    const end = { ...start, column: start.column + operation.node.text.length };
+    const end = {
+      ...start,
+      column: start.column + operation.node.text.length,
+    };
 
     const selection = { start, end };
 
     return {
       type: insert_mode ? 'insert_node' : 'remove_node',
       selection,
+      lineOperation,
       node: operation.node,
     };
   }
@@ -183,7 +189,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     offset: number | undefined,
     merge_mode: boolean
   ): MergeNodeOperation | SplitNodeOperation | undefined {
-    if (operation.path.length > 1) return undefined;
+    if (operation.path.length > 1) return undefined; // Ignore nested nodes as this is done implicitly by fugue
     if (!(operation.properties as Element).type) return undefined;
 
     return merge_mode
@@ -212,6 +218,19 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
   ): SetNodeOperation | UnsetNodeOperation {
     const lineOperation = operation.path.length === 1;
 
+    // Whole line operation
+    if (lineOperation) {
+      const start = { line: operation.path[0], column: 0 };
+      const end = { ...start, column: Infinity };
+
+      return {
+        type: set_mode ? 'set_node' : 'unset_node',
+        lineOperation,
+        selection: { start, end },
+        properties: operation.properties,
+      };
+    }
+
     const start = pointToCursor(editor, { path: operation.path, offset: 0 });
 
     const end = { ...start, column: start.column + (offset || 0) };
@@ -232,5 +251,7 @@ function toHistoryOperations(editor: Editor, operations: Batch | undefined, reve
     })
     .filter(operation => operation !== undefined) as HistoryOperation[];
 }
+
+const lineOffset = (line: number) => (line === 0 ? 0 : 1);
 
 export { toHistoryOperations };

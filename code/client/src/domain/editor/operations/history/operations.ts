@@ -1,4 +1,4 @@
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import {
   ApplyHistory,
   HistoryDomainOperations,
@@ -16,6 +16,7 @@ import { Communication } from '@services/communication/communication';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { getStyleType } from '@notespace/shared/src/document/types/styles';
 import { Text, Element } from 'slate';
+import { ReviveOperation } from '@notespace/shared/src/document/types/operations';
 
 export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperations => {
   const applyHistoryOperation: ApplyHistory = (operations: HistoryOperation[]) => {
@@ -71,9 +72,25 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
   /**
    * Inserts a node
    * @param selection
+   * @param lineOperation
    * @param node
    */
-  function insertNode({ selection, node }: InsertNodeOperation) {
+  function insertNode({ selection, lineOperation, node }: InsertNodeOperation) {
+    // Whole line operation
+    if (lineOperation) {
+      // Revive line's root node
+      if (!Element.isElement(node)) return;
+      const reviveOperations: ReviveOperation[] = [fugue.reviveLocalByCursor(selection.start) as ReviveOperation];
+      const styles = Object.keys(node).filter(key => key !== 'text');
+      const styleOperations = styles.map(style => {
+        const styleType = getStyleType(style);
+        return styleType === 'block'
+          ? fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle)
+          : fugue.updateInlineStyleLocal(selection, style as InlineStyle, true);
+      });
+      return [...reviveOperations, styleOperations];
+    }
+
     const styles = Object.keys(node).filter(key => key !== 'text');
     if (!Text.isText(node)) return;
 

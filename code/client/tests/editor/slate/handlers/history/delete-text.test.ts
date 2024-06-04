@@ -1,6 +1,6 @@
 import { describe, beforeEach, expect, test } from 'vitest';
 import { BaseInsertTextOperation, BaseSetNodeOperation, Editor } from 'slate';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import {
   applyBatch,
   removeText,

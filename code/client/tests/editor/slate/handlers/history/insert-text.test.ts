@@ -9,7 +9,7 @@ import {
   setNode,
   toBatch,
 } from './utils';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import {
   InsertNodeOperation,

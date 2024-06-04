@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import {
   InsertOperation,
   DeleteOperation,
@@ -9,7 +9,7 @@ import {
 import getFugueOperations from '@domain/editor/operations/fugue/operations';
 import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
 import { Document } from '@notespace/shared/src/workspace/types/document';
-import { Node, RootNode } from '@notespace/shared/src/document/types/nodes';
+import { Node, RootNode } from '@domain/editor/fugue/nodes';
 import { rootNode, treeNode } from '@notespace/shared/src/document/utils';
 
 describe('Fugue Operations', () => {

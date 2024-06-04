@@ -1,5 +1,5 @@
-import { TestDatabases } from '../../src/ts/databases/TestDatabases';
-import { Services } from '../../src/ts/services/Services';
+import { TestDatabases } from '../../src/databases/TestDatabases';
+import { Services } from '../../src/services/Services';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
 let services: Services;

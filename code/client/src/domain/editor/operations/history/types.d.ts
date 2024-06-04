@@ -57,6 +57,7 @@ export type RemoveTextOperation = {
 export type InsertNodeOperation = {
   type: BaseInsertNodeOperation['type'];
   node: Node;
+  lineOperation: boolean;
   selection: Selection;
 };
 
@@ -69,6 +70,7 @@ export type InsertNodeOperation = {
 export type RemoveNodeOperation = {
   type: BaseRemoveNodeOperation['type'];
   node: Node;
+  lineOperation: boolean;
   selection: Selection;
 };
 

@@ -1,4 +1,4 @@
-import { Fugue } from '@domain/editor/fugue/fugue';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { FugueNode } from '@domain/editor/fugue/types';
 import { Selection } from '@domain/editor/cursor';

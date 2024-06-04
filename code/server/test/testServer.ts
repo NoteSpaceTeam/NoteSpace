@@ -2,12 +2,12 @@ import express = require('express');
 import http = require('http');
 import cors = require('cors');
 import { Server } from 'socket.io';
-import { Services } from '../src/ts/services/Services';
-import { TestDatabases } from '../src/ts/databases/TestDatabases';
-import config from '../src/ts/config';
-import eventsInit from '../src/ts/controllers/ws/events';
-import router from '../src/ts/controllers/http/router';
-import initSocketEvents from '../src/ts/controllers/ws/initSocketEvents';
+import { Services } from '../src/services/Services';
+import { TestDatabases } from '../src/databases/TestDatabases';
+import config from '../src/config';
+import eventsInit from '../src/controllers/ws/events';
+import router from '../src/controllers/http/router';
+import initSocketEvents from '../src/controllers/ws/initSocketEvents';
 
 function setup() {
   // setup services and databases

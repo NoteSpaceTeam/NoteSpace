@@ -7,6 +7,7 @@
     "allowImportingTsExtensions": true,
     "baseUrl": "./src",
     "paths": {
+      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"],
       "@/*": ["./*"],
       "@domain/*": ["./domain/*"],
       "@pwa/*": ["./pwa/*"],
