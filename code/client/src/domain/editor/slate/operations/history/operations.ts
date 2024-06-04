@@ -1,9 +1,9 @@
 import { Editor } from 'slate';
 import { last } from 'lodash';
-import { HistoryDomainOperations } from '@domain/editor/operations/history/types';
-import { toHistoryOperations } from '@domain/editor/slate/handlers/history/toHistoryOperations';
+import { HistoryDomainOperations } from '@domain/editor/fugue/operations/history/types';
+import { toHistoryOperations } from '@domain/editor/slate/operations/history/toHistoryOperations';
 
-export type HistoryHandlers = {
+export type Operations = {
   undoOperation: () => void;
   redoOperation: () => void;
 };
@@ -13,7 +13,7 @@ export type HistoryHandlers = {
  * @param editor
  * @param domainOperations
  */
-function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperations): HistoryHandlers {
+function historyHandlers(editor: Editor, domainOperations: HistoryDomainOperations): Operations {
   function undoOperation() {
     const { history } = editor;
     domainOperations.applyHistoryOperation(toHistoryOperations(editor, last(history.undos), true));

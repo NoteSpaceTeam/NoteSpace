@@ -1,6 +1,6 @@
 import { BaseSelection } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import { InputDomainOperations } from '@domain/editor/operations/input/types';
+import { InputDomainOperations } from '@domain/editor/fugue/operations/input/types';
 import { Cursor, Selection } from '@domain/editor/cursor';
 import { nodeInsert } from '@domain/editor/fugue/utils';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';

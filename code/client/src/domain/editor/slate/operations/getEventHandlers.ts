@@ -1,10 +1,10 @@
 import { type Editor } from 'slate';
-import inputHandlers from '@domain/editor/slate/handlers/input/inputHandlers';
+import inputHandlers from '@domain/editor/slate/operations/input/operations';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import inputDomainOperations from '@domain/editor/operations/input/operations';
-import markdownDomainOperations from '@domain/editor/operations/markdown/operations';
+import inputDomainOperations from '@domain/editor/fugue/operations/input/operations';
+import markdownDomainOperations from '@domain/editor/fugue/operations/markdown/operations';
 import { Communication } from '@services/communication/communication';
-import markdownHandlers from '@domain/editor/slate/handlers/markdown/markdownHandlers';
+import markdownHandlers from '@domain/editor/slate/operations/markdown/operations';
 
 /**
  * Handles input events

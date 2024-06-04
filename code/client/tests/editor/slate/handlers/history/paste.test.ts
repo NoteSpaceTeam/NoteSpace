@@ -8,9 +8,9 @@ import {
   insertText,
   mockEditor,
   toBatch,
-} from '@tests/editor/slate/handlers/history/utils';
+} from '@tests/editor/slate/operations/history/utils';
 import { toSlate } from '@domain/editor/slate/utils/slate';
-import { InsertTextOperation, RemoveTextOperation } from '@domain/editor/operations/history/types';
+import { InsertTextOperation, RemoveTextOperation } from '@domain/editor/fugue/operations/history/types';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 
 let editor: Editor;

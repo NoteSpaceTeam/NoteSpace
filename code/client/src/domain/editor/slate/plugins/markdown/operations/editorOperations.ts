@@ -4,7 +4,7 @@ import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isMultiBlock } from '@domain/editor/slate/utils/slate';
 import { getSelection } from '@domain/editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
+import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { RuleType } from '@domain/editor/slate/plugins/markdown/rules';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
 

@@ -1,8 +1,8 @@
 import express from 'express';
 import PromiseRouter from 'express-promise-router';
 import { Services } from '@services/Services';
-import workspacesHandlers from '@controllers/http/handlers/workspacesHandlers';
-import errorHandler from '@controllers/http/handlers/errorHandler';
+import workspacesHandlers from '@controllers/http/operations/workspacesHandlers';
+import errorHandler from '@controllers/http/operations/errorHandler';
 import { Server } from 'socket.io';
 
 export default function (services: Services, io: Server) {

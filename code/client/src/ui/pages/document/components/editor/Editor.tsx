@@ -14,8 +14,8 @@ import useEditor from '@ui/pages/document/components/editor/hooks/useEditor';
 import useHistory from '@ui/pages/document/components/editor/hooks/useHistory';
 import useDecorate from '@ui/pages/document/components/editor/hooks/useDecorate';
 import useCursors from '@ui/pages/document/components/editor/hooks/useCursors';
-import getEventHandlers from '@domain/editor/slate/handlers/getEventHandlers';
-import getFugueOperations from '@domain/editor/operations/fugue/operations';
+import getEventHandlers from '@domain/editor/slate/operations/getEventHandlers';
+import getFugueOperations from '@domain/editor/fugue/operations/fugue/operations';
 import './Editor.scss';
 import { useCallback, useEffect } from 'react';
 

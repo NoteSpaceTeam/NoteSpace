@@ -3,7 +3,7 @@ import {
   createSetInlineApply,
 } from '@domain/editor/slate/plugins/markdown/operations/applyOperations';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { ApplyBlockStyle, ApplyInlineStyle } from '@domain/editor/operations/markdown/types';
+import { ApplyBlockStyle, ApplyInlineStyle } from '@domain/editor/fugue/operations/markdown/types';
 import { Editor, Range } from 'slate';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

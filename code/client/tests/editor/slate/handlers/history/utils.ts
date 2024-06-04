@@ -12,7 +12,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
 } from 'slate';
-import { Batch, toHistoryOperations } from '@domain/editor/slate/handlers/history/toHistoryOperations';
+import { Batch, toHistoryOperations } from '@domain/editor/slate/operations/history/toHistoryOperations';
 import { buildEditor } from '@domain/editor/slate/utils/slate';
 import { withReact } from 'slate-react';
 import { last } from 'lodash';

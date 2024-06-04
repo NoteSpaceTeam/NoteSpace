@@ -6,7 +6,7 @@ import { getKeyFromInputEvent } from '@domain/editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
 import { Cursor, emptyCursor } from '@domain/editor/cursor';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { InputDomainOperations } from '@domain/editor/operations/input/types';
+import { InputDomainOperations } from '@domain/editor/fugue/operations/input/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',

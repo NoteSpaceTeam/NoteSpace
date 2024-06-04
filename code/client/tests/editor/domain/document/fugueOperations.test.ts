@@ -6,8 +6,8 @@ import {
   InlineStyleOperation,
   BlockStyleOperation,
 } from '@notespace/shared/src/document/types/operations';
-import getFugueOperations from '@domain/editor/operations/fugue/operations';
-import { FugueDomainOperations } from '@domain/editor/operations/fugue/types';
+import getFugueOperations from '@domain/editor/fugue/operations/fugue/operations';
+import { FugueDomainOperations } from '@domain/editor/fugue/operations/fugue/types';
 import { Document } from '@notespace/shared/src/workspace/types/document';
 import { Node, RootNode } from '@domain/editor/fugue/nodes';
 import { rootNode, treeNode } from '@notespace/shared/src/document/utils';

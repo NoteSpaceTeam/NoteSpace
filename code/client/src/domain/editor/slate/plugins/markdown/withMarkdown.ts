@@ -1,7 +1,7 @@
 import { type Editor } from 'slate';
 import operations from './operations/editorOperations';
-import markdownHandlers from '@domain/editor/operations/markdown/operations';
-import { MarkdownDomainOperations } from '@domain/editor/operations/markdown/types';
+import markdownHandlers from '@domain/editor/fugue/operations/markdown/operations';
+import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { Communication } from '@services/communication/communication';
 

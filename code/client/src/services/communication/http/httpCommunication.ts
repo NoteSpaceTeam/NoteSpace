@@ -21,7 +21,7 @@ async function put(url: string, body: any) {
   return request(url, 'PUT', body);
 }
 
-async function del(url: string) {
+async function _delete(url: string) {
   return request(url, 'DELETE');
 }
 
@@ -45,5 +45,5 @@ export const httpCommunication: HttpCommunication = {
   post,
   get,
   put,
-  delete: del,
+  delete: _delete,
 };
