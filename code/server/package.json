@@ -7,8 +7,8 @@
   "keywords": [],
   "scripts": {
     "serve": "tsc && node dist/server.js",
-    "start": "tsx watch -r tsconfig-paths/register src/ts/server.ts",
-    "start:dev": "tsx watch -r tsconfig-paths/register src/ts/server.ts -test",
+    "start": "tsx watch -r tsconfig-paths/register src/server.ts prod",
+    "dev": "tsx watch -r tsconfig-paths/register src/server.ts dev",
     "test": "jest --detectOpenHandles --config jest.config.js",
     "knip": "knip",
     "format": "prettier --write . && eslint . --ext .ts"

@@ -7,6 +7,7 @@ import { deleteAroundSelection } from '@domain/editor/fugue/operations/markdown/
 import { Communication } from '@services/communication/communication';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
+import { isEqual } from 'lodash';
 
 /**
  * Handlers for markdown operations
@@ -70,9 +71,9 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
   function deleteBlockStyles(selection: Selection) {
     if (isSelectionEmpty(selection)) return;
     const { start, end } = selection;
-
-    // Remove block styles if the selection is single position at beginning of a line or multi-line selection
-    if ((start === end && start.column === 0) || start.line !== end.line) {
+    const inStartOfLine = isEqual(start, end) && start.column === 0;
+    const isMultiLine = start.line !== end.line;
+    if (inStartOfLine || isMultiLine) {
       const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
       socket.emit('operations', operations);

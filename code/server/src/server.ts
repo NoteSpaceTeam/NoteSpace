@@ -18,7 +18,7 @@ import { ProductionDatabases } from '@databases/ProductionDatabases';
  */
 function bootServer(args: string[]): void {
   // validate server mode
-  const mode = args[0];
+  const mode = args[0] || 'prod';
   if (args.length > 0 && mode !== 'dev' && mode !== 'prod') {
     ServerLogger.logError('Invalid server mode. Use "dev" or "prod"');
     process.exit(1);
