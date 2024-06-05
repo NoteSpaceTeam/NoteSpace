@@ -71,11 +71,11 @@ function toHistoryOperation(
     case 'insert_text':
       return insertTextOperation(editor, operation as BaseInsertTextOperation);
     case 'remove_text':
-      return removeTextOperation(editor, operation as BaseRemoveTextOperation, selectionBefore);
+      return removeTextOperation(editor, operation as BaseRemoveTextOperation);
     case 'insert_node':
-      return nodeOperation(editor, operation as BaseInsertNodeOperation, selectionBefore, true);
+      return nodeOperation(editor, operation as BaseInsertNodeOperation, true);
     case 'remove_node':
-      return nodeOperation(editor, operation as BaseRemoveNodeOperation, selectionBefore, false);
+      return nodeOperation(editor, operation as BaseRemoveNodeOperation, false);
     case 'merge_node':
       return handleNodeOperation(editor, operation as BaseMergeNodeOperation, selectionBefore?.anchor.offset, true);
     case 'split_node':
@@ -109,23 +109,20 @@ function insertTextOperation(editor: Editor, operation: BaseInsertTextOperation)
  * Converts a slate remove text operation to a history remove text operation
  * @param editor
  * @param operation
- * @param selectionBefore
  */
 function removeTextOperation(
   editor: Editor,
   operation: BaseRemoveTextOperation,
-  selectionBefore: BaseRange | null
 ): RemoveTextOperation | undefined {
   if (operation.text === '') return undefined;
-  if (!selectionBefore) return undefined;
 
   // Normalize selection to account for line root nodes
-  const start = pointToCursor(editor, { ...selectionBefore.anchor });
+  const start = pointToCursor(editor, {...operation });
 
   const end = {
-    ...start,
+    line: start.line,
     column: start.column + operation.text.length,
-  };
+  }
 
   const selection = { start, end };
   return { type: 'remove_text', selection };
@@ -135,22 +132,19 @@ function removeTextOperation(
  * Handles a slate insert or remove node operation
  * @param editor
  * @param operation
- * @param selectionBefore
  * @param insert_mode
  */
 function nodeOperation(
   editor: Editor,
   operation: BaseInsertNodeOperation | BaseRemoveNodeOperation,
-  selectionBefore: BaseRange | null,
   insert_mode: boolean
 ): InsertNodeOperation | RemoveNodeOperation | undefined {
   const lineOperation = operation.path.length === 1;
   if (insert_mode) return undefined; // Only remove node operations are supported
   if (!Text.isText(operation.node)) return; // Only text nodes are supported
   if (operation.node.text === '') return undefined; // Empty text nodes are ignored
-  if (!selectionBefore) return undefined; // No selection before operation - ignore
 
-  const cursor = pointToCursor(editor, selectionBefore.anchor);
+  const cursor = pointToCursor(editor, {path: operation.path, offset: 0});
 
   const start = lineOperation
     ? { line: operation.path[0], column: 0 }
