@@ -1,6 +1,7 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { excludeRoot } from './utils';
 
 let services: Services;
 
@@ -11,14 +12,14 @@ beforeEach(() => {
 describe('Workspace tree operations', () => {
   test('should return an empty tree', async () => {
     const id = await services.workspaces.createWorkspace('test', false);
-    const resources = await services.resources.getResources(id);
+    const resources = await services.workspaces.getResources(id);
     expect(resources.length).toBe(1);
   });
 
   test('should return a tree with one document', async () => {
     const id = await services.workspaces.createWorkspace('test', false);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT);
-    const resources = (await services.resources.getResources(id)).filter(r => r.id != id);
+    const resources = excludeRoot(id, await services.workspaces.getResources(id));
     expect(resources.length).toBe(1);
     expect(resources[0].id).toBe(docId);
     expect(resources[0].type).toBe(ResourceType.DOCUMENT);
@@ -28,7 +29,7 @@ describe('Workspace tree operations', () => {
     const id = await services.workspaces.createWorkspace('test', false);
     const folderId = await services.resources.createResource(id, 'testFolder', ResourceType.FOLDER);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT, folderId);
-    const resources = (await services.resources.getResources(id)).filter(r => r.id != id);
+    const resources = excludeRoot(id, await services.workspaces.getResources(id));
 
     expect(resources.length).toBe(2);
     expect(resources[0].id).toBe(folderId);
@@ -44,7 +45,7 @@ describe('Workspace tree operations', () => {
     const folderId1 = await services.resources.createResource(id, 'testFolder1', ResourceType.FOLDER);
     const folderId2 = await services.resources.createResource(id, 'testFolder2', ResourceType.FOLDER, folderId1);
     const docId = await services.resources.createResource(id, 'testDoc', ResourceType.DOCUMENT, folderId2);
-    const resources = ((await services.resources.getResources(id)) as Resource[]).filter(r => r.id != id);
+    const resources = excludeRoot(id, await services.workspaces.getResources(id));
 
     expect(resources.length).toBe(3);
     expect(resources[0].id).toBe(folderId1);
@@ -58,13 +59,22 @@ describe('Workspace tree operations', () => {
     expect(resources[0].children).toEqual([folderId2]);
   });
 
+  test('should delete a single resource', async () => {
+    const wid = await services.workspaces.createWorkspace('test', false);
+    const docId = await services.resources.createResource(wid, 'doc1', ResourceType.DOCUMENT);
+    await services.resources.deleteResource(docId);
+    const resources = excludeRoot(wid, await services.workspaces.getResources(wid));
+    expect(resources.length).toBe(0);
+  });
+
   test('should delete a resource and all its descendants', async () => {
     const wid = await services.workspaces.createWorkspace('test', false);
     const folderId = await services.resources.createResource(wid, 'folder', ResourceType.FOLDER);
     const docId = await services.resources.createResource(wid, 'doc1', ResourceType.DOCUMENT, folderId);
     await services.resources.createResource(wid, 'doc2', ResourceType.DOCUMENT, docId);
     await services.resources.deleteResource(folderId);
-    const resources = (await services.resources.getResources(wid)).filter(r => r.id != wid);
+    const resources = excludeRoot(wid, await services.workspaces.getResources(wid));
+    console.log(resources);
     expect(resources.length).toBe(0);
   });
 });

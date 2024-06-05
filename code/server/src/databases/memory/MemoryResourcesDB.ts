@@ -55,13 +55,16 @@ export class MemoryResourcesDB implements ResourcesRepository {
     const parentResource = await this.getResource(resource.parent);
 
     // remove from parent
-    parentResource.children = parentResource.children.filter((childId: string) => childId !== id);
+    parentResource.children = parentResource.children.filter(childId => childId !== id);
 
     // do the same for all children recursively
-    resource.children.forEach((childId: any) => this.deleteResource(childId));
+    for (const childId of resource.children) {
+      await this.deleteResource(childId);
+    }
 
     // delete resource
     delete Memory.workspaces[resource.workspace].resources[id];
+    console.log(Memory.workspaces[resource.workspace].resources[id]);
   }
 
   private getResourceById(id: string) {

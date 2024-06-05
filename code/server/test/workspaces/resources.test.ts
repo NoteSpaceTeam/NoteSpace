@@ -1,6 +1,7 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { excludeRoot } from './utils';
 
 let services: Services;
 
@@ -21,8 +22,8 @@ describe('Resource operations', () => {
     const wid = await services.workspaces.createWorkspace('test', false);
     const id = await services.resources.createResource(wid, 'testDoc', ResourceType.DOCUMENT);
     await services.resources.deleteResource(id);
-    const resources = (await services.resources.getResources(wid)) as Resource[];
-    expect(resources.filter(r => r.id !== wid)).toEqual([]);
+    const resources = excludeRoot(wid, await services.workspaces.getResources(wid));
+    expect(resources).toEqual([]);
   });
 
   test('should update a resource', async () => {
@@ -37,15 +38,7 @@ describe('Resource operations', () => {
     const wid = await services.workspaces.createWorkspace('test', false);
     await services.resources.createResource(wid, 'testDoc', ResourceType.DOCUMENT);
     await services.resources.createResource(wid, 'testDoc2', ResourceType.DOCUMENT);
-    const resources = (await services.resources.getResources(wid)) as Resource[];
-    expect(resources.filter(r => r.id !== wid).length).toEqual(2);
-  });
-
-  test('should get all resources of a type', async () => {
-    const wid = await services.workspaces.createWorkspace('test', false);
-    await services.resources.createResource(wid, 'testDoc', ResourceType.DOCUMENT);
-    await services.resources.createResource(wid, 'testFolder', ResourceType.FOLDER);
-    const resources = (await services.resources.getResources(wid, ResourceType.DOCUMENT)) as Resource[];
-    expect(resources.filter(r => r.id !== wid).length).toEqual(1);
+    const resources = excludeRoot(wid, await services.workspaces.getResources(wid));
+    expect(resources.length).toEqual(2);
   });
 });
