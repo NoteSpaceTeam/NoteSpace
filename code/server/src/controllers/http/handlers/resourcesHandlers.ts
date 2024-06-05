@@ -33,7 +33,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
       createdAt: now,
       updatedAt: now,
     };
-
     io.in(wid).emit('createdResource', createdResource);
     httpResponse.created(res).json({ id });
   };
