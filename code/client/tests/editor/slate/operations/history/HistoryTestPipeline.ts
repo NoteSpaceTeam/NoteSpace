@@ -1,7 +1,5 @@
 import {Fugue} from "@domain/editor/fugue/Fugue";
 import {Descendant, Editor, Operation} from "slate";
-
-import { Operation as FugueOperation } from "@notespace/shared/src/document/types/operations";
 import {buildEditor, descendant, toSlate} from "@domain/editor/slate/utils/slate";
 import {last} from "lodash";
 import {toHistoryOperations} from "@domain/editor/slate/operations/history/toHistoryOperations";
@@ -25,9 +23,8 @@ export class HistoryTestPipeline {
         this.slate.children = [descendant("paragraph", "")]
     }
 
-    // Receives fugue operations, applies them and updates the editor with the new fugue
-    setupEditor(...operations : FugueOperation[]){
-        this._fugue.applyOperations(operations, true)
+    // Applies fugue state to the editor / operations are applied to the fugue before calling this
+    setupEditor(){
         this.slate.children = toSlate(this._fugue)
     }
 

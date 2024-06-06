@@ -1,137 +1,267 @@
-import { describe, beforeEach, expect, test } from 'vitest';
-import { BaseInsertTextOperation, BaseSetNodeOperation, Editor } from 'slate';
-import { Fugue } from '@domain/editor/fugue/Fugue';
-import {
-  applyBatch,
-  removeText,
-  getRedoOperations,
-  getUndoOperations,
-  mockEditor,
-  removeNode,
-  setNode,
-  toBatch,
-} from '@tests/editor/slate/operations/history/utils';
-import { toSlate } from '@domain/editor/slate/utils/slate';
-import {
-  InsertTextOperation,
-  RemoveTextOperation,
-  SetNodeOperation,
-  UnsetNodeOperation,
-} from '@domain/editor/fugue/operations/history/types';
-import { pointToCursor } from '@domain/editor/slate/utils/selection';
-import { BlockStyles } from '@notespace/shared/src/document/types/styles';
+import {HistoryTestPipeline} from "@tests/editor/slate/operations/history/HistoryTestPipeline";
+import { RemoveTextOperation} from "slate";
+import {NodeInsert} from "@domain/editor/fugue/types";
+import {BlockStyles} from "@notespace/shared/src/document/types/styles";
 
-let editor: Editor;
-let fugue: Fugue;
+let pipeline : HistoryTestPipeline;
 
 beforeEach(() => {
-  editor = mockEditor();
-  fugue = new Fugue();
-});
+  pipeline = new HistoryTestPipeline();
+})
 
-describe('No style', () => {
-  const setup = () => {
-    fugue.insertLocal({ line: 0, column: 0 }, ...'abc'.split(''));
-    editor.children = toSlate(fugue);
+describe("Undo delete text", () => {
+    describe("Start of line", () => {
+        describe("No block style", () => {
+        it("No inline style", () => {
+            // Setup editor
+            pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+            pipeline.setupEditor();
+            const beforeSnapshot = pipeline.takeSnapshot();
+            // Apply operations
+            const slateOperation : RemoveTextOperation[] = [
+                {type: 'remove_text', path: [0, 0], offset: 0, text: "Hello World" }
+            ]
+            pipeline.fugue.deleteLocal({start: {line: 0, column: 0}, end: {line: 0, column: 11}})
+            pipeline.applyOperations(slateOperation);
+            // Get undo operations
+            const batch = pipeline.extractUndoOperations();
+            pipeline.applyHistoryOperations(...batch.operations);
+            const afterSnapshot = pipeline.takeSnapshot();
+            // Compare
+            expect(beforeSnapshot).toEqual(afterSnapshot);
+        })
 
-    const batch = toBatch(removeText('a', [0, 0], 0));
+        it("Inline style", () => {
+            // Setup editor
+            pipeline.fugue.insertLocal({line: 0, column: 0},
+                ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+            ))
+            pipeline.setupEditor();
+            const beforeSnapshot = pipeline.takeSnapshot();
+            // Apply operations
+            const slateOperation : RemoveTextOperation[] = [
+                {type: 'remove_text', path: [0, 0], offset: 0, text: "Hello World" }
+            ]
+            pipeline.fugue.deleteLocal({start: {line: 0, column: 0}, end: {line: 0, column: 11}})
+            pipeline.applyOperations(slateOperation);
+            // Get undo operations
+            const batch = pipeline.extractUndoOperations();
+            pipeline.applyHistoryOperations(...batch.operations);
+            const afterSnapshot = pipeline.takeSnapshot();
+            // Compare
+            expect(beforeSnapshot).toEqual(afterSnapshot);
+        })
+    })
+        describe("Block style", () => {
+            it("No inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 0, text: "Hello World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 0}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+            it("Inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0},
+                    ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+                ))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 0, text: "Hello World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 0}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+        })
+    })
+    describe("Middle of line", () => {
+        describe("No block style", () => {
+            it("No inline style", () => {
+                // Setup editor
+                pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 6, text: "World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 6}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
 
-    applyBatch(editor, batch);
-  };
-
-  beforeEach(setup);
-
-  test('should undo delete', () => {
-    const { operations, editorBatch } = getUndoOperations(editor, 1);
-    for (const i in operations) {
-      const op = operations[i] as InsertTextOperation;
-      const editorOp = editorBatch!.operations[i] as BaseInsertTextOperation;
-      expect(op.type).toBe('insert_text');
-
-      expect(op.cursor).toEqual(pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset }));
-    }
-  });
-
-  test('should redo delete', () => {
-    const { operations } = getRedoOperations(editor, 1);
-    for (const i in operations) {
-      const op = operations[i] as RemoveTextOperation;
-      const editorOp = editor.history!.redos[0].operations[i] as BaseInsertTextOperation;
-      expect(operations[i].type).toBe('remove_text');
-
-      expect(op.selection).toEqual({
-        start: pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset }),
-        end: pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset + editorOp.text.length - 1 }),
-      });
-    }
-  });
-});
-
-describe('Block Style', () => {
-  const deleteBlock = () => {
-    fugue.insertLocal({ line: 0, column: 0 }, 'abc');
-    editor.children = toSlate(fugue);
-
-    const batch = toBatch(setNode({ type: BlockStyles.h1 }, { type: BlockStyles.p }, [0]));
-    applyBatch(editor, batch);
-  };
-
-  beforeEach(deleteBlock);
-
-  test('should undo remove block style', () => {
-    const { operations, editorBatch } = getUndoOperations(editor, 1);
-    const op = operations[0] as UnsetNodeOperation;
-    const editorOp = editorBatch!.operations[0] as BaseSetNodeOperation;
-
-    expect(op.selection).toEqual({
-      start: pointToCursor(editor, { path: editorOp.path, offset: 0 }),
-      end: pointToCursor(editor, { path: editorOp.path, offset: 0 }),
-    });
-  });
-
-  test('should redo remove block style', () => {
-    const { operations } = getRedoOperations(editor, 1);
-    for (const i in operations) {
-      const op = operations[i] as SetNodeOperation;
-      const editorOp = editor.history!.redos[0].operations[i] as BaseSetNodeOperation;
-      expect(operations[i].type).toBe('set_node');
-
-      expect(op.selection).toEqual({
-        start: pointToCursor(editor, { path: editorOp.path, offset: 0 }),
-        end: pointToCursor(editor, { path: editorOp.path, offset: 0 }),
-      });
-    }
-  });
-});
-
-describe('Inline Style', () => {
-  const deleteInline = () => {
-    fugue.insertLocal({ line: 0, column: 0 }, 'a');
-    editor.children = toSlate(fugue);
-
-    const batch = toBatch(removeText('b', [0, 1], 0), removeNode({ text: '', bold: true }, [0, 1]));
-    editor.history.undos = [batch];
-  };
-
-  beforeEach(deleteInline);
-
-  test('should undo remove inline style', () => {
-    const { operations, editorBatch } = getUndoOperations(editor, 1); // remove node op. with empty text
-    const op = operations[0] as InsertTextOperation;
-    const editorOp = editorBatch!.operations[0] as BaseInsertTextOperation;
-
-    expect(op.cursor).toEqual(pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset }));
-  });
-
-  test('should redo remove inline style', () => {
-    const { operations } = getRedoOperations(editor, 1);
-
-    const op = operations[0] as RemoveTextOperation;
-    const editorOp = editor.history!.redos[0].operations[0] as BaseInsertTextOperation;
-
-    expect(op.selection).toEqual({
-      start: pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset }),
-      end: pointToCursor(editor, { path: editorOp.path, offset: editorOp.offset + editorOp.text.length - 1 }),
-    });
-  });
-});
+            })
+            it("Inline style", () => {
+                // Setup editor
+                pipeline.fugue.insertLocal({line: 0, column: 0},
+                    ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+                ))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 6, text: "World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 6}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+        })
+        describe("Block style", () => {
+            it("No inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 6, text: "World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 6}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+            it("Inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0},
+                    ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+                ))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 6, text: "World" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 6}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+        })
+      })
+    describe("End of line", () => {
+        describe("No block style", () => {
+            it("No inline style", () => {
+                // Setup editor
+                pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 10, text: "d" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 10}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+            it("Inline style", () => {
+                // Setup editor
+                pipeline.fugue.insertLocal({line: 0, column: 0},
+                    ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+                ))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 10, text: "d" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 10}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+        })
+        describe("Block style", () => {
+            it("No inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0}, ..."Hello World".split(""))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 10, text: "d" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 10}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+            it("Inline style", () => {
+                // Setup editor
+                pipeline.fugue.updateBlockStyleLocal(0, BlockStyles.h1)
+                pipeline.fugue.insertLocal({line: 0, column: 0},
+                    ..."Hello World".split("").map( value =>({value, styles: ["bold"]} as NodeInsert)
+                ))
+                pipeline.setupEditor();
+                const beforeSnapshot = pipeline.takeSnapshot();
+                // Apply operations
+                const slateOperation : RemoveTextOperation[] = [
+                    {type: 'remove_text', path: [0, 0], offset: 10, text: "d" }
+                ]
+                pipeline.fugue.deleteLocal({start: {line: 0, column: 10}, end: {line: 0, column: 11}})
+                pipeline.applyOperations(slateOperation);
+                // Get undo operations
+                const batch = pipeline.extractUndoOperations();
+                pipeline.applyHistoryOperations(...batch.operations);
+                const afterSnapshot = pipeline.takeSnapshot();
+                // Compare
+                expect(beforeSnapshot).toEqual(afterSnapshot);
+            })
+        })
+      })
+})

@@ -140,20 +140,23 @@ function nodeOperation(
   insert_mode: boolean
 ): InsertNodeOperation | RemoveNodeOperation | undefined {
   const lineOperation = operation.path.length === 1;
-  if (insert_mode) return undefined; // Only remove node operations are supported
-  if (!Text.isText(operation.node)) return; // Only text nodes are supported
-  if (operation.node.text === '') return undefined; // Empty text nodes are ignored
 
   const cursor = pointToCursor(editor, {path: operation.path, offset: 0});
 
   const start = lineOperation
-    ? { line: operation.path[0], column: 0 }
+    ? { line: operation.path[0] + 1, column: 0 }
     : { ...cursor, column: cursor.column + lineOffset(cursor.line) };
 
-  const end = lineOperation ? start : { ...start, column: start.column + operation.node.text.length };
+  let end = start;
 
+  if(!lineOperation){
+    if(!Text.isText(operation.node) || !operation.node.text) return undefined;
+    end = {
+      ...start,
+      column: start.column + (operation.node as Text).text.length,
+    }
+  }
   const selection = { start, end };
-
   return {
     type: insert_mode ? 'insert_node' : 'remove_node',
     selection,
