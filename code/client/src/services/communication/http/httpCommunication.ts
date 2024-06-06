@@ -1,6 +1,6 @@
 import config from '@/config';
 
-export const BASE_URL = config.HTTP_SERVER_URL;
+export const BASE_URL = config.SERVER_URL;
 
 export interface HttpCommunication {
   post: (url: string, data?: any) => Promise<any>;

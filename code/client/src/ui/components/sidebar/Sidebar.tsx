@@ -3,27 +3,24 @@ import { Link } from 'react-router-dom';
 import { RiMenuFold2Line, RiMenuFoldLine, RiTeamFill } from 'react-icons/ri';
 import useWorkspace from '@ui/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
-import './Sidebar.scss';
 import WorkspaceTree from '@ui/components/sidebar/components/workspace-tree/WorkspaceTree';
 import { IoMdSettings } from 'react-icons/io';
 import { TiHome } from 'react-icons/ti';
 import { GoPlus } from 'react-icons/go';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import CreateResourceMenu from '@ui/components/sidebar/components/CreateResourceMenu';
+import './Sidebar.scss';
 
 function Sidebar() {
-  const { isOpen, isLocked, isLoaded, handleClick, handleMouseEnter, handleMouseLeave } = useSidebarState();
+  const { width, isOpen, isLocked, isLoaded, handlers } = useSidebarState();
   const { workspace, resources, operations } = useWorkspace();
 
   if (!isLoaded) return null;
   return (
-    <div
-      className="sidebar"
-      style={{ width: isOpen ? '20%' : '0', transition: '0.3s' }}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="sidebar" style={{ width }} onMouseLeave={handlers.handleMouseLeave}>
+      <div onMouseDown={handlers.handleMouseDown} className="dragger" />
       <div className="sidebar-header">
-        <button onMouseEnter={handleMouseEnter} onClick={handleClick}>
+        <button onMouseEnter={handlers.handleMouseEnter} onClick={handlers.handleClick}>
           {isLocked ? (
             <RiMenuFoldLine className="icon" />
           ) : isOpen ? (
@@ -34,7 +31,6 @@ function Sidebar() {
         </button>
         <Link to="/">NoteSpace</Link>
       </div>
-
       <ul>
         <li>
           <TiHome />
@@ -67,7 +63,6 @@ function Sidebar() {
                 <GoPlus />
               </button>
             </div>
-
             <WorkspaceTree workspace={workspace} resources={resources} operations={operations} />
           </>
         )}
