@@ -85,21 +85,18 @@ export class Fugue {
    */
   private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert) {
     const id = { sender: this.replicaId, counter: this.counter++ };
-
     const leftOrigin = this.getNodeByCursor({ line, column })!;
-
+    const parent = (
+      isEmpty(leftOrigin.rightChildren) ? leftOrigin : this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0])
+    ).id;
     const operation: InsertOperation = {
       type: 'insert',
       id,
       value,
-      parent: (isEmpty(leftOrigin.rightChildren)
-        ? leftOrigin
-        : this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0])
-      ).id,
+      parent,
       side: isEmpty(leftOrigin.rightChildren) ? 'R' : 'L',
       styles,
     };
-
     if (value === '\n') operation.line = line;
     return operation;
   }
@@ -334,7 +331,6 @@ export class Fugue {
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
     if (column === 0) return this.tree.getLineRoot(line);
-
     const start = { line, column: column - 1 };
     const end = { line, column };
     const iterator = this.traverseBySelection({ start, end });

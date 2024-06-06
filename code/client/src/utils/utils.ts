@@ -31,6 +31,6 @@ export function formatTimePassed(isoString: string): string {
   } else if (minutes > 0) {
     return formatTime(minutes, 'minute');
   } else {
-    return seconds === 0 ? 'Just now' : formatTime(seconds, 'second');
+    return seconds <= 0 ? 'Just now' : formatTime(seconds, 'second');
   }
 }

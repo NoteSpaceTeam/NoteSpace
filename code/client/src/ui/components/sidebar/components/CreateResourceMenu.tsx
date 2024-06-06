@@ -11,13 +11,13 @@ type CreateResourceMenuProps = {
 function CreateResourceMenu({ onCreateNew, trigger }: CreateResourceMenuProps) {
   return (
     <PopupMenu item={<></>} trigger={trigger}>
-      <button onClick={() => onCreateNew(ResourceType.FOLDER)}>
-        <MdCreateNewFolder />
-        Folder
-      </button>
       <button onClick={() => onCreateNew(ResourceType.DOCUMENT)}>
         <BsFileEarmarkPlusFill />
         Document
+      </button>
+      <button onClick={() => onCreateNew(ResourceType.FOLDER)}>
+        <MdCreateNewFolder />
+        Folder
       </button>
     </PopupMenu>
   );

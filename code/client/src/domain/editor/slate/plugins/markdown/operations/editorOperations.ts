@@ -119,17 +119,24 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     });
     const path = block ? block[1] : [];
     const end = editor.end(path);
-    Transforms.splitNodes(editor, { always: true });
-
     const element = block![0] as Element;
-
     const type = element.type as BlockStyle;
-    if (!isMultiBlock(type)) {
-      Transforms.setNodes(editor, { type: 'paragraph' });
-      CustomEditor.resetMarks(editor);
+
+    // Check if the selection is at the start of the block
+    if (Point.equals(selection.anchor, editor.start(path))) {
+      // If it is, create a new block of the same type above the current block
+      Transforms.insertNodes(editor, { type, children: [{ text: '' }] }, { at: path });
     } else {
-      const { start } = getSelection(editor);
-      handlers.applyBlockStyle(type, start.line);
+      // If it's not, split the block as usual
+      Transforms.splitNodes(editor, { always: true });
+
+      if (!isMultiBlock(type)) {
+        Transforms.setNodes(editor, { type: 'paragraph' });
+        CustomEditor.resetMarks(editor);
+      } else {
+        const { start } = getSelection(editor);
+        handlers.applyBlockStyle(type, start.line);
+      }
     }
     // if selection was at the end of the block, unwrap the block
     if (!Point.equals(end, Range.end(selection))) return;

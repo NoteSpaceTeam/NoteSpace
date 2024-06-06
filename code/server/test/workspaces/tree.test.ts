@@ -74,7 +74,6 @@ describe('Workspace tree operations', () => {
     await services.resources.createResource(wid, 'doc2', ResourceType.DOCUMENT, docId);
     await services.resources.deleteResource(folderId);
     const resources = excludeRoot(wid, await services.workspaces.getResources(wid));
-    console.log(resources);
     expect(resources.length).toBe(0);
   });
 });

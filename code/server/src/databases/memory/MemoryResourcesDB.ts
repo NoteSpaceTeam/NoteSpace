@@ -40,14 +40,13 @@ export class MemoryResourcesDB implements ResourcesRepository {
 
   async updateResource(id: string, newProps: Partial<Resource>) {
     const resource = this.getResourceById(id);
-    Object.assign(resource, newProps);
-
     if (newProps.parent) {
       const prevParent = this.getResourceById(resource.parent);
       prevParent.children = prevParent.children.filter((childId: string) => childId !== id);
       const newParent = this.getResourceById(newProps.parent);
       newParent.children.push(id);
     }
+    Object.assign(resource, newProps);
   }
 
   async deleteResource(id: string) {
@@ -64,7 +63,6 @@ export class MemoryResourcesDB implements ResourcesRepository {
 
     // delete resource
     delete Memory.workspaces[resource.workspace].resources[id];
-    console.log(Memory.workspaces[resource.workspace].resources[id]);
   }
 
   private getResourceById(id: string) {

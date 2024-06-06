@@ -16,9 +16,13 @@ export default (fugue: Fugue, { socket }: Communication): InputDomainOperations 
   }
 
   function insertLineBreak(cursor: Cursor) {
-    const operations = fugue.insertLocal(cursor, '\n');
-    const styleOperation = fugue.updateBlockStyleLocal(cursor.line + 1, 'paragraph', true);
-    socket.emit('operations', [styleOperation, ...operations]);
+    const operations: Operation[] = fugue.insertLocal(cursor, '\n');
+    const style = cursor.column === 0 ? fugue.getBlockStyle(cursor.line) : 'paragraph'; // inherit block style when inserting line break at the beginning of a line
+    if (cursor.column === 0) {
+      const styleOperation = fugue.updateBlockStyleLocal(cursor.line + 1, style, true);
+      operations.push(styleOperation);
+    }
+    socket.emit('operations', operations);
   }
 
   function deleteCharacter(cursor: Cursor) {

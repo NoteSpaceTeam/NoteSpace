@@ -20,7 +20,7 @@ function Document() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoaded(false); // reset state to load new document (useful for when navigating between documents)
+    setLoaded(false); // reset state to load new document (for when navigating between documents)
 
     async function fetchDocument() {
       if (!id) return;
