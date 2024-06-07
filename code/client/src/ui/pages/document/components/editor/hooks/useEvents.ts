@@ -11,6 +11,7 @@ import { FugueDomainOperations } from '@domain/editor/fugue/operations/fugue/typ
  */
 function useEvents(fugueOperations: FugueDomainOperations, { socket }: Communication, onDone: () => void) {
   function onOperation(operations: Operation[]) {
+    console.log('operations', operations);
     fugueOperations.applyOperations(operations);
     onDone();
   }

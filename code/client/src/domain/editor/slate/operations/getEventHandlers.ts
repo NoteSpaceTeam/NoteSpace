@@ -9,10 +9,15 @@ import markdownHandlers from '@domain/editor/slate/operations/markdown/operation
 /**
  * Handles input events
  * @param editor
+ * @param syncEditor
  * @param fugue
  * @param communication
  */
-function getEventHandlers(editor: Editor, fugue: Fugue, communication: Communication) {
+function getEventHandlers(
+    editor: Editor,
+    fugue: Fugue,
+    communication: Communication
+) {
   // domain operations
   const markdownOperations = markdownDomainOperations(fugue, communication);
   const inputOperations = inputDomainOperations(fugue, communication);

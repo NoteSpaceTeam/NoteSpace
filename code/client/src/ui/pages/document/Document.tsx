@@ -12,6 +12,7 @@ function Document() {
   const communication = useCommunication();
   const services = useDocumentService();
   const fugue = useFugue();
+
   const { publishError } = useError();
   const { id } = useParams();
   const [loaded, setLoaded] = useState(false);
@@ -38,6 +39,14 @@ function Document() {
       socket.emit('leaveDocument');
     };
   }, [fugue, id, http, socket, publishError, services, setTitle, navigate]);
+
+  useEffect(() => {
+    console.log(fugue);
+  }, [fugue]);
+
+  useEffect(() => {
+    console.log("Loading document");
+  }, []);
 
   if (!loaded) return null;
 

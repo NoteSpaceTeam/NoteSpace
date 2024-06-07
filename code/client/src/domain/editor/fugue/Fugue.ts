@@ -3,7 +3,7 @@ import { FugueTree } from '@domain/editor/fugue/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@domain/editor/fugue/types';
 import { Cursor, Selection } from '@domain/editor/cursor';
-import { isEmpty, last, range } from 'lodash';
+import {isEmpty, last, range} from 'lodash';
 import { Id } from '@notespace/shared/src/document/types/types';
 import {
   BlockStyleOperation,
@@ -260,7 +260,7 @@ export class Fugue {
       columnCounter = 0,
       inBounds = false;
 
-    const lineRootNode = this.tree.getLineRoot(start.line);
+    const lineRootNode = this.tree.getLineRoot(start.line === 0 ? 0 : start.line - 1);
 
     for (const node of this.tree.traverse(lineRootNode, returnDeleted)) {
       // start condition

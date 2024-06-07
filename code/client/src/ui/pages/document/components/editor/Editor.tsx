@@ -18,6 +18,7 @@ import getEventHandlers from '@domain/editor/slate/operations/getEventHandlers';
 import getFugueOperations from '@domain/editor/fugue/operations/fugue/operations';
 import './Editor.scss';
 import { useCallback, useEffect } from 'react';
+import {isEqual} from "lodash";
 
 type SlateEditorProps = {
   title: string;
@@ -28,53 +29,72 @@ type SlateEditorProps = {
 const initialValue: Descendant[] = [descendant('paragraph', '')];
 
 function Editor({ title, fugue, communication }: SlateEditorProps) {
-  const editor = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
+  const [editor, setEditor] = useEditor(withHistory, withReact, getMarkdownPlugin(fugue, communication));
   const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
   const { renderElement, renderLeaf } = useRenderers(editor, fugue, communication);
   const decorate = useDecorate(editor, cursors);
+
+  const updateEditor = useCallback((newValue: Descendant[]) => {
+    setEditor(prevState => {
+      prevState.children = newValue;
+      return prevState
+    });
+  },[setEditor]);
+
+  const syncEditor = useCallback((slate ?: Descendant[]) => {
+    console.log("Syncing editor")
+    if(slate) {
+      updateEditor(slate);
+      return;
+    }
+    updateEditor(toSlate(fugue));
+  }, [fugue, updateEditor]);
+
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
-    editor,
-    fugue,
-    communication
+      editor,
+      fugue,
+      communication
   );
 
-  const refreshEditor = useCallback(() => {
-    editor.children = toSlate(fugue);
-    editor.onChange();
-  }, [editor, fugue]);
-
   useEffect(() => {
-    refreshEditor();
-  }, [refreshEditor]);
+    syncEditor();
+  }, [syncEditor]);
 
   useHistory(editor, fugue, communication);
-  useEvents(fugueOperations, communication, refreshEditor);
+  useEvents(fugueOperations, communication, syncEditor);
 
   return (
-    <div className="editor">
-      <div className="container">
-        <Slate editor={editor} initialValue={initialValue} onChange={() => onSelectionChange()}>
-          <Title title={title} placeholder="Untitled" communication={communication} />
-          <Toolbar onApplyMark={onFormat} />
-          <Editable
-            className="editable"
-            data-testid={'editor'}
-            placeholder={'Start writing...'}
-            spellCheck={false}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-            decorate={decorate}
-            onDragStart={e => e.preventDefault()}
-            onDOMBeforeInput={onInput}
-            onCut={onCut}
-            onPaste={e => onPaste(e.nativeEvent)}
-            onKeyDown={e => onShortcut(e.nativeEvent)}
-            onBlur={onBlur}
-          />
-        </Slate>
+      <div className="editor">
+        <div className="container">
+          <Slate editor={editor} onChange={() => {
+            const slate = toSlate(fugue);
+            if(!isEqual(slate, editor.children)) { // Prevents overwriting the editor with the same value
+              syncEditor(slate);
+            }
+            onSelectionChange();
+          }} initialValue={initialValue}
+          >
+            <Title title={title} placeholder="Untitled" communication={communication} />
+            <Toolbar onApplyMark={onFormat} />
+            <Editable
+                className="editable"
+                data-testid={'editor'}
+                placeholder={'Start writing...'}
+                spellCheck={false}
+                renderElement={renderElement}
+                renderLeaf={renderLeaf}
+                decorate={decorate}
+                onDragStart={e => e.preventDefault()}
+                onDOMBeforeInput={onInput}
+                onCut={onCut}
+                onPaste={e => onPaste(e.nativeEvent)}
+                onKeyDown={e => onShortcut(e.nativeEvent)}
+                onBlur={onBlur}
+            />
+          </Slate>
+        </div>
       </div>
-    </div>
   );
 }
 
