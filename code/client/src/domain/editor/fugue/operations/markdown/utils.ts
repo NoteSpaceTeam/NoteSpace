@@ -21,5 +21,5 @@ export function deleteAroundSelection(selection: Selection, amount: number, fugu
     if (!nodeBefore || !nodeAfter) break;
     idsToDelete.push(nodeBefore.id, nodeAfter.id);
   }
-  return idsToDelete.map(id => fugue.deleteLocalById(id)).flat();
+  return fugue.deleteLocalById(selection.start, ...idsToDelete);
 }

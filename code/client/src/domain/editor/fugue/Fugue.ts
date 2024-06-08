@@ -62,12 +62,10 @@ export class Fugue {
     return values.map(value => {
       const node = typeof value === 'string' ? nodeInsert(value, []) : value;
       const operation = this.getInsertOperation({ line, column }, node);
-
       this.addNode(operation);
 
       if (node.value === '\n') line++;
       column = node.value === '\n' ? 0 : column + 1;
-
       return operation;
     });
   }
@@ -83,22 +81,21 @@ export class Fugue {
    * @param cursor
    * @param insertNode
    */
-  private getInsertOperation({ line, column }: Cursor, { value, styles }: NodeInsert) {
+  private getInsertOperation(cursor: Cursor, { value, styles }: NodeInsert): InsertOperation {
     const id = { sender: this.replicaId, counter: this.counter++ };
-    const leftOrigin = this.getNodeByCursor({ line, column })!;
+    const leftOrigin = this.getNodeByCursor(cursor)!;
     const parent = (
       isEmpty(leftOrigin.rightChildren) ? leftOrigin : this.tree.getLeftmostDescendant(leftOrigin.rightChildren[0])
     ).id;
-    const operation: InsertOperation = {
+    return {
       type: 'insert',
       id,
       value,
       parent,
       side: isEmpty(leftOrigin.rightChildren) ? 'R' : 'L',
       styles,
+      cursor,
     };
-    if (value === '\n') operation.line = line;
-    return operation;
   }
 
   /**
@@ -110,8 +107,8 @@ export class Fugue {
    * @param side
    * @param styles
    */
-  private addNode = ({ line, id, value, parent, side, styles }: InsertOperation) => {
-    if (value === '\n') this.tree.addLineRoot(line || 0, id, parent, side, styles);
+  private addNode = ({ cursor, id, value, parent, side, styles }: InsertOperation) => {
+    if (value === '\n') this.tree.addLineRoot(cursor.line || 0, id, parent, side, styles);
     else this.tree.addNode(id, value, parent, side, styles || []);
   };
 
@@ -121,7 +118,16 @@ export class Fugue {
    */
   deleteLocal(selection: Selection): DeleteOperation[] {
     const nodes = Array.from(this.traverseBySelection(selection));
-    return nodes.map(node => this.removeNode(node.id));
+    const cursor = selection.start;
+    return nodes.map(node => {
+      if (node.value === '\n') {
+        cursor.line++;
+        cursor.column = 0;
+      } else {
+        cursor.column++;
+      }
+      return this.removeNode(node.id, cursor);
+    });
   }
 
   /**
@@ -130,14 +136,17 @@ export class Fugue {
    */
   deleteLocalByCursor(cursor: Cursor) {
     const node = this.getNodeByCursor(cursor);
-    if (node) return this.deleteLocalById(node.id);
+    if (node) return this.deleteLocalById(cursor, node.id);
   }
 
   /**
    * Deletes the node based on the given operation
+   * @param cursor
    * @param ids
    */
-  deleteLocalById = (...ids: Id[]): DeleteOperation[] => ids.map(id => this.removeNode(id));
+  deleteLocalById = ({ line, column }: Cursor, ...ids: Id[]): DeleteOperation[] => {
+    return ids.map(id => this.removeNode(id, { line, column: column++ }));
+  };
 
   /**
    * Deletes the node based on the given operation
@@ -148,10 +157,11 @@ export class Fugue {
   /**
    * Deletes the node based on the given node id
    * @param id
+   * @param cursor
    */
-  private removeNode(id: Id): DeleteOperation {
+  private removeNode(id: Id, cursor: Cursor): DeleteOperation {
     this.tree.deleteNode(id);
-    return { type: 'delete', id };
+    return { type: 'delete', id, cursor };
   }
 
   /**
@@ -321,7 +331,7 @@ export class Fugue {
     const iterator = this.traverseBySeparator(' ', cursor, reverse);
     const nodes: FugueNode[] = iterator.next().value;
     if (!nodes) return;
-    return this.deleteLocalById(...nodes.map(node => node.id));
+    return this.deleteLocalById(cursor, ...nodes.map(node => node.id));
   }
 
   /**

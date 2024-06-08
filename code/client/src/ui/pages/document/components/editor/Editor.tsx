@@ -68,7 +68,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
   }, [syncEditor]);
 
   useHistory(editor, fugue, communication);
-  useEvents(fugueOperations, communication, syncEditor);
+  useEvents(editor, fugueOperations, communication, syncEditor);
 
   return (
     <div className="editor">

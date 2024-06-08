@@ -1,6 +1,5 @@
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { FugueNode } from '@domain/editor/fugue/types';
 import { Selection } from '@domain/editor/cursor';
 import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { deleteAroundSelection } from '@domain/editor/fugue/operations/markdown/utils';
@@ -8,6 +7,7 @@ import { Communication } from '@services/communication/communication';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 import { isEqual } from 'lodash';
+import { Id } from '@notespace/shared/src/document/types/types';
 
 /**
  * Handlers for markdown operations
@@ -28,8 +28,8 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     if (deleteTriggerNodes) {
       const cursor = { line, column: 0 };
       const nodes = Array.from(fugue.traverseBySeparator(' ', cursor, false, true));
-      const triggerNodes: FugueNode[] = nodes[0];
-      const deleteOperations = triggerNodes.map(node => fugue.deleteLocalById(node.id)).flat();
+      const idsToDelete: Id[] = nodes[0].map(node => node.id);
+      const deleteOperations = fugue.deleteLocalById(cursor, ...idsToDelete);
       operations.push(...deleteOperations);
     }
 

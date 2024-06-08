@@ -83,6 +83,7 @@ export class FugueTree<T> {
     while (i < siblings.length) if (!(id.sender > siblings[i++].sender)) break;
 
     siblings.splice(i, 0, id);
+    siblings.sort((a, b) => a.sender.localeCompare(b.sender));
   }
 
   /**

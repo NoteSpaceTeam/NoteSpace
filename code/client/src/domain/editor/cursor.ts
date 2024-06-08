@@ -1,7 +1,6 @@
-export type Cursor = {
-  line: number;
-  column: number;
-};
+import { Cursor as Cursor_ } from '@notespace/shared/src/document/types/cursor';
+
+export type Cursor = Cursor_;
 
 export type Selection = {
   start: Cursor;
