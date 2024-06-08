@@ -14,11 +14,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (
-    editor: Editor,
-    domainOperations: InputDomainOperations,
-    onFormat: (mark: InlineStyle) => void) => {
-
+export default (editor: Editor, domainOperations: InputDomainOperations, onFormat: (mark: InlineStyle) => void) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -90,7 +86,7 @@ export default (
    */
   const onEnter = (cursor: Cursor) => {
     domainOperations.insertLineBreak(cursor);
-  }
+  };
 
   /**
    * Handles backspace key press
@@ -107,21 +103,21 @@ export default (
    */
   const onDelete = ({ line, column }: Cursor) => {
     domainOperations.deleteCharacter({ line, column });
-  }
+  };
 
   /**
    * Handles ctrl + backspace
    */
   const onCtrlBackspace = (cursor: Cursor) => {
     domainOperations.deleteWord(cursor, true);
-  }
+  };
 
   /**
    * Handles ctrl + delete
    */
   const onCtrlDelete = (cursor: Cursor) => {
     domainOperations.deleteWord(cursor, false);
-  }
+  };
 
   /**
    * Handles paste events

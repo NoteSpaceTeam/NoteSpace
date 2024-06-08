@@ -45,7 +45,7 @@ function Document() {
   }, [fugue]);
 
   useEffect(() => {
-    console.log("Loading document");
+    console.log('Loading document');
   }, []);
 
   if (!loaded) return null;

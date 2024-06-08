@@ -15,8 +15,9 @@ function Title(props: TitleProps) {
   const editor = useSlate();
   const { id } = useParams();
   const { socket } = props.communication;
-  const [title, setTitle] = useState(props.title);
-  const [prevTitle, setPrevTitle] = useState(props.title);
+  const initialTitle = props.title === 'Untitled' ? '' : props.title;
+  const [title, setTitle] = useState(initialTitle);
+  const [prevTitle, setPrevTitle] = useState(initialTitle);
   const service = useDocumentService();
 
   function onInput(e: React.FormEvent<HTMLInputElement>) {
@@ -27,8 +28,9 @@ function Title(props: TitleProps) {
 
   async function onConfirm() {
     if (title === prevTitle) return;
-    await service.updateResource(id!, { name: title });
-    setPrevTitle(title);
+    const newTitle = title.trim() || 'Untitled';
+    await service.updateResource(id!, { name: newTitle });
+    setPrevTitle(newTitle);
   }
 
   async function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -42,8 +44,9 @@ function Title(props: TitleProps) {
   function onResourceUpdated(resource: Partial<Resource>) {
     const newName = resource.name || title;
     if (resource.id === id && newName !== title) {
-      setTitle(newName);
-      setPrevTitle(newName);
+      const newTitle = newName === 'Untitled' ? '' : newName;
+      setTitle(newTitle);
+      setPrevTitle(newTitle);
     }
   }
 

@@ -11,69 +11,78 @@ function useWorkspaceTree() {
   }
 
   function addNode(node: Resource) {
-    const newNodes = { ...nodes };
-    const parentNode = newNodes[node.parent];
-    if (!parentNode) throw new Error('Invalid parent id: ' + node.parent);
-    newNodes[node.id] = node;
-    newNodes[node.parent] = { ...parentNode, children: [...parentNode.children, node.id] };
-    setNodes(newNodes);
+    setNodes(prevNodes => {
+      const newNodes = { ...prevNodes };
+      const parentNode = newNodes[node.parent];
+      if (!parentNode) throw new Error('Invalid parent id: ' + node.parent);
+      newNodes[node.id] = node;
+      newNodes[node.parent] = { ...parentNode, children: [...parentNode.children, node.id] };
+      return newNodes;
+    });
   }
 
   function removeNode(id: string) {
-    const node = nodes[id];
-    if (!node) throw new Error('Invalid id: ' + id);
-    const { parent } = node;
-    const parentNode = nodes[parent];
+    setNodes(prevNodes => {
+      const node = prevNodes[id];
+      if (!node) throw new Error('Invalid id: ' + id);
+      const { parent } = node;
+      const parentNode = prevNodes[parent];
 
-    if (!parentNode) throw new Error('Invalid parent id: ' + parent);
-    const newNodes = { ...nodes };
+      if (!parentNode) throw new Error('Invalid parent id: ' + parent);
+      const newNodes = { ...prevNodes };
 
-    const deleteDescendants = (node: Resource) => {
-      node.children.forEach(childId => {
-        const childNode = newNodes[childId];
-        if (childNode) {
-          deleteDescendants(childNode);
-        }
-      });
-      delete newNodes[node.id];
-    };
+      const deleteDescendants = (node: Resource) => {
+        node.children.forEach(childId => {
+          const childNode = newNodes[childId];
+          if (childNode) {
+            deleteDescendants(childNode);
+          }
+        });
+        delete newNodes[node.id];
+      };
 
-    // delete node and its descendants recursively
-    deleteDescendants(node);
+      // delete node and its descendants recursively
+      deleteDescendants(node);
 
-    // remove the node from its parent's children array
-    const index = parentNode.children.indexOf(id);
-    if (index !== -1) parentNode.children.splice(index, 1);
+      // remove the node from its parent's children array
+      const index = parentNode.children.indexOf(id);
+      if (index !== -1) parentNode.children.splice(index, 1);
 
-    newNodes[parent] = parentNode;
-    setNodes(newNodes);
+      newNodes[parent] = parentNode;
+      return newNodes;
+    });
   }
 
   function updateNode(id: string, name: string) {
-    const node = nodes[id];
-    if (!node) throw new Error('Invalid id: ' + id);
-    nodes[id] = { ...node, name };
-    setNodes({ ...nodes });
+    setNodes(prevNodes => {
+      const node = prevNodes[id];
+      if (!node) throw new Error('Invalid id: ' + id);
+      prevNodes[id] = { ...node, name };
+      return { ...prevNodes };
+    });
   }
 
   function moveNode(id: string, newParent: string) {
-    const node = nodes[id];
-    if (!node) throw new Error('Invalid id: ' + id);
-    const { parent } = node;
-    const parentNode = nodes[parent];
+    setNodes(prevNodes => {
+      const newNodes = { ...prevNodes };
+      const node = newNodes[id];
+      if (!node) throw new Error('Invalid id: ' + id);
+      const { parent } = node;
+      const parentNode = newNodes[parent];
 
-    if (parentNode) {
-      const index = parentNode.children.indexOf(node.id);
-      if (index !== -1) parentNode.children.splice(index, 1);
-      nodes[parent] = parentNode;
-    }
-    const newParentNode = nodes[newParent];
-    if (!newParentNode) throw new Error('Invalid parent id: ' + newParent);
-    newParentNode.children.push(node.id);
-    node.parent = newParent;
-    nodes[id] = node;
-    nodes[newParent] = newParentNode;
-    setNodes({ ...nodes });
+      if (parentNode) {
+        const index = parentNode.children.indexOf(node.id);
+        if (index !== -1) parentNode.children.splice(index, 1);
+        newNodes[parent] = parentNode;
+      }
+      const newParentNode = newNodes[newParent];
+      if (!newParentNode) throw new Error('Invalid parent id: ' + newParent);
+      newParentNode.children.push(node.id);
+      node.parent = newParent;
+      newNodes[id] = node;
+      newNodes[newParent] = newParentNode;
+      return newNodes;
+    });
   }
 
   function isDescendant(parentId: string, nodeId: string): boolean {
