@@ -65,7 +65,7 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
 
 export const cursorToPoint = (editor : Editor, cursor: Cursor): Point => {
     const { line, column } = cursor;
-    const path = [line];
+    const path = [];
     let offset = column;
 
     const nodes = Array.from(Node.children(editor, [line]));

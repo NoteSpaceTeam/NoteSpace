@@ -5,6 +5,7 @@ import { FugueDomainOperations } from '@domain/editor/fugue/operations/fugue/typ
 import {Editor, Transforms, Location} from 'slate';
 import { Cursor } from '@domain/editor/cursor';
 import {cursorToPoint, getSelection} from "@domain/editor/slate/utils/selection";
+import {isEqual} from "lodash";
 
 
 /**
@@ -34,10 +35,11 @@ function useEvents(
         // Update the cursor position
         const delta = ['insert', 'revive'].includes(op.type) ? 1 : -1;
 
-        selectionEnd.column += delta;
-        if(delta > 0) { // If we are deleting, we want to anchor the start of the selection
+        // Move start and end cursor if the selection is collapsed or inserting or reviving
+        if(delta > 0 || isEqual(selectionStart, selectionEnd)) {
           selectionStart.column += delta;
         }
+        selectionEnd.column += delta;
       }
 
       const newSelection : Location = {
