@@ -170,7 +170,15 @@ export class Fugue {
    */
   reviveLocal(selection: Selection): ReviveOperation[] {
     const nodes = Array.from(this.traverseBySelection(selection, true));
-    return nodes.map(node => this.reviveNode(node.id));
+    return nodes.map(node => {
+        if (node.value === '\n') {
+          selection.start.line++;
+          selection.start.column = 0;
+        }
+        else selection.start.column++;
+
+      return this.reviveNode(node.id, selection.start)
+    });
   }
 
   /**
@@ -179,16 +187,17 @@ export class Fugue {
    */
   reviveLocalByCursor(cursor: Cursor) {
     const node = this.getNodeByCursor(cursor);
-    if (node) return this.reviveNode(node.id);
+    if (node) return this.reviveNode(node.id, cursor);
   }
 
   /**
    * Revives a node based on the given id
    * @param id
+   * @param cursor
    */
-  reviveNode(id: Id): ReviveOperation {
+  reviveNode(id: Id, cursor : Cursor): ReviveOperation {
     this.tree.reviveNode(id);
-    return { type: 'revive', id };
+    return { type: 'revive', id, cursor };
   }
 
   /**

@@ -33,7 +33,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
   const fugueOperations = getFugueOperations(fugue);
   const { cursors } = useCursors(communication);
   const { renderElement, renderLeaf } = useRenderers(editor, fugue, communication);
-  const decorate = useDecorate(editor, cursors);
+  //const decorate = useDecorate(editor, cursors);
 
   const updateEditor = useCallback(
     (newValue: Descendant[]) => {
@@ -94,7 +94,7 @@ function Editor({ title, fugue, communication }: SlateEditorProps) {
             spellCheck={false}
             renderElement={renderElement}
             renderLeaf={renderLeaf}
-            decorate={decorate}
+            //decorate={decorate}
             onDragStart={e => e.preventDefault()}
             onDOMBeforeInput={onInput}
             onCut={onCut}

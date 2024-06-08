@@ -35,7 +35,7 @@ export type BlockStyleOperation = {
 export type ReviveOperation = {
   type: "revive";
   id: Id;
-  // cursor: Cursor;
+  cursor: Cursor;
 };
 
 export type Operation =
