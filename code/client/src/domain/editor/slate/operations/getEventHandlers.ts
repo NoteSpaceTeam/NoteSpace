@@ -1,6 +1,6 @@
 import { type Editor } from 'slate';
-import inputHandlers from '@domain/editor/slate/operations/input/operations';
-import markdownHandlers from '@domain/editor/slate/operations/markdown/operations';
+import inputHandlers from '@domain/editor/slate/operations/input';
+import markdownHandlers from '@domain/editor/slate/operations/markdown';
 import { InputConnector } from '@domain/editor/connectors/input/types';
 import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
 
