@@ -1,28 +1,21 @@
 import { type Editor } from 'slate';
 import inputHandlers from '@domain/editor/slate/operations/input/operations';
-import { Fugue } from '@domain/editor/fugue/Fugue';
-import inputDomainOperations from '@domain/editor/fugue/operations/input/operations';
-import markdownDomainOperations from '@domain/editor/fugue/operations/markdown/operations';
-import { Communication } from '@services/communication/communication';
 import markdownHandlers from '@domain/editor/slate/operations/markdown/operations';
+import { InputConnector } from '@domain/editor/connectors/input/types';
+import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
 
 /**
  * Handles input events
  * @param editor
- * @param syncEditor
- * @param fugue
- * @param communication
+ * @param inputConnector
+ * @param markdownConnector
  */
-function getEventHandlers(editor: Editor, fugue: Fugue, communication: Communication) {
-  // domain operations
-  const markdownOperations = markdownDomainOperations(fugue, communication);
-  const inputOperations = inputDomainOperations(fugue, communication);
-
+function getEventHandlers(editor: Editor, inputConnector: InputConnector, markdownConnector: MarkdownConnector) {
   // event handlers
-  const { onFormat } = markdownHandlers(editor, markdownOperations);
+  const { onFormat } = markdownHandlers(editor, markdownConnector);
   const { onInput, onCut, onPaste, onSelectionChange, onBlur, onShortcut } = inputHandlers(
     editor,
-    inputOperations,
+    inputConnector,
     onFormat
   );
 

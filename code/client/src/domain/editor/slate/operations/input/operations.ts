@@ -6,7 +6,7 @@ import { getKeyFromInputEvent } from '@domain/editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
 import { Cursor, emptyCursor } from '@domain/editor/cursor';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { InputDomainOperations } from '@domain/editor/fugue/operations/input/types';
+import { InputConnector } from '@domain/editor/connectors/input/types';
 
 const hotkeys: Record<string, string> = {
   b: 'bold',
@@ -14,7 +14,7 @@ const hotkeys: Record<string, string> = {
   u: 'underline',
 };
 
-export default (editor: Editor, domainOperations: InputDomainOperations, onFormat: (mark: InlineStyle) => void) => {
+export default (editor: Editor, connector: InputConnector, onFormat: (mark: InlineStyle) => void) => {
   function onInput(e: InputEvent) {
     const key = getKeyFromInputEvent(e);
     if (!key) return;
@@ -22,7 +22,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
     const selection = getSelection(editor);
     const cursor = selection.start;
     // if there is a selection, delete the selected text
-    if (isSelected(editor)) domainOperations.deleteSelection(selection);
+    if (isSelected(editor)) connector.deleteSelection(selection);
     switch (key) {
       case 'Enter':
         onEnter(cursor);
@@ -77,7 +77,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    */
   function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    domainOperations.insertCharacter(key, cursor, styles);
+    connector.insertCharacter(key, cursor, styles);
   }
 
   /**
@@ -85,7 +85,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * @param cursor
    */
   const onEnter = (cursor: Cursor) => {
-    domainOperations.insertLineBreak(cursor);
+    connector.insertLineBreak(cursor);
   };
 
   /**
@@ -94,7 +94,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    */
   function onBackspace(cursor: Cursor) {
     if (isEqual(cursor, emptyCursor())) return;
-    domainOperations.deleteCharacter(cursor);
+    connector.deleteCharacter(cursor);
   }
 
   /**
@@ -102,21 +102,21 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
    * Deletes the character after the cursor
    */
   const onDelete = ({ line, column }: Cursor) => {
-    domainOperations.deleteCharacter({ line, column });
+    connector.deleteCharacter({ line, column });
   };
 
   /**
    * Handles ctrl + backspace
    */
   const onCtrlBackspace = (cursor: Cursor) => {
-    domainOperations.deleteWord(cursor, true);
+    connector.deleteWord(cursor, true);
   };
 
   /**
    * Handles ctrl + delete
    */
   const onCtrlDelete = (cursor: Cursor) => {
-    domainOperations.deleteWord(cursor, false);
+    connector.deleteWord(cursor, false);
   };
 
   /**
@@ -126,12 +126,12 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
     const clipboardData = typeof clipboard === 'string' ? clipboard : clipboard.clipboardData?.getData('text');
     if (!clipboardData) return;
     const { start } = getSelection(editor);
-    domainOperations.pasteText(start, clipboardData);
+    connector.pasteText(start, clipboardData);
   }
 
   function onCut() {
     const selection = getSelection(editor);
-    domainOperations.deleteSelection(selection);
+    connector.deleteSelection(selection);
   }
 
   /**
@@ -140,7 +140,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
   function onTab(cursor: Cursor) {
     const tabCharacter = '\t';
     editor.insertText(tabCharacter);
-    domainOperations.insertCharacter(tabCharacter, cursor);
+    connector.insertCharacter(tabCharacter, cursor);
   }
 
   /**
@@ -150,7 +150,7 @@ export default (editor: Editor, domainOperations: InputDomainOperations, onForma
     const { selection } = editor;
     if (!selection && !blur) return;
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    domainOperations.updateSelection(selection, styles);
+    connector.updateSelection(selection, styles);
   }
 
   function onBlur() {

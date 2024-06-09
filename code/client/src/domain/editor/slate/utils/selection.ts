@@ -63,28 +63,25 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
   return cursor;
 }
 
-export const cursorToPoint = (editor : Editor, cursor: Cursor): Point => {
-    const { line, column } = cursor;
-    const path = [];
-    let offset = column;
+export const cursorToPoint = (editor: Editor, cursor: Cursor): Point => {
+  const { line, column } = cursor;
+  const path = [];
+  let offset = column;
 
-    const nodes = Array.from(Node.children(editor, [line]));
+  const nodes = Array.from(Node.children(editor, [line]));
 
-    for (const [node, nodePath] of nodes) {
-        if(!Text.isText(node)) continue;
-        const text = node as Text;
-        if (offset <= text.text.length) {
-          path.push(...nodePath);
-          break;
-        }
-        offset -= text.text.length;
+  for (const [node, nodePath] of nodes) {
+    if (!Text.isText(node)) continue;
+    const text = node as Text;
+    if (offset <= text.text.length) {
+      path.push(...nodePath);
+      break;
     }
+    offset -= text.text.length;
+  }
 
-    return { path, offset };
-}
-
-
-
+  return { path, offset };
+};
 
 /**
  * Returns the selection by range

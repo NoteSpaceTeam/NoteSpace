@@ -1,7 +1,11 @@
+import { Element, Text } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
+import { ReviveOperation } from '@notespace/shared/src/document/types/operations';
+import { BlockStyle, getStyleType, InlineStyle } from '@notespace/shared/src/document/types/styles';
+import { ServiceConnector } from '@domain/editor/connectors/services/connector';
 import {
   ApplyHistory,
-  HistoryDomainOperations,
+  HistoryConnector,
   HistoryOperation,
   InsertNodeOperation,
   InsertTextOperation,
@@ -11,14 +15,10 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/fugue/operations/history/types';
-import { Communication } from '@services/communication/communication';
-import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { getStyleType } from '@notespace/shared/src/document/types/styles';
-import { Text, Element } from 'slate';
-import { ReviveOperation } from '@notespace/shared/src/document/types/operations';
+} from '@domain/editor/connectors/history/types';
+import { Operation } from '@notespace/shared/src/document/types/operations';
 
-export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperations => {
+export default (fugue: Fugue, servicesConnector: ServiceConnector): HistoryConnector => {
   const applyHistoryOperation: ApplyHistory = (operations: HistoryOperation[]) => {
     const communicationOperations = operations
       .reverse()
@@ -26,7 +26,7 @@ export default (fugue: Fugue, { socket }: Communication): HistoryDomainOperation
       .flat()
       .filter(operation => operation !== undefined && operation !== null);
 
-    socket.emit('operations', communicationOperations);
+    servicesConnector.emitOperations(communicationOperations as Operation[]);
   };
 
   function getOperation(operation: HistoryOperation) {

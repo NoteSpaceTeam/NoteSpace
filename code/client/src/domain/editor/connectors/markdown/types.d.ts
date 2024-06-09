@@ -1,7 +1,7 @@
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { Selection } from '@domain/editor/cursor';
 
-export type MarkdownDomainOperations = {
+export type MarkdownConnector = {
   applyBlockStyle: ApplyBlockStyle;
   applyInlineStyle: ApplyInlineStyle;
   deleteBlockStyles: DeleteBlockStyles;

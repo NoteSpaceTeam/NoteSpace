@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import useError from '@ui/contexts/error/useError';
 import useDocumentService from '@services/resource/useResourceService';
+import useConnectors from '@domain/editor/connectors/hook';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import './Document.scss';
 
@@ -17,6 +18,9 @@ function Document() {
   const { id } = useParams();
   const [loaded, setLoaded] = useState(false);
   const [title, setTitle] = useState('');
+
+  const connectors = useConnectors(fugue, communication);
+
   const { http, socket } = communication;
   const navigate = useNavigate();
 
@@ -50,7 +54,7 @@ function Document() {
 
   if (!loaded) return null;
 
-  return <Editor title={title} fugue={fugue} communication={communication} />;
+  return <Editor title={title} fugue={fugue} connectors={connectors} />;
 }
 
 export default Document;

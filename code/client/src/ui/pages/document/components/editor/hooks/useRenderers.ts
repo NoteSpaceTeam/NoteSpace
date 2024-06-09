@@ -4,12 +4,12 @@ import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugin
 import { Editor } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
-import { Communication } from '@services/communication/communication';
+import { ServiceConnector } from '@domain/editor/connectors/services/connector';
 
 /**
  * Returns the renderers for the editor.
  */
-function useRenderers(editor: Editor, fugue: Fugue, { socket }: Communication) {
+function useRenderers(editor: Editor, fugue: Fugue, connector: ServiceConnector) {
   const renderElement = useCallback(
     (props: RenderElementProps) => {
       const type = props.element.type as BlockStyle;
@@ -17,11 +17,11 @@ function useRenderers(editor: Editor, fugue: Fugue, { socket }: Communication) {
       const line = path[path.length - 1];
       const updateBlockStyle = (style: BlockStyle) => {
         const operation = fugue.updateBlockStyleLocal(line, style);
-        socket.emit('operations', [operation]);
+        connector.emitOperations([operation]);
       };
       return getElementRenderer(type, props, updateBlockStyle);
     },
-    [editor, fugue, socket]
+    [connector, editor, fugue]
   );
   const renderLeaf = useCallback((props: RenderLeafProps) => getLeafRenderer(props), []);
   return { renderElement, renderLeaf };

@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Communication } from '@services/communication/communication';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
 import useDocumentService from '@services/resource/useResourceService';
+import { ServiceConnector } from '@domain/editor/connectors/services/connector';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string;
-  communication: Communication;
+  connector: ServiceConnector;
 }
 
 function Title(props: TitleProps) {
   const editor = useSlate();
   const { id } = useParams();
-  const { socket } = props.communication;
   const initialTitle = props.title === 'Untitled' ? '' : props.title;
+  const { communication } = props.connector;
   const [title, setTitle] = useState(initialTitle);
   const [prevTitle, setPrevTitle] = useState(initialTitle);
   const service = useDocumentService();
@@ -50,7 +50,7 @@ function Title(props: TitleProps) {
     }
   }
 
-  useSocketListeners(socket, {
+  useSocketListeners(communication.socket, {
     updatedResource: onResourceUpdated,
   });
 

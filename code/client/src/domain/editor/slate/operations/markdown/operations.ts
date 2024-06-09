@@ -1,10 +1,10 @@
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
 import { Editor } from 'slate';
 import CustomEditor from '@domain/editor/slate/CustomEditor';
-import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
+import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
 
-export default (editor: Editor, handlers: MarkdownDomainOperations) => {
+export default (editor: Editor, connector: MarkdownConnector) => {
   /**
    * Handles formatting
    * @param mark
@@ -13,7 +13,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     const value = CustomEditor.toggleMark(editor, mark);
     if (!isSelected(editor)) return;
     const selection = getSelection(editor);
-    handlers.applyInlineStyle(mark, selection, value);
+    connector.applyInlineStyle(mark, selection, value);
   }
 
   return { onFormat };
