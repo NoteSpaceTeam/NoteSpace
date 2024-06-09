@@ -1,7 +1,7 @@
 import { Range } from 'slate';
 import { useState } from 'react';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 
 export type CursorData = {
   id: string;
@@ -20,7 +20,7 @@ export function useCursors(connector: ServiceConnector) {
       return [...otherCursors, cursor];
     });
   };
-  connector.appendEvent('cursorChange', onCursorChange);
+  connector.on('cursorChange', onCursorChange);
   return { cursors };
 }
 

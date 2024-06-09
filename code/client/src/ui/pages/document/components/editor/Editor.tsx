@@ -14,12 +14,12 @@ import useHistory from '@ui/pages/document/components/editor/hooks/useHistory';
 import useDecorate from '@ui/pages/document/components/editor/hooks/useDecorate';
 import useCursors from '@ui/pages/document/components/editor/hooks/useCursors';
 import getEventHandlers from '@domain/editor/slate/operations/getEventHandlers';
-import './Editor.scss';
 import { useCallback, useEffect } from 'react';
-import { isEqual } from 'lodash';
 import { Connectors } from '@domain/editor/connectors/Connectors';
+import './Editor.scss';
+import { isEqual } from 'lodash';
 
-type SlateEditorProps = {
+type EditorProps = {
   title: string;
   fugue: Fugue;
   connectors: Connectors;
@@ -27,14 +27,13 @@ type SlateEditorProps = {
 
 const initialValue: Descendant[] = [descendant('paragraph', '')];
 
-function Editor({ title, connectors, fugue }: SlateEditorProps) {
+function Editor({ title, connectors, fugue }: EditorProps) {
   const [editor, setEditor] = useEditor(withHistory, withReact, getMarkdownPlugin(connectors.markdown));
-  // Add editor customizations here
   const { cursors } = useCursors(connectors.service);
   const { renderElement, renderLeaf } = useRenderers(editor, fugue, connectors.service);
   const decorate = useDecorate(editor, cursors);
 
-  // Editor syncing
+  // editor syncing
   const updateEditor = useCallback(
     (newValue: Descendant[]) => {
       setEditor(prevState => {
@@ -44,28 +43,27 @@ function Editor({ title, connectors, fugue }: SlateEditorProps) {
     },
     [setEditor]
   );
+
   const syncEditor = useCallback(
     (slate?: Descendant[]) => {
-      console.log('Syncing editor');
       const newSlate = slate || toSlate(fugue);
       updateEditor(newSlate);
     },
     [fugue, updateEditor]
   );
 
-  // Syncs the editor with the Fugue on mount
+  // syncs the editor with fugue on mount
   useEffect(() => {
     syncEditor();
   }, [syncEditor]);
 
-  // Event handlers
+  // event handlers
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
     editor,
     connectors.input,
     connectors.markdown
   );
 
-  // Misc hooks
   useHistory(editor, connectors.history);
   useEvents(editor, connectors.service, syncEditor);
 
@@ -74,22 +72,22 @@ function Editor({ title, connectors, fugue }: SlateEditorProps) {
       <div className="container">
         <Slate
           editor={editor}
-          onChange={() => {
+          onValueChange={() => {
             const slate = toSlate(fugue);
+            // prevents overwriting the editor with the same value
             if (!isEqual(slate, editor.children)) {
-              // Prevents overwriting the editor with the same value
               syncEditor(slate);
             }
-            onSelectionChange();
           }}
+          onChange={() => onSelectionChange()}
           initialValue={initialValue}
         >
           <Title title={title} placeholder="Untitled" connector={connectors.service} />
           <Toolbar onApplyMark={onFormat} />
           <Editable
             className="editable"
-            data-testid={'editor'}
-            placeholder={'Start writing...'}
+            data-testid="editor"
+            placeholder="Start writing..."
             spellCheck={false}
             renderElement={renderElement}
             renderLeaf={renderLeaf}

@@ -4,7 +4,7 @@ import { getElementRenderer, getLeafRenderer } from '@domain/editor/slate/plugin
 import { Editor } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 
 /**
  * Returns the renderers for the editor.

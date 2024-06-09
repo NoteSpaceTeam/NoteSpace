@@ -2,7 +2,7 @@ import { Element, Text } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { ReviveOperation } from '@notespace/shared/src/document/types/operations';
 import { BlockStyle, getStyleType, InlineStyle } from '@notespace/shared/src/document/types/styles';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 import {
   ApplyHistory,
   HistoryConnector,

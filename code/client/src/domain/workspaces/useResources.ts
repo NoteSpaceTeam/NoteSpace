@@ -3,25 +3,11 @@ import useResourceService from '@services/resource/useResourceService';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import useWorkspaceTree from '@domain/workspaces/tree/useWorkspaceTree';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import useError from '@ui/contexts/error/useError';
 
 function useResources() {
   const service = useResourceService();
   const { socket } = useCommunication();
   const tree = useWorkspaceTree();
-  const { wid } = useParams();
-  const [documentId, setDocumentId] = useState<string>();
-  const navigate = useNavigate();
-  const { publishError } = useError();
-
-  // this is wrong, TODO: fix this
-  useEffect(() => {
-    const id = window.location.href.split('/').pop();
-    console.log(id);
-    setDocumentId(id);
-  }, []);
 
   function setResources(resources: Resource[]) {
     tree.setTree(resources);
@@ -37,10 +23,6 @@ function useResources() {
 
   function onDeleteResource(id: string) {
     tree.removeNode(id);
-    if (documentId === id) {
-      navigate(`/workspaces/${wid}`);
-      publishError(Error('Document was deleted'));
-    }
   }
 
   async function deleteResource(id: string) {

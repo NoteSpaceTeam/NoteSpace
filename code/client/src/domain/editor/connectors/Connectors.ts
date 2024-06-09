@@ -1,5 +1,5 @@
 import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 import { InputConnector } from '@domain/editor/connectors/input/types';
 import { HistoryConnector } from '@domain/editor/connectors/history/types';
 import { Fugue } from '@domain/editor/fugue/Fugue';
@@ -7,7 +7,7 @@ import { Communication } from '@services/communication/communication';
 import inputConnector from '@domain/editor/connectors/input/connector';
 import markdownConnector from '@domain/editor/connectors/markdown/connector';
 import historyConnector from '@domain/editor/connectors/history/connector';
-import serviceConnector from '@domain/editor/connectors/services/connector';
+import serviceConnector from '@domain/editor/connectors/service/connector';
 
 export class Connectors {
   private readonly inputConnector: InputConnector;

@@ -5,7 +5,7 @@ import { Operation } from '@notespace/shared/src/document/types/operations';
 import { isEqual } from 'lodash';
 import { BaseSelection } from 'slate';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 import { InputConnector } from '@domain/editor/connectors/input/types';
 
 export default (fugue: Fugue, servicesConnector: ServiceConnector): InputConnector => {

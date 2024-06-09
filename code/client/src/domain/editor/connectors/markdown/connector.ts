@@ -6,7 +6,7 @@ import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { Id } from '@notespace/shared/src/document/types/types';
 import { deleteAroundSelection } from '@domain/editor/connectors/markdown/utils';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
 
 export default (fugue: Fugue, serviceConnector: ServiceConnector): MarkdownConnector => {

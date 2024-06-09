@@ -4,7 +4,7 @@ import { Editor, Transforms, Location } from 'slate';
 import { Cursor } from '@domain/editor/cursor';
 import { cursorToPoint, getSelection } from '@domain/editor/slate/utils/selection';
 import { isEqual } from 'lodash';
-import { ServiceConnector } from '@domain/editor/connectors/services/connector';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 
 /**
  * Hook client socket listeners to events
@@ -24,29 +24,26 @@ function useEvents(editor: Editor, connector: ServiceConnector, onDone: () => vo
         if (cursor.line !== selectionEnd.line) return;
         if (cursor.column > selectionEnd.column) return;
 
-        // Update the cursor position
+        // update the cursor position
         const delta = ['insert', 'revive'].includes(op.type) ? 1 : -1;
 
-        // Move start and end cursor if the selection is collapsed or inserting or reviving
+        // move start and end cursor if the selection is collapsed or inserting or reviving
         if (delta > 0 || isEqual(selectionStart, selectionEnd)) {
           selectionStart.column += delta;
         }
         selectionEnd.column += delta;
       }
-
       const newSelection: Location = {
         anchor: cursorToPoint(editor, selectionStart),
         focus: cursorToPoint(editor, selectionEnd),
       };
-
-      console.log('New selection', newSelection);
       Transforms.select(editor, newSelection);
     });
     onDone();
   }
-  connector.appendEvent('operations', onOperation);
+  connector.on('operations', onOperation);
 
-  useSocketListeners(connector.communication.socket, connector.getEvents()); // Adds all events once
+  useSocketListeners(connector.communication.socket, connector.getEvents()); // listens to all socket events
 }
 
 export default useEvents;

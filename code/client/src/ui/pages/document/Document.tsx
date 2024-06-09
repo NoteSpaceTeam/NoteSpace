@@ -5,31 +5,37 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
 import useError from '@ui/contexts/error/useError';
 import useDocumentService from '@services/resource/useResourceService';
-import useConnectors from '@domain/editor/connectors/hook';
+import useConnectors from '@domain/editor/connectors/useConnectors';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import './Document.scss';
 
 function Document() {
   const communication = useCommunication();
+  const { http, socket } = communication;
   const services = useDocumentService();
   const fugue = useFugue();
-
   const { publishError } = useError();
-  const { id } = useParams();
+  const { wid, id } = useParams();
   const [loaded, setLoaded] = useState(false);
   const [title, setTitle] = useState('');
-
   const connectors = useConnectors(fugue, communication);
-
-  const { http, socket } = communication;
   const navigate = useNavigate();
+
+  // redirect to workspace if document is deleted
+  connectors.service.on('deletedResource', rid => {
+    if (id === rid) {
+      navigate(`/workspaces/${wid}`);
+      publishError(Error('Document was deleted'));
+    }
+  });
 
   useEffect(() => {
     setLoaded(false); // reset state to load new document (for when navigating between documents)
 
     async function fetchDocument() {
       if (!id) return;
-      const { content, name } = (await services.getResource(id)) as DocumentResource;
+      const resource = await services.getResource(id);
+      const { name, content } = resource as DocumentResource;
       setTitle(name);
       fugue.applyOperations(content, true);
       socket.emit('joinDocument', id);
@@ -44,16 +50,7 @@ function Document() {
     };
   }, [fugue, id, http, socket, publishError, services, setTitle, navigate]);
 
-  useEffect(() => {
-    console.log(fugue);
-  }, [fugue]);
-
-  useEffect(() => {
-    console.log('Loading document');
-  }, []);
-
   if (!loaded) return null;
-
   return <Editor title={title} fugue={fugue} connectors={connectors} />;
 }
 
