@@ -1,20 +1,15 @@
-import { Fugue } from '@domain/editor/fugue/Fugue';
 import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { Selection } from '@domain/editor/cursor';
-import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
-import { deleteAroundSelection } from '@domain/editor/fugue/operations/markdown/utils';
-import { Communication } from '@services/communication/communication';
+import { Fugue } from '@domain/editor/fugue/Fugue';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { Id } from '@notespace/shared/src/document/types/types';
+import { deleteAroundSelection } from '@domain/editor/connectors/markdown/utils';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
+import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
 
-/**
- * Handlers for markdown operations
- * @param fugue
- * @param communication
- */
-export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperations => {
+export default (fugue: Fugue, serviceConnector: ServiceConnector): MarkdownConnector => {
   /**
    * Applies a block style to the editor, and emits the operation to the server.
    * @param style
@@ -38,7 +33,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(styleOperation);
 
     // emit operations
-    socket.emit('operations', operations);
+    serviceConnector.emitOperations(operations);
   }
 
   /**
@@ -65,7 +60,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     operations.push(...styleOperations);
 
     // emit operations
-    socket.emit('operations', operations);
+    serviceConnector.emitOperations(operations);
   }
 
   function deleteBlockStyles(selection: Selection) {
@@ -76,7 +71,7 @@ export default (fugue: Fugue, { socket }: Communication): MarkdownDomainOperatio
     if (inStartOfLine || isMultiLine) {
       const newSelection = start.column !== 0 ? { start: { line: start.line + 1, column: 0 }, end } : selection;
       const operations = fugue.updateBlockStylesLocalBySelection('paragraph', newSelection);
-      socket.emit('operations', operations);
+      serviceConnector.emitOperations(operations);
     }
   }
 

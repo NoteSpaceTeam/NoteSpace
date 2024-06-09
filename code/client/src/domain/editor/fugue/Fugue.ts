@@ -171,13 +171,12 @@ export class Fugue {
   reviveLocal(selection: Selection): ReviveOperation[] {
     const nodes = Array.from(this.traverseBySelection(selection, true));
     return nodes.map(node => {
-        if (node.value === '\n') {
-          selection.start.line++;
-          selection.start.column = 0;
-        }
-        else selection.start.column++;
+      if (node.value === '\n') {
+        selection.start.line++;
+        selection.start.column = 0;
+      } else selection.start.column++;
 
-      return this.reviveNode(node.id, selection.start)
+      return this.reviveNode(node.id, selection.start);
     });
   }
 
@@ -195,7 +194,7 @@ export class Fugue {
    * @param id
    * @param cursor
    */
-  reviveNode(id: Id, cursor : Cursor): ReviveOperation {
+  reviveNode(id: Id, cursor: Cursor): ReviveOperation {
     this.tree.reviveNode(id);
     return { type: 'revive', id, cursor };
   }

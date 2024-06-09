@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
-import historyDomainOperations from '@domain/editor/fugue/operations/history/operations';
 import historyOperations from '@domain/editor/slate/operations/history/operations';
 import { Editor } from 'slate';
-import { Fugue } from '@domain/editor/fugue/Fugue';
-import { Communication } from '@services/communication/communication';
+import { HistoryConnector } from '@domain/editor/connectors/history/types';
 
-function useHistory(editor: Editor, fugue: Fugue, communication: Communication) {
+function useHistory(editor: Editor, historyConnector: HistoryConnector) {
   useEffect(() => {
     const { undo, redo } = editor;
-    const domainOperations = historyDomainOperations(fugue, communication);
-    const { undoOperation, redoOperation } = historyOperations(editor, domainOperations);
+    const { undoOperation, redoOperation } = historyOperations(editor, historyConnector);
 
     editor.undo = () => {
       undoOperation();
@@ -19,7 +16,7 @@ function useHistory(editor: Editor, fugue: Fugue, communication: Communication) 
       redoOperation();
       redo();
     };
-  }, [communication, editor, fugue]);
+  }, [editor, historyConnector]);
 }
 
 export default useHistory;

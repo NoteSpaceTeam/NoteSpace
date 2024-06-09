@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://notespace-0es7.onrender.com';
+const SERVER_URL = 'http://localhost:8080';
 
 export default {
   SERVER_URL,

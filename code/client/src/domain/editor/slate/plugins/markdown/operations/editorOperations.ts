@@ -4,9 +4,9 @@ import CustomEditor from '@domain/editor/slate/CustomEditor';
 import { isMultiBlock } from '@domain/editor/slate/utils/slate';
 import { getSelection } from '@domain/editor/slate/utils/selection';
 import { TextDeleteOptions } from 'slate/dist/interfaces/transforms/text';
-import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { RuleType } from '@domain/editor/slate/plugins/markdown/rules';
 import { BlockStyle } from '@notespace/shared/src/document/types/styles';
+import { MarkdownConnector } from '@domain/editor/connectors/markdown/connector';
 
 type InlineFunction = (n: Element) => boolean;
 type DeleteBackwardFunction = (unit: TextUnit, options?: { at: Range }) => void;
@@ -71,9 +71,9 @@ const normalizeDeferral = (editor: Editor, match: RegExpExecArray, apply: (edito
 /**
  * Adds markdown support to the editor.
  * @param editor
- * @param handlers
+ * @param connector
  */
-export default (editor: Editor, handlers: MarkdownDomainOperations) => {
+export default (editor: Editor, connector: MarkdownConnector) => {
   /**
    * Inserts the given text into the editor.
    * @param insertText
@@ -101,7 +101,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
       if (!match) continue;
       const execArray = match.exec(beforeText);
       if (!execArray) continue;
-      const handler = type === RuleType.Block ? handlers.applyBlockStyle : handlers.applyInlineStyle;
+      const handler = type === RuleType.Block ? connector.applyBlockStyle : connector.applyInlineStyle;
       editor.withoutNormalizing(() => normalizeDeferral(editor, execArray, apply(handler)));
       return;
     }
@@ -135,7 +135,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
         CustomEditor.resetMarks(editor);
       } else {
         const { start } = getSelection(editor);
-        handlers.applyBlockStyle(type, start.line);
+        connector.applyBlockStyle(type, start.line);
       }
     }
     // if selection was at the end of the block, unwrap the block
@@ -167,7 +167,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
     if (Element.isElement(block) && block.type !== 'paragraph' && Point.equals(selection.anchor, start)) {
       const newSelection = getSelection(editor);
       Transforms.setNodes(editor, { type: 'paragraph' });
-      handlers.deleteBlockStyles(newSelection);
+      connector.deleteBlockStyles(newSelection);
       return;
     }
     deleteBackward(...args);
@@ -184,7 +184,7 @@ export default (editor: Editor, handlers: MarkdownDomainOperations) => {
       // Else remove both the block and the block style
       const location: Location = { path: [i, 0], offset: 0 };
       Transforms.setNodes(editor, { type: 'paragraph' }, { at: location });
-      handlers.deleteBlockStyles(selection);
+      connector.deleteBlockStyles(selection);
     }
     deleteHandler(options);
   };

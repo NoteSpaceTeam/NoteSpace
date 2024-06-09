@@ -23,7 +23,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/fugue/operations/history/types';
+} from '@domain/editor/slate/operations/history/types';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {

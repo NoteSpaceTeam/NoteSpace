@@ -1,8 +1,8 @@
-import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { Cursor, Selection } from '@domain/editor/cursor';
+import { InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { BaseSelection } from 'slate';
 
-export type InputDomainOperations = {
+export type InputConnector = {
   insertCharacter: InsertCharacterHandler;
   insertLineBreak: InsertLineBreakHandler;
   deleteCharacter: DeleteCharacterHandler;

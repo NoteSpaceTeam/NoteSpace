@@ -1,20 +1,14 @@
-import { Cursor, Selection } from '@domain/editor/cursor';
 import {
-  BaseInsertTextOperation,
-  BaseRemoveTextOperation,
   BaseInsertNodeOperation,
-  BaseRemoveNodeOperation,
-  BaseSplitNodeOperation,
+  BaseInsertTextOperation,
   BaseMergeNodeOperation,
+  BaseRemoveNodeOperation,
+  BaseRemoveTextOperation,
   BaseSetNodeOperation,
+  BaseSplitNodeOperation,
   Node,
 } from 'slate';
-
-export type HistoryDomainOperations = {
-  applyHistoryOperation: ApplyHistory;
-};
-
-export type ApplyHistory = (operations: HistoryOperation[]) => void;
+import { Cursor, Selection } from '@domain/editor/cursor';
 
 export type HistoryOperation =
   | InsertTextOperation

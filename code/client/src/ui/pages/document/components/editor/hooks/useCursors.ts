@@ -1,8 +1,7 @@
 import { Range } from 'slate';
 import { useState } from 'react';
-import useSocketListeners from '@services/communication/socket/useSocketListeners';
-import { Communication } from '@services/communication/communication';
 import { InlineStyle } from '@notespace/shared/src/document/types/styles';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 
 export type CursorData = {
   id: string;
@@ -11,7 +10,7 @@ export type CursorData = {
   styles: InlineStyle[];
 };
 
-export function useCursors({ socket }: Communication) {
+export function useCursors(connector: ServiceConnector) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {
@@ -21,11 +20,7 @@ export function useCursors({ socket }: Communication) {
       return [...otherCursors, cursor];
     });
   };
-
-  useSocketListeners(socket, {
-    cursorChange: onCursorChange,
-  });
-
+  connector.on('cursorChange', onCursorChange);
   return { cursors };
 }
 
