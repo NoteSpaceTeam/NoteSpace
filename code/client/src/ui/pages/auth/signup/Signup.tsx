@@ -22,6 +22,7 @@ function Signup() {
 
     try {
       const data = new FormData(e.currentTarget);
+      const username = data.get('username') as string;
       const email = data.get('email') as string;
       const password = data.get('password') as string;
       const confirmPassword = data.get('confirmPassword') as string;
@@ -29,8 +30,7 @@ function Signup() {
         publishError(Error('Passwords do not match'));
         return;
       }
-      const result = await signup(email, password);
-      console.log('result', result);
+      await signup(username, email, password);
       navigate('/login');
     } catch (e) {
       console.error(e);

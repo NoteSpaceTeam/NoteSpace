@@ -51,7 +51,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       return await action();
     } catch (e) {
-      console.log(e);
       publishError(e as Error);
     }
   };
@@ -67,11 +66,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = (email: string, password: string) =>
     handleAsyncAction(async () => {
-      return signInWithEmailAndPassword(auth, email, password)
-        .catch(() => {
-          throw new Error('Invalid credentials');
-        })
-        .then(console.log);
+      return signInWithEmailAndPassword(auth, email, password).catch(() => {
+        throw new Error('Invalid credentials');
+      });
     });
 
   const logout = () => handleAsyncAction(() => signOut(auth));

@@ -7,16 +7,22 @@ import { MdDelete } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import { sortWorkspaces } from '@domain/workspaces/utils';
 import './Workspaces.scss';
+import { useCommunication } from '@ui/contexts/communication/useCommunication';
 
 function Workspaces() {
   const { workspaces, operations } = useWorkspaces();
   const { publishError } = useError();
   const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(workspaces);
+  const { socket } = useCommunication();
 
   useEffect(() => {
+    socket.connect();
     setRows(workspaces);
-  }, [workspaces]);
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket, workspaces]);
 
   return (
     <div className="workspaces">

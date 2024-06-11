@@ -42,10 +42,12 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       setWorkspace(workspace);
       setResources(resources);
     }
+    socket.connect();
     socket.emit('joinWorkspace', wid);
     fetchWorkspace().catch(publishError);
     return () => {
       socket.emit('leaveWorkspace');
+      socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wid, services, socket, publishError]);

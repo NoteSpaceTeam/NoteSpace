@@ -22,7 +22,6 @@ function Login() {
 
   useEffect(() => {
     if (currentUser) {
-      console.log('currentUser', currentUser);
       navigate('/');
     }
   }, [currentUser, navigate]);
@@ -35,12 +34,8 @@ function Login() {
       const data = new FormData(e.currentTarget);
       const email = data.get('email') as string;
       const password = data.get('password') as string;
-      console.log('login', email, password);
-      const result = await login(email, password);
-      console.log('result', result);
-      // navigate('/');
+      await login(email, password);
     } catch (e) {
-      console.error(e);
       publishError(Error('Failed to login'));
     }
 

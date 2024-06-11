@@ -6,18 +6,18 @@ import { NotFoundError } from '@domain/errors/errors';
 
 export class PostgresUsersDB implements UsersRepository {
   async createUser(id: string, data: UserData): Promise<void> {
-    await sql`insert into users ${sql({ id, ...data })}`;
+    await sql`insert into "user" ${sql({ id, ...data })}`;
   }
 
   async getUser(id: string): Promise<UserData> {
-    const results: UserData[] = await sql`select * from users where id = ${id}`;
+    const results: UserData[] = await sql`select * from "user" where id = ${id}`;
     if (isEmpty(results)) throw new NotFoundError('User not found');
     return results[0];
   }
 
   async updateUser(id: string, newProps: Partial<UserData>): Promise<void> {
     const results = await sql`
-        update users
+        update "user"
         set ${sql(newProps)}
         where id = ${id}
         returning id
@@ -27,7 +27,7 @@ export class PostgresUsersDB implements UsersRepository {
 
   async deleteUser(id: string): Promise<void> {
     const results = await sql`
-        delete from users
+        delete from "user"
         where id = ${id}
         returning id
     `;
