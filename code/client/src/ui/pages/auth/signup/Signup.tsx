@@ -1,3 +1,4 @@
+import { FormEvent } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import OAuth from '@ui/pages/auth/components/OAuth';
@@ -7,10 +8,9 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { FormEvent, useState } from 'react';
-import '../Auth.scss';
 import { useAuth } from '@ui/contexts/auth/useAuth';
 import useError from '@ui/contexts/error/useError';
+import '../Auth.scss';
 
 function Signup() {
   const navigate = useNavigate();

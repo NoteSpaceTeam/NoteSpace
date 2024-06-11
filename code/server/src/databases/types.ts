@@ -2,6 +2,7 @@ import { DocumentContent } from '@notespace/shared/src/workspace/types/document'
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
+import { UserData } from '@notespace/shared/src/users/types';
 
 export interface DocumentsRepository {
   /**
@@ -102,8 +103,34 @@ export interface WorkspacesRepository {
   deleteWorkspace: (id: string) => Promise<void>;
 }
 
+export interface UsersRepository {
+  /**
+   * Create a user in the database
+   * @param id
+   * @param data
+   */
+  createUser: (id: string, data: UserData) => Promise<void>;
+  /**
+   * Get a user from the database
+   * @param id
+   */
+  getUser: (id: string) => Promise<UserData>;
+  /**
+   * Update a user in the database
+   * @param id
+   * @param newProps
+   */
+  updateUser: (id: string, newProps: Partial<UserData>) => Promise<void>;
+  /**
+   * Delete a user from the database
+   * @param id
+   */
+  deleteUser: (id: string) => Promise<void>;
+}
+
 export interface Databases {
   readonly documents: DocumentsRepository;
   readonly resources: ResourcesRepository;
   readonly workspaces: WorkspacesRepository;
+  readonly users: UsersRepository;
 }

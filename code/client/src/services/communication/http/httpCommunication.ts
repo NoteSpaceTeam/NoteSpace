@@ -4,7 +4,7 @@ export interface HttpCommunication {
   post: (url: string, data?: any) => Promise<any>;
   get: (url: string) => Promise<any>;
   put: (url: string, data?: any) => Promise<any>;
-  delete: (url: string) => Promise<any>;
+  delete: (url: string, data?: any) => Promise<any>;
 }
 
 async function get(url: string) {
@@ -19,8 +19,8 @@ async function put(url: string, body: any) {
   return request(url, 'PUT', body);
 }
 
-async function _delete(url: string) {
-  return request(url, 'DELETE');
+async function del(url: string, body: any) {
+  return request(url, 'DELETE', body);
 }
 
 const request = async (url: string, method: string, body?: any) => {
@@ -43,5 +43,5 @@ export const httpCommunication: HttpCommunication = {
   post,
   get,
   put,
-  delete: _delete,
+  delete: del,
 };

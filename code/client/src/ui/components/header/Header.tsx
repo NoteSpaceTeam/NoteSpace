@@ -1,5 +1,6 @@
 import './Header.scss';
 import { useAuth } from '@ui/contexts/auth/useAuth';
+import { Link } from 'react-router-dom';
 
 function Header() {
   const { currentUser, logout } = useAuth();
@@ -7,8 +8,14 @@ function Header() {
     <header className="header">
       <p></p>
       <div>
-        <p>{currentUser?.email}</p>
-        <button onClick={logout}>Logout</button>
+        {currentUser ? (
+          <>
+            <p>{currentUser?.email}</p>
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
       </div>
     </header>
   );

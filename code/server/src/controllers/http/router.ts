@@ -3,6 +3,7 @@ import PromiseRouter from 'express-promise-router';
 import { Services } from '@services/Services';
 import workspacesHandlers from '@controllers/http/handlers/workspacesHandlers';
 import errorHandler from '@controllers/http/handlers/errorHandler';
+import usersHandlers from '@controllers/http/handlers/usersHandlers';
 import { Server } from 'socket.io';
 
 export default function (services: Services, io: Server) {
@@ -12,6 +13,7 @@ export default function (services: Services, io: Server) {
   router.use(express.urlencoded({ extended: true }));
 
   router.use('/workspaces', workspacesHandlers(services, io));
+  router.use('/users', usersHandlers(services.users));
   router.use(errorHandler);
   return router;
 }

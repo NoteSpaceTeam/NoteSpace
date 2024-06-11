@@ -1,7 +1,7 @@
 import { Editor } from 'slate';
 import { ReactEditor } from 'slate-react';
 import CustomEditor from '@domain/editor/slate/CustomEditor';
-import {isEqual, min} from 'lodash';
+import { isEqual, min } from 'lodash';
 import { getKeyFromInputEvent } from '@domain/editor/slate/utils/domEvents';
 import { getSelection, isSelected } from '@domain/editor/slate/utils/selection';
 import { Cursor, emptyCursor } from '@domain/editor/cursor';
@@ -20,13 +20,13 @@ export default (editor: Editor, connector: InputConnector, onFormat: (mark: Inli
     if (!key) return;
 
     const selection = getSelection(editor);
-    console.log("Selection: ", selection)
-    const cursor = min([{...selection.start}, {...selection.end}]) as Cursor; // always use the start of the selection
-    console.log("Initial Cursor: ", cursor);
+    console.log('Selection: ', selection);
+    const cursor = min([{ ...selection.start }, { ...selection.end }]) as Cursor; // always use the start of the selection
+    console.log('Initial Cursor: ', cursor);
     // if there is a selection, delete the selected text
     if (isSelected(editor)) connector.deleteSelection(selection);
-    console.log("Selection after deletion: ", getSelection(editor));
-    console.log("Cursor after deletion: ", cursor);
+    console.log('Selection after deletion: ', getSelection(editor));
+    console.log('Cursor after deletion: ', cursor);
     switch (key) {
       case 'Enter':
         onEnter(cursor);
@@ -81,7 +81,7 @@ export default (editor: Editor, connector: InputConnector, onFormat: (mark: Inli
    */
   function onKey(key: string, cursor: Cursor) {
     const styles = CustomEditor.getMarks(editor) as InlineStyle[];
-    console.log("Cursor: ", cursor)
+    console.log('Cursor: ', cursor);
     connector.insertCharacter(key, cursor, styles);
   }
 

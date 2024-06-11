@@ -118,7 +118,7 @@ export class Fugue {
    */
   deleteLocal(selection: Selection): DeleteOperation[] {
     const nodes = Array.from(this.traverseBySelection(selection));
-    const cursor = {...selection.start}
+    const cursor = { ...selection.start };
     return nodes.map(node => {
       if (node.value === '\n') {
         cursor.line++;

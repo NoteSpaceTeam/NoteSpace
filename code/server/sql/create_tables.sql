@@ -23,4 +23,10 @@ begin;
         children char(16)[] not null default '{}'::char(16)[] -- array of resource ids
     );
 
+    create table if not exists "user" (
+        id char(28) primary key,
+        username text not null,
+        email text not null unique
+    );
+
 commit;
