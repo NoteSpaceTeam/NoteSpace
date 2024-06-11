@@ -27,7 +27,8 @@
       "@domain/*": ["./domain/*"],
       "@assets/*": ["./assets/*"],
       "@tests/*": ["../tests/*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@config": ["../config.ts"]
     }
   },
   "include": ["src", "tests"],

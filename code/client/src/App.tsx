@@ -10,58 +10,65 @@ import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Workspaces from '@ui/pages/workspaces/Workspaces';
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
 import Home from '@ui/pages/home/Home';
+import Login from '@ui/pages/auth/login/Login';
+import Signup from '@ui/pages/auth/signup/Signup';
+import AuthProvider from '@ui/contexts/auth/AuthContext';
 
 function App() {
   return (
     <div className="app">
       <ErrorProvider>
-        <CommunicationProvider>
-          <Router>
-            <Header />
-            <div className="content">
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <>
-                      <Sidebar />
-                      <Home />
-                    </>
-                  }
-                />
-                <Route
-                  path="/workspaces/*"
-                  element={
-                    <Routes>
-                      <Route
-                        path="/"
-                        element={
-                          <>
-                            <Sidebar />
-                            <Workspaces />
-                          </>
-                        }
-                      />
-                      <Route
-                        path="/:wid/*"
-                        element={
-                          <WorkspaceProvider>
-                            <Sidebar />
-                            <Routes>
-                              <Route path="/" element={<Workspace />} />
-                              <Route path="/:id" element={<Document />} />
-                            </Routes>
-                          </WorkspaceProvider>
-                        }
-                      />
-                    </Routes>
-                  }
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
-          </Router>
-        </CommunicationProvider>
+        <AuthProvider>
+          <CommunicationProvider>
+            <Router>
+              <Header />
+              <div className="content">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <>
+                        <Sidebar />
+                        <Home />
+                      </>
+                    }
+                  />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route
+                    path="/workspaces/*"
+                    element={
+                      <Routes>
+                        <Route
+                          path="/"
+                          element={
+                            <>
+                              <Sidebar />
+                              <Workspaces />
+                            </>
+                          }
+                        />
+                        <Route
+                          path="/:wid/*"
+                          element={
+                            <WorkspaceProvider>
+                              <Sidebar />
+                              <Routes>
+                                <Route path="/" element={<Workspace />} />
+                                <Route path="/:id" element={<Document />} />
+                              </Routes>
+                            </WorkspaceProvider>
+                          }
+                        />
+                      </Routes>
+                    }
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </Router>
+          </CommunicationProvider>
+        </AuthProvider>
       </ErrorProvider>
     </div>
   );

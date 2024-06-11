@@ -1,0 +1,43 @@
+.oauth {
+  .divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-top: 4vh;
+    padding-bottom: 4vh;
+
+    hr {
+      flex: 1;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .divider-text {
+      margin: 0 16px;
+      color: #666;
+    }
+  }
+
+  .btn {
+    text-transform: capitalize;
+    background: black;
+    color: white;
+    padding: 1vh;
+    border-radius: 5px;
+    margin: 0;
+
+    img,
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .oauth-btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh;
+  }
+}

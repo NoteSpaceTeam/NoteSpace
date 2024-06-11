@@ -1,6 +1,4 @@
-import config from '@/config';
-
-export const BASE_URL = config.SERVER_URL;
+import { SERVER_URL } from '@config';
 
 export interface HttpCommunication {
   post: (url: string, data?: any) => Promise<any>;
@@ -32,7 +30,7 @@ const request = async (url: string, method: string, body?: any) => {
   };
   if (body) requestInit.body = JSON.stringify(body);
 
-  const response = await fetch(BASE_URL + url, requestInit);
+  const response = await fetch(SERVER_URL + url, requestInit);
   const noBody = response.status === 204 || response.headers.get('content-length') === '0';
   if (noBody) return;
   const result = await response.json();
