@@ -3,10 +3,7 @@ import { Fugue } from '@domain/editor/fugue/Fugue';
 import { ReviveOperation } from '@notespace/shared/src/document/types/operations';
 import { BlockStyle, getStyleType, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { ServiceConnector } from '@domain/editor/connectors/service/connector';
-import {
-  ApplyHistory,
-  HistoryConnector
-} from '@domain/editor/connectors/history/types'
+import { ApplyHistory, HistoryConnector } from '@domain/editor/connectors/history/types';
 import {
   HistoryOperation,
   InsertNodeOperation,
@@ -84,7 +81,7 @@ export default (fugue: Fugue, servicesConnector: ServiceConnector): HistoryConne
       if (!Element.isElement(node)) return;
       const reviveOperation = fugue.reviveLocalByCursor(selection.start) as ReviveOperation;
       const style = node.type;
-      const styleOperation = fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle)
+      const styleOperation = fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle);
       return [reviveOperation, styleOperation];
     }
 

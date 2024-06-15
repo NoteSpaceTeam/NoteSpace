@@ -110,19 +110,16 @@ function insertTextOperation(editor: Editor, operation: BaseInsertTextOperation)
  * @param editor
  * @param operation
  */
-function removeTextOperation(
-  editor: Editor,
-  operation: BaseRemoveTextOperation,
-): RemoveTextOperation | undefined {
+function removeTextOperation(editor: Editor, operation: BaseRemoveTextOperation): RemoveTextOperation | undefined {
   if (operation.text === '') return undefined;
 
   // Normalize selection to account for line root nodes
-  const start = pointToCursor(editor, {...operation });
+  const start = pointToCursor(editor, { ...operation });
 
   const end = {
     line: start.line,
     column: start.column + operation.text.length,
-  }
+  };
 
   const selection = { start, end };
   return { type: 'remove_text', selection };
@@ -141,7 +138,7 @@ function nodeOperation(
 ): InsertNodeOperation | RemoveNodeOperation | undefined {
   const lineOperation = operation.path.length === 1;
 
-  const cursor = pointToCursor(editor, {path: operation.path, offset: 0});
+  const cursor = pointToCursor(editor, { path: operation.path, offset: 0 });
 
   const start = lineOperation
     ? { line: operation.path[0] + 1, column: 0 }
@@ -149,12 +146,12 @@ function nodeOperation(
 
   let end = start;
 
-  if(!lineOperation){
-    if(!Text.isText(operation.node) || !operation.node.text) return undefined;
+  if (!lineOperation) {
+    if (!Text.isText(operation.node) || !operation.node.text) return undefined;
     end = {
       ...start,
       column: start.column + (operation.node as Text).text.length,
-    }
+    };
   }
   const selection = { start, end };
   return {

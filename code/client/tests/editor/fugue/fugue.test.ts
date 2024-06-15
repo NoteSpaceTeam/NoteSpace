@@ -69,7 +69,7 @@ describe('Fugue', () => {
   test('should delete values locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
+    const selection: Selection = { start: { line: 0, column: 2 }, end: { line: 0, column: 3 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c');
@@ -108,7 +108,7 @@ describe('Fugue', () => {
   test('should update inline style of node locally', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 1 } };
+    const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 2 } };
 
     // when
     fugue.insertLocal(cursor, 'a');
@@ -172,7 +172,7 @@ describe('Fugue', () => {
   test('should return the nodes in the given selection', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: { line: 0, column: 0 }, end: { line: 0, column: 2 } };
+    const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 2 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c');
@@ -188,9 +188,9 @@ describe('Fugue', () => {
     const cursor: Cursor = { line: 0, column: 0 };
     const line1 = 'abcdef';
     const line2 = 'ghijkl';
-    const selection1: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
-    const selection2: Selection = { start: { line: 0, column: 3 }, end: { line: 0, column: 5 } };
-    const selection3: Selection = { start: { line: 0, column: 3 }, end: { line: 1, column: 4 } };
+    const selection1: Selection = { start: { line: 0, column: 2 }, end: { line: 0, column: 3 } };
+    const selection2: Selection = { start: { line: 0, column: 4 }, end: { line: 0, column: 5 } };
+    const selection3: Selection = { start: { line: 0, column: 4 }, end: { line: 1, column: 4 } };
 
     // when
     fugue.insertLocal(cursor, ...line1.split(''));
@@ -213,14 +213,24 @@ describe('Fugue', () => {
 
     // when
     fugue.insertLocal(cursor, '#', '#', '#', ' ', 'a');
-    const nodes: FugueNode[] = fugue.traverseBySeparator(' ', cursor, false, true).next().value;
+    const nodes: FugueNode[] = fugue
+      .traverseBySeparator(
+        ' ',
+        {
+          line: 0,
+          column: 1,
+        },
+        false,
+        true
+      )
+      .next().value;
 
     // then
     expect(nodes).toHaveLength(4);
     expect(nodes.map(node => node.value).join('')).toEqual('### ');
 
     // when
-    const endCursor: Cursor = { line: 0, column: 5 };
+    const endCursor: Cursor = { line: 0, column: 6 };
     const reverseNodes: FugueNode[] = fugue.traverseBySeparator(' ', endCursor, true).next().value;
 
     // then

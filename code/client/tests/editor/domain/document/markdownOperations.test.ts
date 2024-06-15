@@ -2,10 +2,10 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { mockCommunication } from '@tests/mocks/mockCommunication';
 import { toSlate } from '@domain/editor/slate/utils/slate';
-import {MarkdownConnector} from "@domain/editor/connectors/markdown/types";
-import {ServiceConnector} from "@domain/editor/connectors/service/connector";
-import markdownConnector from "@domain/editor/connectors/markdown/connector";
-import serviceConnector from "@domain/editor/connectors/service/connector";
+import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
+import markdownConnector from '@domain/editor/connectors/markdown/connector';
+import serviceConnector from '@domain/editor/connectors/service/connector';
 
 describe('Markdown Operations', () => {
   const communication = mockCommunication();

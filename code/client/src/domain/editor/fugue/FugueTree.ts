@@ -95,9 +95,9 @@ export class FugueTree<T> {
 
     // Update line root at the root node with
     if (!node.isDeleted) node.isDeleted = true;
-    if (node.value === '\n'){
+    if (node.value === '\n') {
       const idx = this._root.value.findIndex(n => n.id === id);
-        this._root.value[idx].isDeleted = true;
+      this._root.value[idx].isDeleted = true;
     }
   }
 

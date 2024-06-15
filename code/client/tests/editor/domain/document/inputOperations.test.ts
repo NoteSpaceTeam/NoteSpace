@@ -2,15 +2,15 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 
 import { mockCommunication } from '@tests/mocks/mockCommunication';
-import {InputConnector} from "@domain/editor/connectors/input/types";
-import serviceConnector, {ServiceConnector} from "@domain/editor/connectors/service/connector";
-import inputConnector from "@domain/editor/connectors/input/connector";
+import { InputConnector } from '@domain/editor/connectors/input/types';
+import serviceConnector, { ServiceConnector } from '@domain/editor/connectors/service/connector';
+import inputConnector from '@domain/editor/connectors/input/connector';
 
 describe('Input Operations', () => {
   const communication = mockCommunication();
   let fugue: Fugue;
-  let _inputConnector : InputConnector;
-  let servicesConnector : ServiceConnector;
+  let _inputConnector: InputConnector;
+  let servicesConnector: ServiceConnector;
 
   beforeEach(() => {
     fugue = new Fugue();

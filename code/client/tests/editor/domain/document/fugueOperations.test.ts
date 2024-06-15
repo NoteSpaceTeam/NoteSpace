@@ -4,18 +4,16 @@ import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
-  BlockStyleOperation, Operation,
+  BlockStyleOperation,
+  Operation,
 } from '@notespace/shared/src/document/types/operations';
 import { Node, RootNode } from '@domain/editor/fugue/nodes';
-import {ServiceConnector} from "@domain/editor/connectors/service/connector";
-import {DocumentContent} from "@notespace/shared/src/workspace/types/document";
-import {rootNode, treeNode} from "@domain/editor/fugue/utils";
+import { ServiceConnector } from '@domain/editor/connectors/service/connector';
+import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
+import { rootNode, treeNode } from '@domain/editor/fugue/utils';
 
 import serviceConnector from '@domain/editor/connectors/service/connector';
-import {mockCommunication} from "@tests/mocks/mockCommunication";
-
-
-
+import { mockCommunication } from '@tests/mocks/mockCommunication';
 
 describe('Fugue Operations', () => {
   let fugue: Fugue;
@@ -37,7 +35,7 @@ describe('Fugue Operations', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
-      cursor: { line: 0, column: 0}
+      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -50,7 +48,7 @@ describe('Fugue Operations', () => {
     const deleteOperation: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
-      cursor: { line: 0, column: 0 }
+      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -103,8 +101,8 @@ describe('Fugue Operations', () => {
     node1.rightChildren = [node2.id];
     const document: DocumentContent = {
       operations: [
-        { type: 'insert', ...node1, parent: root.id, styles: [], cursor: { line: 0, column: 0 }},
-        { type: 'insert', ...node2, parent: node1.id, styles: [], cursor: { line: 0, column: 1 }},
+        { type: 'insert', ...node1, parent: root.id, styles: [], cursor: { line: 0, column: 0 } },
+        { type: 'insert', ...node2, parent: node1.id, styles: [], cursor: { line: 0, column: 1 } },
       ],
     };
 
