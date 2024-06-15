@@ -82,15 +82,10 @@ export default (fugue: Fugue, servicesConnector: ServiceConnector): HistoryConne
     if (lineOperation) {
       // Revive line's root node
       if (!Element.isElement(node)) return;
-      const reviveOperations: ReviveOperation[] = [fugue.reviveLocalByCursor(selection.start) as ReviveOperation];
-      const styles = Object.keys(node).filter(key => key !== 'text');
-      const styleOperations = styles.map(style => {
-        const styleType = getStyleType(style);
-        return styleType === 'block'
-          ? fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle)
-          : fugue.updateInlineStyleLocal(selection, style as InlineStyle, true);
-      });
-      return [...reviveOperations, styleOperations];
+      const reviveOperation = fugue.reviveLocalByCursor(selection.start) as ReviveOperation;
+      const style = node.type;
+      const styleOperation = fugue.updateBlockStyleLocal(selection.start.line, style as BlockStyle)
+      return [reviveOperation, styleOperation];
     }
 
     const styles = Object.keys(node).filter(key => key !== 'text');
