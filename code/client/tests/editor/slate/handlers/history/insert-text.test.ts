@@ -18,7 +18,7 @@ import {
   RemoveTextOperation,
   SetNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/fugue/operations/history/types';
+} from '@domain/editor/shared/historyTypes';
 import {
   BaseInsertNodeOperation,
   BaseInsertTextOperation,

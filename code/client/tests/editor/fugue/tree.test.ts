@@ -18,6 +18,7 @@ describe('FugueTree', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'L',
+      cursor: { line: 0, column: 0 },
     };
     const rootId = { sender: 'root', counter: 0 };
     const { id, value, parent, side } = operation;
@@ -41,6 +42,7 @@ describe('FugueTree', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'L',
+      cursor: { line: 0, column: 0 },
     };
     // when
     tree.addNode(id, value, parent, side);

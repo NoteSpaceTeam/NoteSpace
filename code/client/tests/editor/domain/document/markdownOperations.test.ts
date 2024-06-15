@@ -1,23 +1,27 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import getMarkdownOperations from '@domain/editor/fugue/operations/markdown/operations';
 import { mockCommunication } from '@tests/mocks/mockCommunication';
-import { MarkdownDomainOperations } from '@domain/editor/fugue/operations/markdown/types';
 import { toSlate } from '@domain/editor/slate/utils/slate';
+import {MarkdownConnector} from "@domain/editor/connectors/markdown/types";
+import {ServiceConnector} from "@domain/editor/connectors/service/connector";
+import markdownConnector from "@domain/editor/connectors/markdown/connector";
+import serviceConnector from "@domain/editor/connectors/service/connector";
 
 describe('Markdown Operations', () => {
   const communication = mockCommunication();
   let fugue: Fugue;
-  let markdownOperations: MarkdownDomainOperations;
+  let _markdownConnector: MarkdownConnector;
+  let servicesConnector: ServiceConnector;
 
   beforeEach(() => {
     fugue = new Fugue();
-    markdownOperations = getMarkdownOperations(fugue, communication);
+    servicesConnector = serviceConnector(fugue, communication);
+    _markdownConnector = markdownConnector(fugue, servicesConnector);
   });
 
   test('should apply block style to line', () => {
     // when
-    markdownOperations.applyBlockStyle('heading-one', 0);
+    _markdownConnector.applyBlockStyle('heading-one', 0);
 
     // then
     expect(toSlate(fugue)).toEqual([{ type: 'heading-one', children: [{ text: '' }] }]);
@@ -31,7 +35,7 @@ describe('Markdown Operations', () => {
     fugue.insertLocal(cursor, ...text.split(''));
 
     // when
-    markdownOperations.applyInlineStyle('bold', selection, true);
+    _markdownConnector.applyInlineStyle('bold', selection, true);
 
     // then
     expect(toSlate(fugue)).toEqual([
@@ -50,9 +54,9 @@ describe('Markdown Operations', () => {
 
     // when
     fugue.insertLocal(cursor1, ...text.split(''));
-    markdownOperations.applyBlockStyle('heading-one', 0);
-    markdownOperations.applyBlockStyle('list-item', 1);
-    markdownOperations.deleteBlockStyles(selection1);
+    _markdownConnector.applyBlockStyle('heading-one', 0);
+    _markdownConnector.applyBlockStyle('list-item', 1);
+    _markdownConnector.deleteBlockStyles(selection1);
 
     // then
     expect(toSlate(fugue)).toEqual([
@@ -61,8 +65,8 @@ describe('Markdown Operations', () => {
     ]);
 
     // when
-    markdownOperations.applyBlockStyle('heading-two', 0);
-    markdownOperations.deleteBlockStyles(selection2);
+    _markdownConnector.applyBlockStyle('heading-two', 0);
+    _markdownConnector.deleteBlockStyles(selection2);
 
     // then
     expect(toSlate(fugue)).toEqual([

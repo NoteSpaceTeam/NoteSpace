@@ -1,17 +1,21 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import getInputOperations from '@domain/editor/fugue/operations/input/operations';
-import { InputDomainOperations } from '@domain/editor/fugue/operations/input/types';
+
 import { mockCommunication } from '@tests/mocks/mockCommunication';
+import {InputConnector} from "@domain/editor/connectors/input/types";
+import serviceConnector, {ServiceConnector} from "@domain/editor/connectors/service/connector";
+import inputConnector from "@domain/editor/connectors/input/connector";
 
 describe('Input Operations', () => {
   const communication = mockCommunication();
   let fugue: Fugue;
-  let inputOperations: InputDomainOperations;
+  let _inputConnector : InputConnector;
+  let servicesConnector : ServiceConnector;
 
   beforeEach(() => {
     fugue = new Fugue();
-    inputOperations = getInputOperations(fugue, communication);
+    servicesConnector = serviceConnector(fugue, communication);
+    _inputConnector = inputConnector(fugue, servicesConnector);
   });
 
   test('should insert character', () => {
@@ -19,7 +23,7 @@ describe('Input Operations', () => {
     const cursor = { line: 0, column: 0 };
 
     // when
-    inputOperations.insertCharacter('a', cursor);
+    _inputConnector.insertCharacter('a', cursor);
 
     // then
     expect(fugue.toString()).toEqual('a');
@@ -30,7 +34,7 @@ describe('Input Operations', () => {
     const cursor = { line: 0, column: 0 };
 
     // when
-    inputOperations.insertLineBreak(cursor);
+    _inputConnector.insertLineBreak(cursor);
 
     // then
     expect(fugue.toString()).toEqual('\n');
@@ -40,10 +44,10 @@ describe('Input Operations', () => {
     // given
     const cursor1 = { line: 0, column: 0 };
     const cursor2 = { line: 0, column: 1 };
-    inputOperations.insertCharacter('a', cursor1);
+    _inputConnector.insertCharacter('a', cursor1);
 
     // when
-    inputOperations.deleteCharacter(cursor2);
+    _inputConnector.deleteCharacter(cursor2);
 
     // then
     expect(fugue.toString()).toEqual('');
@@ -54,11 +58,11 @@ describe('Input Operations', () => {
     const cursor1 = { line: 0, column: 0 };
     const cursor2 = { line: 0, column: 1 };
     const cursor3 = { line: 0, column: 2 };
-    inputOperations.insertCharacter('a', cursor1);
-    inputOperations.insertCharacter('b', cursor2);
+    _inputConnector.insertCharacter('a', cursor1);
+    _inputConnector.insertCharacter('b', cursor2);
 
     // when
-    inputOperations.deleteSelection({ start: cursor1, end: cursor3 });
+    _inputConnector.deleteSelection({ start: cursor1, end: cursor3 });
 
     // then
     expect(fugue.toString()).toEqual('');
@@ -72,15 +76,15 @@ describe('Input Operations', () => {
 
     // when
     text.split('').forEach((char, index) => {
-      inputOperations.insertCharacter(char, { line: 0, column: index });
+      _inputConnector.insertCharacter(char, { line: 0, column: index });
     });
-    inputOperations.deleteWord(cursor1, true);
+    _inputConnector.deleteWord(cursor1, true);
 
     // then
     expect(fugue.toString()).toEqual('hello ');
 
     // when
-    inputOperations.deleteWord(cursor2, false);
+    _inputConnector.deleteWord(cursor2, false);
 
     // then
     expect(fugue.toString()).toEqual(' ');
@@ -92,7 +96,7 @@ describe('Input Operations', () => {
     const cursor = { line: 0, column: 0 };
 
     // when
-    inputOperations.pasteText(cursor, text);
+    _inputConnector.pasteText(cursor, text);
 
     // then
     expect(fugue.toString()).toEqual(text);

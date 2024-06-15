@@ -10,14 +10,14 @@ import {
   removeNode,
   setNode,
   toBatch,
-} from '@tests/editor/slate/operations/history/utils';
+} from '@tests/editor/slate/handlers/history/utils';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import {
   InsertTextOperation,
   RemoveTextOperation,
   SetNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/fugue/operations/history/types';
+} from '@domain/editor/shared/historyTypes';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 import { BlockStyles } from '@notespace/shared/src/document/types/styles';
 

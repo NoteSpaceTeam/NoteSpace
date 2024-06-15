@@ -9,9 +9,9 @@ import {
   getUndoOperations,
   getRedoOperations,
   removeNode,
-} from '@tests/editor/slate/operations/history/utils';
+} from '@tests/editor/slate/handlers/history/utils';
 import { toSlate } from '@domain/editor/slate/utils/slate';
-import { InsertTextOperation, RemoveTextOperation } from '@domain/editor/fugue/operations/history/types';
+import { InsertTextOperation, RemoveTextOperation } from '@domain/editor/shared/historyTypes';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 import { nodeInsert } from '@domain/editor/fugue/utils';
 

@@ -1,24 +1,24 @@
 import {
-  BaseInsertNodeOperation,
-  BaseInsertTextOperation,
-  BaseMergeNodeOperation,
-  BaseRemoveNodeOperation,
-  BaseRemoveTextOperation,
-  BaseSetNodeOperation,
-  BaseSplitNodeOperation,
-  Node,
+    BaseInsertNodeOperation,
+    BaseInsertTextOperation,
+    BaseMergeNodeOperation,
+    BaseRemoveNodeOperation,
+    BaseRemoveTextOperation,
+    BaseSetNodeOperation,
+    BaseSplitNodeOperation,
+    Node,
 } from 'slate';
 import { Cursor, Selection } from '@domain/editor/cursor';
 
 export type HistoryOperation =
-  | InsertTextOperation
-  | RemoveTextOperation
-  | InsertNodeOperation
-  | RemoveNodeOperation
-  | SplitNodeOperation
-  | MergeNodeOperation
-  | SetNodeOperation
-  | UnsetNodeOperation;
+    | InsertTextOperation
+    | RemoveTextOperation
+    | InsertNodeOperation
+    | RemoveNodeOperation
+    | SplitNodeOperation
+    | MergeNodeOperation
+    | SetNodeOperation
+    | UnsetNodeOperation;
 
 /**
  * Base operation for inserting text
@@ -27,9 +27,9 @@ export type HistoryOperation =
  * @param text - The text to insert
  */
 export type InsertTextOperation = {
-  type: BaseInsertTextOperation['type'];
-  cursor: Cursor;
-  text: string[];
+    type: BaseInsertTextOperation['type'];
+    cursor: Cursor;
+    text: string[];
 };
 
 /**
@@ -38,8 +38,8 @@ export type InsertTextOperation = {
  * @param selection - The selection to remove the text
  */
 export type RemoveTextOperation = {
-  type: BaseRemoveTextOperation['type'];
-  selection: Selection;
+    type: BaseRemoveTextOperation['type'];
+    selection: Selection;
 };
 
 /**
@@ -49,10 +49,10 @@ export type RemoveTextOperation = {
  * @param selection - The selection to insert the node
  */
 export type InsertNodeOperation = {
-  type: BaseInsertNodeOperation['type'];
-  node: Node;
-  lineOperation: boolean;
-  selection: Selection;
+    type: BaseInsertNodeOperation['type'];
+    node: Node;
+    lineOperation: boolean;
+    selection: Selection;
 };
 
 /**
@@ -62,10 +62,10 @@ export type InsertNodeOperation = {
  * @param selection - The selection to remove the node
  */
 export type RemoveNodeOperation = {
-  type: BaseRemoveNodeOperation['type'];
-  node: Node;
-  lineOperation: boolean;
-  selection: Selection;
+    type: BaseRemoveNodeOperation['type'];
+    node: Node;
+    lineOperation: boolean;
+    selection: Selection;
 };
 
 /**
@@ -75,9 +75,9 @@ export type RemoveNodeOperation = {
  * @param cursor - The cursor position to split the node
  */
 export type SplitNodeOperation = {
-  type: BaseSplitNodeOperation['type'];
-  properties: Partial<Node>;
-  cursor: Cursor;
+    type: BaseSplitNodeOperation['type'];
+    properties: Partial<Node>;
+    cursor: Cursor;
 };
 
 /**
@@ -87,9 +87,9 @@ export type SplitNodeOperation = {
  * @param cursor - The cursor position to merge the node
  */
 export type MergeNodeOperation = {
-  type: BaseMergeNodeOperation['type'];
-  properties: Partial<Node>;
-  cursor: Cursor;
+    type: BaseMergeNodeOperation['type'];
+    properties: Partial<Node>;
+    cursor: Cursor;
 };
 
 /**
@@ -100,10 +100,10 @@ export type MergeNodeOperation = {
  * @param newProperties - The new properties of the node
  */
 export type SetNodeOperation = {
-  type: BaseSetNodeOperation['type'];
-  lineOperation: boolean;
-  selection: Selection;
-  properties: Partial<Node>;
+    type: BaseSetNodeOperation['type'];
+    lineOperation: boolean;
+    selection: Selection;
+    properties: Partial<Node>;
 };
 
 /**
@@ -114,8 +114,8 @@ export type SetNodeOperation = {
  * @param newProperties - The new properties of the node
  */
 export type UnsetNodeOperation = {
-  type: 'unset_node';
-  lineOperation: boolean;
-  selection: Selection;
-  properties: Partial<Node>;
+    type: 'unset_node';
+    lineOperation: boolean;
+    selection: Selection;
+    properties: Partial<Node>;
 };

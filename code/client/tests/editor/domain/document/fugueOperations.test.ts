@@ -4,21 +4,29 @@ import {
   InsertOperation,
   DeleteOperation,
   InlineStyleOperation,
-  BlockStyleOperation,
+  BlockStyleOperation, Operation,
 } from '@notespace/shared/src/document/types/operations';
-import getFugueOperations from '@domain/editor/fugue/operations/fugue/operations';
-import { FugueDomainOperations } from '@domain/editor/fugue/operations/fugue/types';
-import { Document } from '@notespace/shared/src/workspace/types/document';
 import { Node, RootNode } from '@domain/editor/fugue/nodes';
-import { rootNode, treeNode } from '@notespace/shared/src/document/utils';
+import {ServiceConnector} from "@domain/editor/connectors/service/connector";
+import {DocumentContent} from "@notespace/shared/src/workspace/types/document";
+import {rootNode, treeNode} from "@domain/editor/fugue/utils";
+
+import serviceConnector from '@domain/editor/connectors/service/connector';
+import {mockCommunication} from "@tests/mocks/mockCommunication";
+
+
+
 
 describe('Fugue Operations', () => {
   let fugue: Fugue;
-  let fugueOperations: FugueDomainOperations;
+  const communication = mockCommunication();
+  let _serviceConnector: ServiceConnector;
+  let applyOperations: (operations: Operation[]) => void;
 
   beforeEach(() => {
     fugue = new Fugue();
-    fugueOperations = getFugueOperations(fugue);
+    _serviceConnector = serviceConnector(fugue, communication);
+    applyOperations = _serviceConnector.applyFugueOperations;
   });
 
   test('should apply operations', () => {
@@ -29,10 +37,11 @@ describe('Fugue Operations', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      cursor: { line: 0, column: 0}
     };
 
     // when
-    fugueOperations.applyOperations([insertOperation]);
+    applyOperations([insertOperation]);
 
     // then
     expect(fugue.toString()).toEqual('a');
@@ -41,10 +50,11 @@ describe('Fugue Operations', () => {
     const deleteOperation: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
+      cursor: { line: 0, column: 0 }
     };
 
     // when
-    fugueOperations.applyOperations([deleteOperation]);
+    applyOperations([deleteOperation]);
 
     // then
     expect(fugue.toString()).toEqual('');
@@ -53,7 +63,7 @@ describe('Fugue Operations', () => {
     const insertOperation2 = { ...insertOperation, id: { sender: 'A', counter: 1 }, value: 'b' };
 
     // when
-    fugueOperations.applyOperations([insertOperation2]);
+    applyOperations([insertOperation2]);
 
     // given
     const inlineStyleOperation: InlineStyleOperation = {
@@ -64,7 +74,7 @@ describe('Fugue Operations', () => {
     };
 
     // when
-    fugueOperations.applyOperations([inlineStyleOperation]);
+    applyOperations([inlineStyleOperation]);
 
     // then
     expect(fugue.getNodeByCursor({ line: 0, column: 1 })?.styles).toEqual(['bold']);
@@ -78,7 +88,7 @@ describe('Fugue Operations', () => {
     };
 
     // when
-    fugueOperations.applyOperations([blockStyleOperation]);
+    applyOperations([blockStyleOperation]);
 
     // then
     expect(fugue.getBlockStyle(0)).toEqual('paragraph');
@@ -91,17 +101,15 @@ describe('Fugue Operations', () => {
     const node2: Node<string> = treeNode({ sender: 'A', counter: 1 }, 'b', node1.id, 'R', 2);
     root.rightChildren = [node1.id];
     node1.rightChildren = [node2.id];
-    const document: Document = {
-      id: 'test',
-      title: 'test',
+    const document: DocumentContent = {
       operations: [
-        { type: 'insert', ...node1, parent: root.id, styles: [] },
-        { type: 'insert', ...node2, parent: node1.id, styles: [] },
+        { type: 'insert', ...node1, parent: root.id, styles: [], cursor: { line: 0, column: 0 }},
+        { type: 'insert', ...node2, parent: node1.id, styles: [], cursor: { line: 0, column: 1 }},
       ],
     };
 
     // when
-    fugueOperations.applyOperations(document.operations);
+    applyOperations(document.operations);
 
     // then
     expect(fugue.toString()).toEqual('ab');

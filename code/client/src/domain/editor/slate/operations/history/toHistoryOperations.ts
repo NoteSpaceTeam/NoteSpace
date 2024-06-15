@@ -23,7 +23,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/slate/operations/history/types';
+} from '@domain/editor/shared/historyTypes';
 import { pointToCursor } from '@domain/editor/slate/utils/selection';
 
 const reverseTypes: { [key: string]: HistoryOperation['type'] } = {

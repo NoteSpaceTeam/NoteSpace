@@ -42,6 +42,7 @@ describe('Fugue', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -88,10 +89,12 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      cursor: { line: 0, column: 0 },
     };
     const deleteOperation: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
+      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -126,6 +129,7 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      cursor: { line: 0, column: 0 },
     };
     const styleOperation: InlineStyleOperation = {
       type: 'inline-style',

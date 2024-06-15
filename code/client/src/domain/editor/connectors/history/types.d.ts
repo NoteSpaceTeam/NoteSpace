@@ -1,4 +1,4 @@
-import { HistoryOperation } from '@domain/editor/slate/operations/history/types';
+import { HistoryOperation } from '@domain/editor/shared/historyTypes';
 
 export type HistoryConnector = {
   applyHistoryOperation: ApplyHistory;

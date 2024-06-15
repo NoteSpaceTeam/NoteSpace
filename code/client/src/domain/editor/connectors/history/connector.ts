@@ -5,7 +5,9 @@ import { BlockStyle, getStyleType, InlineStyle } from '@notespace/shared/src/doc
 import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 import {
   ApplyHistory,
-  HistoryConnector,
+  HistoryConnector
+} from '@domain/editor/connectors/history/types'
+import {
   HistoryOperation,
   InsertNodeOperation,
   InsertTextOperation,
@@ -15,7 +17,7 @@ import {
   SetNodeOperation,
   SplitNodeOperation,
   UnsetNodeOperation,
-} from '@domain/editor/connectors/history/types';
+} from '@domain/editor/shared/historyTypes';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 
 export default (fugue: Fugue, servicesConnector: ServiceConnector): HistoryConnector => {
