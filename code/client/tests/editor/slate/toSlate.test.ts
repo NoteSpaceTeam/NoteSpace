@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Fugue } from '@domain/editor/fugue/Fugue';
-import { Cursor, Selection } from '@domain/editor/cursor';
+import { Cursor } from '@domain/editor/cursor';
 import { Descendant } from 'slate';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 
@@ -23,13 +23,18 @@ describe('toSlate', () => {
   test('should return descendants based on fugue tree', () => {
     // given
     const cursor: Cursor = { line: 0, column: 0 };
-    const selection: Selection = { start: cursor, end: { line: 0, column: 1 } };
 
     // when
     fugue.insertLocal(cursor, 'a', 'b', 'c', '\n', 'd', 'e', 'f', 'g');
     fugue.updateBlockStyleLocal(0, 'heading-one');
     fugue.updateBlockStyleLocal(1, 'list-item');
-    fugue.updateInlineStyleLocal(selection, 'bold');
+    fugue.updateInlineStyleLocal(
+      {
+        start: { line: 0, column: 1 },
+        end: { line: 0, column: 1 },
+      },
+      'bold'
+    );
     const descendants: Descendant[] = toSlate(fugue);
 
     // then

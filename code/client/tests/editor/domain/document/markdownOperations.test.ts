@@ -31,7 +31,13 @@ describe('Markdown Operations', () => {
     // given
     const text = 'abc\ndef';
     const cursor = { line: 0, column: 0 };
-    const selection = { start: cursor, end: { line: 1, column: 2 } };
+    const selection = {
+      start: {
+        line: 0,
+        column: 1,
+      },
+      end: { line: 1, column: 2 },
+    };
     fugue.insertLocal(cursor, ...text.split(''));
 
     // when

@@ -3,7 +3,7 @@ import { FugueTree } from '@domain/editor/fugue/FugueTree';
 import { generateReplicaId, nodeInsert } from './utils';
 import { type FugueNode, type NodeInsert } from '@domain/editor/fugue/types';
 import { Cursor, Selection } from '@domain/editor/cursor';
-import { clamp, isEmpty, last, range } from 'lodash';
+import { isEmpty, last, range } from 'lodash';
 import { Id } from '@notespace/shared/src/document/types/types';
 import {
   BlockStyleOperation,
@@ -313,7 +313,7 @@ export class Fugue {
     inclusive: boolean = false
   ): IterableIterator<FugueNode[]> {
     const selection = reverse
-      ? { start: { line, column: 0 }, end: { line, column } }
+      ? { start: { line, column: 1 }, end: { line, column } }
       : { start: { line, column }, end: { line, column: Infinity } };
 
     const nodesInSelection = Array.from(this.traverseBySelection(selection));

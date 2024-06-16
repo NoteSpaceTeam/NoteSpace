@@ -244,7 +244,10 @@ describe('Fugue', () => {
     fugue.insertLocal(cursor, 'a', 'b', 'c', ' ', 'd', 'e');
 
     // when
-    const operations = fugue.deleteWordByCursor(cursor);
+    const operations = fugue.deleteWordByCursor({
+      line: 0,
+      column: 1,
+    });
 
     // then
     expect(operations).toHaveLength(3);

@@ -62,7 +62,7 @@ describe('Input Operations', () => {
     _inputConnector.insertCharacter('b', cursor2);
 
     // when
-    _inputConnector.deleteSelection({ start: cursor1, end: cursor3 });
+    _inputConnector.deleteSelection({ start: cursor2, end: cursor3 });
 
     // then
     expect(fugue.toString()).toEqual('');
@@ -72,7 +72,7 @@ describe('Input Operations', () => {
     // given
     const text = 'hello world';
     const cursor1 = { line: 0, column: text.length };
-    const cursor2 = { line: 0, column: 0 };
+    const cursor2 = { line: 0, column: 1 };
 
     // when
     text.split('').forEach((char, index) => {
@@ -81,7 +81,7 @@ describe('Input Operations', () => {
     _inputConnector.deleteWord(cursor1, true);
 
     // then
-    expect(fugue.toString()).toEqual('hello ');
+    expect('hello ').toEqual(fugue.toString());
 
     // when
     _inputConnector.deleteWord(cursor2, false);
