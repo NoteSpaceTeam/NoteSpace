@@ -116,9 +116,10 @@ function removeTextOperation(editor: Editor, operation: BaseRemoveTextOperation)
   // Normalize selection to account for line root nodes
   const start = pointToCursor(editor, { ...operation });
 
+
   const end = {
     line: start.line,
-    column: start.column + operation.text.length,
+    column: start.column + operation.text.length - 1,
   };
 
   const selection = { start, end };
@@ -150,7 +151,7 @@ function nodeOperation(
     if (!Text.isText(operation.node) || !operation.node.text) return undefined;
     end = {
       ...start,
-      column: start.column + (operation.node as Text).text.length,
+      column: start.column + (operation.node as Text).text.length - 1,
     };
   }
   const selection = { start, end };
@@ -181,7 +182,7 @@ function handleNodeOperation(
 
   const path = [operation.path[0] + (merge_mode ? 1 : 0), 0];
   const type = merge_mode ? 'merge_node' : 'split_node';
-  const cursor = pointToCursor(editor, { path, offset: offset || 0 });
+  const cursor = pointToCursor(editor, { path, offset: offset || 0 }, true);
 
   return {
     type,

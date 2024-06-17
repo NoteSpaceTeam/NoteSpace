@@ -22,7 +22,7 @@ describe('Undo delete line', () => {
           node: { type: 'paragraph', children: [{ text: '' }] },
         },
       ];
-      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 1 } });
+      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 0 } });
       pipeline.applyOperations(slateOperations);
       // Extract the undo operations
       const { operations } = pipeline.extractUndoOperations();
@@ -46,7 +46,7 @@ describe('Undo delete line', () => {
           node: { type: 'paragraph', children: [{ text: '' }] },
         },
       ];
-      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 1 } });
+      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 0 } });
       pipeline.applyOperations(slateOperations);
       // Extract the undo operations
       const { operations } = pipeline.extractUndoOperations();
@@ -70,7 +70,7 @@ describe('Undo delete line', () => {
           node: { type: 'paragraph', children: [{ text: '' }] },
         },
       ];
-      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 1 } });
+      pipeline.fugue.deleteLocal({ start: { line: 1, column: 0 }, end: { line: 1, column: 0 } });
       pipeline.applyOperations(slateOperations);
       // Extract the undo operations
       const { operations } = pipeline.extractUndoOperations();

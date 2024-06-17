@@ -38,12 +38,16 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  * Converts a slate point to a cursor
  * @param editor
  * @param point
+ * @param absolute
  */
-export function pointToCursor(editor: Editor, point: Point): Cursor {
+export function pointToCursor(editor: Editor, point: Point, absolute : boolean = false): Cursor {
   const line = point.path[0];
   const cursor: Cursor = { line, column: point.offset };
 
-  if (point.path[1] === 0) return cursor;
+  if (point.path[1] === 0) {
+    cursor.column = (absolute ? cursor.column : cursor.column + 1);
+    return cursor;
+  }
 
   const children = Array.from(Node.children(editor, [line]));
 
@@ -60,6 +64,8 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
     }
   }
 
+  // Slate offset is off by one compared to the cursor column
+  cursor.column = (absolute ? cursor.column : cursor.column + 1);
   return cursor;
 }
 

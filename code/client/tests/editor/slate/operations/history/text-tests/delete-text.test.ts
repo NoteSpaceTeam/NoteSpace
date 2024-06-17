@@ -28,7 +28,7 @@ describe('Undo delete text', () => {
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
 
       it('Inline style', () => {
@@ -50,7 +50,7 @@ describe('Undo delete text', () => {
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
     describe('Block style', () => {
@@ -71,7 +71,7 @@ describe('Undo delete text', () => {
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
       it('Inline style', () => {
         // Setup editor
@@ -93,7 +93,7 @@ describe('Undo delete text', () => {
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
   });
@@ -106,14 +106,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 6, text: 'World' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 6 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 7 }, end: { line: 0, column: 12 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
       it('Inline style', () => {
         // Setup editor
@@ -125,14 +125,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 6, text: 'World' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 6 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 7 }, end: { line: 0, column: 12 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
     describe('Block style', () => {
@@ -144,14 +144,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 6, text: 'World' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 6 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 7 }, end: { line: 0, column: 12 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
       it('Inline style', () => {
         // Setup editor
@@ -164,14 +164,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 6, text: 'World' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 6 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 7 }, end: { line: 0, column: 12 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
   });
@@ -184,14 +184,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 10, text: 'd' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 10 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 11 }, end: { line: 0, column: 11 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
       it('Inline style', () => {
         // Setup editor
@@ -203,14 +203,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 10, text: 'd' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 10 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 11 }, end: { line: 0, column: 11 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
     describe('Block style', () => {
@@ -222,14 +222,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 10, text: 'd' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 10 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 11 }, end: { line: 0, column: 11 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
       it('Inline style', () => {
         // Setup editor
@@ -242,14 +242,14 @@ describe('Undo delete text', () => {
         const beforeSnapshot = pipeline.takeSnapshot();
         // Apply operations
         const slateOperation: RemoveTextOperation[] = [{ type: 'remove_text', path: [0, 0], offset: 10, text: 'd' }];
-        pipeline.fugue.deleteLocal({ start: { line: 0, column: 10 }, end: { line: 0, column: 11 } });
+        pipeline.fugue.deleteLocal({ start: { line: 0, column: 11 }, end: { line: 0, column: 11 } });
         pipeline.applyOperations(slateOperation);
         // Get undo operations
         const batch = pipeline.extractUndoOperations();
         pipeline.applyHistoryOperations(...batch.operations);
         const afterSnapshot = pipeline.takeSnapshot();
         // Compare
-        expect(beforeSnapshot).toEqual(afterSnapshot);
+        expect(afterSnapshot).toEqual(beforeSnapshot);
       });
     });
   });

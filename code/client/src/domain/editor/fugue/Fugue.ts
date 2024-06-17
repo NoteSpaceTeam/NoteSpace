@@ -185,7 +185,7 @@ export class Fugue {
    * @param cursor
    */
   reviveLocalByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor);
+    const node = this.getNodeByCursor(cursor, true);
     if (node) return this.reviveNode(node.id, cursor);
   }
 
@@ -345,13 +345,14 @@ export class Fugue {
   /**
    * Returns the node at the given cursor
    * @param cursor
+   * @param returnDeleted
    */
-  getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
+  getNodeByCursor({ line, column }: Cursor, returnDeleted : boolean = false): FugueNode | undefined {
     //if (column === 0) return this.tree.getLineRoot(line);
     if (line === 0 && column === 0) return this.tree.root;
     const start = { line, column };
-    const end = { line, column: column + 1 };
-    const iterator = this.traverseBySelection({ start, end });
+    const end = { line, column: column };
+    const iterator = this.traverseBySelection({ start, end }, returnDeleted);
     return iterator.next().value;
   }
 
