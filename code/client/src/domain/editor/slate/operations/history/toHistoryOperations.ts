@@ -116,7 +116,6 @@ function removeTextOperation(editor: Editor, operation: BaseRemoveTextOperation)
   // Normalize selection to account for line root nodes
   const start = pointToCursor(editor, { ...operation });
 
-
   const end = {
     line: start.line,
     column: start.column + operation.text.length - 1,

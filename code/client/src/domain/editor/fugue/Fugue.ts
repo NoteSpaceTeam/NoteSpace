@@ -347,7 +347,7 @@ export class Fugue {
    * @param cursor
    * @param returnDeleted
    */
-  getNodeByCursor({ line, column }: Cursor, returnDeleted : boolean = false): FugueNode | undefined {
+  getNodeByCursor({ line, column }: Cursor, returnDeleted: boolean = false): FugueNode | undefined {
     //if (column === 0) return this.tree.getLineRoot(line);
     if (line === 0 && column === 0) return this.tree.root;
     const start = { line, column };
