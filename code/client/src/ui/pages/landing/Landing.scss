@@ -1,4 +1,4 @@
-.login {
+.landing {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,7 +15,7 @@
     button {
       background-color: white;
       color: black;
-      padding: 1.5vh;
+      padding: 1.5vh 3vh 1.5vh 3vh;
       font-size: larger;
       border-radius: 50px;
       border: 1px solid gray;

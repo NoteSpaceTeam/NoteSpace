@@ -21,10 +21,11 @@ interface DialogProps {
   fields: Field[];
   onSubmit: (values: { [key: string]: any }) => void;
   submitText?: string;
+  extraContent?: React.ReactNode;
   children: React.ReactNode;
 }
 
-function Dialog({ title, fields, onSubmit, submitText, children }: DialogProps) {
+function Dialog({ title, fields, onSubmit, submitText, extraContent, children }: DialogProps) {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<{ [key: string]: any }>(
     fields.reduce((obj, item) => ({ ...obj, [item.name]: item.type === 'checkbox' ? false : '' }), {})
@@ -82,6 +83,7 @@ function Dialog({ title, fields, onSubmit, submitText, children }: DialogProps) 
               />
             )
           )}
+          {extraContent}
         </DialogContent>
         <DialogActions>
           <button onClick={handleClose}>Cancel</button>

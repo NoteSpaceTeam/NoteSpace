@@ -29,7 +29,6 @@ function Sidebar() {
             <IoMenu className="icon-menu" />
           )}
         </button>
-        <Link to="/">NoteSpace</Link>
       </div>
       <ul>
         <li>

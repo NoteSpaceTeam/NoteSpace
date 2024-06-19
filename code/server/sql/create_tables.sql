@@ -9,7 +9,7 @@ begin;
         name text not null,
         private boolean not null default false,
         created_at timestamp not null default now(),
-        members char(16)[] not null default '{}'::char(16)[] -- array of user ids
+        members char(16)[] not null default '{}'::char(16)[] references "user"(id)
     );
 
     create table if not exists resource (
@@ -20,13 +20,14 @@ begin;
         created_at timestamp not null default now(),
         updated_at timestamp not null default now(),
         parent char(16) default null references resource(id) on delete cascade,
-        children char(16)[] not null default '{}'::char(16)[] -- array of resource ids
+        children char(16)[] not null default '{}'::char(16)[] references resource(id)
     );
 
     create table if not exists "user" (
         id char(28) primary key,
-        username text not null,
-        email text not null unique
+        name text not null,
+        email text not null unique,
+        created_at timestamp not null default now()
     );
 
 commit;

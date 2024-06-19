@@ -42,6 +42,18 @@ function useWorkspaces() {
     return await service.updateWorkspace(id, newProps);
   }
 
+  async function getWorkspaceMembers(id: string) {
+    return await service.getWorkspaceMembers(id);
+  }
+
+  async function addWorkspaceMember(id: string, email: string) {
+    return await service.addWorkspaceMember(id, email);
+  }
+
+  async function removeWorkspaceMember(id: string, email: string) {
+    return await service.removeWorkspaceMember(id, email);
+  }
+
   useSocketListeners(socket, {
     createdWorkspace: onCreateWorkspace,
     deletedWorkspace: onDeleteWorkspace,
@@ -62,6 +74,9 @@ function useWorkspaces() {
       createWorkspace,
       deleteWorkspace,
       updateWorkspace,
+      getWorkspaceMembers,
+      addWorkspaceMember,
+      removeWorkspaceMember,
     },
   };
 }

@@ -1,12 +1,13 @@
 import admin from 'firebase-admin';
 import { NextFunction, Request, Response } from 'express';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
+import { LoggedUser } from '@notespace/shared/src/users/types';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
-      user?: admin.auth.DecodedIdToken;
+      user?: LoggedUser;
     }
   }
 }
@@ -17,7 +18,9 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
     return httpResponse.unauthorized(res).send();
   }
   try {
-    req.user = await admin.auth().verifyIdToken(token);
+    const idToken = await admin.auth().verifyIdToken(token);
+    const { uid, displayName, email } = await admin.auth().getUser(idToken.uid);
+    req.user = { id: uid, email: email!, name: displayName! };
     next();
   } catch (error) {
     console.error('Error verifying token:', error);

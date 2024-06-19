@@ -14,11 +14,12 @@ function workspacesHandlers(services: Services, io: Server) {
     if (isPrivate === undefined) throw new InvalidParameterError('Workspace visibility is required');
 
     const id = await services.workspaces.createWorkspace(name, isPrivate);
+    const member = { email: req.user!.email, name: req.user!.name };
     const workspace: WorkspaceMeta = {
       id,
       name,
       createdAt: new Date().toISOString(),
-      members: [''],
+      members: [member],
       isPrivate,
     };
     io.emit('createdWorkspace', workspace);
@@ -60,12 +61,36 @@ function workspacesHandlers(services: Services, io: Server) {
     httpResponse.noContent(res).send();
   };
 
+  const addMemberToWorkspace = async (req: Request, res: Response) => {
+    const { wid } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+
+    const { email } = req.body;
+    if (!email) throw new InvalidParameterError('Email is required');
+
+    await services.workspaces.addWorkspaceMember(wid, email);
+    httpResponse.noContent(res).send();
+  };
+
+  const removeMemberFromWorkspace = async (req: Request, res: Response) => {
+    const { wid } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+
+    const { email } = req.body;
+    if (!email) throw new InvalidParameterError('Email is required');
+
+    await services.workspaces.removeWorkspaceMember(wid, email);
+    httpResponse.noContent(res).send();
+  };
+
   const router = PromiseRouter();
   router.post('/', createWorkspace);
   router.get('/', getWorkspaces);
   router.get('/:wid', getWorkspace);
   router.put('/:wid', updateWorkspace);
   router.delete('/:wid', deleteWorkspace);
+  router.post('/:wid/members', addMemberToWorkspace);
+  router.delete('/:wid/members', removeMemberFromWorkspace);
 
   // sub-routes for resources (documents and folders)
   router.use('/:wid', resourcesHandlers(services.resources, io));

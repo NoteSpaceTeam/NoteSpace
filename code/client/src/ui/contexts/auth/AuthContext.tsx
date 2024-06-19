@@ -32,7 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loginWithProvider = async (provider: Provider) => {
     try {
       const { user } = await signInWithPopup(auth, provider);
-      await registerUser(user.uid, { username: user.displayName!, email: user.email! });
+      await registerUser(user.uid, { name: user.displayName!, email: user.email! });
       const token = await user.getIdToken();
       Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
     } catch (e) {
@@ -55,6 +55,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    console.log(currentUser);
+    if (!currentUser && window.location.pathname !== '/') {
+      window.location.href = '/';
+    }
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider

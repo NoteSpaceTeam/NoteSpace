@@ -1,5 +1,5 @@
 import { UsersRepository } from '@databases/types';
-import { UserData } from '@notespace/shared/src/users/types';
+import { User, UserData } from '@notespace/shared/src/users/types';
 
 export class UsersService {
   private readonly users: UsersRepository;
@@ -12,7 +12,7 @@ export class UsersService {
     await this.users.createUser(id, data);
   }
 
-  async getUser(id: string): Promise<UserData> {
+  async getUser(id: string): Promise<User> {
     return await this.users.getUser(id);
   }
 
@@ -22,5 +22,9 @@ export class UsersService {
 
   async deleteUser(id: string): Promise<void> {
     await this.users.deleteUser(id);
+  }
+
+  async getUsers(): Promise<User[]> {
+    return await this.users.getUsers();
   }
 }

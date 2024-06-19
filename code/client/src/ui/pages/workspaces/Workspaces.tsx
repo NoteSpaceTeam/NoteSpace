@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { sortWorkspaces } from '@domain/workspaces/utils';
 import './Workspaces.scss';
 import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import { UserData } from '@notespace/shared/src/users/types';
 
 function Workspaces() {
   const { workspaces, operations } = useWorkspaces();
@@ -60,7 +61,9 @@ function Workspaces() {
             }
             onDelete={() => operations.deleteWorkspace(workspace.id).catch(publishError)}
             onRename={name => operations.updateWorkspace(workspace.id, { ...workspace, name }).catch(publishError)}
-            onInvite={() => {}}
+            onGetMembers={() => operations.getWorkspaceMembers(workspace.id).catch(publishError) as Promise<UserData[]>}
+            onAddMember={email => operations.addWorkspaceMember(workspace.id, email).catch(publishError)}
+            onRemoveMember={email => operations.removeWorkspaceMember(workspace.id, email).catch(publishError)}
           />
         ))}
       </DataTable>

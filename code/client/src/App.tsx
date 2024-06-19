@@ -10,8 +10,9 @@ import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Workspaces from '@ui/pages/workspaces/Workspaces';
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
 import Home from '@ui/pages/home/Home';
-import Login from '@ui/pages/login/Login';
 import AuthProvider from '@ui/contexts/auth/AuthContext';
+import Profile from '@ui/pages/profile/Profile';
+import Landing from '@ui/pages/landing/Landing';
 
 function App() {
   return (
@@ -23,8 +24,9 @@ function App() {
               <Header />
               <div className="content">
                 <Routes>
+                  <Route path="/" element={<Landing />} />
                   <Route
-                    path="/"
+                    path="/home"
                     element={
                       <>
                         <Sidebar />
@@ -32,7 +34,7 @@ function App() {
                       </>
                     }
                   />
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/profile/:id" element={<Profile />} />
                   <Route
                     path="/workspaces/*"
                     element={

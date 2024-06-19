@@ -6,16 +6,16 @@ function Header() {
   const { currentUser, logout } = useAuth();
   return (
     <header className="header">
-      <p></p>
+      <Link to={currentUser ? '/home' : '/'}>NoteSpace</Link>
       <div>
-        {currentUser ? (
-          <div className="account">
-            <p>{currentUser?.displayName}</p>
-            <button onClick={logout}>Logout</button>
-          </div>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
+        <div className="account">
+          {currentUser && (
+            <>
+              <Link to={`/profile/${currentUser.uid}`}>{currentUser?.displayName}</Link>
+              <button onClick={logout}>Logout</button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

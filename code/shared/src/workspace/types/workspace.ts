@@ -1,10 +1,11 @@
 import { Resource } from "./resource";
+import { UserData } from "../../users/types";
 
 export type WorkspaceMeta = {
   name: string;
   id: string;
   createdAt: string;
-  members: string[];
+  members: UserData[];
   isPrivate: boolean;
 };
 

@@ -1,6 +1,7 @@
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
+import { UserData } from '@notespace/shared/src/users/types';
 
 function workspaceService(http: HttpCommunication) {
   async function getWorkspace(id: string): Promise<Workspace> {
@@ -23,12 +24,28 @@ function workspaceService(http: HttpCommunication) {
     await http.put(`/workspaces/${id}`, newProps);
   }
 
+  async function getWorkspaceMembers(id: string): Promise<UserData[]> {
+    const workspace: WorkspaceMeta = await http.get(`/workspaces/${id}`);
+    return workspace.members;
+  }
+
+  async function addWorkspaceMember(id: string, email: string): Promise<void> {
+    await http.post(`/workspaces/${id}/members`, { email });
+  }
+
+  async function removeWorkspaceMember(id: string, email: string): Promise<void> {
+    await http.delete(`/workspaces/${id}/members`, { email });
+  }
+
   return {
     getWorkspace,
     getWorkspaces,
     createWorkspace,
     deleteWorkspace,
     updateWorkspace,
+    getWorkspaceMembers,
+    addWorkspaceMember,
+    removeWorkspaceMember,
   };
 }
 

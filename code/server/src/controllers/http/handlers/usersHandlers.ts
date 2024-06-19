@@ -40,11 +40,17 @@ function usersHandlers(service: UsersService) {
     httpResponse.noContent(res).send();
   };
 
+  const getUsers = async (req: Request, res: Response) => {
+    const users = await service.getUsers();
+    httpResponse.ok(res).json(users);
+  };
+
   const router = PromiseRouter({ mergeParams: true });
   router.post('/', registerUser);
   router.get('/:id', getUser);
   router.put('/:id', updateUser);
   router.delete('/:id', deleteUser);
+  router.get('/', getUsers);
 
   return router;
 }

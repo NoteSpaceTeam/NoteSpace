@@ -36,4 +36,12 @@ export class WorkspacesService {
   async getResources(wid: string) {
     return await this.workspaces.getResources(wid);
   }
+
+  async addWorkspaceMember(wid: string, email: string) {
+    await this.workspaces.addWorkspaceMember(wid, email);
+  }
+
+  async removeWorkspaceMember(wid: string, email: string) {
+    await this.workspaces.removeWorkspaceMember(wid, email);
+  }
 }

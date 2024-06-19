@@ -14,9 +14,8 @@ export default function (services: Services, io: Server) {
   const router = PromiseRouter();
   router.use(express.urlencoded({ extended: true }));
 
-  router.use('/users', usersHandlers(services.users));
-  router.use('/workspaces', workspacesHandlers(services, io));
-  router.get('/protected', verifyToken, (req, res) => res.send({ message: 'Protected route' }));
+  router.use('/users', verifyToken, usersHandlers(services.users));
+  router.use('/workspaces', verifyToken, workspacesHandlers(services, io));
   router.use(errorMiddleware);
   return router;
 }

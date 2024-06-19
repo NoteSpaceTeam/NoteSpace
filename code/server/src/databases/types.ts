@@ -2,7 +2,7 @@ import { DocumentContent } from '@notespace/shared/src/workspace/types/document'
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { UserData } from '@notespace/shared/src/users/types';
+import { User, UserData } from '@notespace/shared/src/users/types';
 
 export interface DocumentsRepository {
   /**
@@ -101,6 +101,18 @@ export interface WorkspacesRepository {
    * @param id
    */
   deleteWorkspace: (id: string) => Promise<void>;
+  /**
+   * Add a member to a workspace
+   * @param wid
+   * @param email
+   */
+  addWorkspaceMember: (wid: string, email: string) => Promise<void>;
+  /**
+   * Remove a member from a workspace
+   * @param wid
+   * @param email
+   */
+  removeWorkspaceMember: (wid: string, email: string) => Promise<void>;
 }
 
 export interface UsersRepository {
@@ -114,7 +126,7 @@ export interface UsersRepository {
    * Get a user from the database
    * @param id
    */
-  getUser: (id: string) => Promise<UserData>;
+  getUser: (id: string) => Promise<User>;
   /**
    * Update a user in the database
    * @param id
@@ -126,6 +138,10 @@ export interface UsersRepository {
    * @param id
    */
   deleteUser: (id: string) => Promise<void>;
+  /**
+   * Get all users from the database
+   */
+  getUsers: () => Promise<User[]>;
 }
 
 export interface Databases {

@@ -1,22 +1,23 @@
 import { useAuth } from '@ui/contexts/auth/useAuth';
-import { FaGithub } from 'react-icons/fa6';
-import googleIcon from '@assets/images/google-icon.png';
-import './Login.scss';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import googleIcon from '@assets/images/google-icon.png';
+import { FaGithub } from 'react-icons/fa6';
+import './Landing.scss';
 
-function Login() {
+function Landing() {
   const { currentUser, loginWithGoogle, loginWithGithub } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (currentUser) {
-      navigate('/');
+      navigate('/home');
     }
   }, [currentUser, navigate]);
 
   return (
-    <div className="login">
-      <h1>Login</h1>
+    <div className="landing">
+      <h1>Welcome to NoteSpace</h1>
       <div>
         <button onClick={loginWithGoogle}>
           Login With Google
@@ -32,4 +33,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Landing;

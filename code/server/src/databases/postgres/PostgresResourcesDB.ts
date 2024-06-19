@@ -12,19 +12,16 @@ export class PostgresResourcesDB implements ResourcesRepository {
       name,
       type,
     };
-
     const results = await sql`
         insert into resource ${sql(resource)} 
         returning id
     `;
-
     if (isEmpty(results)) throw new Error('Resource not created');
     return results[0].id;
   }
 
   async getResource(id: string): Promise<Resource> {
     const results: Resource[] = await sql`select *from resource where id = ${id}`;
-
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }

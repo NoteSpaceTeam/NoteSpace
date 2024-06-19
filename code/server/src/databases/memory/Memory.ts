@@ -1,5 +1,5 @@
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
-import { UserData } from '@notespace/shared/src/users/types';
+import { User } from '@notespace/shared/src/users/types';
 
 export interface WorkspaceStorage {
   id: string;
@@ -11,7 +11,7 @@ export interface WorkspaceStorage {
 }
 
 export class Memory {
-  static users: Record<string, UserData> = {};
+  static users: Record<string, User> = {};
   static workspaces: Record<string, WorkspaceStorage> = {};
 
   static reset() {

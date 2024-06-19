@@ -1,12 +1,13 @@
-import { UserData } from '@notespace/shared/src/users/types';
+import { User, UserData } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
+import Cookies from 'js-cookie';
 
 function authService(http: HttpCommunication) {
   async function registerUser(id: string, data: UserData) {
     await http.post('/users', { id, ...data });
   }
 
-  async function getUser(id: string) {
+  async function getUser(id: string): Promise<User> {
     return await http.get(`/users/${id}`);
   }
 
@@ -16,6 +17,7 @@ function authService(http: HttpCommunication) {
 
   async function deleteUser(id: string) {
     await http.delete(`/users/${id}`);
+    Cookies.remove('token');
   }
 
   return {

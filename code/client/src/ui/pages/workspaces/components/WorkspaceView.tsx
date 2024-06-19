@@ -5,6 +5,7 @@ import WorkspaceContextMenu from '@ui/pages/workspaces/components/WorkspaceConte
 import { Checkbox } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { formatDate } from '@/utils/utils';
+import { UserData } from '@notespace/shared/src/users/types';
 
 type WorkspacePreviewProps = {
   workspace: WorkspaceMeta;
@@ -12,10 +13,21 @@ type WorkspacePreviewProps = {
   onSelect: (value: boolean) => void;
   onDelete: () => void;
   onRename: (title: string) => void;
-  onInvite: () => void;
+  onGetMembers: () => Promise<UserData[]>;
+  onAddMember: (email: string) => Promise<void>;
+  onRemoveMember: (email: string) => Promise<void>;
 };
 
-function WorkspaceView({ workspace, selected, onSelect, onDelete, onRename, onInvite }: WorkspacePreviewProps) {
+function WorkspaceView({
+  workspace,
+  selected,
+  onSelect,
+  onDelete,
+  onRename,
+  onGetMembers,
+  onAddMember,
+  onRemoveMember,
+}: WorkspacePreviewProps) {
   const { component, isEditing, setIsEditing } = useEditing(workspace.name, onRename);
   const [isSelected, setSelected] = useState(selected);
 
@@ -40,7 +52,13 @@ function WorkspaceView({ workspace, selected, onSelect, onDelete, onRename, onIn
   return isEditing ? (
     WorkspaceComponent
   ) : (
-    <WorkspaceContextMenu onInvite={onInvite} onRename={() => setIsEditing(true)} onDelete={onDelete}>
+    <WorkspaceContextMenu
+      onRename={() => setIsEditing(true)}
+      onDelete={onDelete}
+      onGetMembers={onGetMembers}
+      onAddMember={onAddMember}
+      onRemoveMember={onRemoveMember}
+    >
       <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>
     </WorkspaceContextMenu>
   );
