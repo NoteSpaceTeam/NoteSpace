@@ -138,7 +138,7 @@ function nodeOperation(
 ): InsertNodeOperation | RemoveNodeOperation | undefined {
   const lineOperation = operation.path.length === 1;
 
-  const cursor = pointToCursor(editor, { path: operation.path, offset: 0 });
+  const cursor = pointToCursor(editor, { path: operation.path, offset: 0 }, insert_mode);
 
   const start = lineOperation
     ? { line: operation.path[0] + 1, column: 0 }

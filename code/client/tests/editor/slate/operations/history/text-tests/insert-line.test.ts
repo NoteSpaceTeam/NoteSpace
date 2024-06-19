@@ -8,6 +8,7 @@ beforeEach(() => {
 });
 
 describe('Undo new line', () => {
+  // TODO - Add redo tests
   it('Start of line', () => {
     const beforeSnapshot = pipeline.takeSnapshot();
     // Apply the operation

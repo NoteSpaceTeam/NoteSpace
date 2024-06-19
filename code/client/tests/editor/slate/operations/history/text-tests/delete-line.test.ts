@@ -9,6 +9,7 @@ beforeEach(() => {
 
 describe('Undo delete line', () => {
   describe('No block styles', () => {
+    // TODO - Add redo tests
     it('empty line', () => {
       // Setup the editor
       pipeline.fugue.insertLocal({ line: 0, column: 0 }, '\n');

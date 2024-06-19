@@ -11,6 +11,7 @@ import { InputConnector } from '@domain/editor/connectors/input/types';
 export default (fugue: Fugue, servicesConnector: ServiceConnector): InputConnector => {
   function insertCharacter(char: string, cursor: Cursor, styles: InlineStyle[] = []) {
     if (char.length !== 1) throw new Error('Invalid character');
+    cursor.column -= 1; // adjust column to insert character at the correct position
     const operations = fugue.insertLocal(cursor, nodeInsert(char, styles));
     servicesConnector.emitOperations(operations);
   }
@@ -28,6 +29,7 @@ export default (fugue: Fugue, servicesConnector: ServiceConnector): InputConnect
   function deleteCharacter(cursor: Cursor) {
     // don't delete line if it's not a paragraph - this is to prevent deleting the block style & line simultaneously
     if (cursor.column === 0 && fugue.getBlockStyle(cursor.line) !== 'paragraph') return;
+    cursor.column -= 1; // adjust column to delete character at the correct position
     const operations = fugue.deleteLocalByCursor(cursor);
     if (operations) {
       servicesConnector.emitOperations(operations);

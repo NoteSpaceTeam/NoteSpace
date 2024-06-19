@@ -169,14 +169,15 @@ export class Fugue {
    * @param selection
    */
   reviveLocal(selection: Selection): ReviveOperation[] {
-    const nodes = Array.from(this.traverseBySelection(selection, true));
+    const _selection = { start: { ...selection.start }, end: { ...selection.end } };
+    const nodes = Array.from(this.traverseBySelection(_selection, true));
     return nodes.map(node => {
       if (node.value === '\n') {
-        selection.start.line++;
-        selection.start.column = 0;
-      } else selection.start.column++;
+        _selection.start.line++;
+        _selection.start.column = 0;
+      } else _selection.start.column++;
 
-      return this.reviveNode(node.id, selection.start);
+      return this.reviveNode(node.id, _selection.start);
     });
   }
 

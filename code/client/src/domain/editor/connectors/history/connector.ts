@@ -89,6 +89,12 @@ export default (fugue: Fugue, servicesConnector: ServiceConnector): HistoryConne
     if (!Text.isText(node)) return;
 
     if (!node.text) return;
+
+    if (node.text !== '\n') {
+      selection.start.column += 1;
+      selection.end.column += 1;
+    }
+
     const reviveOperations = fugue.reviveLocal(selection);
     const styleOperations = styles.map(style => {
       const styleType = getStyleType(style);
