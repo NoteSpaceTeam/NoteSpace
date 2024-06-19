@@ -30,13 +30,13 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     return (
       await sql`
           select row_to_json(t) as resources
-          from(
-                  select id, name, type, parent, children
-                  from resource
-                  where workspace = ${wid}
-                  group by id
-                  order by created_at desc
-              ) as t
+          from (
+            select id, name, type, parent, children
+            from resource
+            where workspace = ${wid}
+            group by id
+            order by created_at desc
+          ) as t
       `
     ).map(r => r.resources);
   }
@@ -57,5 +57,25 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
         returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
+  }
+
+  async addWorkspaceMember(wid: string, email: string): Promise<void> {
+    const results = await sql`
+      update workspace
+      set members = array_append(members, ${email}::char(16))
+      where id = ${wid} and not ${email} = any(members)
+      returning id
+    `;
+    if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member already in workspace`);
+  }
+
+  async removeWorkspaceMember(wid: string, email: string): Promise<void> {
+    const results = await sql`
+      update workspace
+      set members = array_remove(members, ${email}::char(16))
+      where id = ${wid}
+      returning id
+    `;
+    if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member does not exist`);
   }
 }

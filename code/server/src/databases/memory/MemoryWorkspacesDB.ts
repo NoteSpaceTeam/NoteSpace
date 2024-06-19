@@ -24,7 +24,7 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
       updatedAt: '',
     };
     const now = new Date().toISOString();
-    Memory.workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [''] };
+    Memory.workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [] };
     return id;
   }
 
@@ -58,5 +58,17 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     if (!workspace) throw new NotFoundError(`Workspace not found`);
 
     delete Memory.workspaces[id];
+  }
+
+  async addWorkspaceMember(wid: string, email: string): Promise<void> {
+    const workspace = Memory.workspaces[wid];
+    if (!workspace) throw new NotFoundError(`Workspace not found`);
+    Memory.workspaces[wid].members.push(email);
+  }
+
+  async removeWorkspaceMember(wid: string, email: string): Promise<void> {
+    const workspace = Memory.workspaces[wid];
+    if (!workspace) throw new NotFoundError(`Workspace not found`);
+    Memory.workspaces[wid].members = Memory.workspaces[wid].members.filter(member => member !== email);
   }
 }

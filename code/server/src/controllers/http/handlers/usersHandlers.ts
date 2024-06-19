@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { UserData } from '@notespace/shared/src/users/types';
+import { verifyToken } from '@controllers/http/middlewares/authMiddleware';
 
 function usersHandlers(service: UsersService) {
   const registerUser = async (req: Request, res: Response) => {
@@ -46,10 +47,10 @@ function usersHandlers(service: UsersService) {
   };
 
   const router = PromiseRouter({ mergeParams: true });
-  router.post('/', registerUser);
+  router.post('/', verifyToken, registerUser);
+  router.put('/:id', verifyToken, updateUser);
+  router.delete('/:id', verifyToken, deleteUser);
   router.get('/:id', getUser);
-  router.put('/:id', updateUser);
-  router.delete('/:id', deleteUser);
   router.get('/', getUsers);
 
   return router;

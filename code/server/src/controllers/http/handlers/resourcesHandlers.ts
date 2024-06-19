@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { Server } from 'socket.io';
+import { verifyToken } from '@controllers/http/middlewares/authMiddleware';
 
 function resourcesHandlers(service: ResourcesService, io: Server) {
   /**
@@ -15,7 +16,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
   const createResource = async (req: Request, res: Response) => {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-
     const resource = req.body as ResourceInputModel;
     if (!resource) throw new InvalidParameterError('Body is required');
     const { type, name, parent } = resource;
@@ -23,7 +23,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
 
     const id = await service.createResource(wid, name, type, parent);
     const now = new Date().toISOString();
-
     const createdResource: Resource = {
       id,
       workspace: wid,
@@ -61,7 +60,6 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
     const { wid, id } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     if (!id) throw new InvalidParameterError('Resource id is required');
-
     const resource = req.body as Partial<Resource>;
     if (!resource) throw new InvalidParameterError('Body is required');
 
@@ -86,10 +84,10 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
   };
 
   const router = PromiseRouter({ mergeParams: true });
-  router.post('/', createResource);
+  router.post('/', verifyToken, createResource);
+  router.put('/:id', verifyToken, updateResource);
+  router.delete('/:id', verifyToken, deleteResource);
   router.get('/:id', getResource);
-  router.put('/:id', updateResource);
-  router.delete('/:id', deleteResource);
 
   return router;
 }
