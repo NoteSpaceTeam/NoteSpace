@@ -5,7 +5,7 @@ import { firestore } from 'firebase-admin';
 import FieldValue = firestore.FieldValue;
 import { DocumentsRepository } from '@databases/types';
 import CollectionReference = firestore.CollectionReference;
-import db from '@databases/firestore/config';
+import db from '@src/firebaseConfig';
 import DocumentSnapshot = firestore.DocumentSnapshot;
 
 export class FirestoreDocumentsDB implements DocumentsRepository {

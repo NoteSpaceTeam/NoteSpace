@@ -15,4 +15,15 @@
     display: flex;
     align-items: center;
   }
+
+  .account {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    gap: 2vh;
+
+    button {
+      padding: 1vh;
+    }
+  }
 }

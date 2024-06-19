@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import { Services } from '@services/Services';
 import cors from 'cors';
@@ -36,7 +37,8 @@ function bootServer(args: string[]): void {
   const api = router(services, io);
 
   // setup middlewares
-  app.use(cors({ origin: config.ORIGIN }));
+  app.use(cors(config.SERVER_OPTIONS.cors));
+  app.use(cookieParser());
   app.use(express.json());
 
   // setup routes

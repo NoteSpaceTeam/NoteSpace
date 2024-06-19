@@ -7,21 +7,18 @@ import { UserData } from '@notespace/shared/src/users/types';
 function usersHandlers(service: UsersService) {
   const registerUser = async (req: Request, res: Response) => {
     const { id, ...data } = req.body;
-    const oauth = req.query.oauth === 'true';
-    if (oauth) {
-      try {
-        const user = await service.getUser(id);
-        if (user) {
-          // user already registered
-          httpResponse.noContent(res).send();
-          return;
-        }
-      } catch (e) {
-        // user not found, continue
+    try {
+      const user = await service.getUser(id);
+      if (user) {
+        // user already registered
+        httpResponse.noContent(res).send();
+        return;
       }
+    } catch (e) {
+      // user not found, continue
+      await service.createUser(id, data);
+      httpResponse.created(res).send();
     }
-    await service.createUser(id, data);
-    httpResponse.created(res).send();
   };
 
   const getUser = async (req: Request, res: Response) => {

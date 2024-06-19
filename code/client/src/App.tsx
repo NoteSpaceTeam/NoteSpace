@@ -10,8 +10,7 @@ import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
 import Workspaces from '@ui/pages/workspaces/Workspaces';
 import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
 import Home from '@ui/pages/home/Home';
-import Login from '@ui/pages/auth/login/Login';
-import Signup from '@ui/pages/auth/signup/Signup';
+import Login from '@ui/pages/login/Login';
 import AuthProvider from '@ui/contexts/auth/AuthContext';
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
                     }
                   />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
                   <Route
                     path="/workspaces/*"
                     element={

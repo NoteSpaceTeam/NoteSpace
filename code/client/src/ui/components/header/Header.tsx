@@ -9,10 +9,10 @@ function Header() {
       <p></p>
       <div>
         {currentUser ? (
-          <>
-            <p>{currentUser?.email}</p>
+          <div className="account">
+            <p>{currentUser?.displayName}</p>
             <button onClick={logout}>Logout</button>
-          </>
+          </div>
         ) : (
           <Link to="/login">Login</Link>
         )}

@@ -3,7 +3,7 @@ import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { ErrorLogger } from '@src/utils/logging';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+export default function errorMiddleware(error: Error, req: Request, res: Response, next: NextFunction) {
   let response: Response;
   switch (error.name) {
     case 'NotFoundError':

@@ -6,10 +6,6 @@ function authService(http: HttpCommunication) {
     await http.post('/users', { id, ...data });
   }
 
-  async function registerUserOAuth(id: string, data: UserData) {
-    await http.post('/users?oauth=true', { id, ...data });
-  }
-
   async function getUser(id: string) {
     return await http.get(`/users/${id}`);
   }
@@ -24,7 +20,6 @@ function authService(http: HttpCommunication) {
 
   return {
     registerUser,
-    registerUserOAuth,
     getUser,
     updateUser,
     deleteUser,

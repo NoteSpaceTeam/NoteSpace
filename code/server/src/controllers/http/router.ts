@@ -2,18 +2,21 @@ import express from 'express';
 import PromiseRouter from 'express-promise-router';
 import { Services } from '@services/Services';
 import workspacesHandlers from '@controllers/http/handlers/workspacesHandlers';
-import errorHandler from '@controllers/http/handlers/errorHandler';
+import errorMiddleware from '@controllers/http/middlewares/errorMiddleware';
 import usersHandlers from '@controllers/http/handlers/usersHandlers';
 import { Server } from 'socket.io';
+import { verifyToken } from '@controllers/http/middlewares/authMiddleware';
 
 export default function (services: Services, io: Server) {
   if (!services) throw new Error('Services parameter is required');
+
   // automatically routes unhandled errors to error handling middleware
   const router = PromiseRouter();
   router.use(express.urlencoded({ extended: true }));
 
-  router.use('/workspaces', workspacesHandlers(services, io));
   router.use('/users', usersHandlers(services.users));
-  router.use(errorHandler);
+  router.use('/workspaces', workspacesHandlers(services, io));
+  router.get('/protected', verifyToken, (req, res) => res.send({ message: 'Protected route' }));
+  router.use(errorMiddleware);
   return router;
 }

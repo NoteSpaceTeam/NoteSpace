@@ -1,0 +1,44 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8vh;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4vh;
+
+    button {
+      background-color: white;
+      color: black;
+      padding: 1.5vh;
+      font-size: larger;
+      border-radius: 50px;
+      border: 1px solid gray;
+      margin: 0;
+      transition: 0.2s background-color;
+
+      img,
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    button:hover {
+      background-color: black;
+      color: white;
+    }
+  }
+
+  p {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
