@@ -1,9 +1,10 @@
 import Dialog from '@ui/components/dialog/Dialog';
-import { FaCross, FaUsers } from 'react-icons/fa6';
-import { UserData } from '@notespace/shared/src/users/types';
+import { FaUsers } from 'react-icons/fa6';
+import { RxCross1 } from 'react-icons/rx';
+import './ManageMembersDialog.scss';
 
 type ManageMembersDialog = {
-  members: UserData[];
+  members: string[];
   onAddMember: (email: string) => void;
   onRemoveMember: (email: string) => void;
 };
@@ -11,32 +12,35 @@ type ManageMembersDialog = {
 function ManageMembersDialog({ members, onAddMember, onRemoveMember }: ManageMembersDialog) {
   return (
     <Dialog
-      title="Manage members in workspace"
+      title="Manage Members"
       fields={[{ name: 'Add new member', label: 'User email' }]}
       onSubmit={values => {
         onAddMember(values['Add new member']);
       }}
       submitText="Add Member"
       extraContent={
-        <div>
-          <h3>Members</h3>
+        <div className="manage-members-dialog">
+          <h4>Current Members</h4>
           <ul>
             {members?.map(member => (
-              <li key={member.email}>
-                <p>{member.email}</p>
-                <button onClick={() => onRemoveMember(member.email)}>
-                  <FaCross />
-                </button>
+              <li key={member}>
+                <p>{member}</p>
+                {members.length > 1 && (
+                  <button onClick={() => onRemoveMember(member)}>
+                    <RxCross1 />
+                  </button>
+                )}
               </li>
             ))}
           </ul>
+          <small>Add workspace member</small>
         </div>
       }
     >
-      <div>
+      <>
         <FaUsers />
         Members
-      </div>
+      </>
     </Dialog>
   );
 }

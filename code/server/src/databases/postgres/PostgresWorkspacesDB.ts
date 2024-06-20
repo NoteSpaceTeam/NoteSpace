@@ -1,4 +1,4 @@
-import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
+import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { NotFoundError } from '@domain/errors/errors';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
@@ -16,12 +16,24 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     return results[0].id;
   }
 
-  async getWorkspaces(): Promise<WorkspaceMeta[]> {
-    return sql`select * from workspace`;
+  async getWorkspaces(userId: string): Promise<WorkspaceMeta[]> {
+    return (
+      await sql`
+          select row_to_json(t) as workspace
+          from (
+            select id, name, private, count(members) as members
+            from workspace
+            where private = false or ${userId} = any(members)
+            group by id
+            order by created_at desc
+          ) as t
+      `
+    ).map(r => r.workspace);
   }
 
-  async getWorkspace(id: string): Promise<WorkspaceMeta> {
-    const results: WorkspaceMeta[] = await sql`select *from workspace where id = ${id}`;
+  async getWorkspace(id: string): Promise<Workspace> {
+    // TODO: convert member user ids to emails
+    const results: Workspace[] = await sql`select * from workspace where id = ${id}`;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
     return results[0];
   }
@@ -59,20 +71,20 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
-  async addWorkspaceMember(wid: string, email: string): Promise<void> {
+  async addWorkspaceMember(wid: string, userId: string): Promise<void> {
     const results = await sql`
       update workspace
-      set members = array_append(members, ${email}::char(16))
-      where id = ${wid} and not ${email} = any(members)
+      set members = array_append(members, ${userId}::char(16))
+      where id = ${wid} and not ${userId} = any(members)
       returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member already in workspace`);
   }
 
-  async removeWorkspaceMember(wid: string, email: string): Promise<void> {
+  async removeWorkspaceMember(wid: string, userId: string): Promise<void> {
     const results = await sql`
       update workspace
-      set members = array_remove(members, ${email}::char(16))
+      set members = array_remove(members, ${userId}::char(16))
       where id = ${wid}
       returning id
     `;

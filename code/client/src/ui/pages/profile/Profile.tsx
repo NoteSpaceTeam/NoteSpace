@@ -10,7 +10,7 @@ function Profile() {
   const { id } = useParams();
   const { getUser, deleteUser } = useAuthService();
   const [user, setUser] = useState<User | null>(null);
-  const { currentUser } = useAuth();
+  const { currentUser, deleteAccount } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function Profile() {
 
   async function onDeleteAccount() {
     if (!currentUser || currentUser.uid !== user?.id) return;
-    await currentUser.delete();
+    await deleteAccount();
     await deleteUser(user.id);
     navigate('/');
   }

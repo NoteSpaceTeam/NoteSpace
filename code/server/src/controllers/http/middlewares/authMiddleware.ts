@@ -12,10 +12,10 @@ declare global {
   }
 }
 
-export async function verifyToken(req: Request, res: Response, next: NextFunction) {
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const { token } = req.cookies;
   if (!token) {
-    return httpResponse.unauthorized(res).send();
+    return next();
   }
   try {
     const idToken = await admin.auth().verifyIdToken(token);
@@ -24,6 +24,13 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
     next();
   } catch (error) {
     console.error('Error verifying token:', error);
-    return httpResponse.internalServerError(res).send();
+    return httpResponse.unauthorized(res).send({ error: 'Invalid session token, please login again' });
   }
+}
+
+export async function enforceAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return httpResponse.unauthorized(res).send({ error: 'Unauthorized' });
+  }
+  next();
 }

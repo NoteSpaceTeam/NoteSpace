@@ -28,10 +28,13 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     return id;
   }
 
-  async getWorkspaces(): Promise<WorkspaceMeta[]> {
-    return Object.values(Memory.workspaces).map(props => {
-      return omit(props, ['resources']);
-    });
+  async getWorkspaces(userId: string): Promise<WorkspaceMeta[]> {
+    return Object.values(Memory.workspaces)
+      .filter(workspace => !workspace.isPrivate || workspace.members.includes(userId))
+      .map(props => {
+        const workspace = omit(props, ['resources']);
+        return { ...workspace, members: workspace.members?.length || 0 };
+      });
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
@@ -39,11 +42,13 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     if (!workspace) throw new NotFoundError(`Workspace not found`);
 
     const resources = Object.values(workspace.resources);
-    return { ...workspace, resources };
+    const members = await this.getWorkspaceMembers(workspace.id);
+    return { ...workspace, resources, members };
   }
 
   async getResources(wid: string): Promise<Resource[]> {
-    return (await this.getWorkspace(wid)).resources;
+    const workspace = await this.getWorkspace(wid);
+    return workspace.resources;
   }
 
   async updateWorkspace(id: string, name: string): Promise<void> {
@@ -60,15 +65,20 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     delete Memory.workspaces[id];
   }
 
-  async addWorkspaceMember(wid: string, email: string): Promise<void> {
+  async addWorkspaceMember(wid: string, userId: string): Promise<void> {
     const workspace = Memory.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-    Memory.workspaces[wid].members.push(email);
+    Memory.workspaces[wid].members.push(userId);
   }
 
-  async removeWorkspaceMember(wid: string, email: string): Promise<void> {
+  async removeWorkspaceMember(wid: string, userId: string): Promise<void> {
     const workspace = Memory.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-    Memory.workspaces[wid].members = Memory.workspaces[wid].members.filter(member => member !== email);
+    Memory.workspaces[wid].members = Memory.workspaces[wid].members.filter(member => member !== userId);
+  }
+
+  async getWorkspaceMembers(wid: string): Promise<string[]> {
+    const workspace = Memory.workspaces[wid];
+    return workspace.members?.map(userId => Memory.users[userId].email) || [];
   }
 }

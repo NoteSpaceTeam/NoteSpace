@@ -5,7 +5,6 @@ import WorkspaceContextMenu from '@ui/pages/workspaces/components/WorkspaceConte
 import { Checkbox } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { formatDate } from '@/utils/utils';
-import { UserData } from '@notespace/shared/src/users/types';
 
 type WorkspacePreviewProps = {
   workspace: WorkspaceMeta;
@@ -13,7 +12,7 @@ type WorkspacePreviewProps = {
   onSelect: (value: boolean) => void;
   onDelete: () => void;
   onRename: (title: string) => void;
-  onGetMembers: () => Promise<UserData[]>;
+  onGetMembers: () => Promise<string[]>;
   onAddMember: (email: string) => Promise<void>;
   onRemoveMember: (email: string) => Promise<void>;
 };
@@ -44,7 +43,7 @@ function WorkspaceView({
     <div className="table-row">
       <Checkbox checked={isSelected} onChange={onCheckboxSelected} onClick={e => e.stopPropagation()} />
       {component}
-      <p>{workspace.members.length}</p>
+      <p>{workspace.members}</p>
       <p>{formatDate(workspace.createdAt)}</p>
       <p>{workspace.isPrivate ? 'Private' : 'Public'}</p>
     </div>

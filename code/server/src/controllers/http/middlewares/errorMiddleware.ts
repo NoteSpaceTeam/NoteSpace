@@ -6,14 +6,20 @@ import { ErrorLogger } from '@src/utils/logging';
 export default function errorMiddleware(error: Error, req: Request, res: Response, next: NextFunction) {
   let response: Response;
   switch (error.name) {
-    case 'NotFoundError':
-      response = httpResponse.notFound(res);
-      break;
     case 'InvalidParameterError':
       response = httpResponse.badRequest(res);
       break;
+    case 'UnauthorizedError':
+      response = httpResponse.unauthorized(res);
+      break;
     case 'ForbiddenError':
       response = httpResponse.forbidden(res);
+      break;
+    case 'NotFoundError':
+      response = httpResponse.notFound(res);
+      break;
+    case 'ConflictError':
+      response = httpResponse.conflict(res);
       break;
     default:
       response = httpResponse.internalServerError(res);

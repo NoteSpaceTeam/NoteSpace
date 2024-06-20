@@ -31,4 +31,10 @@ export class MemoryUsersDB implements UsersRepository {
   async getUsers(): Promise<User[]> {
     return Object.values(Memory.users);
   }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = Object.values(Memory.users).find(user => user.email === email);
+    if (!user) throw new NotFoundError(`User not found`);
+    return user;
+  }
 }

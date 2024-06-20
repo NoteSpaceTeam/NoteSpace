@@ -37,4 +37,10 @@ export class PostgresUsersDB implements UsersRepository {
   async getUsers(): Promise<User[]> {
     return await sql`select * from "user"`;
   }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const results: User[] = await sql`select * from "user" where email = ${email}`;
+    if (isEmpty(results)) throw new NotFoundError('User not found');
+    return results[0];
+  }
 }

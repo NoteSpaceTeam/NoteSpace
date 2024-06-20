@@ -43,7 +43,8 @@ function useWorkspaces() {
   }
 
   async function getWorkspaceMembers(id: string) {
-    return await service.getWorkspaceMembers(id);
+    const workspace = await service.getWorkspace(id);
+    return workspace.members;
   }
 
   async function addWorkspaceMember(id: string, email: string) {

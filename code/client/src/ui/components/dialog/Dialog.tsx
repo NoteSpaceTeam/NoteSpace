@@ -56,6 +56,7 @@ function Dialog({ title, fields, onSubmit, submitText, extraContent, children }:
       <MaterialDialog open={open} onClose={handleClose}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
+          {extraContent}
           {fields.map(field =>
             field.type === 'checkbox' ? (
               <FormControlLabel
@@ -83,7 +84,6 @@ function Dialog({ title, fields, onSubmit, submitText, extraContent, children }:
               />
             )
           )}
-          {extraContent}
         </DialogContent>
         <DialogActions>
           <button onClick={handleClose}>Cancel</button>

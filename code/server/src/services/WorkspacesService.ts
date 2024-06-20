@@ -1,47 +1,66 @@
-import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { DocumentsRepository, WorkspacesRepository } from '@databases/types';
+import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
+import { Databases } from '@databases/types';
+import { ConflictError } from '@domain/errors/errors';
+import { validateEmail, validateId, validateName } from '@services/utils';
 
 export class WorkspacesService {
-  private readonly workspaces: WorkspacesRepository;
-  private readonly documents: DocumentsRepository;
+  private readonly databases: Databases;
 
-  constructor(workspaces: WorkspacesRepository, documents: DocumentsRepository) {
-    this.workspaces = workspaces;
-    this.documents = documents;
+  constructor(databases: Databases) {
+    this.databases = databases;
   }
 
   async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
-    const id = await this.workspaces.createWorkspace(name, isPrivate);
-    await this.documents.addWorkspace(id);
+    validateName(name);
+    const id = await this.databases.workspaces.createWorkspace(name, isPrivate);
+    await this.databases.documents.addWorkspace(id);
     return id;
   }
 
   async updateWorkspace(id: string, name: string) {
-    await this.workspaces.updateWorkspace(id, name);
+    validateId(id);
+    validateName(name);
+    await this.databases.workspaces.updateWorkspace(id, name);
   }
 
   async deleteWorkspace(id: string) {
-    await this.workspaces.deleteWorkspace(id);
-    await this.documents.removeWorkspace(id);
+    validateId(id);
+    await this.databases.workspaces.deleteWorkspace(id);
+    await this.databases.documents.removeWorkspace(id);
   }
 
-  async getWorkspaces(): Promise<WorkspaceMeta[]> {
-    return await this.workspaces.getWorkspaces();
+  async getWorkspaces(userId?: string): Promise<WorkspaceMeta[]> {
+    return await this.databases.workspaces.getWorkspaces(userId || '');
   }
 
-  async getWorkspace(id: string): Promise<WorkspaceMeta> {
-    return await this.workspaces.getWorkspace(id);
+  async getWorkspace(id: string): Promise<Workspace> {
+    validateId(id);
+    return await this.databases.workspaces.getWorkspace(id);
   }
 
   async getResources(wid: string) {
-    return await this.workspaces.getResources(wid);
+    validateId(wid);
+    return await this.databases.workspaces.getResources(wid);
   }
 
   async addWorkspaceMember(wid: string, email: string) {
-    await this.workspaces.addWorkspaceMember(wid, email);
+    console.log('addWorkspaceMember', email);
+    const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
+    if (userInWorkspace) throw new ConflictError('User already in workspace');
+    await this.databases.workspaces.addWorkspaceMember(wid, userId);
   }
 
   async removeWorkspaceMember(wid: string, email: string) {
-    await this.workspaces.removeWorkspaceMember(wid, email);
+    const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
+    if (!userInWorkspace) throw new ConflictError('User not in workspace');
+    await this.databases.workspaces.removeWorkspaceMember(wid, userId);
+  }
+
+  async userInWorkspace(wid: string, email: string) {
+    validateId(wid);
+    validateEmail(email);
+    const user = await this.databases.users.getUserByEmail(email); // check if user with email exists
+    const workspace = await this.databases.workspaces.getWorkspace(wid); // check if workspace exists
+    return { userId: user.id, userInWorkspace: workspace.members.includes(email) }; // check if user in workspace
   }
 }

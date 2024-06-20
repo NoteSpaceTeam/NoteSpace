@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { Server } from 'socket.io';
-import { verifyToken } from '@controllers/http/middlewares/authMiddleware';
+import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
 
 function resourcesHandlers(service: ResourcesService, io: Server) {
   /**
@@ -84,9 +84,9 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
   };
 
   const router = PromiseRouter({ mergeParams: true });
-  router.post('/', verifyToken, createResource);
-  router.put('/:id', verifyToken, updateResource);
-  router.delete('/:id', verifyToken, deleteResource);
+  router.post('/', enforceAuth, createResource);
+  router.put('/:id', enforceAuth, updateResource);
+  router.delete('/:id', enforceAuth, deleteResource);
   router.get('/:id', getResource);
 
   return router;

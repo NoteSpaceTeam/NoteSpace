@@ -6,7 +6,7 @@ import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/worksp
 import { Services } from '@services/Services';
 import { Server } from 'socket.io';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
-import { verifyToken } from '@controllers/http/middlewares/authMiddleware';
+import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
 
 function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
@@ -14,14 +14,13 @@ function workspacesHandlers(services: Services, io: Server) {
     if (!name) throw new InvalidParameterError('Workspace name is required');
     if (isPrivate === undefined) throw new InvalidParameterError('Workspace visibility is required');
 
-    const member = req.user!.email;
     const id = await services.workspaces.createWorkspace(name, isPrivate);
-    await services.workspaces.addWorkspaceMember(id, member);
+    await services.workspaces.addWorkspaceMember(id, req.user!.email);
     const workspace: WorkspaceMeta = {
       id,
       name,
       createdAt: new Date().toISOString(),
-      members: [member],
+      members: 1,
       isPrivate,
     };
     io.emit('createdWorkspace', workspace);
@@ -29,7 +28,7 @@ function workspacesHandlers(services: Services, io: Server) {
   };
 
   const getWorkspaces = async (req: Request, res: Response) => {
-    const workspaces = await services.workspaces.getWorkspaces();
+    const workspaces = await services.workspaces.getWorkspaces(req.user?.id || '');
     httpResponse.ok(res).json(workspaces);
   };
 
@@ -98,13 +97,13 @@ function workspacesHandlers(services: Services, io: Server) {
   }
 
   const router = PromiseRouter();
-  router.post('/', verifyToken, createWorkspace);
+  router.post('/', enforceAuth, createWorkspace);
   router.get('/', getWorkspaces);
   router.get('/:wid', canAccessWorkspace, getWorkspace);
-  router.put('/:wid', verifyToken, canAccessWorkspace, updateWorkspace);
-  router.delete('/:wid', verifyToken, canAccessWorkspace, deleteWorkspace);
-  router.post('/:wid/members', verifyToken, canAccessWorkspace, addMemberToWorkspace);
-  router.delete('/:wid/members', verifyToken, canAccessWorkspace, removeMemberFromWorkspace);
+  router.put('/:wid', enforceAuth, canAccessWorkspace, updateWorkspace);
+  router.delete('/:wid', enforceAuth, canAccessWorkspace, deleteWorkspace);
+  router.post('/:wid/members', enforceAuth, canAccessWorkspace, addMemberToWorkspace);
+  router.delete('/:wid/members', enforceAuth, canAccessWorkspace, removeMemberFromWorkspace);
 
   // sub-routes for resources (documents and folders)
   router.use('/:wid', canAccessWorkspace, resourcesHandlers(services.resources, io));

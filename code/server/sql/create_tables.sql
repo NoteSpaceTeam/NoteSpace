@@ -9,7 +9,7 @@ begin;
         name text not null,
         private boolean not null default false,
         created_at timestamp not null default now(),
-        members char(16)[] not null default '{}'::char(16)[] references "user"(id)
+        members char(16)[] not null default '{}'::char(16)[] -- references "user"(id)
     );
 
     create table if not exists resource (
@@ -20,7 +20,7 @@ begin;
         created_at timestamp not null default now(),
         updated_at timestamp not null default now(),
         parent char(16) default null references resource(id) on delete cascade,
-        children char(16)[] not null default '{}'::char(16)[] references resource(id)
+        children char(16)[] not null default '{}'::char(16)[] -- references resource(id)
     );
 
     create table if not exists "user" (

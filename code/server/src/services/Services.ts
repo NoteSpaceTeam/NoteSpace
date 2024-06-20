@@ -11,9 +11,9 @@ export class Services {
   readonly users: UsersService;
 
   constructor(databases: Databases) {
-    this.resources = new ResourcesService(databases.resources, databases.documents);
-    this.workspaces = new WorkspacesService(databases.workspaces, databases.documents);
-    this.documents = new DocumentsService(databases.documents, databases.resources);
-    this.users = new UsersService(databases.users);
+    this.resources = new ResourcesService(databases);
+    this.workspaces = new WorkspacesService(databases);
+    this.documents = new DocumentsService(databases);
+    this.users = new UsersService(databases);
   }
 }

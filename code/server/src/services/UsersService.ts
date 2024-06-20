@@ -1,30 +1,30 @@
-import { UsersRepository } from '@databases/types';
+import { Databases } from '@databases/types';
 import { User, UserData } from '@notespace/shared/src/users/types';
 
 export class UsersService {
-  private readonly users: UsersRepository;
+  private readonly databases: Databases;
 
-  constructor(users: UsersRepository) {
-    this.users = users;
+  constructor(databases: Databases) {
+    this.databases = databases;
   }
 
   async createUser(id: string, data: UserData): Promise<void> {
-    await this.users.createUser(id, data);
+    await this.databases.users.createUser(id, data);
   }
 
   async getUser(id: string): Promise<User> {
-    return await this.users.getUser(id);
+    return await this.databases.users.getUser(id);
   }
 
   async updateUser(id: string, newProps: Partial<UserData>): Promise<void> {
-    await this.users.updateUser(id, newProps);
+    await this.databases.users.updateUser(id, newProps);
   }
 
   async deleteUser(id: string): Promise<void> {
-    await this.users.deleteUser(id);
+    await this.databases.users.deleteUser(id);
   }
 
   async getUsers(): Promise<User[]> {
-    return await this.users.getUsers();
+    return await this.databases.users.getUsers();
   }
 }

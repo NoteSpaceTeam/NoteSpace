@@ -1,7 +1,7 @@
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
-import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
+import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
 
 export interface DocumentsRepository {
@@ -77,14 +77,14 @@ export interface WorkspacesRepository {
    */
   createWorkspace: (name: string, isPrivate: boolean) => Promise<string>;
   /**
-   * Get all workspaces from the database
+   * Get all workspaces from the database that the user can access
    */
-  getWorkspaces: () => Promise<WorkspaceMeta[]>;
+  getWorkspaces: (userId: string) => Promise<WorkspaceMeta[]>;
   /**
    * Get a workspace from the database
    * @param id
    */
-  getWorkspace: (id: string) => Promise<WorkspaceMeta>;
+  getWorkspace: (id: string) => Promise<Workspace>;
   /**
    * Get all resources in a workspace
    * @param wid
@@ -106,13 +106,13 @@ export interface WorkspacesRepository {
    * @param wid
    * @param email
    */
-  addWorkspaceMember: (wid: string, email: string) => Promise<void>;
+  addWorkspaceMember: (wid: string, userId: string) => Promise<void>;
   /**
    * Remove a member from a workspace
    * @param wid
-   * @param email
+   * @param userId
    */
-  removeWorkspaceMember: (wid: string, email: string) => Promise<void>;
+  removeWorkspaceMember: (wid: string, userId: string) => Promise<void>;
 }
 
 export interface UsersRepository {
@@ -142,6 +142,11 @@ export interface UsersRepository {
    * Get all users from the database
    */
   getUsers: () => Promise<User[]>;
+  /**
+   * Check if a user with an email exists
+   * @param email
+   */
+  getUserByEmail: (email: string) => Promise<User>;
 }
 
 export interface Databases {

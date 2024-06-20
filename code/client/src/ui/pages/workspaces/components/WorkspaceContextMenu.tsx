@@ -2,13 +2,12 @@ import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode, useEffect, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import ManageMembersDialog from '@ui/pages/workspace/components/ManageMembersDialog';
-import { UserData } from '@notespace/shared/src/users/types';
 
 type WorkspaceContextMenuProps = {
   children: ReactNode;
   onRename: () => void;
   onDelete: () => void;
-  onGetMembers: () => Promise<UserData[]>;
+  onGetMembers: () => Promise<string[]>;
   onAddMember: (email: string) => Promise<void>;
   onRemoveMember: (email: string) => Promise<void>;
 };
@@ -21,11 +20,11 @@ function WorkspaceContextMenu({
   onAddMember,
   onRemoveMember,
 }: WorkspaceContextMenuProps) {
-  const [members, setMembers] = useState<UserData[]>([]);
+  const [members, setMembers] = useState<string[]>([]);
 
   useEffect(() => {
     onGetMembers().then(setMembers);
-  }, [onGetMembers]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PopupMenu item={children}>

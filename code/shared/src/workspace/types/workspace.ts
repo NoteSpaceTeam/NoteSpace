@@ -4,12 +4,13 @@ export type WorkspaceMeta = {
   name: string;
   id: string;
   createdAt: string;
-  members: string[];
+  members: number;
   isPrivate: boolean;
 };
 
-export type Workspace = WorkspaceMeta & {
+export type Workspace = Omit<WorkspaceMeta, "members"> & {
   resources: Resource[];
+  members: string[];
 };
 
 export interface WorkspaceInputModel {
