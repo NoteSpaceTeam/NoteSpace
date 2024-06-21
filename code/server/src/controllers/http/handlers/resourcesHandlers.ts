@@ -1,13 +1,17 @@
 import PromiseRouter from 'express-promise-router';
 import { ResourceInputModel, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { Server } from 'socket.io';
-import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
+import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 
-function resourcesHandlers(service: ResourcesService, io: Server) {
+function resourcesHandlers(
+  service: ResourcesService,
+  io: Server,
+  workspaceWritePermissions: (req: Request, res: Response, next: NextFunction) => void
+) {
   /**
    * Create a new resource in a workspace
    * @param req
@@ -84,10 +88,10 @@ function resourcesHandlers(service: ResourcesService, io: Server) {
   };
 
   const router = PromiseRouter({ mergeParams: true });
-  router.post('/', enforceAuth, createResource);
-  router.put('/:id', enforceAuth, updateResource);
-  router.delete('/:id', enforceAuth, deleteResource);
   router.get('/:id', getResource);
+  router.post('/', enforceAuth, workspaceWritePermissions, createResource);
+  router.put('/:id', enforceAuth, workspaceWritePermissions, updateResource);
+  router.delete('/:id', enforceAuth, workspaceWritePermissions, deleteResource);
 
   return router;
 }

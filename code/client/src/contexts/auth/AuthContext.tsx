@@ -36,9 +36,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       auth.setPersistence(inMemoryPersistence); // for httpOnly cookies, do not persist any state client side
       const { user } = await signInWithPopup(auth, provider);
-      const userInfo = { name: user.displayName!, email: user.email! };
       const idToken = await user.getIdToken();
-      await sessionLogin(idToken, user.uid, userInfo);
+      await sessionLogin(idToken);
     } catch (e) {
       publishError(e as Error);
     }

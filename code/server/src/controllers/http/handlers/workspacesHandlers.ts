@@ -6,7 +6,7 @@ import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/worksp
 import { Services } from '@services/Services';
 import { Server } from 'socket.io';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
-import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
+import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 
 function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
@@ -84,14 +84,29 @@ function workspacesHandlers(services: Services, io: Server) {
     httpResponse.noContent(res).send();
   };
 
-  async function canAccessWorkspace(req: Request, res: Response, next: NextFunction) {
-    // is a workspace member or workspace is public
+  async function getWorkspacePermissions(id: string, userEmail: string) {
+    const workspace = await services.workspaces.getWorkspace(id);
+    if (!workspace) throw new InvalidParameterError('Workspace not found');
+    const isMember = workspace.members.includes(userEmail);
+    return { isMember, isPrivate: workspace.isPrivate };
+  }
+
+  async function workspaceReadPermission(req: Request, res: Response, next: NextFunction) {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-    const workspace = await services.workspaces.getWorkspace(wid);
-    if (!workspace) throw new InvalidParameterError('Workspace not found');
-    if (workspace.isPrivate && !workspace.members.find(m => m === req.user?.email)) {
-      throw new ForbiddenError('User is not a member of this workspace');
+    const { isMember, isPrivate } = await getWorkspacePermissions(wid, req.user!.email);
+    if (isPrivate && !isMember) {
+      throw new ForbiddenError('You are not a member of this workspace');
+    }
+    next();
+  }
+
+  async function workspaceWritePermission(req: Request, res: Response, next: NextFunction) {
+    const { wid } = req.params;
+    if (!wid) throw new InvalidParameterError('Workspace id is required');
+    const { isMember } = await getWorkspacePermissions(wid, req.user!.email);
+    if (!isMember) {
+      throw new ForbiddenError('You are not a member of this workspace');
     }
     next();
   }
@@ -99,14 +114,14 @@ function workspacesHandlers(services: Services, io: Server) {
   const router = PromiseRouter();
   router.post('/', enforceAuth, createWorkspace);
   router.get('/', getWorkspaces);
-  router.get('/:wid', canAccessWorkspace, getWorkspace);
-  router.put('/:wid', enforceAuth, canAccessWorkspace, updateWorkspace);
-  router.delete('/:wid', enforceAuth, canAccessWorkspace, deleteWorkspace);
-  router.post('/:wid/members', enforceAuth, canAccessWorkspace, addMemberToWorkspace);
-  router.delete('/:wid/members', enforceAuth, canAccessWorkspace, removeMemberFromWorkspace);
+  router.get('/:wid', workspaceReadPermission, getWorkspace);
+  router.put('/:wid', enforceAuth, workspaceWritePermission, updateWorkspace);
+  router.delete('/:wid', enforceAuth, workspaceWritePermission, deleteWorkspace);
+  router.post('/:wid/members', enforceAuth, workspaceWritePermission, addMemberToWorkspace);
+  router.delete('/:wid/members', enforceAuth, workspaceWritePermission, removeMemberFromWorkspace);
 
   // sub-routes for resources (documents and folders)
-  router.use('/:wid', canAccessWorkspace, resourcesHandlers(services.resources, io));
+  router.use('/:wid', workspaceReadPermission, resourcesHandlers(services.resources, io, workspaceWritePermission));
   return router;
 }
 

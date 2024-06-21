@@ -3,14 +3,13 @@ import { CookieOptions, Request, Response } from 'express';
 import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { UserData } from '@notespace/shared/src/users/types';
-import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
+import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 import admin from 'firebase-admin';
 import { UnauthorizedError } from '@domain/errors/errors';
 
 function usersHandlers(service: UsersService) {
   const sessionLogin = async (req: Request, res: Response) => {
-    const { id, idToken, ...data } = req.body;
-
+    const { idToken } = req.body;
     // session login - create session cookie, verifying ID token in the process
     try {
       const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
@@ -22,8 +21,9 @@ function usersHandlers(service: UsersService) {
     }
 
     // register user in database if not already registered
+    const { uid } = await admin.auth().verifyIdToken(idToken);
     try {
-      const user = await service.getUser(id);
+      const user = await service.getUser(uid);
       if (user) {
         // user already registered
         httpResponse.noContent(res).send();
@@ -31,7 +31,9 @@ function usersHandlers(service: UsersService) {
       }
     } catch (e) {
       // user not found, continue
-      await service.createUser(id, data);
+      const user = await admin.auth().getUser(uid);
+      const userData = { name: user.displayName!, email: user.email! };
+      await service.createUser(uid, userData);
       httpResponse.created(res).send();
     }
   };

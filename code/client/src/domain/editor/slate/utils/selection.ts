@@ -43,10 +43,8 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  */
 export function pointToCursor(editor: Editor, point: Point, absolutePosition: boolean = false): Cursor {
   const line = point.path[0];
-  const cursor: Cursor = { line, column: point.offset + (absolutePosition ? 0 : 1) };
-
+  const cursor: Cursor = { line, column: point.offset }; // + (absolutePosition ? 0 : 1)
   if (point.path[1] === 0) return cursor;
-
   const children = Array.from(Node.children(editor, [line]));
 
   for (const entry of children) {
@@ -61,7 +59,6 @@ export function pointToCursor(editor: Editor, point: Point, absolutePosition: bo
       cursor.column += text.text.length;
     }
   }
-
   return cursor;
 }
 

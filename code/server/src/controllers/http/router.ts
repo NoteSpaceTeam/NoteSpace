@@ -5,7 +5,7 @@ import workspacesHandlers from '@controllers/http/handlers/workspacesHandlers';
 import errorMiddleware from '@controllers/http/middlewares/errorMiddleware';
 import usersHandlers from '@controllers/http/handlers/usersHandlers';
 import { Server } from 'socket.io';
-import { authMiddleware } from '@controllers/http/middlewares/authMiddleware';
+import { authMiddleware } from '@controllers/http/middlewares/authMiddlewares';
 import loggingMiddleware from '@controllers/http/middlewares/loggingMiddleware';
 
 export default function (services: Services, io: Server) {
