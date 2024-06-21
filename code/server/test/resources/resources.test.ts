@@ -1,7 +1,7 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
-import { excludeRoot } from './utils';
+import { excludeRoot } from '../workspaces/utils';
 
 let services: Services;
 
