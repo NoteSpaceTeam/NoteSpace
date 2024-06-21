@@ -13,12 +13,14 @@ declare global {
 }
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const { token } = req.cookies;
-  if (!token) {
+  const sessionCookie = req.cookies.session || '';
+  console.log('sessionCookie:', sessionCookie);
+  if (!sessionCookie) {
     return next();
   }
   try {
-    const idToken = await admin.auth().verifyIdToken(token);
+    const idToken = await admin.auth().verifySessionCookie(sessionCookie, true);
+    console.log('idToken:', idToken);
     const { uid, displayName, email } = await admin.auth().getUser(idToken.uid);
     req.user = { id: uid, email: email!, name: displayName! };
     next();
