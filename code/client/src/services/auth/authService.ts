@@ -2,8 +2,8 @@ import { User, UserData } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 
 function authService(http: HttpCommunication) {
-  async function sessionLogin(idToken: string, csrfToken: string, id: string, data: UserData) {
-    await http.post('/users/login', { idToken, csrfToken, id, ...data });
+  async function sessionLogin(idToken: string, id: string, data: UserData) {
+    await http.post('/users/login', { idToken, id, ...data });
   }
 
   async function sessionLogout() {

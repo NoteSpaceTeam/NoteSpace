@@ -1,28 +1,24 @@
 import PromiseRouter from 'express-promise-router';
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { UserData } from '@notespace/shared/src/users/types';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
 import admin from 'firebase-admin';
+import { UnauthorizedError } from '@domain/errors/errors';
 
 function usersHandlers(service: UsersService) {
   const sessionLogin = async (req: Request, res: Response) => {
-    const { id, idToken, csrfToken, ...data } = req.body;
-    // guard against CSRF attacks
-    if (csrfToken !== req.cookies.csrfToken) {
-      httpResponse.unauthorized(res).send();
-      return;
-    }
+    const { id, idToken, ...data } = req.body;
+
     // session login - create session cookie, verifying ID token in the process
     try {
       const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
       const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
-      const options = { maxAge: expiresIn, httpOnly: true, secure: true };
+      const options: CookieOptions = { maxAge: expiresIn, httpOnly: true, secure: true, sameSite: 'none' };
       res.cookie('session', sessionCookie, options);
     } catch (e) {
-      httpResponse.unauthorized(res).send();
-      return;
+      throw new UnauthorizedError('Failed to login user');
     }
 
     // register user in database if not already registered
@@ -71,7 +67,7 @@ function usersHandlers(service: UsersService) {
 
   const router = PromiseRouter({ mergeParams: true });
   router.post('/login', sessionLogin);
-  router.post('/logout', sessionLogout);
+  router.post('/logout', enforceAuth, sessionLogout);
   router.get('/:id', getUser);
   router.get('/', getUsers);
   router.put('/:id', enforceAuth, updateUser);

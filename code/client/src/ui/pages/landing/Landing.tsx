@@ -17,17 +17,20 @@ function Landing() {
 
   return (
     <div className="landing">
-      <h1>Welcome to NoteSpace</h1>
       <div>
-        <button onClick={loginWithGoogle}>
-          Login With Google
-          <img src={googleIcon} alt="Google Icon" />
-        </button>
-        <button onClick={loginWithGithub}>
-          Login with GitHub
-          <FaGithub />
-        </button>
+        <h1>Welcome to NoteSpace</h1>
+        <div>
+          <button onClick={loginWithGoogle}>
+            Login With Google
+            <img src={googleIcon} alt="Google Icon" />
+          </button>
+          <button onClick={loginWithGithub}>
+            Login with GitHub
+            <FaGithub />
+          </button>
+        </div>
       </div>
+
       <p>Please choose a provider to continue</p>
     </div>
   );

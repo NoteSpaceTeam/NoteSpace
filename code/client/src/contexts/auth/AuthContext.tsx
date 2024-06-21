@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import { auth, githubAuthProvider, googleAuthProvider } from '@config';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { signInWithPopup, signOut, User, type AuthProvider as Provider, inMemoryPersistence } from 'firebase/auth';
@@ -39,8 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { user } = await signInWithPopup(auth, provider);
       const userInfo = { name: user.displayName!, email: user.email! };
       const idToken = await user.getIdToken();
-      const csrfToken = Cookies.get('csrfToken')!;
-      await sessionLogin(idToken, csrfToken, user.uid, userInfo);
+      await sessionLogin(idToken, user.uid, userInfo);
     } catch (e) {
       publishError(e as Error);
     }
@@ -51,7 +49,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loginWithGithub = () => loginWithProvider(githubAuthProvider);
 
   const logout = async () => {
-    console.log('logging out');
     await sessionLogout();
     await signOut(auth);
     navigate('/');

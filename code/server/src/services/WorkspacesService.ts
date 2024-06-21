@@ -44,7 +44,6 @@ export class WorkspacesService {
   }
 
   async addWorkspaceMember(wid: string, email: string) {
-    console.log('addWorkspaceMember', email);
     const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
     if (userInWorkspace) throw new ConflictError('User already in workspace');
     await this.databases.workspaces.addWorkspaceMember(wid, userId);
