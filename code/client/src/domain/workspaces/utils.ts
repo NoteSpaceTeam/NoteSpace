@@ -1,6 +1,6 @@
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
-import { Resources } from '@ui/contexts/workspace/WorkspaceContext';
+import { Resources } from '@/contexts/workspace/WorkspaceContext';
 
 export function sortWorkspaces(workspaces: WorkspaceMeta[], column: string, ascending: boolean): WorkspaceMeta[] {
   return workspaces.sort((a, b) => {

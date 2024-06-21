@@ -4,13 +4,13 @@ import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';
 import NotFound from '@ui/pages/notfound/NotFound';
 import './App.scss';
-import { ErrorProvider } from '@ui/contexts/error/ErrorContext';
+import { ErrorProvider } from '@/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
-import { WorkspaceProvider } from '@ui/contexts/workspace/WorkspaceContext';
+import { WorkspaceProvider } from '@/contexts/workspace/WorkspaceContext';
 import Workspaces from '@ui/pages/workspaces/Workspaces';
-import { CommunicationProvider } from '@ui/contexts/communication/CommunicationContext';
+import { CommunicationProvider } from '@/contexts/communication/CommunicationContext';
 import Home from '@ui/pages/home/Home';
-import AuthProvider from '@ui/contexts/auth/AuthContext';
+import AuthProvider from '@/contexts/auth/AuthContext';
 import Profile from '@ui/pages/profile/Profile';
 import Landing from '@ui/pages/landing/Landing';
 
@@ -18,9 +18,9 @@ function App() {
   return (
     <div className="app">
       <ErrorProvider>
-        <AuthProvider>
-          <CommunicationProvider>
-            <Router>
+        <CommunicationProvider>
+          <Router>
+            <AuthProvider>
               <Header />
               <div className="content">
                 <Routes>
@@ -66,9 +66,9 @@ function App() {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
-            </Router>
-          </CommunicationProvider>
-        </AuthProvider>
+            </AuthProvider>
+          </Router>
+        </CommunicationProvider>
       </ErrorProvider>
     </div>
   );

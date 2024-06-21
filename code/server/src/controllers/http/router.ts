@@ -6,6 +6,7 @@ import errorMiddleware from '@controllers/http/middlewares/errorMiddleware';
 import usersHandlers from '@controllers/http/handlers/usersHandlers';
 import { Server } from 'socket.io';
 import { authMiddleware } from '@controllers/http/middlewares/authMiddleware';
+import loggingMiddleware from '@controllers/http/middlewares/loggingMiddleware';
 
 export default function (services: Services, io: Server) {
   if (!services) throw new Error('Services parameter is required');
@@ -13,6 +14,7 @@ export default function (services: Services, io: Server) {
   // automatically routes unhandled errors to error handling middleware
   const router = PromiseRouter();
   router.use(express.urlencoded({ extended: true }));
+  router.use(loggingMiddleware);
   router.use(authMiddleware);
 
   router.use('/users', usersHandlers(services.users));

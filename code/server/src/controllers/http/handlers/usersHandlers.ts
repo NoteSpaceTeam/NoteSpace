@@ -4,10 +4,28 @@ import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { UserData } from '@notespace/shared/src/users/types';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddleware';
+import admin from 'firebase-admin';
 
 function usersHandlers(service: UsersService) {
-  const registerUser = async (req: Request, res: Response) => {
-    const { id, ...data } = req.body;
+  const sessionLogin = async (req: Request, res: Response) => {
+    const { id, idToken, csrfToken, ...data } = req.body;
+    // guard against CSRF attacks
+    if (csrfToken !== req.cookies.csrfToken) {
+      httpResponse.unauthorized(res).send();
+      return;
+    }
+    // session login - create session cookie, verifying ID token in the process
+    try {
+      const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+      const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
+      const options = { maxAge: expiresIn, httpOnly: true, secure: true };
+      res.cookie('session', sessionCookie, options);
+    } catch (e) {
+      httpResponse.unauthorized(res).send();
+      return;
+    }
+
+    // register user in database if not already registered
     try {
       const user = await service.getUser(id);
       if (user) {
@@ -20,6 +38,11 @@ function usersHandlers(service: UsersService) {
       await service.createUser(id, data);
       httpResponse.created(res).send();
     }
+  };
+
+  const sessionLogout = async (req: Request, res: Response) => {
+    res.clearCookie('session');
+    httpResponse.noContent(res).send();
   };
 
   const getUser = async (req: Request, res: Response) => {
@@ -47,7 +70,8 @@ function usersHandlers(service: UsersService) {
   };
 
   const router = PromiseRouter({ mergeParams: true });
-  router.post('/', registerUser);
+  router.post('/login', sessionLogin);
+  router.post('/logout', sessionLogout);
   router.get('/:id', getUser);
   router.get('/', getUsers);
   router.put('/:id', enforceAuth, updateUser);

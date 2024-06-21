@@ -1,4 +1,4 @@
-import { useAuth } from '@ui/contexts/auth/useAuth';
+import { useAuth } from '@/contexts/auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import googleIcon from '@assets/images/google-icon.png';

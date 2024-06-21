@@ -1,7 +1,7 @@
 import { IoMenu, IoTime } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { RiMenuFold2Line, RiMenuFoldLine, RiTeamFill } from 'react-icons/ri';
-import useWorkspace from '@ui/contexts/workspace/useWorkspace';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import WorkspaceTree from '@ui/components/sidebar/components/workspace-tree/WorkspaceTree';
 import { IoMdSettings } from 'react-icons/io';

@@ -1,12 +1,12 @@
 import useWorkspaces from '@domain/workspaces/useWorkspaces';
 import WorkspaceView from '@ui/pages/workspaces/components/WorkspaceView';
 import CreateWorkspaceDialog from '@ui/pages/workspaces/components/CreateWorkspaceDialog';
-import useError from '@ui/contexts/error/useError';
+import useError from '@/contexts/error/useError';
 import DataTable from '@ui/components/table/DataTable';
 import { MdDelete } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import { sortWorkspaces } from '@domain/workspaces/utils';
-import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import { useCommunication } from '@/contexts/communication/useCommunication';
 import './Workspaces.scss';
 
 function Workspaces() {

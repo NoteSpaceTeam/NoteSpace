@@ -13,7 +13,7 @@ export default function initSocketEvents(events: Record<string, SocketHandler>) 
     Object.entries(events).forEach(([event, handler]) => {
       socket.on(event, async data => {
         try {
-          logger.logInfo('Event: ' + event + ': ' + JSON.stringify(data));
+          logger.logInfo('Event: ' + event);
           await handler(socket, data);
         } catch (e: any) {
           logger.logError(e);

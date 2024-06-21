@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
-import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import { useCommunication } from '@/contexts/communication/useCommunication';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
-import useError from '@ui/contexts/error/useError';
+import useError from '@/contexts/error/useError';
 
 function useWorkspaces() {
   const { socket } = useCommunication();

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
-import { Resources } from '@ui/contexts/workspace/WorkspaceContext';
+import { Resources } from '@/contexts/workspace/WorkspaceContext';
 
 function useWorkspaceTree() {
   const [nodes, setNodes] = useState<Resources>({});

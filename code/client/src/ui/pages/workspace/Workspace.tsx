@@ -1,7 +1,7 @@
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import DocumentView from '@ui/pages/workspace/components/DocumentView';
-import useError from '@ui/contexts/error/useError';
-import useWorkspace from '@ui/contexts/workspace/useWorkspace';
+import useError from '@/contexts/error/useError';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 import { useEffect, useState } from 'react';
 import DataTable from '@ui/components/table/DataTable';
 import { FaPlus } from 'react-icons/fa';

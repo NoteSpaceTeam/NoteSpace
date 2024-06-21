@@ -1,7 +1,7 @@
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import useResourceService from '@services/resource/useResourceService';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
-import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import { useCommunication } from '@/contexts/communication/useCommunication';
 import useWorkspaceTree from '@domain/workspaces/tree/useWorkspaceTree';
 
 function useResources() {

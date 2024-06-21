@@ -3,7 +3,7 @@ import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { getTree } from '@domain/workspaces/tree/utils';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { DragEvent, useState } from 'react';
-import { Resources, WorkspaceOperations } from '@ui/contexts/workspace/WorkspaceContext';
+import { Resources, WorkspaceOperations } from '@/contexts/workspace/WorkspaceContext';
 import './WorkspaceTree.scss';
 
 type WorkspaceTreeProps = {

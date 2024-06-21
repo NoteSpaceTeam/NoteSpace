@@ -1,5 +1,5 @@
 import './Header.scss';
-import { useAuth } from '@ui/contexts/auth/useAuth';
+import { useAuth } from '@/contexts/auth/useAuth';
 import { Link } from 'react-router-dom';
 
 function Header() {

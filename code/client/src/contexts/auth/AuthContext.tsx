@@ -1,9 +1,10 @@
 import Cookies from 'js-cookie';
 import { auth, githubAuthProvider, googleAuthProvider } from '@config';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { signInWithPopup, signOut, User, type AuthProvider as Provider } from 'firebase/auth';
-import useError from '@ui/contexts/error/useError';
+import { signInWithPopup, signOut, User, type AuthProvider as Provider, inMemoryPersistence } from 'firebase/auth';
+import useError from '@/contexts/error/useError';
 import useAuthService from '@services/auth/useAuthService';
+import { useNavigate } from 'react-router-dom';
 
 export type AuthContextType = {
   currentUser: User | null;
@@ -29,14 +30,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { publishError } = useError();
-  const { registerUser } = useAuthService();
+  const { sessionLogin, sessionLogout } = useAuthService();
+  const navigate = useNavigate();
 
   const loginWithProvider = async (provider: Provider) => {
     try {
+      auth.setPersistence(inMemoryPersistence); // for httpOnly cookies, do not persist any state client side
       const { user } = await signInWithPopup(auth, provider);
-      await registerUser(user.uid, { name: user.displayName!, email: user.email! });
-      const token = await user.getIdToken(true);
-      Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
+      const userInfo = { name: user.displayName!, email: user.email! };
+      const idToken = await user.getIdToken();
+      const csrfToken = Cookies.get('csrfToken')!;
+      await sessionLogin(idToken, csrfToken, user.uid, userInfo);
     } catch (e) {
       publishError(e as Error);
     }
@@ -47,15 +51,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loginWithGithub = () => loginWithProvider(githubAuthProvider);
 
   const logout = async () => {
+    console.log('logging out');
+    await sessionLogout();
     await signOut(auth);
-    Cookies.remove('token');
-    window.location.href = '/';
+    navigate('/');
   };
 
   const deleteAccount = async () => {
+    await sessionLogout();
     await currentUser?.delete();
-    Cookies.remove('token');
-    window.location.href = '/';
+    navigate('/');
   };
 
   useEffect(() => {

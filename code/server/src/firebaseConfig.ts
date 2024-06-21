@@ -1,11 +1,20 @@
-import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
-import serviceAccount from '@/firestore-key-5cddf-472039f8dbb6.json';
+import { config } from 'dotenv';
+import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 
-initializeApp({
-  credential: cert(serviceAccount as ServiceAccount),
+config();
+
+// decode the base64 encoded service account json
+const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT;
+const serviceAccountBuffer = Buffer.from(serviceAccountBase64!, 'base64');
+const serviceAccount = JSON.parse(serviceAccountBuffer.toString('utf8'));
+
+// initialize firebase admin sdk
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
 
+// initialize firestore
 const db = getFirestore();
 
 export default db;

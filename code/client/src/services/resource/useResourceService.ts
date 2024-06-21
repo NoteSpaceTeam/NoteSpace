@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useCommunication } from '@ui/contexts/communication/useCommunication';
+import { useCommunication } from '@/contexts/communication/useCommunication';
 import { useParams } from 'react-router-dom';
 import resourceService from '@services/resource/resourceService';
 

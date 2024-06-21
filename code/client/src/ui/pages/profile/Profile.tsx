@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuthService from '@services/auth/useAuthService';
 import { User } from '@notespace/shared/src/users/types';
 import { formatDate } from '@/utils/utils';
-import { useAuth } from '@ui/contexts/auth/useAuth';
+import { useAuth } from '@/contexts/auth/useAuth';
 import './Profile.scss';
 
 function Profile() {

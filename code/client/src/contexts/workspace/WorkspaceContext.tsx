@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, createContext, useEffect } from 'react';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { useCommunication } from '@ui/contexts/communication/useCommunication';
-import useError from '@ui/contexts/error/useError';
+import { useCommunication } from '@/contexts/communication/useCommunication';
+import useError from '@/contexts/error/useError';
 import { useParams } from 'react-router-dom';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
 import useResources from '@domain/workspaces/useResources';

@@ -1,10 +1,13 @@
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
-import Cookies from 'js-cookie';
 
 function authService(http: HttpCommunication) {
-  async function registerUser(id: string, data: UserData) {
-    await http.post('/users', { id, ...data });
+  async function sessionLogin(idToken: string, csrfToken: string, id: string, data: UserData) {
+    await http.post('/users/login', { idToken, csrfToken, id, ...data });
+  }
+
+  async function sessionLogout() {
+    await http.post('/users/logout');
   }
 
   async function getUser(id: string): Promise<User> {
@@ -17,11 +20,11 @@ function authService(http: HttpCommunication) {
 
   async function deleteUser(id: string) {
     await http.delete(`/users/${id}`);
-    Cookies.remove('token');
   }
 
   return {
-    registerUser,
+    sessionLogin,
+    sessionLogout,
     getUser,
     updateUser,
     deleteUser,
