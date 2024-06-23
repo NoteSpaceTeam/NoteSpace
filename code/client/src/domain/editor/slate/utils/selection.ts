@@ -39,11 +39,10 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  * Converts a slate point to a cursor
  * @param editor
  * @param point
- * @param absolutePosition
  */
-export function pointToCursor(editor: Editor, point: Point, absolutePosition: boolean = false): Cursor {
+export function pointToCursor(editor: Editor, point: Point): Cursor {
   const line = point.path[0];
-  const cursor: Cursor = { line, column: point.offset }; // + (absolutePosition ? 0 : 1)
+  const cursor: Cursor = { line, column: point.offset };
   if (point.path[1] === 0) return cursor;
   const children = Array.from(Node.children(editor, [line]));
 

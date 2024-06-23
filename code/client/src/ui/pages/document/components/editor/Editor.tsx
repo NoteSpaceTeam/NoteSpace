@@ -1,6 +1,5 @@
 import { Descendant } from 'slate';
 import { Editable, Slate, withReact } from 'slate-react';
-import { withHistory } from 'slate-history';
 import { toSlate } from '@domain/editor/slate/utils/slate';
 import { descendant } from '@domain/editor/slate/utils/slate';
 import { getMarkdownPlugin } from '@domain/editor/slate/plugins/markdown/withMarkdown';
@@ -10,7 +9,6 @@ import useRenderers from '@ui/pages/document/components/editor/hooks/useRenderer
 import Toolbar from '@ui/pages/document/components/toolbar/Toolbar';
 import Title from '@ui/pages/document/components/title/Title';
 import useEditor from '@ui/pages/document/components/editor/hooks/useEditor';
-import useHistory from '@ui/pages/document/components/editor/hooks/useHistory';
 import useDecorate from '@ui/pages/document/components/editor/hooks/useDecorate';
 import useCursors from '@ui/pages/document/components/editor/hooks/useCursors';
 import getEventHandlers from '@domain/editor/slate/operations/getEventHandlers';
@@ -28,7 +26,7 @@ type EditorProps = {
 const initialValue: Descendant[] = [descendant('paragraph', '')];
 
 function Editor({ title, connectors, fugue }: EditorProps) {
-  const [editor, setEditor] = useEditor(withHistory, withReact, getMarkdownPlugin(connectors.markdown));
+  const [editor, setEditor] = useEditor(withReact, getMarkdownPlugin(connectors.markdown));
   const { cursors } = useCursors(connectors.service);
   const { renderElement, renderLeaf } = useRenderers(editor, fugue, connectors.service);
   const decorate = useDecorate(editor, cursors);
@@ -65,7 +63,6 @@ function Editor({ title, connectors, fugue }: EditorProps) {
     connectors.markdown
   );
 
-  useHistory(editor, connectors.history);
   useEvents(editor, connectors.service, syncEditor);
 
   return (
