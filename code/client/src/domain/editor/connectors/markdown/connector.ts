@@ -64,7 +64,6 @@ export default (fugue: Fugue, serviceConnector: ServiceConnector): MarkdownConne
   }
 
   function deleteBlockStyles(selection: Selection) {
-    if (isSelectionEmpty(selection)) return;
     const { start, end } = selection;
     const inStartOfLine = isEqual(start, end) && start.column === 0;
     const isMultiLine = start.line !== end.line;

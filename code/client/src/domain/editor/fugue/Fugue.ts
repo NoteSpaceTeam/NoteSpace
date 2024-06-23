@@ -169,15 +169,14 @@ export class Fugue {
    * @param selection
    */
   reviveLocal(selection: Selection): ReviveOperation[] {
-    const _selection = { start: { ...selection.start }, end: { ...selection.end } };
-    const nodes = Array.from(this.traverseBySelection(_selection, true));
+    const nodes = Array.from(this.traverseBySelection(selection, true));
     return nodes.map(node => {
       if (node.value === '\n') {
-        _selection.start.line++;
-        _selection.start.column = 0;
-      } else _selection.start.column++;
+        selection.start.line++;
+        selection.start.column = 0;
+      } else selection.start.column++;
 
-      return this.reviveNode(node.id, _selection.start);
+      return this.reviveNode(node.id, selection.start);
     });
   }
 
@@ -186,7 +185,7 @@ export class Fugue {
    * @param cursor
    */
   reviveLocalByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor, true);
+    const node = this.getNodeByCursor(cursor);
     if (node) return this.reviveNode(node.id, cursor);
   }
 
@@ -270,7 +269,7 @@ export class Fugue {
 
   /**
    * Traverses the tree by the given selection
-   * @param selection - the selection from which to traverse, in format [start, end[
+   * @param selection - the selection from which to traverse, in format ]start, end]
    * @param returnDeleted
    */
   *traverseBySelection(selection: Selection, returnDeleted: boolean = false): IterableIterator<FugueNode> {
@@ -281,6 +280,12 @@ export class Fugue {
     // const lineRootNode = this.tree.getLineRoot(start.line);
 
     for (const node of this.tree.traverse(this.tree.root, returnDeleted)) {
+      // start condition
+      if (lineCounter === start.line && columnCounter === start.column) inBounds = true;
+
+      // yield node if in bounds
+      if (inBounds) yield node;
+
       // update counters
       if (node.value === '\n') {
         lineCounter++;
@@ -288,13 +293,7 @@ export class Fugue {
       } else {
         columnCounter++;
       }
-      // check if in bounds
-      if (lineCounter === start.line && columnCounter === start.column) inBounds = true;
-
-      // yield node if in bounds
-      if (inBounds) yield node;
-
-      // end condition - check if next node is out of bounds
+      // end condition
       if (lineCounter === end.line && columnCounter === end.column) break;
     }
   }
@@ -314,7 +313,7 @@ export class Fugue {
     inclusive: boolean = false
   ): IterableIterator<FugueNode[]> {
     const selection = reverse
-      ? { start: { line, column: 1 }, end: { line, column } }
+      ? { start: { line, column: 0 }, end: { line, column } }
       : { start: { line, column }, end: { line, column: Infinity } };
 
     const nodesInSelection = Array.from(this.traverseBySelection(selection));
@@ -346,14 +345,12 @@ export class Fugue {
   /**
    * Returns the node at the given cursor
    * @param cursor
-   * @param returnDeleted
    */
-  getNodeByCursor({ line, column }: Cursor, returnDeleted: boolean = false): FugueNode | undefined {
-    //if (column === 0) return this.tree.getLineRoot(line);
-    if (line === 0 && column === 0) return this.tree.root;
-    const start = { line, column };
-    const end = { line, column: column };
-    const iterator = this.traverseBySelection({ start, end }, returnDeleted);
+  getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
+    if (column === 0) return this.tree.getLineRoot(line);
+    const start = { line, column: column - 1 };
+    const end = { line, column };
+    const iterator = this.traverseBySelection({ start, end });
     return iterator.next().value;
   }
 
