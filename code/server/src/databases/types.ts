@@ -3,6 +3,7 @@ import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
+import { SearchParams } from '@src/utils/searchParams';
 
 export interface DocumentsRepository {
   /**
@@ -113,6 +114,11 @@ export interface WorkspacesRepository {
    * @param userId
    */
   removeWorkspaceMember: (wid: string, userId: string) => Promise<void>;
+  /**
+   * Search workspaces by name
+   * @param searchParams
+   */
+  searchWorkspaces: (searchParams: SearchParams) => Promise<WorkspaceMeta[]>;
 }
 
 export interface UsersRepository {

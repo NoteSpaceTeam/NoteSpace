@@ -4,6 +4,7 @@ import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
+import { SearchParams } from '@src/utils/searchParams';
 
 export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
@@ -89,5 +90,16 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
       returning id
     `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member does not exist`);
+  }
+
+  async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
+    const { query, skip, limit } = searchParams;
+    return sql`
+        select id, name, created_at, array_length(members, 1), private
+        from workspace
+        where private = false and name ilike ${'%' + query + '%'}
+        order by created_at desc
+        offset ${skip} limit ${limit}
+    `;
   }
 }

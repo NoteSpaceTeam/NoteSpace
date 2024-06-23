@@ -7,6 +7,7 @@ import { Services } from '@services/Services';
 import { Server } from 'socket.io';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
+import { getSearchParams, SearchParams } from '@src/utils/searchParams';
 
 function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
@@ -28,7 +29,7 @@ function workspacesHandlers(services: Services, io: Server) {
   };
 
   const getWorkspaces = async (req: Request, res: Response) => {
-    const workspaces = await services.workspaces.getWorkspaces(req.user?.id || '');
+    const workspaces = await services.workspaces.getWorkspaces(req.user!.id);
     httpResponse.ok(res).json(workspaces);
   };
 
@@ -84,6 +85,13 @@ function workspacesHandlers(services: Services, io: Server) {
     httpResponse.noContent(res).send();
   };
 
+  const searchWorkspaces = async (req: Request, res: Response) => {
+    const { query, skip, limit } = req.query;
+    const searchParams: SearchParams = getSearchParams({ query, skip, limit });
+    const workspaces = await services.workspaces.searchWorkspaces(searchParams);
+    httpResponse.ok(res).json(workspaces);
+  };
+
   async function getWorkspacePermissions(id: string, userEmail: string) {
     const workspace = await services.workspaces.getWorkspace(id);
     if (!workspace) throw new InvalidParameterError('Workspace not found');
@@ -113,7 +121,8 @@ function workspacesHandlers(services: Services, io: Server) {
 
   const router = PromiseRouter();
   router.post('/', enforceAuth, createWorkspace);
-  router.get('/', getWorkspaces);
+  router.get('/', enforceAuth, getWorkspaces);
+  router.get('/search', searchWorkspaces);
   router.get('/:wid', workspaceReadPermission, getWorkspace);
   router.put('/:wid', enforceAuth, workspaceWritePermission, updateWorkspace);
   router.delete('/:wid', enforceAuth, workspaceWritePermission, deleteWorkspace);

@@ -34,6 +34,14 @@ function workspaceService(http: HttpCommunication) {
     await http.delete(`/workspaces/${id}/members`, { email });
   }
 
+  async function getWorkspacesFeed() {
+    return await http.get('/workspaces/search');
+  }
+
+  async function searchWorkspaces(query: string, skip: number, limit: number): Promise<WorkspaceMeta[]> {
+    return await http.get(`/workspaces/search?query=${query}&skip=${skip}&limit=${limit}`);
+  }
+
   return {
     getWorkspace,
     getWorkspaces,
@@ -42,6 +50,8 @@ function workspaceService(http: HttpCommunication) {
     updateWorkspace,
     addWorkspaceMember,
     removeWorkspaceMember,
+    getWorkspacesFeed,
+    searchWorkspaces,
   };
 }
 

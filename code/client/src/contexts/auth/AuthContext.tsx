@@ -1,6 +1,6 @@
 import { auth, githubAuthProvider, googleAuthProvider } from '@config';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { signInWithPopup, signOut, User, type AuthProvider as Provider, inMemoryPersistence } from 'firebase/auth';
+import { signInWithPopup, signOut, User, type AuthProvider as Provider } from 'firebase/auth';
 import useError from '@/contexts/error/useError';
 import useAuthService from '@services/auth/useAuthService';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const loginWithProvider = async (provider: Provider) => {
     try {
-      auth.setPersistence(inMemoryPersistence); // for httpOnly cookies, do not persist any state client side
       const { user } = await signInWithPopup(auth, provider);
       const idToken = await user.getIdToken();
       await sessionLogin(idToken);

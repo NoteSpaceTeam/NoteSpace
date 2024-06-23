@@ -21,3 +21,9 @@ export function validateEmail(email: string) {
     throw new InvalidParameterError('Invalid email');
   }
 }
+
+export function validatePositiveNumber(num: number) {
+  if (num < 0) {
+    throw new InvalidParameterError('Invalid value');
+  }
+}

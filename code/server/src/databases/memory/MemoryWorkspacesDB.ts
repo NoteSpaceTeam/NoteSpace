@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { omit } from 'lodash';
 import { NotFoundError } from '@domain/errors/errors';
+import { SearchParams } from '@src/utils/searchParams';
 
 export class MemoryWorkspacesDB implements WorkspacesRepository {
   constructor() {
@@ -80,5 +81,19 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   async getWorkspaceMembers(wid: string): Promise<string[]> {
     const workspace = Memory.workspaces[wid];
     return workspace.members?.map(userId => Memory.users[userId].email) || [];
+  }
+
+  async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
+    const { query, skip, limit } = searchParams;
+    return Object.values(Memory.workspaces)
+      .filter(workspace => !workspace.isPrivate) // public workspaces
+      .filter(workspace => (query ? workspace.name.toLowerCase().includes(query.toLowerCase()) : true)) // search by name
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // sort results by creation date (newest first)
+      .slice(skip, skip + limit) // paginate results
+      .map(workspace => ({
+        // convert to WorkspaceMeta
+        ...omit(workspace, ['resources']),
+        members: workspace.members?.length || 0,
+      }));
   }
 }

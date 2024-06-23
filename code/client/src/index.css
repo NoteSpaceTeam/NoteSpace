@@ -52,6 +52,10 @@ button {
   padding: 2vh;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
 .MuiCheckbox-root {
   transition: background-color 0.2s;
   display: flex !important;

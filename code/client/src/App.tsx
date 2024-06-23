@@ -13,6 +13,7 @@ import Home from '@ui/pages/home/Home';
 import AuthProvider from '@/contexts/auth/AuthContext';
 import Profile from '@ui/pages/profile/Profile';
 import Landing from '@ui/pages/landing/Landing';
+import Search from '@ui/pages/search/Search';
 
 function App() {
   return (
@@ -31,6 +32,15 @@ function App() {
                       <>
                         <Sidebar />
                         <Home />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/search"
+                    element={
+                      <>
+                        <Sidebar />
+                        <Search />
                       </>
                     }
                   />

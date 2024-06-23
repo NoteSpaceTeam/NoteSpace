@@ -1,0 +1,21 @@
+.search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    margin-top: auto;
+    margin-bottom: 10vh;
+
+    button {
+      border-radius: 50%;
+      background-color: lightgray;
+      color: black;
+    }
+  }
+}

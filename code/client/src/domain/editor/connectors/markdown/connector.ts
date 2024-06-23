@@ -2,7 +2,6 @@ import { BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/st
 import { Selection } from '@domain/editor/cursor';
 import { Fugue } from '@domain/editor/fugue/Fugue';
 import { Operation } from '@notespace/shared/src/document/types/operations';
-import { isSelectionEmpty } from '@domain/editor/slate/utils/selection';
 import { isEqual } from 'lodash';
 import { Id } from '@notespace/shared/src/document/types/types';
 import { deleteAroundSelection } from '@domain/editor/connectors/markdown/utils';

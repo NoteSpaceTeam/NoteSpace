@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 export function formatDate(isoString: string) {
   const date = new Date(isoString);
   return date.toLocaleDateString('en-US', {
@@ -33,4 +35,11 @@ export function formatTimePassed(isoString: string): string {
   } else {
     return seconds <= 0 ? 'Just now' : formatTime(seconds, 'second');
   }
+}
+
+export function useQueryParams() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const entries = Array.from(params.entries());
+  return Object.fromEntries(entries);
 }
