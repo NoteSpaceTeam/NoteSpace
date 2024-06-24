@@ -34,7 +34,7 @@ function Editor({ title, connectors, fugue }: EditorProps) {
     connectors.input,
     connectors.markdown
   );
-  useEvents(editor, connectors.service, syncEditor);
+  useEvents(connectors.service, syncEditor);
 
   return (
     <div className="editor">

@@ -38,22 +38,6 @@ export class FugueTree<T> {
   }
 
   /**
-   * Adds a line root node to the tree.
-   * @param line
-   * @param id
-   * @param parent
-   * @param side
-   * @param styles
-   */
-  addLineRoot(line: number, id: Id, parent: Id, side: 'L' | 'R', styles?: InlineStyle[]) {
-    const node = treeNode(id, '\n', parent, side, 0, styles) as Node<T>;
-
-    this._root.value.splice(line, 0, node);
-
-    this._addNode(node);
-  }
-
-  /**
    * Internal method to add a node to the tree.
    * @param node
    */
@@ -125,10 +109,6 @@ export class FugueTree<T> {
       if (node) return node;
     }
     throw new Error('Unknown ID: ' + JSON.stringify(id));
-  }
-
-  getLineRoot(line: number): NodeType<T> {
-    return line === 0 ? this._root : this._root.value[line - 1];
   }
 
   setTree(nodes: Nodes<T>) {
