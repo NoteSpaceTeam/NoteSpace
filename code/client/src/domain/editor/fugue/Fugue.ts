@@ -228,7 +228,6 @@ export class Fugue {
     let lineCounter = 0, // start.line
       columnCounter = 0,
       inBounds = false;
-    // const lineRootNode = this.tree.getLineRoot(start.line);
 
     for (const node of this.tree.traverse(this.tree.root, returnDeleted)) {
       // start condition
@@ -298,7 +297,10 @@ export class Fugue {
    * @param cursor
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
-    if (column === 0) return this.tree.getLineRoot(line);
+    if (line === 0 && column === 0) return this.tree.root;
+    if (column === 0) {
+      return this.traverseBySeparator('\n', { line: line - 1, column: 1 }, false, true).next().value?.[0];
+    }
     const start = { line, column: column - 1 };
     const end = { line, column };
     const iterator = this.traverseBySelection({ start, end });

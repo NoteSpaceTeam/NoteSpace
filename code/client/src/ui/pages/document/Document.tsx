@@ -12,7 +12,7 @@ import './Document.scss';
 
 function Document() {
   const communication = useCommunication();
-  const { http, socket } = communication;
+  const { socket } = communication;
   const services = useDocumentService();
   const fugue = useFugue();
   const { publishError } = useError();
@@ -25,8 +25,8 @@ function Document() {
   // redirect to workspace if document is deleted
   connectors.service.on('deletedResource', rid => {
     if (id === rid) {
-      navigate(`/workspaces/${wid}`);
       publishError(Error('Document was deleted'));
+      navigate(`/workspaces/${wid}`);
     }
   });
 
@@ -46,7 +46,8 @@ function Document() {
     return () => {
       socket.emit('leaveDocument');
     };
-  }, [fugue, id, http, socket, publishError, services, setTitle, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   if (!loaded) return null;
   return (
