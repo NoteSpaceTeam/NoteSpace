@@ -4,26 +4,26 @@ import {
   ResourcesRepository,
   WorkspacesRepository,
   UsersRepository,
-  VersionsRepository,
+  CommitsRepository,
 } from '@databases/types';
 import { PostgresResourcesDB } from '@databases/postgres/PostgresResourcesDB';
 import { PostgresWorkspacesDB } from '@databases/postgres/PostgresWorkspacesDB';
 import { FirestoreDocumentsDB } from '@databases/firestore/FirestoreDocumentsDB';
 import { PostgresUsersDB } from '@databases/postgres/PostgresUsersDB';
-import { FirestoreVersionsDB } from '@databases/firestore/FirestoreVersionsDB';
+import { FirestoreCommitsDB } from '@databases/firestore/FirestoreCommitsDB';
 
 export class ProductionDatabases implements Databases {
   readonly documents: DocumentsRepository;
   readonly resources: ResourcesRepository;
   readonly workspaces: WorkspacesRepository;
   readonly users: UsersRepository;
-  readonly versions: VersionsRepository;
+  readonly commits: CommitsRepository;
 
   constructor() {
     this.documents = new FirestoreDocumentsDB();
     this.resources = new PostgresResourcesDB();
     this.workspaces = new PostgresWorkspacesDB();
     this.users = new PostgresUsersDB();
-    this.versions = new FirestoreVersionsDB();
+    this.commits = new FirestoreCommitsDB();
   }
 }

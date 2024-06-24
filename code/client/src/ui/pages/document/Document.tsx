@@ -6,9 +6,9 @@ import { useCommunication } from '@/contexts/communication/useCommunication';
 import useError from '@/contexts/error/useError';
 import useDocumentService from '@services/resource/useResourcesService';
 import useConnectors from '@domain/editor/connectors/useConnectors';
+import FloatingButtons from '@ui/pages/document/components/floating-buttons/FloatingButtons';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import './Document.scss';
-import Version from '@ui/pages/document/components/version/Version';
 
 function Document() {
   const communication = useCommunication();
@@ -55,7 +55,7 @@ function Document() {
   return (
     <div className="document">
       <Editor title={title} fugue={fugue} connectors={connectors} />
-      <Version />
+      <FloatingButtons />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import AuthProvider from '@/contexts/auth/AuthContext';
 import Profile from '@ui/pages/profile/Profile';
 import Landing from '@ui/pages/landing/Landing';
 import Search from '@ui/pages/search/Search';
-import DocumentCommits from '@ui/pages/document/components/history/DocumentCommits';
+import DocumentCommits from '@ui/pages/document/components/commit-history/CommitHistory';
 
 function App() {
   return (

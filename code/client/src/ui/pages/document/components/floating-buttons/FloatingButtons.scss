@@ -1,4 +1,4 @@
-.version {
+.floating-buttons {
   position: fixed;
   bottom: 0;
   right: 0;
@@ -31,7 +31,7 @@
   }
 }
 
-.commits-dialog {
+.commit-dialog {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

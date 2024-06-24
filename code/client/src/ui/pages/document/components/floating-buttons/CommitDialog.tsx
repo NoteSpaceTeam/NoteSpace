@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom';
 import { FaCodeCommit } from 'react-icons/fa6';
 import { useAuth } from '@/contexts/auth/useAuth';
 
-type VersionControlDialogProps = {
+type CommitDialogProps = {
   onCommit: () => void;
 };
 
-function VersionControlDialog({ onCommit }: VersionControlDialogProps) {
+function CommitDialog({ onCommit }: CommitDialogProps) {
   const { wid, id } = useParams();
   const { currentUser } = useAuth();
-  if (!wid || !id) throw new Error('Cannot use version dialog outside of a document');
+  if (!wid || !id) throw new Error('Cannot use commit dialog outside of a document');
   return (
     <Dialog
       title="New Commit"
@@ -18,7 +18,7 @@ function VersionControlDialog({ onCommit }: VersionControlDialogProps) {
       onSubmit={onCommit}
       submitText="Commit"
       extraContent={
-        <div className="commits-dialog">
+        <div className="commit-dialog">
           <p>
             Committing as <strong>{currentUser!.displayName}</strong>
           </p>
@@ -30,4 +30,4 @@ function VersionControlDialog({ onCommit }: VersionControlDialogProps) {
   );
 }
 
-export default VersionControlDialog;
+export default CommitDialog;

@@ -1,7 +1,7 @@
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Databases } from '@databases/types';
 import { decodeFromBase64, encodeToBase64 } from '@services/utils';
-import { DocumentVersion } from '@notespace/shared/src/document/types/versions';
+import { Author, Commit } from '@notespace/shared/src/document/types/commits';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
 export class DocumentsService {
@@ -18,31 +18,31 @@ export class DocumentsService {
     await this.databases.resources.updateResource(id, { updatedAt: new Date().toISOString() });
   }
 
-  async commit(id: string) {
+  async commit(id: string, author: Author) {
     // get document operations
     const resource = await this.getDocumentResource(id);
     const document = await this.databases.documents.getDocument(resource.workspace, id);
-    // save operations as new version
+    // save operations in new commit
     const content = encodeToBase64(document.operations);
-    const version: DocumentVersion = { id: resource.id, content, timestamp: Date.now() };
-    await this.databases.versions.saveVersion(id, version);
+    const commit: Commit = { id: resource.id, content, timestamp: Date.now(), author };
+    await this.databases.commits.saveCommit(id, commit);
   }
 
-  async rollback(id: string, versionId: string) {
-    // get operations from version
+  async rollback(id: string, commitId: string) {
+    // get operations from commit
     const resource = await this.getDocumentResource(id);
-    const version = await this.databases.versions.getVersion(id, versionId);
+    const commit = await this.databases.commits.getCommit(id, commitId);
 
     // update document with operations
-    const operations = decodeFromBase64(version.content) as Operation[];
+    const operations = decodeFromBase64(commit.content) as Operation[];
     await this.databases.documents.updateDocument(resource.workspace, id, operations, true);
   }
 
-  async fork(id: string, versionId: string) {
-    // get operations from version
+  async fork(id: string, commitId: string) {
+    // get operations from commit
     const resource = await this.getDocumentResource(id);
-    const version = await this.databases.versions.getVersion(id, versionId);
-    const operations = decodeFromBase64(version.content) as Operation[];
+    const commit = await this.databases.commits.getCommit(id, commitId);
+    const operations = decodeFromBase64(commit.content) as Operation[];
 
     // create new document with operations
     const newResource: Resource = {
@@ -62,12 +62,11 @@ export class DocumentsService {
     return newResource;
   }
 
-  async getVersions(id: string) {
+  async getCommits(id: string) {
     // check if document exists
     await this.getDocumentResource(id);
-    // get all versions of a document
-    const versions = await this.databases.versions.getVersions(id);
-    return versions.map(({ id, timestamp }) => ({ id, timestamp }));
+    // get all commits of a document
+    return await this.databases.commits.getCommits(id);
   }
 
   private async getDocumentResource(id: string) {

@@ -1,0 +1,25 @@
+import { NotFoundError } from '@domain/errors/errors';
+import { CommitsRepository } from '@databases/types';
+import { Commit } from '@notespace/shared/src/document/types/commits';
+
+export class MemoryCommitsDB implements CommitsRepository {
+  private readonly commits: Record<string, Record<string, Commit>> = {};
+
+  async getCommit(id: string, commitId: string): Promise<Commit> {
+    if (!this.commits[id]) throw new NotFoundError(`Document not found`);
+    const commit = this.commits[id][commitId];
+    if (!commit) throw new NotFoundError(`Commit not found`);
+    return commit;
+  }
+
+  async getCommits(id: string): Promise<Commit[]> {
+    return Object.values(this.commits[id]);
+  }
+
+  async saveCommit(id: string, commit: Commit): Promise<void> {
+    if (!this.commits[id]) {
+      this.commits[id] = {};
+    }
+    this.commits[id][commit.id] = commit;
+  }
+}

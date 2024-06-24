@@ -4,7 +4,7 @@ import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/re
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { SearchParams } from '@src/utils/searchParams';
-import { DocumentVersion } from '@notespace/shared/src/document/types/versions';
+import { Commit } from '@notespace/shared/src/document/types/commits';
 
 export interface DocumentsRepository {
   /**
@@ -156,15 +156,15 @@ export interface UsersRepository {
   getUserByEmail: (email: string) => Promise<User>;
 }
 
-export interface VersionsRepository {
-  saveVersion: (id: string, version: DocumentVersion) => Promise<void>;
-  getVersion: (id: string, versionId: string) => Promise<DocumentVersion>;
-  getVersions: (id: string) => Promise<DocumentVersion[]>;
+export interface CommitsRepository {
+  saveCommit: (id: string, commit: Commit) => Promise<void>;
+  getCommit: (id: string, commitId: string) => Promise<Commit>;
+  getCommits: (id: string) => Promise<Commit[]>;
 }
 
 export interface Databases {
   readonly documents: DocumentsRepository;
-  readonly versions: VersionsRepository;
+  readonly commits: CommitsRepository;
   readonly resources: ResourcesRepository;
   readonly workspaces: WorkspacesRepository;
   readonly users: UsersRepository;

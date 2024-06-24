@@ -1,37 +1,37 @@
-import './DocumentCommits.scss';
-import useVersionsService from '@services/versions/useVersionsService';
+import './CommitHistory.scss';
+import useCommitsService from '@services/commits/useCommitsService';
 import { Link, useParams } from 'react-router-dom';
 import useResourcesService from '@services/resource/useResourcesService';
 import { useEffect, useState } from 'react';
 import useLoading from '@ui/hooks/useLoading';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
-import { DocumentVersion } from '@notespace/shared/src/document/types/versions';
+import { Commit } from '@notespace/shared/src/document/types/commits';
 import { formatTimePassed } from '@/utils/utils';
 import { FaCodeFork } from 'react-icons/fa6';
 import { FaUndo } from 'react-icons/fa';
 
-function DocumentCommits() {
+function CommitHistory() {
   const [document, setDocument] = useState<DocumentResource>();
-  const [versions, setVersions] = useState<DocumentVersion[]>([]);
+  const [commits, setCommits] = useState<Commit[]>([]);
   const { loading, spinner, startLoading, stopLoading } = useLoading();
   const { id } = useParams();
   const { getResource } = useResourcesService();
-  const { getVersions, forkVersion, rollbackVersion } = useVersionsService();
+  const { getCommits, fork, rollback } = useCommitsService();
 
   useEffect(() => {
     async function fetchDocument() {
       const document = (await getResource(id!)) as DocumentResource;
       setDocument(document);
     }
-    async function fetchVersions() {
-      const versions = await getVersions();
-      setVersions(versions);
+    async function fetchCommits() {
+      const commits = await getCommits();
+      setCommits(commits);
     }
     startLoading();
-    Promise.all([fetchDocument(), fetchVersions()])
+    Promise.all([fetchDocument(), fetchCommits()])
       .then(() => stopLoading())
       .catch(() => stopLoading());
-  }, [getResource, getVersions, id, startLoading, stopLoading]);
+  }, [getResource, getCommits, id, startLoading, stopLoading]);
 
   return (
     <div className="document-commits">
@@ -41,19 +41,19 @@ function DocumentCommits() {
         <>
           <h2>Commits from "{document?.name}"</h2>
           <div className="commits-list">
-            {versions.length > 0 ? (
-              versions.map(version => (
-                <div key={version.id} className="commit">
+            {commits.length > 0 ? (
+              commits.map(commit => (
+                <div key={commit.id} className="commit">
                   <p>
-                    <Link to={''}>John Doe</Link> committed{' '}
-                    {formatTimePassed(new Date(version.timestamp).toLocaleString())}
+                    <Link to={`/profile/${commit.author.id}`}>{commit.author.name}</Link> committed{' '}
+                    {formatTimePassed(new Date(commit.timestamp).toLocaleString())}
                   </p>
                   <div className="commit-actions">
-                    <button onClick={() => rollbackVersion(version.id)}>
+                    <button onClick={() => rollback(commit.id)}>
                       <FaUndo />
                       Rollback
                     </button>
-                    <button onClick={() => forkVersion(version.id)}>
+                    <button onClick={() => fork(commit.id)}>
                       <FaCodeFork />
                       Fork
                     </button>
@@ -70,4 +70,4 @@ function DocumentCommits() {
   );
 }
 
-export default DocumentCommits;
+export default CommitHistory;
