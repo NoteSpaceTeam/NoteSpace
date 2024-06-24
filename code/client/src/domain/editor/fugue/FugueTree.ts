@@ -102,15 +102,6 @@ export class FugueTree<T> {
   }
 
   /**
-   * Re-enables the node with the given id.
-   * @param id
-   */
-  reviveNode(id: Id) {
-    const node = this.getById(id);
-    if (node.isDeleted) node.isDeleted = false;
-  }
-
-  /**
    * Updates the depth of the ancestors of the given node by delta.
    * @param node the node whose ancestors' depths are to be updated.
    * @param delta the amount by which to update the depths.

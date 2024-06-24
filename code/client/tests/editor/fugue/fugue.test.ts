@@ -42,7 +42,6 @@ describe('Fugue', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
-      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -89,12 +88,10 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
-      cursor: { line: 0, column: 0 },
     };
     const deleteOperation: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
-      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -129,7 +126,6 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
-      cursor: { line: 0, column: 0 },
     };
     const styleOperation: InlineStyleOperation = {
       type: 'inline-style',
@@ -261,76 +257,6 @@ describe('Fugue', () => {
     expect(reverseOperations).toHaveLength(2);
     expect(fugue.toString()).toEqual(' ');
   });
-
-  // test('should revive nodes locally', () => {
-  //   // given
-  //   const cursor: Cursor = { line: 0, column: 0 };
-  //   const selection: Selection = { start: { line: 0, column: 1 }, end: { line: 0, column: 3 } };
-  //   const selection2: Selection = { start: { line: 0, column: 0 }, end: { line: 1, column: 2 } };
-  //
-  //   // when
-  //   fugue.insertLocal(cursor, 'a', 'b', 'c');
-  //   fugue.deleteLocal(selection);
-  //
-  //   // then
-  //   expect(fugue.toString()).toEqual('a');
-  //
-  //   // when
-  //   const operations = fugue.insertLocal(selection.start, 'b', 'c');
-  //
-  //   // then
-  //   expect(operations).toHaveLength(2);
-  //   expect(fugue.toString()).toEqual('abc');
-  //
-  //   // when
-  //   fugue.insertLocal({ line: 0, column: 3 }, '\n', 'd', 'e', 'f');
-  //
-  //   // then
-  //   expect(fugue.toString()).toEqual('abc\ndef');
-  //
-  //   // when
-  //   fugue.deleteLocal(selection2);
-  //
-  //   // then
-  //   expect(fugue.toString()).toEqual('f');
-  //
-  //   const operations2 = fugue.reviveLocal(selection2);
-  //
-  //   // then
-  //   expect(operations2).toHaveLength(6);
-  //   expect(fugue.toString()).toEqual('abc\ndef');
-  // });
-  //
-  // test('should revive nodes remotely', () => {
-  //   // given
-  //   const insertOperation: InsertOperation = {
-  //     type: 'insert',
-  //     id: { sender: 'A', counter: 0 },
-  //     value: 'a',
-  //     parent: { sender: 'root', counter: 0 },
-  //     side: 'R',
-  //   };
-  //   const deleteOperation: DeleteOperation = {
-  //     type: 'delete',
-  //     id: { sender: 'A', counter: 0 },
-  //   };
-  //
-  //   // when
-  //   fugue.insertRemote(insertOperation);
-  //   fugue.deleteRemote(deleteOperation);
-  //
-  //   // then
-  //   expect(fugue.toString()).toEqual('');
-  //
-  //   // when
-  //   const reviveOperation: ReviveOperation = { type: 'revive', id: insertOperation.id };
-  //
-  //   // when
-  //   fugue.reviveRemote(reviveOperation);
-  //
-  //   // then
-  //   expect(fugue.toString()).toEqual('a');
-  // });
 
   test('should delete a line by cursor', () => {
     // given
