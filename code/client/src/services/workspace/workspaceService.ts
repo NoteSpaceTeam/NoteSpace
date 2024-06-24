@@ -3,43 +3,43 @@ import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/worksp
 import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
 import { validateEmail } from '@services/workspace/utils';
 
-function workspaceService(http: HttpCommunication) {
+function workspaceService(http: HttpCommunication, publishError: (error: Error) => void) {
   async function getWorkspace(id: string): Promise<Workspace> {
-    return await http.get(`/workspaces/${id}`);
+    return http.get(`/workspaces/${id}`).catch(publishError);
   }
 
   async function getWorkspaces(): Promise<WorkspaceMeta[]> {
-    return await http.get('/workspaces');
+    return http.get('/workspaces').catch(publishError);
   }
 
   async function createWorkspace(workspace: WorkspaceInputModel): Promise<string> {
-    return await http.post('/workspaces', workspace);
+    return http.post('/workspaces', workspace).catch(publishError);
   }
 
   async function deleteWorkspace(id: string): Promise<void> {
-    await http.delete(`/workspaces/${id}`);
+    http.delete(`/workspaces/${id}`).catch(publishError);
   }
 
   async function updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
-    await http.put(`/workspaces/${id}`, newProps);
+    http.put(`/workspaces/${id}`, newProps).catch(publishError);
   }
 
   async function addWorkspaceMember(id: string, email: string): Promise<void> {
     validateEmail(email);
-    await http.post(`/workspaces/${id}/members`, { email });
+    http.post(`/workspaces/${id}/members`, { email }).catch(publishError);
   }
 
   async function removeWorkspaceMember(id: string, email: string): Promise<void> {
     validateEmail(email);
-    await http.delete(`/workspaces/${id}/members`, { email });
+    http.delete(`/workspaces/${id}/members`, { email }).catch(publishError);
   }
 
   async function getWorkspacesFeed() {
-    return await http.get('/workspaces/search');
+    return http.get('/workspaces/search').catch(publishError);
   }
 
   async function searchWorkspaces(query: string, skip: number, limit: number): Promise<WorkspaceMeta[]> {
-    return await http.get(`/workspaces/search?query=${query}&skip=${skip}&limit=${limit}`);
+    return http.get(`/workspaces/search?query=${query}&skip=${skip}&limit=${limit}`).catch(publishError);
   }
 
   return {

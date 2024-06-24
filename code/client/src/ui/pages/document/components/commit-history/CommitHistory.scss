@@ -6,15 +6,15 @@
   }
 
   .commit {
-    padding: 0.5vh 8vh;
-    border-radius: 10px;
-    background-color: black;
-    color: white;
-
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    padding: 0.5vh 8vh;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+    text-decoration: none !important;
 
     .commit-actions {
       display: flex;

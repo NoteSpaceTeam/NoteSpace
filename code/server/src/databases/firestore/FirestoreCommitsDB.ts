@@ -30,4 +30,9 @@ export class FirestoreCommitsDB implements CommitsRepository {
       .map(([id, { content, timestamp, author }]) => ({ id, content, timestamp, author }))
       .sort((a, b) => a.timestamp - b.timestamp);
   }
+
+  async deleteCommits(id: string): Promise<void> {
+    const doc = db.collection('commits').doc(id);
+    await doc.delete();
+  }
 }

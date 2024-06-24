@@ -1,7 +1,6 @@
 import useWorkspaces from '@domain/workspaces/useWorkspaces';
 import WorkspaceView from '@ui/pages/workspaces/components/WorkspaceView';
 import CreateWorkspaceDialog from '@ui/pages/workspaces/components/CreateWorkspaceDialog';
-import useError from '@/contexts/error/useError';
 import DataTable from '@ui/components/table/DataTable';
 import { MdDelete } from 'react-icons/md';
 import { useEffect, useState } from 'react';
@@ -11,7 +10,6 @@ import './Workspaces.scss';
 
 function Workspaces() {
   const { workspaces, operations } = useWorkspaces();
-  const { publishError } = useError();
   const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(workspaces);
   const { socket } = useCommunication();
@@ -30,15 +28,11 @@ function Workspaces() {
       <DataTable
         columns={['Name', 'Members', 'Created', 'Privacy']}
         hasSelected={selected.length > 0}
-        createButton={
-          <CreateWorkspaceDialog onCreate={workspace => operations.createWorkspace(workspace).catch(publishError)} />
-        }
+        createButton={<CreateWorkspaceDialog onCreate={workspace => operations.createWorkspace(workspace)} />}
         deleteButton={
           <button
             onClick={() => {
-              selected.forEach(workspace => {
-                operations.deleteWorkspace(workspace).catch(publishError);
-              });
+              selected.forEach(workspace => operations.deleteWorkspace(workspace));
               setSelected([]);
             }}
           >
@@ -58,11 +52,11 @@ function Workspaces() {
             onSelect={value =>
               setSelected(prev => (value ? [...prev, workspace.id] : prev.filter(id => id !== workspace.id)))
             }
-            onDelete={() => operations.deleteWorkspace(workspace.id).catch(publishError)}
-            onRename={name => operations.updateWorkspace(workspace.id, { ...workspace, name }).catch(publishError)}
-            onGetMembers={() => operations.getWorkspaceMembers(workspace.id).catch(publishError) as Promise<string[]>}
-            onAddMember={email => operations.addWorkspaceMember(workspace.id, email).catch(publishError)}
-            onRemoveMember={email => operations.removeWorkspaceMember(workspace.id, email).catch(publishError)}
+            onDelete={() => operations.deleteWorkspace(workspace.id)}
+            onRename={name => operations.updateWorkspace(workspace.id, { ...workspace, name })}
+            onGetMembers={() => operations.getWorkspaceMembers(workspace.id)}
+            onAddMember={email => operations.addWorkspaceMember(workspace.id, email)}
+            onRemoveMember={email => operations.removeWorkspaceMember(workspace.id, email)}
           />
         ))}
       </DataTable>

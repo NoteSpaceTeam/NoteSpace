@@ -17,7 +17,6 @@ export class ResourcesService {
   async getResource(wid: string, id: string, metaOnly: boolean = false): Promise<Resource> {
     const resource = await this.databases.resources.getResource(id);
     if (resource.type === ResourceType.FOLDER || metaOnly) return resource;
-
     const { operations } = await this.databases.documents.getDocument(wid, id);
     return {
       ...resource,
@@ -32,6 +31,9 @@ export class ResourcesService {
   async deleteResource(id: string): Promise<void> {
     const { type, workspace } = await this.databases.resources.getResource(id);
     await this.databases.resources.deleteResource(id);
-    if (type === ResourceType.DOCUMENT) await this.databases.documents.deleteDocument(workspace, id);
+    if (type === ResourceType.DOCUMENT) {
+      await this.databases.documents.deleteDocument(workspace, id);
+      await this.databases.commits.deleteCommits(id);
+    }
   }
 }

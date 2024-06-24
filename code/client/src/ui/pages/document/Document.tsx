@@ -42,10 +42,7 @@ function Document() {
       socket.emit('joinDocument', id);
       setLoaded(true);
     }
-    fetchDocument().catch(e => {
-      publishError(e);
-      navigate('/');
-    });
+    fetchDocument();
     return () => {
       socket.emit('leaveDocument');
     };

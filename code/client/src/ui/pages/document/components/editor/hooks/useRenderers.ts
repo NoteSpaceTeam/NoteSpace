@@ -9,13 +9,14 @@ import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 /**
  * Returns the renderers for the editor.
  */
-function useRenderers(editor: Editor, fugue: Fugue, connector: ServiceConnector) {
+function useRenderers(editor: Editor, fugue?: Fugue, connector?: ServiceConnector) {
   const renderElement = useCallback(
     (props: RenderElementProps) => {
       const type = props.element.type as BlockStyle;
       const path = ReactEditor.findPath(editor, props.element);
       const line = path[path.length - 1];
       const updateBlockStyle = (style: BlockStyle) => {
+        if (!fugue || !connector) return;
         const operation = fugue.updateBlockStyleLocal(line, style);
         connector.emitOperations([operation]);
       };

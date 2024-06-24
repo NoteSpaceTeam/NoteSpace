@@ -160,6 +160,7 @@ export interface CommitsRepository {
   saveCommit: (id: string, commit: Commit) => Promise<void>;
   getCommit: (id: string, commitId: string) => Promise<Commit>;
   getCommits: (id: string) => Promise<Commit[]>;
+  deleteCommits: (id: string) => Promise<void>;
 }
 
 export interface Databases {

@@ -19,6 +19,16 @@ function CommitHistory() {
   const { getCommits, fork, rollback } = useCommitsService();
   const navigate = useNavigate();
 
+  async function onRollback(commitId: string) {
+    await rollback(commitId);
+    navigate(`/workspaces/${wid}/${id}`);
+  }
+
+  async function onFork(commitId: string) {
+    await fork(commitId);
+    navigate(`/workspaces/${wid}`);
+  }
+
   useEffect(() => {
     async function fetchDocument() {
       const document = (await getResource(id!)) as DocumentResource;
@@ -45,26 +55,22 @@ function CommitHistory() {
           <div className="commits-list">
             {commits.length > 0 ? (
               commits.map(commit => (
-                <button
-                  key={commit.id}
-                  className="commit"
-                  onClick={() => navigate(`/workspaces/${wid}/${id}/commits/${commit.id}`)}
-                >
+                <Link to={`/workspaces/${wid}/${id}/commits/${commit.id}`} key={commit.id} className="commit">
                   <p>
                     <Link to={`/profile/${commit.author.id}`}>{commit.author.name}</Link> committed{' '}
                     {formatTimePassed(new Date(commit.timestamp).toLocaleString())}
                   </p>
                   <div className="commit-actions">
-                    <button onClick={() => rollback(commit.id)}>
+                    <button onClick={() => onRollback(commit.id)}>
                       <FaUndo />
                       Rollback
                     </button>
-                    <button onClick={() => fork(commit.id)}>
+                    <button onClick={() => onFork(commit.id)}>
                       <FaCodeFork />
                       Fork
                     </button>
                   </div>
-                </button>
+                </Link>
               ))
             ) : (
               <p>No commits yet</p>

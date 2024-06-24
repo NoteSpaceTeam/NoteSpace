@@ -3,13 +3,11 @@ import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/worksp
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { useCommunication } from '@/contexts/communication/useCommunication';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
-import useError from '@/contexts/error/useError';
 
 function useWorkspaces() {
   const { socket } = useCommunication();
   const service = useWorkspaceService();
   const [workspaces, setWorkspaces] = useState<WorkspaceMeta[]>([]);
-  const { publishError } = useError();
 
   function onCreateWorkspace(workspace: WorkspaceMeta) {
     setWorkspaces([...workspaces, workspace]);
@@ -66,8 +64,8 @@ function useWorkspaces() {
       const workspaces = await service.getWorkspaces();
       setWorkspaces(workspaces);
     }
-    fetchWorkspaces().catch(publishError);
-  }, [service, publishError]);
+    fetchWorkspaces();
+  }, [service]);
 
   return {
     workspaces,

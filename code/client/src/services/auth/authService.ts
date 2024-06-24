@@ -1,25 +1,25 @@
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 
-function authService(http: HttpCommunication) {
+function authService(http: HttpCommunication, publishError: (error: Error) => void) {
   async function sessionLogin(idToken: string) {
-    await http.post('/users/login', { idToken });
+    http.post('/users/login', { idToken }).catch(publishError);
   }
 
   async function sessionLogout() {
-    await http.post('/users/logout');
+    http.post('/users/logout').catch(publishError);
   }
 
   async function getUser(id: string): Promise<User> {
-    return await http.get(`/users/${id}`);
+    return http.get(`/users/${id}`).catch(publishError);
   }
 
   async function updateUser(id: string, newProps: Partial<UserData>) {
-    await http.put(`/users/${id}`, { id, ...newProps });
+    http.put(`/users/${id}`, { id, ...newProps }).catch(publishError);
   }
 
   async function deleteUser(id: string) {
-    await http.delete(`/users/${id}`);
+    http.delete(`/users/${id}`).catch(publishError);
   }
 
   return {

@@ -1,10 +1,13 @@
 import useCommitsService from '@services/commits/useCommitsService';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { type Commit, CommitData } from '@notespace/shared/src/document/types/commits';
+import { CommitData } from '@notespace/shared/src/document/types/commits';
 import useLoading from '@ui/hooks/useLoading';
 import { formatTimePassed } from '@/utils/utils';
 import useFugue from '@domain/editor/fugue/useFugue';
+import EditorPreview from '@ui/pages/document/components/editor-preview/EditorPreview';
+import { toSlate } from '@domain/editor/slate/utils/slate';
+import './Commit.scss';
 
 function Commit() {
   const { loading, startLoading, stopLoading, spinner } = useLoading();
@@ -23,10 +26,10 @@ function Commit() {
     }
     startLoading();
     fetchCommit();
-  }, [commitId, getCommit, startLoading, stopLoading]);
+  }, [commitId, fugue, getCommit, startLoading, stopLoading]);
 
   return (
-    <div className="commit-revision">
+    <div className="commit">
       {loading ? (
         spinner
       ) : (
@@ -36,7 +39,7 @@ function Commit() {
             Committed by <Link to={`/profile/${commit!.author.id}`}>{commit!.author.name}</Link>
             &nbsp;{formatTimePassed(new Date(commit!.timestamp).toLocaleString())}
           </p>
-          <pre>{fugue.toString()}</pre>
+          <EditorPreview descendants={toSlate(fugue)} />
         </>
       )}
     </div>

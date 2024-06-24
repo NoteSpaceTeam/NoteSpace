@@ -2,7 +2,7 @@ import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Databases } from '@databases/types';
 import { decodeFromBase64, encodeToBase64, getRandomId } from '@services/utils';
 import { Author, Commit, CommitData } from '@notespace/shared/src/document/types/commits';
-import { DocumentResource, Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
 const COMMIT_ID_LENGTH = 8;
 
@@ -48,21 +48,21 @@ export class DocumentsService {
     const operations = decodeFromBase64(commit.content) as Operation[];
 
     // create new document with operations
-    const newResource: DocumentResource = {
-      ...resource,
-      id,
-      name: `${resource.name}-forked`,
-      parent: resource.workspace,
-    };
+    const name = `${resource.name}-forked`;
     const newId = await this.databases.resources.createResource(
-      newResource.workspace,
-      newResource.name,
+      resource.workspace,
+      name,
       ResourceType.DOCUMENT,
-      newResource.parent
+      resource.workspace
     );
     await this.databases.documents.createDocument(resource.workspace, newId);
     await this.databases.documents.updateDocument(resource.workspace, newId, operations, true);
-    return newResource;
+    return {
+      ...resource,
+      id: newId,
+      name,
+      parent: resource.workspace,
+    };
   }
 
   async getCommits(id: string): Promise<Commit[]> {

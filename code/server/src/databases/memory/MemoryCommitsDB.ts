@@ -22,4 +22,8 @@ export class MemoryCommitsDB implements CommitsRepository {
     }
     this.commits[id][commit.id] = commit;
   }
+
+  async deleteCommits(id: string): Promise<void> {
+    delete this.commits[id];
+  }
 }

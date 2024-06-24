@@ -1,6 +1,5 @@
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import DocumentView from '@ui/pages/workspace/components/DocumentView';
-import useError from '@/contexts/error/useError';
 import useWorkspace from '@/contexts/workspace/useWorkspace';
 import { useEffect, useState } from 'react';
 import DataTable from '@ui/components/table/DataTable';
@@ -11,7 +10,6 @@ import './Workspace.scss';
 
 function Workspace() {
   const { workspace, resources, operations } = useWorkspace();
-  const { publishError } = useError();
   const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(getDocuments(resources));
 
@@ -27,7 +25,7 @@ function Workspace() {
         hasSelected={selected.length > 0}
         onSelectAll={value => setSelected(value ? rows.map(document => document.id) : [])}
         createButton={
-          <button onClick={() => operations?.createResource('Untitled', ResourceType.DOCUMENT).catch(publishError)}>
+          <button onClick={() => operations?.createResource('Untitled', ResourceType.DOCUMENT)}>
             <FaPlus />
           </button>
         }
@@ -35,7 +33,7 @@ function Workspace() {
           <button
             onClick={() => {
               selected.forEach(document => {
-                operations?.deleteResource(document).catch(publishError);
+                operations?.deleteResource(document);
               });
               setSelected([]);
             }}
@@ -55,11 +53,9 @@ function Workspace() {
             onSelect={value =>
               setSelected(prev => (value ? [...prev, document.id] : prev.filter(id => id !== document.id)))
             }
-            onDelete={() => operations?.deleteResource(document.id).catch(publishError)}
-            onDuplicate={() =>
-              operations?.createResource(document.name + '-copy', ResourceType.DOCUMENT).catch(publishError)
-            }
-            onRename={name => operations?.updateResource(document.id, { name }).catch(publishError)}
+            onDelete={() => operations?.deleteResource(document.id)}
+            onDuplicate={() => operations?.createResource(document.name + '-copy', ResourceType.DOCUMENT)}
+            onRename={name => operations?.updateResource(document.id, { name })}
           />
         ))}
       </DataTable>

@@ -46,7 +46,15 @@ function App() {
                       </>
                     }
                   />
-                  <Route path="/profile/:id" element={<Profile />} />
+                  <Route
+                    path="/profile/:id"
+                    element={
+                      <>
+                        <Sidebar />
+                        <Profile />
+                      </>
+                    }
+                  />
                   <Route
                     path="/workspaces/*"
                     element={
