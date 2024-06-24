@@ -51,7 +51,7 @@ function bootServer(args: string[]): void {
   io.on('connection', socketEvents);
 
   server.listen(config.SERVER_PORT, () => {
-    ServerLogger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+    ServerLogger.logSuccess(`Listening on port ${config.SERVER_PORT}`);
   });
 }
 

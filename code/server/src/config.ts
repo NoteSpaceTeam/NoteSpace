@@ -5,8 +5,7 @@ config();
 
 const SERVER_PORT = parseInt(process.env.PORT || '8080');
 const CLIENT_PORT = parseInt(process.env.CLIENT_PORT || '5173');
-const SERVER_IP = 'localhost';
-const ORIGIN = '*';
+const ORIGIN = ['http://localhost:5173'];
 
 const SERVER_OPTIONS = {
   cors: {
@@ -22,6 +21,5 @@ export default {
   SERVER_PORT,
   CLIENT_PORT,
   ORIGIN,
-  SERVER_IP,
   SERVER_OPTIONS,
 };
