@@ -1,25 +1,26 @@
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 import { Commit, CommitData } from '@notespace/shared/src/document/types/commits';
+import { ErrorHandler } from '@/contexts/error/ErrorContext';
 
-function commitsService(http: HttpCommunication, publishError: (error: Error) => void, wid: string, id: string) {
+function commitsService(http: HttpCommunication, errorHandler: ErrorHandler, wid: string, id: string) {
   async function commit() {
-    http.post(`/workspaces/${wid}/${id}/commit`).catch(publishError);
+    return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/commit`));
   }
 
   async function rollback(commitId: string) {
-    http.post(`/workspaces/${wid}/${id}/rollback`, { commitId }).catch(publishError);
+    return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/rollback`, { commitId }));
   }
 
   async function fork(commitId: string) {
-    http.post(`/workspaces/${wid}/${id}/fork`, { commitId }).catch(publishError);
+    return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/fork`, { commitId }));
   }
 
   async function getCommits(): Promise<Commit[]> {
-    return http.get(`/workspaces/${wid}/${id}/commits`).catch(publishError);
+    return errorHandler(async () => await http.get(`/workspaces/${wid}/${id}/commits`));
   }
 
   async function getCommit(commitId: string): Promise<CommitData> {
-    return http.get(`/workspaces/${wid}/${id}/commits/${commitId}`).catch(publishError);
+    return errorHandler(async () => await http.get(`/workspaces/${wid}/${id}/commits/${commitId}`));
   }
 
   return {

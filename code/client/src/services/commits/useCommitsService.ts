@@ -7,9 +7,9 @@ import useError from '@/contexts/error/useError';
 function useCommitsService() {
   const { http } = useCommunication();
   const { wid, id } = useParams();
-  const { publishError } = useError();
+  const { errorHandler } = useError();
   if (!wid || !id) throw new Error('Cannot use commits service outside of a document');
-  return useMemo(() => commitsService(http, publishError, wid, id), [http, publishError, wid, id]);
+  return useMemo(() => commitsService(http, errorHandler, wid, id), [http, errorHandler, wid, id]);
 }
 
 export default useCommitsService;

@@ -5,8 +5,8 @@ import useError from '@/contexts/error/useError';
 
 function useWorkspaceService() {
   const { http } = useCommunication();
-  const { publishError } = useError();
-  return useMemo(() => workspaceService(http, publishError), [http, publishError]);
+  const { errorHandler } = useError();
+  return useMemo(() => workspaceService(http, errorHandler), [http, errorHandler]);
 }
 
 export default useWorkspaceService;

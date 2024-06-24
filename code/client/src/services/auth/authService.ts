@@ -1,25 +1,26 @@
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
+import { ErrorHandler } from '@/contexts/error/ErrorContext';
 
-function authService(http: HttpCommunication, publishError: (error: Error) => void) {
+function authService(http: HttpCommunication, errorHandler: ErrorHandler) {
   async function sessionLogin(idToken: string) {
-    http.post('/users/login', { idToken }).catch(publishError);
+    return errorHandler(async () => await http.post('/users/login', { idToken }));
   }
 
   async function sessionLogout() {
-    http.post('/users/logout').catch(publishError);
+    return errorHandler(async () => await http.post('/users/logout'));
   }
 
   async function getUser(id: string): Promise<User> {
-    return http.get(`/users/${id}`).catch(publishError);
+    return errorHandler(async () => await http.get(`/users/${id}`));
   }
 
   async function updateUser(id: string, newProps: Partial<UserData>) {
-    http.put(`/users/${id}`, { id, ...newProps }).catch(publishError);
+    return errorHandler(async () => await http.put(`/users/${id}`, { id, ...newProps }));
   }
 
   async function deleteUser(id: string) {
-    http.delete(`/users/${id}`).catch(publishError);
+    return errorHandler(async () => await http.delete(`/users/${id}`));
   }
 
   return {

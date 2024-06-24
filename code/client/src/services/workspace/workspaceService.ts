@@ -2,44 +2,45 @@ import { HttpCommunication } from '@services/communication/http/httpCommunicatio
 import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Workspace } from '@notespace/shared/src/workspace/types/workspace';
 import { validateEmail } from '@services/workspace/utils';
+import { ErrorHandler } from '@/contexts/error/ErrorContext';
 
-function workspaceService(http: HttpCommunication, publishError: (error: Error) => void) {
+function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
   async function getWorkspace(id: string): Promise<Workspace> {
-    return http.get(`/workspaces/${id}`).catch(publishError);
+    return errorHandler(async () => await http.get(`/workspaces/${id}`));
   }
 
   async function getWorkspaces(): Promise<WorkspaceMeta[]> {
-    return http.get('/workspaces').catch(publishError);
+    return errorHandler(async () => await http.get('/workspaces'));
   }
 
   async function createWorkspace(workspace: WorkspaceInputModel): Promise<string> {
-    return http.post('/workspaces', workspace).catch(publishError);
+    return errorHandler(async () => await http.post('/workspaces', workspace));
   }
 
   async function deleteWorkspace(id: string): Promise<void> {
-    http.delete(`/workspaces/${id}`).catch(publishError);
+    return errorHandler(async () => await http.delete(`/workspaces/${id}`));
   }
 
   async function updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
-    http.put(`/workspaces/${id}`, newProps).catch(publishError);
+    return errorHandler(async () => await http.put(`/workspaces/${id}`, newProps));
   }
 
   async function addWorkspaceMember(id: string, email: string): Promise<void> {
     validateEmail(email);
-    http.post(`/workspaces/${id}/members`, { email }).catch(publishError);
+    return errorHandler(async () => await http.post(`/workspaces/${id}/members`, { email }));
   }
 
   async function removeWorkspaceMember(id: string, email: string): Promise<void> {
     validateEmail(email);
-    http.delete(`/workspaces/${id}/members`, { email }).catch(publishError);
+    return errorHandler(async () => await http.delete(`/workspaces/${id}/members`, { email }));
   }
 
   async function getWorkspacesFeed() {
-    return http.get('/workspaces/search').catch(publishError);
+    return errorHandler(async () => await http.get('/workspaces/search'));
   }
 
   async function searchWorkspaces(query: string, skip: number, limit: number): Promise<WorkspaceMeta[]> {
-    return http.get(`/workspaces/search?query=${query}&skip=${skip}&limit=${limit}`).catch(publishError);
+    return errorHandler(async () => await http.get(`/workspaces/search?query=${query}&skip=${skip}&limit=${limit}`));
   }
 
   return {

@@ -5,8 +5,8 @@ import useError from '@/contexts/error/useError';
 
 function useAuthService() {
   const { http } = useCommunication();
-  const { publishError } = useError();
-  return useMemo(() => authService(http, publishError), [http, publishError]);
+  const { errorHandler } = useError();
+  return useMemo(() => authService(http, errorHandler), [http, errorHandler]);
 }
 
 export default useAuthService;
