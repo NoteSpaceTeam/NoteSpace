@@ -27,3 +27,13 @@ export function validatePositiveNumber(num: number) {
     throw new InvalidParameterError('Invalid value');
   }
 }
+
+export function encodeToBase64(content: any): string {
+  const jsonString = JSON.stringify(content);
+  return Buffer.from(jsonString).toString('base64');
+}
+
+export function decodeFromBase64(base64String: string): any {
+  const jsonString = Buffer.from(base64String, 'base64').toString('utf8');
+  return JSON.parse(jsonString);
+}

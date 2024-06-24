@@ -1,11 +1,11 @@
 import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
-import useResourceService from '@services/resource/useResourceService';
+import useResourcesService from '@services/resource/useResourcesService';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { useCommunication } from '@/contexts/communication/useCommunication';
 import useWorkspaceTree from '@domain/workspaces/tree/useWorkspaceTree';
 
 function useResources() {
-  const service = useResourceService();
+  const service = useResourcesService();
   const { socket } = useCommunication();
   const tree = useWorkspaceTree();
 

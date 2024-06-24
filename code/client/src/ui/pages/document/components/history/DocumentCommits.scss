@@ -1,0 +1,29 @@
+.document-commits {
+  .commit {
+    padding: 0.5vh 8vh;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+
+    .commit-actions {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2vh;
+
+      button {
+        gap: 2vh;
+      }
+    }
+
+    a {
+      color: white;
+    }
+  }
+}

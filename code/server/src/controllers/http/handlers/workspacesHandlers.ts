@@ -8,6 +8,7 @@ import { Server } from 'socket.io';
 import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 import { getSearchParams, SearchParams } from '@src/utils/searchParams';
+import versionsHandlers from '@controllers/http/handlers/versionsHandlers';
 
 function workspacesHandlers(services: Services, io: Server) {
   const createWorkspace = async (req: Request, res: Response) => {
@@ -131,6 +132,9 @@ function workspacesHandlers(services: Services, io: Server) {
 
   // sub-routes for resources (documents and folders)
   router.use('/:wid', workspaceReadPermission, resourcesHandlers(services.resources, io, workspaceWritePermission));
+
+  // sub-routes for document versions management
+  router.use('/:wid/:id', workspaceReadPermission, versionsHandlers(services.documents, io, workspaceWritePermission));
   return router;
 }
 

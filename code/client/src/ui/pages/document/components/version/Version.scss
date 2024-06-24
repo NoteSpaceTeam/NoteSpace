@@ -1,0 +1,40 @@
+.version {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 4vh;
+  display: flex;
+  flex-direction: row;
+  gap: 2vh;
+
+  button {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+    font-size: 22px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.commits-dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: start;
+  padding: 1vh;
+}

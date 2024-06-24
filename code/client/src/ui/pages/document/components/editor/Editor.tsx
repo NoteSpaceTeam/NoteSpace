@@ -44,7 +44,6 @@ function Editor({ title, connectors, fugue }: EditorProps) {
 
   const syncEditor = useCallback(
     (slate?: Descendant[]) => {
-      console.log('Syncing editor...');
       const newSlate = slate || toSlate(fugue);
       updateEditor(newSlate);
     },

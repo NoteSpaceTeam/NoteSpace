@@ -1,7 +1,7 @@
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 import { ResourceInputModel, ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
 
-function resourceService(http: HttpCommunication, wid: string) {
+function resourcesService(http: HttpCommunication, wid: string) {
   async function getResource(id: string): Promise<Resource> {
     return await http.get(`/workspaces/${wid}/${id}`);
   }
@@ -28,4 +28,4 @@ function resourceService(http: HttpCommunication, wid: string) {
   };
 }
 
-export default resourceService;
+export default resourcesService;

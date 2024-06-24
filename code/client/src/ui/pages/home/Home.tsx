@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import './Home.scss';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { useEffect, useState } from 'react';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
 import useLoading from '@ui/hooks/useLoading';
+import './Home.scss';
 
 function Home() {
   const [workspaces, setWorkspaces] = useState<WorkspaceMeta[]>([]);
@@ -23,6 +23,12 @@ function Home() {
   return (
     <div className="home">
       <h2>Home</h2>
+      <p>Welcome to NoteSpace</p>
+      <Link to="/workspaces">Go to Workspaces</Link>
+      <br />
+      <hr />
+      <br />
+      <h2>Public Workspaces</h2>
       {loading
         ? spinner
         : workspaces.map(workspace => (

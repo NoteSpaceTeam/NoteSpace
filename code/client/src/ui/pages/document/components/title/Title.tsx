@@ -3,7 +3,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { useParams } from 'react-router-dom';
 import useSocketListeners from '@services/communication/socket/useSocketListeners';
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
-import useDocumentService from '@services/resource/useResourceService';
+import useDocumentService from '@services/resource/useResourcesService';
 import { ServiceConnector } from '@domain/editor/connectors/service/connector';
 
 interface TitleProps extends React.InputHTMLAttributes<HTMLInputElement> {

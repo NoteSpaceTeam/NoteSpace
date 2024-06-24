@@ -4,6 +4,7 @@ import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/re
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { SearchParams } from '@src/utils/searchParams';
+import { DocumentVersion } from '@notespace/shared/src/document/types/versions';
 
 export interface DocumentsRepository {
   /**
@@ -11,7 +12,7 @@ export interface DocumentsRepository {
    * @param wid
    * @param id
    */
-  createDocument: (wid: string, id: string) => Promise<string>;
+  createDocument: (wid: string, id: string) => Promise<void>;
   /**
    * Get a document from the database
    * @param wid
@@ -30,7 +31,7 @@ export interface DocumentsRepository {
    * @param id
    * @param operations
    */
-  updateDocument: (wid: string, id: string, operations: Operation[]) => Promise<void>;
+  updateDocument: (wid: string, id: string, operations: Operation[], replace: boolean) => Promise<void>;
   /**
    * Add a workspace to the database
    * @param wid
@@ -155,8 +156,15 @@ export interface UsersRepository {
   getUserByEmail: (email: string) => Promise<User>;
 }
 
+export interface VersionsRepository {
+  saveVersion: (id: string, version: DocumentVersion) => Promise<void>;
+  getVersion: (id: string, versionId: string) => Promise<DocumentVersion>;
+  getVersions: (id: string) => Promise<DocumentVersion[]>;
+}
+
 export interface Databases {
   readonly documents: DocumentsRepository;
+  readonly versions: VersionsRepository;
   readonly resources: ResourcesRepository;
   readonly workspaces: WorkspacesRepository;
   readonly users: UsersRepository;

@@ -70,7 +70,7 @@ function TreeResourceView({
             trigger={'create-new-resource-' + resource.id}
           />
           {resource.type === ResourceType.DOCUMENT ? (
-            <div {...props} className="resource-name document">
+            <div {...props} className="resource-name document-resource">
               {isEditing ? (
                 <div>
                   <FaFile />
@@ -84,7 +84,7 @@ function TreeResourceView({
               )}
             </div>
           ) : (
-            <div {...props} className="resource-name folder">
+            <div {...props} className="resource-name folder-resource">
               <div>
                 <FaFolder />
                 {component}

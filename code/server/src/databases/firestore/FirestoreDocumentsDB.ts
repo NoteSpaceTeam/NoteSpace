@@ -12,11 +12,8 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
   async createDocument(wid: string, id: string) {
     const documents = await this.getWorkspace(wid);
     const docData: DocumentContent = { operations: [] };
-
     const doc = documents.doc(id);
-
     await doc.set(docData);
-    return id;
   }
 
   async getDocument(wid: string, id: string): Promise<DocumentContent> {
@@ -30,9 +27,10 @@ export class FirestoreDocumentsDB implements DocumentsRepository {
     await doc.delete();
   }
 
-  async updateDocument(wid: string, id: string, newOperations: Operation[]) {
+  async updateDocument(wid: string, id: string, newOperations: Operation[], replace: boolean) {
     const doc = await this.getDoc(wid, id);
-    await doc.update({ operations: FieldValue.arrayUnion(...newOperations) });
+    const operations = replace ? newOperations : FieldValue.arrayUnion(...newOperations);
+    await doc.update({ operations });
   }
 
   async getWorkspace(id: string): Promise<CollectionReference> {

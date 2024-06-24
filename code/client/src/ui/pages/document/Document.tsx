@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCommunication } from '@/contexts/communication/useCommunication';
 import useError from '@/contexts/error/useError';
-import useDocumentService from '@services/resource/useResourceService';
+import useDocumentService from '@services/resource/useResourcesService';
 import useConnectors from '@domain/editor/connectors/useConnectors';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import './Document.scss';
+import Version from '@ui/pages/document/components/version/Version';
 
 function Document() {
   const communication = useCommunication();
@@ -51,7 +52,12 @@ function Document() {
   }, [fugue, id, http, socket, publishError, services, setTitle, navigate]);
 
   if (!loaded) return null;
-  return <Editor title={title} fugue={fugue} connectors={connectors} />;
+  return (
+    <div className="document">
+      <Editor title={title} fugue={fugue} connectors={connectors} />
+      <Version />
+    </div>
+  );
 }
 
 export default Document;

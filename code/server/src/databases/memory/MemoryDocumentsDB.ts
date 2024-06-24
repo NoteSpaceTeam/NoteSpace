@@ -8,7 +8,6 @@ export class MemoryDocumentsDB implements DocumentsRepository {
 
   async createDocument(wid: string, id: string) {
     this.workspaces[wid][id] = { operations: [] };
-    return id;
   }
 
   async getDocument(wid: string, id: string): Promise<DocumentContent> {
@@ -20,18 +19,16 @@ export class MemoryDocumentsDB implements DocumentsRepository {
     delete this.workspaces[id];
   }
 
-  async updateDocument(wid: string, id: string, operations: Operation[]) {
+  async updateDocument(wid: string, id: string, operations: Operation[], replace: boolean) {
     const document = this.getDoc(wid, id);
-    this.workspaces[wid][id].operations = [...document.operations, ...operations];
+    this.workspaces[wid][id].operations = replace ? operations : [...document.operations, ...operations];
   }
 
   private getDoc(wid: string, id: string) {
     const workspace = this.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-
     const document = workspace[id];
     if (!document) throw new NotFoundError(`Document not found`);
-
     return document;
   }
 
