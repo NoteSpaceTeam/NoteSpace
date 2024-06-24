@@ -1,8 +1,10 @@
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Databases } from '@databases/types';
-import { decodeFromBase64, encodeToBase64 } from '@services/utils';
-import { Author, Commit } from '@notespace/shared/src/document/types/commits';
-import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { decodeFromBase64, encodeToBase64, getRandomId } from '@services/utils';
+import { Author, Commit, CommitData } from '@notespace/shared/src/document/types/commits';
+import { DocumentResource, Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+
+const COMMIT_ID_LENGTH = 8;
 
 export class DocumentsService {
   private readonly databases: Databases;
@@ -24,7 +26,8 @@ export class DocumentsService {
     const document = await this.databases.documents.getDocument(resource.workspace, id);
     // save operations in new commit
     const content = encodeToBase64(document.operations);
-    const commit: Commit = { id: resource.id, content, timestamp: Date.now(), author };
+    const commitId = getRandomId(COMMIT_ID_LENGTH);
+    const commit: Commit = { id: commitId, content, timestamp: Date.now(), author };
     await this.databases.commits.saveCommit(id, commit);
   }
 
@@ -38,14 +41,14 @@ export class DocumentsService {
     await this.databases.documents.updateDocument(resource.workspace, id, operations, true);
   }
 
-  async fork(id: string, commitId: string) {
+  async fork(id: string, commitId: string): Promise<DocumentResource> {
     // get operations from commit
     const resource = await this.getDocumentResource(id);
     const commit = await this.databases.commits.getCommit(id, commitId);
     const operations = decodeFromBase64(commit.content) as Operation[];
 
     // create new document with operations
-    const newResource: Resource = {
+    const newResource: DocumentResource = {
       ...resource,
       id,
       name: `${resource.name}-forked`,
@@ -62,16 +65,24 @@ export class DocumentsService {
     return newResource;
   }
 
-  async getCommits(id: string) {
+  async getCommits(id: string): Promise<Commit[]> {
     // check if document exists
     await this.getDocumentResource(id);
     // get all commits of a document
     return await this.databases.commits.getCommits(id);
   }
 
-  private async getDocumentResource(id: string) {
+  async getCommit(id: string, commitId: string): Promise<CommitData> {
+    // check if document exists
+    await this.getDocumentResource(id);
+    // get commit of a document
+    const commit = await this.databases.commits.getCommit(id, commitId);
+    return { ...commit, content: decodeFromBase64(commit.content) as Operation[] };
+  }
+
+  private async getDocumentResource(id: string): Promise<DocumentResource> {
     const resource = await this.databases.resources.getResource(id);
     if (resource.type !== ResourceType.DOCUMENT) throw new Error('Resource is not a document');
-    return resource;
+    return resource as DocumentResource;
   }
 }

@@ -14,7 +14,8 @@ import AuthProvider from '@/contexts/auth/AuthContext';
 import Profile from '@ui/pages/profile/Profile';
 import Landing from '@ui/pages/landing/Landing';
 import Search from '@ui/pages/search/Search';
-import DocumentCommits from '@ui/pages/document/components/commit-history/CommitHistory';
+import CommitHistory from '@ui/pages/document/components/commit-history/CommitHistory';
+import Commit from '@ui/pages/document/components/commit/Commit';
 
 function App() {
   return (
@@ -67,7 +68,8 @@ function App() {
                               <Routes>
                                 <Route path="/" element={<Workspace />} />
                                 <Route path="/:id" element={<Document />} />
-                                <Route path="/:id/commits" element={<DocumentCommits />} />
+                                <Route path="/:id/commits" element={<CommitHistory />} />
+                                <Route path="/:id/commits/:commitId" element={<Commit />} />
                               </Routes>
                             </WorkspaceProvider>
                           }

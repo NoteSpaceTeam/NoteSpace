@@ -17,7 +17,8 @@ export class FirestoreCommitsDB implements CommitsRepository {
     if (!data) throw new NotFoundError(`Commit not found`);
     const commitData = data[commitId];
     if (!commitData) throw new NotFoundError(`Commit not found`);
-    return { id: commitId, content: commitData.content, timestamp: commitData.timestamp };
+    const { content, timestamp, author } = commitData;
+    return { id: commitId, content, timestamp, author };
   }
 
   async getCommits(id: string): Promise<Commit[]> {
@@ -26,7 +27,7 @@ export class FirestoreCommitsDB implements CommitsRepository {
     const data = snapshot.data();
     if (!data) throw new NotFoundError(`Commits not found`);
     return Object.entries(data)
-      .map(([id, { content, timestamp }]) => ({ id, content, timestamp }))
+      .map(([id, { content, timestamp, author }]) => ({ id, content, timestamp, author }))
       .sort((a, b) => a.timestamp - b.timestamp);
   }
 }

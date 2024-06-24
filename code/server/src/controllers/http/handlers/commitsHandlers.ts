@@ -43,11 +43,18 @@ function resourcesHandlers(
     httpResponse.ok(res).json(commits);
   };
 
+  const getCommit = async (req: Request, res: Response) => {
+    const { id, commitId } = req.params;
+    const commit = await service.getCommit(id, commitId);
+    httpResponse.ok(res).json(commit);
+  };
+
   const router = PromiseRouter({ mergeParams: true });
   router.post('/commit', enforceAuth, workspaceWritePermissions, commit);
   router.post('/rollback', enforceAuth, workspaceWritePermissions, rollback);
   router.post('/fork', enforceAuth, workspaceWritePermissions, fork);
   router.get('/commits', getCommits);
+  router.get('/commits/:commitId', getCommit);
 
   return router;
 }

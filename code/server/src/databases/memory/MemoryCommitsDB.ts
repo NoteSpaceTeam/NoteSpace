@@ -13,7 +13,7 @@ export class MemoryCommitsDB implements CommitsRepository {
   }
 
   async getCommits(id: string): Promise<Commit[]> {
-    return Object.values(this.commits[id]);
+    return Object.values(this.commits[id]).sort((a, b) => a.timestamp - b.timestamp);
   }
 
   async saveCommit(id: string, commit: Commit): Promise<void> {

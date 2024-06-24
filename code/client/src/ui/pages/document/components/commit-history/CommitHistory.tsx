@@ -1,6 +1,6 @@
 import './CommitHistory.scss';
 import useCommitsService from '@services/commits/useCommitsService';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useResourcesService from '@services/resource/useResourcesService';
 import { useEffect, useState } from 'react';
 import useLoading from '@ui/hooks/useLoading';
@@ -14,9 +14,10 @@ function CommitHistory() {
   const [document, setDocument] = useState<DocumentResource>();
   const [commits, setCommits] = useState<Commit[]>([]);
   const { loading, spinner, startLoading, stopLoading } = useLoading();
-  const { id } = useParams();
+  const { wid, id } = useParams();
   const { getResource } = useResourcesService();
   const { getCommits, fork, rollback } = useCommitsService();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchDocument() {
@@ -25,6 +26,7 @@ function CommitHistory() {
     }
     async function fetchCommits() {
       const commits = await getCommits();
+      console.log(commits);
       setCommits(commits);
     }
     startLoading();
@@ -43,7 +45,11 @@ function CommitHistory() {
           <div className="commits-list">
             {commits.length > 0 ? (
               commits.map(commit => (
-                <div key={commit.id} className="commit">
+                <button
+                  key={commit.id}
+                  className="commit"
+                  onClick={() => navigate(`/workspaces/${wid}/${id}/commits/${commit.id}`)}
+                >
                   <p>
                     <Link to={`/profile/${commit.author.id}`}>{commit.author.name}</Link> committed{' '}
                     {formatTimePassed(new Date(commit.timestamp).toLocaleString())}
@@ -58,7 +64,7 @@ function CommitHistory() {
                       Fork
                     </button>
                   </div>
-                </div>
+                </button>
               ))
             ) : (
               <p>No commits yet</p>

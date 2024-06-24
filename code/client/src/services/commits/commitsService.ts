@@ -1,13 +1,9 @@
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
-import { Commit } from '@notespace/shared/src/document/types/commits';
+import { Commit, CommitData } from '@notespace/shared/src/document/types/commits';
 
 function commitsService(http: HttpCommunication, wid: string, id: string) {
   async function commit() {
     return await http.post(`/workspaces/${wid}/${id}/commit`);
-  }
-
-  async function getCommits(): Promise<Commit[]> {
-    return await http.get(`/workspaces/${wid}/${id}/commits`);
   }
 
   async function rollback(commitId: string) {
@@ -18,11 +14,20 @@ function commitsService(http: HttpCommunication, wid: string, id: string) {
     return await http.post(`/workspaces/${wid}/${id}/fork`, { commitId });
   }
 
+  async function getCommits(): Promise<Commit[]> {
+    return await http.get(`/workspaces/${wid}/${id}/commits`);
+  }
+
+  async function getCommit(commitId: string): Promise<CommitData> {
+    return await http.get(`/workspaces/${wid}/${id}/commits/${commitId}`);
+  }
+
   return {
     commit,
-    getCommits,
     rollback,
     fork,
+    getCommits,
+    getCommit,
   };
 }
 

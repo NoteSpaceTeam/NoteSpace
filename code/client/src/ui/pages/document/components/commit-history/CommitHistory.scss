@@ -1,4 +1,10 @@
 .document-commits {
+  .commits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+  }
+
   .commit {
     padding: 0.5vh 8vh;
     border-radius: 10px;
