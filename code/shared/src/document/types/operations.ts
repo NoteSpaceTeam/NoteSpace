@@ -1,6 +1,5 @@
 import { Id } from "./types";
 import { InlineStyle, BlockStyle } from "./styles";
-import { Cursor } from "./cursor";
 
 export type InsertOperation = {
   type: "insert";
@@ -8,14 +7,12 @@ export type InsertOperation = {
   value: string;
   parent: Id;
   side: "L" | "R";
-  cursor: Cursor;
   styles?: InlineStyle[];
 };
 
 export type DeleteOperation = {
   type: "delete";
   id: Id;
-  cursor: Cursor;
 };
 
 export type InlineStyleOperation = {
@@ -32,15 +29,8 @@ export type BlockStyleOperation = {
   append: boolean;
 };
 
-export type ReviveOperation = {
-  type: "revive";
-  id: Id;
-  cursor: Cursor;
-};
-
 export type Operation =
   | InsertOperation
   | DeleteOperation
   | InlineStyleOperation
-  | BlockStyleOperation
-  | ReviveOperation;
+  | BlockStyleOperation;

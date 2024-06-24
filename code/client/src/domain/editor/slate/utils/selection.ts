@@ -1,7 +1,6 @@
 import { Editor, Node, Path, Point, Range, Text } from 'slate';
 import { Cursor, emptyCursor, emptySelection, Selection } from '@domain/editor/cursor';
 import { first, isEqual } from 'lodash';
-import { CustomElement } from '@domain/editor/slate/types';
 
 /**
  * Checks if the current selection is active
@@ -60,48 +59,6 @@ export function pointToCursor(editor: Editor, point: Point): Cursor {
   }
   return cursor;
 }
-
-export const cursorToPoint = (editor: Editor, cursor: Cursor): Point => {
-  const { line, column } = cursor;
-  let offset = column;
-
-  // Get the path to the line node
-  const linePath = [line];
-
-  // Check if the path exists in the editor
-  if (!Editor.hasPath(editor, linePath)) {
-    throw new Error(`Cannot find a node at line ${line}`);
-  }
-
-  // Get the node at the line path
-  const lineNode = Node.get(editor, linePath);
-
-  // Check if the node is a valid block or container node
-  if (!Editor.isBlock(editor, lineNode as CustomElement)) {
-    throw new Error(`Node at line ${line} is not a block node`);
-  }
-
-  // Traverse the children of the line node to find the correct text node
-  for (const [node, nodePath] of Node.children(editor, linePath)) {
-    if (Text.isText(node)) {
-      if (offset <= node.text.length) {
-        return { path: nodePath, offset };
-      }
-      offset -= node.text.length;
-    }
-  }
-
-  // If the offset is not found, return the end of the line node
-  const lastTextNode = Node.last(editor, linePath);
-  if (lastTextNode) {
-    const [lastNode, lastPath] = lastTextNode;
-    if (Text.isText(lastNode)) {
-      return { path: lastPath, offset: lastNode.text.length };
-    }
-  }
-
-  throw new Error('Cursor position is out of bounds');
-};
 
 /**
  * Returns the selection by range

@@ -69,7 +69,7 @@ function usersHandlers(service: UsersService) {
 
   const router = PromiseRouter({ mergeParams: true });
   router.post('/login', sessionLogin);
-  router.post('/logout', enforceAuth, sessionLogout);
+  router.post('/logout', sessionLogout);
   router.get('/:id', getUser);
   router.get('/', getUsers);
   router.put('/:id', enforceAuth, updateUser);

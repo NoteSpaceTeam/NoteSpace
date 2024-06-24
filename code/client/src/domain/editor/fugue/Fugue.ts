@@ -11,7 +11,6 @@ import {
   InlineStyleOperation,
   InsertOperation,
   Operation,
-  ReviveOperation,
 } from '@notespace/shared/src/document/types/operations';
 
 /**
@@ -43,9 +42,6 @@ export class Fugue {
           break;
         case 'block-style':
           this.updateBlockStyleRemote(operation);
-          break;
-        case 'revive':
-          this.reviveRemote(operation);
           break;
         default:
           throw new Error('Invalid operation type');
@@ -94,7 +90,6 @@ export class Fugue {
       parent,
       side: isEmpty(leftOrigin.rightChildren) ? 'R' : 'L',
       styles,
-      cursor,
     };
   }
 
@@ -107,9 +102,8 @@ export class Fugue {
    * @param side
    * @param styles
    */
-  private addNode = ({ cursor, id, value, parent, side, styles }: InsertOperation) => {
-    if (value === '\n') this.tree.addLineRoot(cursor.line || 0, id, parent, side, styles);
-    else this.tree.addNode(id, value, parent, side, styles || []);
+  private addNode = ({ id, value, parent, side, styles }: InsertOperation) => {
+    this.tree.addNode(id, value, parent, side, styles || []);
   };
 
   /**
@@ -126,7 +120,7 @@ export class Fugue {
       } else {
         cursor.column++;
       }
-      return this.removeNode(node.id, cursor);
+      return this.removeNode(node.id);
     });
   }
 
@@ -136,16 +130,15 @@ export class Fugue {
    */
   deleteLocalByCursor(cursor: Cursor) {
     const node = this.getNodeByCursor(cursor);
-    if (node) return this.deleteLocalById(cursor, node.id);
+    if (node) return this.deleteLocalById(node.id);
   }
 
   /**
    * Deletes the node based on the given operation
-   * @param cursor
    * @param ids
    */
-  deleteLocalById = ({ line, column }: Cursor, ...ids: Id[]): DeleteOperation[] => {
-    return ids.map(id => this.removeNode(id, { line, column: column++ }));
+  deleteLocalById = (...ids: Id[]): DeleteOperation[] => {
+    return ids.map(id => this.removeNode(id));
   };
 
   /**
@@ -157,53 +150,11 @@ export class Fugue {
   /**
    * Deletes the node based on the given node id
    * @param id
-   * @param cursor
    */
-  private removeNode(id: Id, cursor: Cursor): DeleteOperation {
+  private removeNode(id: Id): DeleteOperation {
     this.tree.deleteNode(id);
-    return { type: 'delete', id, cursor };
+    return { type: 'delete', id };
   }
-
-  /**
-   * Relives the nodes from the given start index and given length.
-   * @param selection
-   */
-  reviveLocal(selection: Selection): ReviveOperation[] {
-    const nodes = Array.from(this.traverseBySelection(selection, true));
-    return nodes.map(node => {
-      if (node.value === '\n') {
-        selection.start.line++;
-        selection.start.column = 0;
-      } else selection.start.column++;
-
-      return this.reviveNode(node.id, selection.start);
-    });
-  }
-
-  /**
-   * Revives the node at the given cursor
-   * @param cursor
-   */
-  reviveLocalByCursor(cursor: Cursor) {
-    const node = this.getNodeByCursor(cursor);
-    if (node) return this.reviveNode(node.id, cursor);
-  }
-
-  /**
-   * Revives a node based on the given id
-   * @param id
-   * @param cursor
-   */
-  reviveNode(id: Id, cursor: Cursor): ReviveOperation {
-    this.tree.reviveNode(id);
-    return { type: 'revive', id, cursor };
-  }
-
-  /**
-   * Revives a node based on the given operation
-   * @param operation
-   */
-  reviveRemote = (operation: ReviveOperation) => this.tree.reviveNode(operation.id);
 
   /**
    * Updates the style of the nodes by the given selection
@@ -339,7 +290,7 @@ export class Fugue {
     const iterator = this.traverseBySeparator(' ', cursor, reverse);
     const nodes: FugueNode[] = iterator.next().value;
     if (!nodes) return;
-    return this.deleteLocalById(cursor, ...nodes.map(node => node.id));
+    return this.deleteLocalById(...nodes.map(node => node.id));
   }
 
   /**

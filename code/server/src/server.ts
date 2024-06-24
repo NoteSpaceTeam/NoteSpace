@@ -27,7 +27,6 @@ function bootServer(args: string[]): void {
   // setup services and databases
   const databases = mode === 'dev' ? new TestDatabases() : new ProductionDatabases();
   const services = new Services(databases);
-
   ServerLogger.logWarning('Starting server in ' + `${mode} mode...`);
 
   // setup server and controllers
@@ -35,6 +34,7 @@ function bootServer(args: string[]): void {
   const server = http.createServer(app);
   const io = new Server(server, config.SERVER_OPTIONS);
   const api = router(services, io);
+  app.set('trust proxy', 1); // trust first proxy for secure cookies
 
   // setup middlewares
   app.use(cors(config.SERVER_OPTIONS.cors));
@@ -49,8 +49,8 @@ function bootServer(args: string[]): void {
   const socketEvents = initSocketEvents(events);
   io.on('connection', socketEvents);
 
-  server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
-    ServerLogger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
+  server.listen(config.SERVER_PORT, () => {
+    ServerLogger.logSuccess(`Listening on port ${config.SERVER_PORT}`);
   });
 }
 
