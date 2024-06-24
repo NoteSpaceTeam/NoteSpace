@@ -35,6 +35,7 @@ function bootServer(args: string[]): void {
   const server = http.createServer(app);
   const io = new Server(server, config.SERVER_OPTIONS);
   const api = router(services, io);
+  app.set('trust proxy', 1); // trust first proxy
 
   // setup middlewares
   app.use(cors(config.SERVER_OPTIONS.cors));
@@ -49,7 +50,7 @@ function bootServer(args: string[]): void {
   const socketEvents = initSocketEvents(events);
   io.on('connection', socketEvents);
 
-  server.listen(config.SERVER_PORT, config.SERVER_IP, () => {
+  server.listen(config.SERVER_PORT, () => {
     ServerLogger.logSuccess(`Listening on http://${config.SERVER_IP}:${config.SERVER_PORT}`);
   });
 }
