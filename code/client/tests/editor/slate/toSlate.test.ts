@@ -30,7 +30,7 @@ describe('toSlate', () => {
     fugue.updateBlockStyleLocal(1, 'list-item');
     fugue.updateInlineStyleLocal(
       {
-        start: { line: 0, column: 1 },
+        start: { line: 0, column: 0 },
         end: { line: 0, column: 1 },
       },
       'bold'

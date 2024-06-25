@@ -20,7 +20,7 @@ describe('Input Operations', () => {
 
   test('should insert character', () => {
     // given
-    const cursor = { line: 0, column: 1 }; // must mimic slate cursor
+    const cursor = { line: 0, column: 0 }; // must mimic slate cursor
 
     // when
     _inputConnector.insertCharacter('a', cursor);
@@ -42,8 +42,8 @@ describe('Input Operations', () => {
 
   test('should delete character', () => {
     // given
-    const cursor1 = { line: 0, column: 1 }; // must mimic slate cursor
-    const cursor2 = { line: 0, column: 2 };
+    const cursor1 = { line: 0, column: 0 }; // must mimic slate cursor
+    const cursor2 = { line: 0, column: 1 };
     _inputConnector.insertCharacter('a', cursor1);
 
     // when
@@ -55,14 +55,14 @@ describe('Input Operations', () => {
 
   test('should delete by selection', () => {
     // given
-    const cursor1 = { line: 0, column: 1 }; // must mimic slate cursor
-    const cursor2 = { line: 0, column: 2 };
-    const cursor3 = { line: 0, column: 3 };
+    const cursor1 = { line: 0, column: 0 }; // must mimic slate cursor
+    const cursor2 = { line: 0, column: 1 };
+    const cursor3 = { line: 0, column: 2 };
     _inputConnector.insertCharacter('a', cursor1);
     _inputConnector.insertCharacter('b', cursor2);
 
     // when
-    _inputConnector.deleteSelection({ start: cursor2, end: cursor3 });
+    _inputConnector.deleteSelection({ start: cursor1, end: cursor3 });
 
     // then
     expect(fugue.toString()).toEqual('');
@@ -71,17 +71,17 @@ describe('Input Operations', () => {
   test('should delete word', () => {
     // given
     const text = 'hello world';
-    const cursor1 = { line: 0, column: text.length + 1 };
-    const cursor2 = { line: 0, column: 1 };
+    const cursor1 = { line: 0, column: text.length };
+    const cursor2 = { line: 0, column: 0 };
 
     // when
     text.split('').forEach((char, index) => {
-      _inputConnector.insertCharacter(char, { line: 0, column: index + 1 });
+      _inputConnector.insertCharacter(char, { line: 0, column: index });
     });
     _inputConnector.deleteWord(cursor1, true);
 
     // then
-    expect('hello ').toEqual(fugue.toString());
+    expect(fugue.toString()).toEqual('hello ');
 
     // when
     _inputConnector.deleteWord(cursor2, false);
