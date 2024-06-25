@@ -11,6 +11,7 @@ import initSocketEvents from '@controllers/ws/initSocketEvents';
 import { ServerLogger } from '@src/utils/logging';
 import { TestDatabases } from '@databases/TestDatabases';
 import { ProductionDatabases } from '@databases/ProductionDatabases';
+import { authMiddleware } from '@controllers/http/middlewares/authMiddlewares';
 
 /**
  * Boot the server
@@ -45,12 +46,14 @@ function bootServer(args: string[]): void {
   app.use('/', api);
 
   // setup event handlers
-  const events = eventsInit(services.documents);
+  io.engine.use(cookieParser());
+  io.engine.use(authMiddleware);
+  const events = eventsInit(services);
   const socketEvents = initSocketEvents(events);
   io.on('connection', socketEvents);
 
-  server.listen(config.SERVER_PORT, () => {
-    ServerLogger.logSuccess(`Listening on port ${config.SERVER_PORT}`);
+  server.listen(config.PORT, () => {
+    ServerLogger.logSuccess(`Listening on port ${config.PORT}`);
   });
 }
 

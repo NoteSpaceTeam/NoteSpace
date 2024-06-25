@@ -19,7 +19,6 @@ function Commit() {
   useEffect(() => {
     async function fetchCommit() {
       const commit = await getCommit(commitId!);
-      console.log(commit);
       setCommit(commit);
       fugue.applyOperations(commit.content, true);
       stopLoading();

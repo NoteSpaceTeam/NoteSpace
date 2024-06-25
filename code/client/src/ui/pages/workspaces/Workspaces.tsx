@@ -16,11 +16,12 @@ function Workspaces() {
 
   useEffect(() => {
     socket.connect();
+    return () => socket.disconnect();
+  }, [socket]);
+
+  useEffect(() => {
     setRows(workspaces);
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket, workspaces]);
+  }, [workspaces]);
 
   return (
     <div className="workspaces">

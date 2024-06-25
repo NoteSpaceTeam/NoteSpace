@@ -36,7 +36,6 @@ function CommitHistory() {
     }
     async function fetchCommits() {
       const commits = await getCommits();
-      console.log(commits);
       setCommits(commits);
     }
     startLoading();

@@ -14,6 +14,7 @@ import useCursors from '@ui/pages/document/components/editor/hooks/useCursors';
 import getEventHandlers from '@domain/editor/slate/operations/getEventHandlers';
 import useEditorSync from '@ui/pages/document/components/editor/hooks/useEditorSync';
 import './Editor.scss';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 type EditorProps = {
   title: string;
@@ -29,6 +30,7 @@ function Editor({ title, connectors, fugue }: EditorProps) {
   const { renderElement, renderLeaf } = useRenderers(editor, fugue, connectors.service);
   const decorate = useDecorate(editor, cursors);
   const { syncEditor } = useEditorSync(fugue, setEditor);
+  const { isMember } = useWorkspace();
   const { onInput, onShortcut, onCut, onPaste, onSelectionChange, onFormat, onBlur } = getEventHandlers(
     editor,
     connectors.input,
@@ -40,7 +42,7 @@ function Editor({ title, connectors, fugue }: EditorProps) {
     <div className="editor">
       <div className="container">
         <Slate editor={editor} onChange={() => onSelectionChange()} initialValue={initialValue}>
-          <Title title={title} placeholder="Untitled" connector={connectors.service} />
+          <Title title={title} placeholder="Untitled" connector={connectors.service} readOnly={!isMember} />
           <Toolbar onApplyMark={onFormat} />
           <Editable
             className="editable"
@@ -56,6 +58,7 @@ function Editor({ title, connectors, fugue }: EditorProps) {
             onPaste={e => onPaste(e.nativeEvent)}
             onKeyDown={e => onShortcut(e.nativeEvent)}
             onBlur={onBlur}
+            readOnly={!isMember}
           />
         </Slate>
       </div>

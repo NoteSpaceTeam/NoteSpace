@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 function useEditing(initialValue: string, onEdit: (value: string) => void) {
   const [value, setValue] = useState(initialValue);
   const [isEditing, setIsEditing] = useState(false);
+  const { isMember } = useWorkspace();
 
   // listen for changes in the initial value
   useEffect(() => {
@@ -33,7 +35,7 @@ function useEditing(initialValue: string, onEdit: (value: string) => void) {
   return {
     component,
     isEditing,
-    setIsEditing,
+    setIsEditing: isMember ? setIsEditing : () => {},
   };
 }
 

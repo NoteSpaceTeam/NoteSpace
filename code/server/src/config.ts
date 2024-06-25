@@ -1,25 +1,23 @@
 import { config } from 'dotenv';
 import * as process from 'node:process';
+import { ServerOptions } from 'socket.io';
 
 config();
 
-const SERVER_PORT = parseInt(process.env.PORT || '8080');
-const CLIENT_PORT = parseInt(process.env.CLIENT_PORT || '5173');
-const ORIGIN = ['http://localhost:5173'];
+const PORT = parseInt(process.env.PORT || '8080');
+const ORIGIN = 'http://localhost:5173';
 
-const SERVER_OPTIONS = {
+const SERVER_OPTIONS: Partial<ServerOptions> = {
   cors: {
     origin: ORIGIN,
-    credentials: true, // allow credentials (cookies, authorization headers, etc.)
-    allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true, // allow credentials (cookies)
     allowedHeaders: ['Authorization', 'Content-Type'],
   },
-  connectionStateRecovery: {},
+  connectionStateRecovery: {}, // enable connection state recovery
 };
 
 export default {
-  SERVER_PORT,
-  CLIENT_PORT,
+  PORT,
   ORIGIN,
   SERVER_OPTIONS,
 };

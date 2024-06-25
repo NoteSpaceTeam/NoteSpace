@@ -22,7 +22,7 @@ function Document() {
   const connectors = useConnectors(fugue, communication);
   const navigate = useNavigate();
 
-  // redirect to workspace if document is deleted
+  // redirect to workspace page if document is deleted
   connectors.service.on('deletedResource', rid => {
     if (id === rid) {
       publishError(Error('Document was deleted'));

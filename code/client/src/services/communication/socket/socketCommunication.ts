@@ -15,7 +15,7 @@ export interface SocketCommunication {
   disconnect: ConnectionType;
 }
 
-const socket = io(SERVER_URL, { autoConnect: false });
+const socket = io(SERVER_URL, { autoConnect: false, withCredentials: true });
 const OPERATION_DELAY = 100;
 const operationEmitter = new OperationEmitter(socket, OPERATION_DELAY);
 

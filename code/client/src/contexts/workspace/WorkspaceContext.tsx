@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import useWorkspaceService from '@services/workspace/useWorkspaceService';
 import useResources from '@domain/workspaces/useResources';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { useAuth } from '@/contexts/auth/useAuth';
 
 export type Resources = Record<string, Resource>;
 
@@ -20,6 +21,7 @@ export type WorkspaceContextType = {
   workspace?: WorkspaceMeta;
   resources?: Resources;
   operations?: WorkspaceOperations;
+  isMember: boolean;
 };
 
 export const WorkspaceContext = createContext<WorkspaceContextType>({});
@@ -31,6 +33,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const { setResources, ...otherOperations } = operations;
   const { socket } = useCommunication();
   const { wid } = useParams();
+  const { currentUser } = useAuth();
+  const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
     if (!wid) return;
@@ -39,6 +43,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       const { resources, ...workspace } = await services.getWorkspace(wid!);
       setWorkspace(workspace);
       setResources(resources);
+      setIsMember(workspace.members.includes(currentUser?.email || ''));
     }
     socket.connect();
     socket.emit('joinWorkspace', wid);
@@ -51,7 +56,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   }, [wid]);
 
   return (
-    <WorkspaceContext.Provider value={{ workspace, resources, operations: otherOperations }}>
+    <WorkspaceContext.Provider value={{ workspace, resources, operations: otherOperations, isMember }}>
       {children}
     </WorkspaceContext.Provider>
   );

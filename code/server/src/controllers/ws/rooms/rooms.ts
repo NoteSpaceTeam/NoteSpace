@@ -21,11 +21,9 @@ function leaveDocument(socket: Socket) {
 
 function getDocument(socketId: string) {
   const room = getRoom(documentRooms, socketId);
-  if (!room) throw new ForbiddenError('Client not in a document');
-
+  if (!room) throw new ForbiddenError('Not in a document');
   const workspace = getWorkspace(socketId);
-  if (!workspace) throw new ForbiddenError('Client not in a workspace');
-
+  if (!workspace) throw new ForbiddenError('Not in a workspace');
   return { id: room.id, wid: workspace.id };
 }
 
@@ -43,8 +41,7 @@ function leaveWorkspace(socket: Socket) {
 
 function getWorkspace(socketId: string) {
   const room = getRoom(workspaceRooms, socketId);
-  if (!room) throw new ForbiddenError('Client not in a workspace');
-
+  if (!room) throw new ForbiddenError('Not in a workspace');
   return { id: room.id };
 }
 

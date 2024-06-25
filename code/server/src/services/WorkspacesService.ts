@@ -1,6 +1,6 @@
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Databases } from '@databases/types';
-import { ConflictError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@domain/errors/errors';
 import { validateEmail, validateId, validateName, validatePositiveNumber } from '@services/utils';
 import { SearchParams } from '@src/utils/searchParams';
 
@@ -46,13 +46,13 @@ export class WorkspacesService {
 
   async addWorkspaceMember(wid: string, email: string) {
     const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
-    if (userInWorkspace) throw new ConflictError('User already in workspace');
+    if (userInWorkspace) throw new InvalidParameterError('User already in workspace');
     await this.databases.workspaces.addWorkspaceMember(wid, userId);
   }
 
   async removeWorkspaceMember(wid: string, email: string) {
     const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
-    if (!userInWorkspace) throw new ConflictError('User not in workspace');
+    if (!userInWorkspace) throw new InvalidParameterError('User not in workspace');
     await this.databases.workspaces.removeWorkspaceMember(wid, userId);
   }
 
