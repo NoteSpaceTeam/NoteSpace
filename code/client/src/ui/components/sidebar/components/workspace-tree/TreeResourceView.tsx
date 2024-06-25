@@ -8,6 +8,7 @@ import CreateResourceMenu from '@ui/components/sidebar/components/CreateResource
 import { GoPlus } from 'react-icons/go';
 import ResourceContextMenu from '@ui/pages/workspace/components/ResourceContextMenu';
 import useEditing from '@ui/hooks/useEditing';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 type TreeResourceViewProps = {
   workspace: string;
@@ -34,6 +35,7 @@ function TreeResourceView({
   onDrag,
   onDrop,
 }: TreeResourceViewProps) {
+  const { isMember } = useWorkspace();
   const [isOpen, setIsOpen] = useState(true);
   const { component, isEditing, setIsEditing } = useEditing(resource.name || 'Untitled', (name: string) =>
     onRenameResource!(resource.id, name)
@@ -45,7 +47,7 @@ function TreeResourceView({
 
   const props: React.HTMLProps<HTMLDivElement> = {
     id: resource.id,
-    draggable: true,
+    draggable: isMember,
     onDragOver: (e: React.DragEvent) => e.preventDefault(),
     onDragStart: onDrag,
     onDrop: onDrop,
@@ -92,7 +94,7 @@ function TreeResourceView({
             </div>
           )}
         </ResourceContextMenu>
-        {!isEditing && (
+        {!isEditing && isMember && (
           <button id={'create-new-resource-' + resource.id}>
             <GoPlus />
           </button>

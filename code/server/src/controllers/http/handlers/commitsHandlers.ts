@@ -28,11 +28,11 @@ function resourcesHandlers(
     httpResponse.noContent(res).send();
   };
 
-  const fork = async (req: Request, res: Response) => {
+  const clone = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { commitId } = req.body;
     if (!commitId) throw new Error('Commit id is required');
-    const newResource = await service.fork(id, commitId);
+    const newResource = await service.clone(id, commitId);
     io.in(newResource.workspace).emit('createdResource', newResource);
     httpResponse.created(res).json({ id: newResource.id });
   };
@@ -52,7 +52,7 @@ function resourcesHandlers(
   const router = PromiseRouter({ mergeParams: true });
   router.post('/commit', enforceAuth, workspaceWritePermissions, commit);
   router.post('/rollback', enforceAuth, workspaceWritePermissions, rollback);
-  router.post('/fork', enforceAuth, workspaceWritePermissions, fork);
+  router.post('/clone', enforceAuth, workspaceWritePermissions, clone);
   router.get('/commits', getCommits);
   router.get('/commits/:commitId', getCommit);
 

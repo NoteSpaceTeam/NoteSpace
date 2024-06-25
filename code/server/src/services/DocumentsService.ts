@@ -41,14 +41,14 @@ export class DocumentsService {
     await this.databases.documents.updateDocument(resource.workspace, id, operations, true);
   }
 
-  async fork(id: string, commitId: string): Promise<DocumentResource> {
+  async clone(id: string, commitId: string): Promise<DocumentResource> {
     // get operations from commit
     const resource = await this.getDocumentResource(id);
     const commit = await this.databases.commits.getCommit(id, commitId);
     const operations = decodeFromBase64(commit.content) as Operation[];
 
     // create new document with operations
-    const name = `${resource.name}-forked`;
+    const name = `${resource.name}-cloned`;
     const newId = await this.databases.resources.createResource(
       resource.workspace,
       name,

@@ -11,8 +11,8 @@ function commitsService(http: HttpCommunication, errorHandler: ErrorHandler, wid
     return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/rollback`, { commitId }));
   }
 
-  async function fork(commitId: string) {
-    return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/fork`, { commitId }));
+  async function clone(commitId: string) {
+    return errorHandler(async () => await http.post(`/workspaces/${wid}/${id}/clone`, { commitId }));
   }
 
   async function getCommits(): Promise<Commit[]> {
@@ -26,7 +26,7 @@ function commitsService(http: HttpCommunication, errorHandler: ErrorHandler, wid
   return {
     commit,
     rollback,
-    fork,
+    clone,
     getCommits,
     getCommit,
   };

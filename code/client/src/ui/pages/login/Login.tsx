@@ -3,20 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import googleIcon from '@assets/images/google-icon.png';
 import { FaGithub } from 'react-icons/fa6';
-import './Landing.scss';
+import './Login.scss';
 
-function Landing() {
-  const { currentUser, loginWithGoogle, loginWithGithub } = useAuth();
+function Login() {
+  const { isLoggedIn, loginWithGoogle, loginWithGithub } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
-      navigate('/home');
+    if (isLoggedIn) {
+      navigate('/');
     }
-  }, [currentUser, navigate]);
+  }, [isLoggedIn, navigate]);
 
   return (
-    <div className="landing">
+    <div className="login">
       <div>
         <h1>Welcome to NoteSpace</h1>
         <div>
@@ -30,10 +30,9 @@ function Landing() {
           </button>
         </div>
       </div>
-
       <p>Please choose a provider to continue</p>
     </div>
   );
 }
 
-export default Landing;
+export default Login;
