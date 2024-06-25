@@ -16,6 +16,7 @@ function Header() {
 
   function handleSearchSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!searchInput) return;
     navigate(`/search?query=${searchInput}`);
   }
 
@@ -34,7 +35,6 @@ function Header() {
             />
           </form>
         )}
-
         <div className="account">
           {currentUser ? (
             <>

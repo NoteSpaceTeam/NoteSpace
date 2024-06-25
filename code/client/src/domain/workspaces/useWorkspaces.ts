@@ -61,7 +61,7 @@ function useWorkspaces() {
 
   useEffect(() => {
     async function fetchWorkspaces() {
-      const workspaces = await service.getWorkspaces();
+      const workspaces = await service.getUserWorkspaces();
       setWorkspaces(workspaces);
     }
     fetchWorkspaces();

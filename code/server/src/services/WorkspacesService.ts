@@ -1,6 +1,5 @@
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Databases } from '@databases/types';
-import { InvalidParameterError } from '@domain/errors/errors';
 import { validateEmail, validateId, validateName, validatePositiveNumber } from '@services/utils';
 import { SearchParams } from '@src/utils/searchParams';
 
@@ -30,8 +29,8 @@ export class WorkspacesService {
     await this.databases.documents.removeWorkspace(id);
   }
 
-  async getWorkspaces(userId?: string): Promise<WorkspaceMeta[]> {
-    return await this.databases.workspaces.getWorkspaces(userId);
+  async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
+    return await this.databases.workspaces.getWorkspaces(email);
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
@@ -45,23 +44,13 @@ export class WorkspacesService {
   }
 
   async addWorkspaceMember(wid: string, email: string) {
-    const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
-    if (userInWorkspace) throw new InvalidParameterError('User already in workspace');
-    await this.databases.workspaces.addWorkspaceMember(wid, userId);
+    validateEmail(email);
+    await this.databases.workspaces.addWorkspaceMember(wid, email);
   }
 
   async removeWorkspaceMember(wid: string, email: string) {
-    const { userId, userInWorkspace } = await this.userInWorkspace(wid, email);
-    if (!userInWorkspace) throw new InvalidParameterError('User not in workspace');
-    await this.databases.workspaces.removeWorkspaceMember(wid, userId);
-  }
-
-  private async userInWorkspace(wid: string, email: string) {
-    validateId(wid);
     validateEmail(email);
-    const user = await this.databases.users.getUserByEmail(email); // check if user with email exists
-    const workspace = await this.databases.workspaces.getWorkspace(wid); // check if workspace exists
-    return { userId: user.id, userInWorkspace: workspace.members.includes(email) }; // check if user in workspace
+    await this.databases.workspaces.removeWorkspaceMember(wid, email);
   }
 
   async searchWorkspaces(searchParams: SearchParams) {

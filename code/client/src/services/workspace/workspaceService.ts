@@ -9,7 +9,7 @@ function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
     return errorHandler(async () => await http.get(`/workspaces/${id}`));
   }
 
-  async function getWorkspaces(): Promise<WorkspaceMeta[]> {
+  async function getUserWorkspaces(): Promise<WorkspaceMeta[]> {
     return errorHandler(async () => await http.get('/workspaces'));
   }
 
@@ -35,8 +35,8 @@ function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
     return errorHandler(async () => await http.delete(`/workspaces/${id}/members`, { email }));
   }
 
-  async function getWorkspacesFeed() {
-    return errorHandler(async () => await http.get('/workspaces/search'));
+  async function getWorkspaces() {
+    return errorHandler(async () => await http.get('/workspaces?publicOnly=true'));
   }
 
   async function searchWorkspaces(query: string, skip: number, limit: number): Promise<WorkspaceMeta[]> {
@@ -45,13 +45,13 @@ function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
 
   return {
     getWorkspace,
-    getWorkspaces,
+    getUserWorkspaces,
     createWorkspace,
     deleteWorkspace,
     updateWorkspace,
     addWorkspaceMember,
     removeWorkspaceMember,
-    getWorkspacesFeed,
+    getWorkspaces,
     searchWorkspaces,
   };
 }

@@ -9,7 +9,7 @@ begin;
         name text not null,
         private boolean not null default false,
         created_at timestamp not null default now(),
-        members char(16)[] not null default '{}'::char(16)[] -- references "user"(id)
+        members text[] not null default '{}'::text[] -- references "user"(email)
     );
 
     create table if not exists resource (

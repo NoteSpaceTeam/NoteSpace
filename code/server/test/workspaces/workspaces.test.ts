@@ -18,7 +18,7 @@ describe('Workspace operations', () => {
   test('should delete a workspace', async () => {
     const id = await services.workspaces.createWorkspace('test', false);
     await services.workspaces.deleteWorkspace(id);
-    const workspaces = await services.workspaces.getWorkspaces(id);
+    const workspaces = await services.workspaces.getWorkspaces();
     expect(workspaces).toEqual([]);
   });
 
@@ -30,9 +30,9 @@ describe('Workspace operations', () => {
   });
 
   test('should get all workspaces', async () => {
-    const id = await services.workspaces.createWorkspace('test', false);
+    await services.workspaces.createWorkspace('test', false);
     await services.workspaces.createWorkspace('test2', false);
-    const workspaces = await services.workspaces.getWorkspaces(id);
+    const workspaces = await services.workspaces.getWorkspaces();
     expect(workspaces.length).toEqual(2);
   });
 });

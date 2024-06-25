@@ -80,10 +80,10 @@ export interface WorkspacesRepository {
   createWorkspace: (name: string, isPrivate: boolean) => Promise<string>;
   /**
    * Get all workspaces from the database
-   * If userId is provided, get user workspaces
-   * @param userId
+   * If email is provided, get user workspaces, otherwise get all public workspaces
+   * @param email
    */
-  getWorkspaces: (userId?: string) => Promise<WorkspaceMeta[]>;
+  getWorkspaces: (email?: string) => Promise<WorkspaceMeta[]>;
   /**
    * Get a workspace from the database
    * @param id
@@ -110,13 +110,13 @@ export interface WorkspacesRepository {
    * @param wid
    * @param email
    */
-  addWorkspaceMember: (wid: string, userId: string) => Promise<void>;
+  addWorkspaceMember: (wid: string, email: string) => Promise<void>;
   /**
    * Remove a member from a workspace
    * @param wid
-   * @param userId
+   * @param email
    */
-  removeWorkspaceMember: (wid: string, userId: string) => Promise<void>;
+  removeWorkspaceMember: (wid: string, email: string) => Promise<void>;
   /**
    * Search workspaces by name
    * @param searchParams
@@ -151,11 +151,6 @@ export interface UsersRepository {
    * Get all users from the database
    */
   getUsers: () => Promise<User[]>;
-  /**
-   * Check if a user with an email exists
-   * @param email
-   */
-  getUserByEmail: (email: string) => Promise<User>;
 }
 
 export interface CommitsRepository {

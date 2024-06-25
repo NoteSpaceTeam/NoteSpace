@@ -12,6 +12,9 @@ export type SearchParams = {
 
 export function getSearchParams(params: Record<string, any> = {}): SearchParams {
   const { query, skip, limit } = params;
+  if (!query) {
+    throw new InvalidParameterError('Search query is required');
+  }
   if ([query, skip, limit].some(param => param !== undefined && typeof param !== 'string')) {
     throw new InvalidParameterError('Invalid search params');
   }

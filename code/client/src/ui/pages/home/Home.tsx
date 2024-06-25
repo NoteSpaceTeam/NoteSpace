@@ -13,7 +13,7 @@ function Home() {
   useEffect(() => {
     async function getWorkspaces() {
       startLoading();
-      const workspaces = await service.getWorkspacesFeed();
+      const workspaces = await service.getWorkspaces();
       setWorkspaces(workspaces);
       stopLoading();
     }

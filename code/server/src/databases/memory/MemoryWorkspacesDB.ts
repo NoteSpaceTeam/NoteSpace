@@ -29,9 +29,9 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     return id;
   }
 
-  async getWorkspaces(userId?: string): Promise<WorkspaceMeta[]> {
+  async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
     return Object.values(Memory.workspaces)
-      .filter(workspace => !workspace.isPrivate || (userId && workspace.members.includes(userId)))
+      .filter(workspace => (email ? workspace.members.includes(email) : !workspace.isPrivate))
       .map(props => {
         const workspace = omit(props, ['resources']);
         return { ...workspace, members: workspace.members?.length || 0 };
@@ -41,10 +41,8 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   async getWorkspace(id: string): Promise<Workspace> {
     const workspace = Memory.workspaces[id];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-
     const resources = Object.values(workspace.resources);
-    const members = await this.getWorkspaceMembers(workspace.id);
-    return { ...workspace, resources, members };
+    return { ...workspace, resources };
   }
 
   async getResources(wid: string): Promise<Resource[]> {
@@ -76,11 +74,6 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     const workspace = Memory.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
     Memory.workspaces[wid].members = Memory.workspaces[wid].members.filter(member => member !== userId);
-  }
-
-  async getWorkspaceMembers(wid: string): Promise<string[]> {
-    const workspace = Memory.workspaces[wid];
-    return workspace.members?.map(userId => Memory.users[userId].email) || [];
   }
 
   async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
