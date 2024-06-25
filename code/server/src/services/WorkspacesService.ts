@@ -30,7 +30,7 @@ export class WorkspacesService {
     await this.databases.documents.removeWorkspace(id);
   }
 
-  async getWorkspaces(userId: string): Promise<WorkspaceMeta[]> {
+  async getWorkspaces(userId?: string): Promise<WorkspaceMeta[]> {
     return await this.databases.workspaces.getWorkspaces(userId);
   }
 

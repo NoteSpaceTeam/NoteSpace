@@ -17,14 +17,15 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     return results[0].id;
   }
 
-  async getWorkspaces(userId: string): Promise<WorkspaceMeta[]> {
+  async getWorkspaces(userId?: string): Promise<WorkspaceMeta[]> {
+    const user = userId || null;
     return (
       await sql`
           select row_to_json(t) as workspace
           from (
             select id, name, private, count(members) as members
             from workspace
-            where private = false or ${userId} = any(members)
+            where private = false or (${user} is null or ${user} = any(members))
             group by id
             order by created_at desc
           ) as t

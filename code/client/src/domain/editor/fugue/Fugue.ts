@@ -98,7 +98,7 @@ export class Fugue {
    * Inserts a new node in the tree based on the given operation.
    * @param operation
    */
-  private addNode = ({id, value, line, styles, parent, side}: InsertOperation) => {
+  private addNode = ({ id, value, line, styles, parent, side }: InsertOperation) => {
     this.tree.addNode(id, value, parent, side, styles, line);
   };
 
@@ -302,7 +302,7 @@ export class Fugue {
 
   getLineRoot = (line: number): FugueNode => {
     return line === 0 ? this.tree.root : this.tree.root.value[line - 1];
-  }
+  };
 
   /**
    * Returns the string representation of the tree.

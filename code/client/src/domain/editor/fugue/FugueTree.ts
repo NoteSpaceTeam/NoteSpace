@@ -32,11 +32,11 @@ export class FugueTree<T> {
    * @param styles the styles of the node
    * @param line
    */
-  addNode(id: Id, value: T, parent: Id, side: 'L' | 'R', styles: InlineStyle[] | undefined, line: number){
+  addNode(id: Id, value: T, parent: Id, side: 'L' | 'R', styles: InlineStyle[] | undefined, line: number) {
     // create node
-    const node : Node<T> = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
-    if(value === '\n') {
-        this._root.value.splice(line, 0, node); // TODO: check if this is correct
+    const node: Node<T> = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    if (value === '\n') {
+      this._root.value.splice(line, 0, node); // TODO: check if this is correct
     }
     this._addNode(node);
   }
