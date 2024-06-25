@@ -23,7 +23,7 @@ export default (fugue: Fugue, serviceConnector: ServiceConnector): MarkdownConne
       const cursor = { line, column: 0 };
       const nodes = Array.from(fugue.traverseBySeparator(' ', cursor, false, true));
       const idsToDelete: Id[] = nodes[0].map(node => node.id);
-      const deleteOperations = fugue.deleteLocalById(cursor, ...idsToDelete);
+      const deleteOperations = fugue.deleteLocalById(...idsToDelete);
       operations.push(...deleteOperations);
     }
 

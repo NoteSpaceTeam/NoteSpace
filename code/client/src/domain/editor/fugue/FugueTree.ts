@@ -30,10 +30,14 @@ export class FugueTree<T> {
    * @param parent the id of the parent node
    * @param side the side of the parent node where this node is located
    * @param styles the styles of the node
+   * @param line
    */
-  addNode(id: Id, value: T, parent: Id | null, side: 'L' | 'R', styles?: InlineStyle[] | BlockStyle[]) {
+  addNode(id: Id, value: T, parent: Id, side: 'L' | 'R', styles: InlineStyle[] | undefined, line: number){
     // create node
-    const node = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    const node : Node<T> = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    if(value === '\n') {
+        this._root.value.splice(line, 0, node); // TODO: check if this is correct
+    }
     this._addNode(node);
   }
 
@@ -81,7 +85,7 @@ export class FugueTree<T> {
     if (!node.isDeleted) node.isDeleted = true;
     if (node.value === '\n') {
       const idx = this._root.value.findIndex(n => n.id === id);
-      this._root.value[idx].isDeleted = true;
+      this._root.value.splice(idx, 1); // TODO: check if this is correct
     }
   }
 

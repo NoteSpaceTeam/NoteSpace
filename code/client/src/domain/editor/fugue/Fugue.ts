@@ -90,20 +90,16 @@ export class Fugue {
       parent,
       side: isEmpty(leftOrigin.rightChildren) ? 'R' : 'L',
       styles,
+      line: cursor.line,
     };
   }
 
   /**
    * Inserts a new node in the tree based on the given operation.
-   * @param line
-   * @param id
-   * @param value
-   * @param parent
-   * @param side
-   * @param styles
+   * @param operation
    */
-  private addNode = ({ id, value, parent, side, styles }: InsertOperation) => {
-    this.tree.addNode(id, value, parent, side, styles || []);
+  private addNode = ({id, value, line, styles, parent, side}: InsertOperation) => {
+    this.tree.addNode(id, value, parent, side, styles, line);
   };
 
   /**
@@ -297,14 +293,15 @@ export class Fugue {
    * @param cursor
    */
   getNodeByCursor({ line, column }: Cursor): FugueNode | undefined {
-    if (line === 0 && column === 0) return this.tree.root;
-    if (column === 0) {
-      return this.traverseBySeparator('\n', { line: line - 1, column: 1 }, false, true).next().value?.[0];
-    }
+    if (column === 0) return this.getLineRoot(line);
     const start = { line, column: column - 1 };
     const end = { line, column };
     const iterator = this.traverseBySelection({ start, end });
     return iterator.next().value;
+  }
+
+  getLineRoot = (line: number): FugueNode => {
+    return line === 0 ? this.tree.root : this.tree.root.value[line - 1];
   }
 
   /**

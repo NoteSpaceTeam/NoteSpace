@@ -8,6 +8,7 @@ export type InsertOperation = {
   parent: Id;
   side: "L" | "R";
   styles?: InlineStyle[];
+  line: number;
 };
 
 export type DeleteOperation = {
