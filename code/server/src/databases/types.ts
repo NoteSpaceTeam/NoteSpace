@@ -79,9 +79,11 @@ export interface WorkspacesRepository {
    */
   createWorkspace: (name: string, isPrivate: boolean) => Promise<string>;
   /**
-   * Get all workspaces from the database that the user can access
+   * Get all workspaces from the database
+   * If userId is provided, get user workspaces
+   * @param userId
    */
-  getWorkspaces: (userId: string) => Promise<WorkspaceMeta[]>;
+  getWorkspaces: (userId?: string) => Promise<WorkspaceMeta[]>;
   /**
    * Get a workspace from the database
    * @param id
