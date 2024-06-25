@@ -3,7 +3,6 @@ import Document from '@ui/pages/document/Document';
 import Header from '@ui/components/header/Header';
 import Workspace from '@ui/pages/workspace/Workspace';
 import NotFound from '@ui/pages/notfound/NotFound';
-import './App.scss';
 import { ErrorProvider } from '@/contexts/error/ErrorContext';
 import Sidebar from '@ui/components/sidebar/Sidebar';
 import { WorkspaceProvider } from '@/contexts/workspace/WorkspaceContext';
@@ -12,10 +11,11 @@ import { CommunicationProvider } from '@/contexts/communication/CommunicationCon
 import Home from '@ui/pages/home/Home';
 import AuthProvider from '@/contexts/auth/AuthContext';
 import Profile from '@ui/pages/profile/Profile';
-import Landing from '@ui/pages/landing/Landing';
+import Login from '@ui/pages/login/Login';
 import Search from '@ui/pages/search/Search';
 import CommitHistory from '@ui/pages/document/components/commit-history/CommitHistory';
 import Commit from '@ui/pages/document/components/commit/Commit';
+import './App.scss';
 
 function App() {
   return (
@@ -27,9 +27,9 @@ function App() {
               <Header />
               <div className="content">
                 <Routes>
-                  <Route path="/" element={<Landing />} />
+                  <Route path="/login" element={<Login />} />
                   <Route
-                    path="/home"
+                    path="/"
                     element={
                       <>
                         <Sidebar />

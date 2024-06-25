@@ -93,17 +93,17 @@ function workspacesHandlers(services: Services, io: Server) {
     httpResponse.ok(res).json(workspaces);
   };
 
-  async function getWorkspacePermissions(id: string, userEmail: string) {
+  async function getWorkspacePermissions(id: string, userEmail?: string) {
     const workspace = await services.workspaces.getWorkspace(id);
     if (!workspace) throw new InvalidParameterError('Workspace not found');
-    const isMember = workspace.members.includes(userEmail);
+    const isMember = userEmail && workspace.members.includes(userEmail);
     return { isMember, isPrivate: workspace.isPrivate };
   }
 
   async function workspaceReadPermission(req: Request, res: Response, next: NextFunction) {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-    const { isMember, isPrivate } = await getWorkspacePermissions(wid, req.user!.email);
+    const { isMember, isPrivate } = await getWorkspacePermissions(wid, req.user?.email);
     if (isPrivate && !isMember) {
       throw new ForbiddenError('You are not a member of this workspace');
     }
@@ -113,7 +113,7 @@ function workspacesHandlers(services: Services, io: Server) {
   async function workspaceWritePermission(req: Request, res: Response, next: NextFunction) {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-    const { isMember } = await getWorkspacePermissions(wid, req.user!.email);
+    const { isMember } = await getWorkspacePermissions(wid, req.user?.email);
     if (!isMember) {
       throw new ForbiddenError('You are not a member of this workspace');
     }
@@ -133,7 +133,7 @@ function workspacesHandlers(services: Services, io: Server) {
   // sub-routes for resources (documents and folders)
   router.use('/:wid', workspaceReadPermission, resourcesHandlers(services.resources, io, workspaceWritePermission));
 
-  // sub-routes for document commits, rollbacks and forks
+  // sub-routes for document commits, rollbacks and clones
   router.use('/:wid/:id', workspaceReadPermission, commitsHandlers(services.documents, io, workspaceWritePermission));
   return router;
 }

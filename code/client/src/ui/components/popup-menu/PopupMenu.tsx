@@ -1,6 +1,7 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Menu, PopoverPosition } from '@mui/material';
 import './PopupMenu.scss';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 type PopupMenuProps = {
   item: ReactNode;
@@ -11,15 +12,20 @@ type PopupMenuProps = {
 function PopupMenu({ item, trigger, children }: PopupMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [contextMenuPosition, setContextMenuPosition] = useState<PopoverPosition | null>(null);
+  const { isMember } = useWorkspace();
 
-  const onOpen = (event: MouseEvent | React.MouseEvent) => {
-    event.preventDefault();
-    setContextMenuPosition({
-      left: event.clientX - 2,
-      top: event.clientY - 4,
-    });
-    setAnchorEl(event.currentTarget as HTMLElement);
-  };
+  const onOpen = useCallback(
+    (event: MouseEvent | React.MouseEvent) => {
+      event.preventDefault();
+      if (!isMember) return;
+      setContextMenuPosition({
+        left: event.clientX - 2,
+        top: event.clientY - 4,
+      });
+      setAnchorEl(event.currentTarget as HTMLElement);
+    },
+    [isMember]
+  );
 
   const onClose = () => {
     setAnchorEl(null);
@@ -34,7 +40,7 @@ function PopupMenu({ item, trigger, children }: PopupMenuProps) {
     return () => {
       triggerElement.removeEventListener('click', onOpen);
     };
-  }, [trigger]);
+  }, [onOpen, trigger]);
 
   return (
     <div onContextMenu={trigger ? () => {} : onOpen} onClick={onClose}>

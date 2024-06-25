@@ -25,9 +25,16 @@
     align-items: center;
     margin-right: 1rem;
     gap: 2vh;
+    padding-left: 10vh;
+    padding-right: 2vh;
 
     button {
-      padding: 1vh;
+      padding: 1.5vh;
+      gap: 1vh;
+
+      svg {
+        font-size: larger;
+      }
     }
   }
 

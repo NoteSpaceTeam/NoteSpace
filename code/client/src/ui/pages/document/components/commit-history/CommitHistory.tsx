@@ -1,4 +1,3 @@
-import './CommitHistory.scss';
 import useCommitsService from '@services/commits/useCommitsService';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import useResourcesService from '@services/resource/useResourcesService';
@@ -7,8 +6,10 @@ import useLoading from '@ui/hooks/useLoading';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Commit } from '@notespace/shared/src/document/types/commits';
 import { formatTimePassed } from '@/utils/utils';
-import { FaCodeFork } from 'react-icons/fa6';
+import { FaClone } from 'react-icons/fa6';
 import { FaUndo } from 'react-icons/fa';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
+import './CommitHistory.scss';
 
 function CommitHistory() {
   const [document, setDocument] = useState<DocumentResource>();
@@ -16,7 +17,8 @@ function CommitHistory() {
   const { loading, spinner, startLoading, stopLoading } = useLoading();
   const { wid, id } = useParams();
   const { getResource } = useResourcesService();
-  const { getCommits, fork, rollback } = useCommitsService();
+  const { getCommits, clone, rollback } = useCommitsService();
+  const { isMember } = useWorkspace();
   const navigate = useNavigate();
 
   async function onRollback(commitId: string) {
@@ -24,8 +26,8 @@ function CommitHistory() {
     navigate(`/workspaces/${wid}/${id}`);
   }
 
-  async function onFork(commitId: string) {
-    await fork(commitId);
+  async function onClone(commitId: string) {
+    await clone(commitId);
     navigate(`/workspaces/${wid}`);
   }
 
@@ -59,16 +61,18 @@ function CommitHistory() {
                     <Link to={`/profile/${commit.author.id}`}>{commit.author.name}</Link> committed{' '}
                     {formatTimePassed(new Date(commit.timestamp).toLocaleString())}
                   </p>
-                  <div className="commit-actions">
-                    <button onClick={() => onRollback(commit.id)}>
-                      <FaUndo />
-                      Rollback
-                    </button>
-                    <button onClick={() => onFork(commit.id)}>
-                      <FaCodeFork />
-                      Fork
-                    </button>
-                  </div>
+                  {isMember && (
+                    <div className="commit-actions">
+                      <button onClick={() => onRollback(commit.id)}>
+                        <FaUndo />
+                        Rollback
+                      </button>
+                      <button onClick={() => onClone(commit.id)}>
+                        <FaClone />
+                        Clone
+                      </button>
+                    </div>
+                  )}
                 </Link>
               ))
             ) : (

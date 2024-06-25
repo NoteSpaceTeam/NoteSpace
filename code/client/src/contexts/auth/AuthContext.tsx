@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 export type AuthContextType = {
   currentUser: User | null;
+  isLoggedIn: boolean;
   loginWithGoogle: () => Promise<void>;
   loginWithGithub: () => Promise<void>;
   logout: () => Promise<void>;
@@ -15,6 +16,7 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>({
   currentUser: null,
+  isLoggedIn: false,
   loginWithGoogle: async () => {},
   loginWithGithub: async () => {},
   logout: async () => {},
@@ -69,6 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         currentUser,
+        isLoggedIn: !!currentUser,
         loginWithGoogle,
         loginWithGithub,
         logout,

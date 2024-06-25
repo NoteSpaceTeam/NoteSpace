@@ -25,13 +25,17 @@ function Search() {
   return (
     <div className="search">
       <h2>Search results for "{query}"</h2>
-      {results.map(workspace => (
-        <div className="workspace">
-          <Link key={workspace.id} to={`/workspace/${workspace.id}`}>
-            {workspace.name}
-          </Link>
-        </div>
-      ))}
+      {results.length > 0 ? (
+        results.map(workspace => (
+          <div className="workspace">
+            <Link key={workspace.id} to={`/workspace/${workspace.id}`}>
+              {workspace.name}
+            </Link>
+          </div>
+        ))
+      ) : (
+        <p>No results found</p>
+      )}
       <div className="pagination">
         <button onClick={() => setPage(page - 1)} disabled={page === 0}>
           <FaArrowLeft />

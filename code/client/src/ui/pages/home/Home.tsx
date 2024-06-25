@@ -23,21 +23,19 @@ function Home() {
   return (
     <div className="home">
       <h2>Home</h2>
-      <p>Welcome to NoteSpace</p>
-      <Link to="/workspaces">Go to Workspaces</Link>
-      <br />
-      <hr />
-      <br />
-      <h2>Public Workspaces</h2>
-      {loading
-        ? spinner
-        : workspaces.map(workspace => (
-            <div className="workspace">
-              <Link key={workspace.id} to={`/workspaces/${workspace.id}`}>
-                {workspace.name}
-              </Link>
-            </div>
-          ))}
+      {loading ? (
+        spinner
+      ) : workspaces.length > 0 ? (
+        workspaces.map(workspace => (
+          <div className="workspace">
+            <Link key={workspace.id} to={`/workspaces/${workspace.id}`}>
+              {workspace.name}
+            </Link>
+          </div>
+        ))
+      ) : (
+        <p>No workspaces yet</p>
+      )}
     </div>
   );
 }

@@ -21,7 +21,7 @@ export type WorkspaceContextType = {
   workspace?: WorkspaceMeta;
   resources?: Resources;
   operations?: WorkspaceOperations;
-  isMember: boolean;
+  isMember?: boolean;
 };
 
 export const WorkspaceContext = createContext<WorkspaceContextType>({});

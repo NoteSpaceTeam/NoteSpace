@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/auth/useAuth';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import './Header.scss';
+import { MdLogin, MdLogout } from 'react-icons/md';
 
 function Header() {
   const { currentUser, logout } = useAuth();
@@ -20,9 +21,9 @@ function Header() {
 
   return (
     <header className="header">
-      <Link to={currentUser ? '/home' : '/'}>NoteSpace</Link>
+      <Link to="/">NoteSpace</Link>
       <div>
-        {location.pathname !== '/' && (
+        {location.pathname !== '/login' && (
           <form onSubmit={handleSearchSubmit}>
             <input
               type="text"
@@ -35,11 +36,21 @@ function Header() {
         )}
 
         <div className="account">
-          {currentUser && (
+          {currentUser ? (
             <>
               <Link to={`/profile/${currentUser.uid}`}>{currentUser?.displayName}</Link>
-              <button onClick={logout}>Logout</button>
+              <button onClick={logout}>
+                Logout
+                <MdLogout />
+              </button>
             </>
+          ) : (
+            location.pathname !== '/login' && (
+              <button onClick={() => navigate('/login')}>
+                Login
+                <MdLogin />
+              </button>
+            )
           )}
         </div>
       </div>

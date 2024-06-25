@@ -9,11 +9,13 @@ import { TiHome } from 'react-icons/ti';
 import { GoPlus } from 'react-icons/go';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import CreateResourceMenu from '@ui/components/sidebar/components/CreateResourceMenu';
+import { useAuth } from '@/contexts/auth/useAuth';
 import './Sidebar.scss';
 
 function Sidebar() {
   const { width, isOpen, isLocked, isLoaded, handlers } = useSidebarState();
-  const { workspace, resources, operations } = useWorkspace();
+  const { workspace, resources, operations, isMember } = useWorkspace();
+  const { isLoggedIn } = useAuth();
 
   if (!isLoaded) return null;
   return (
@@ -35,10 +37,12 @@ function Sidebar() {
           <TiHome />
           <Link to="/">Home</Link>
         </li>
-        <li>
-          <RiTeamFill />
-          <Link to="/workspaces">Workspaces</Link>
-        </li>
+        {isLoggedIn && (
+          <li>
+            <RiTeamFill />
+            <Link to="/workspaces">Workspaces</Link>
+          </li>
+        )}
         <li>
           <IoTime />
           <Link to="/recent">Recent</Link>
@@ -58,9 +62,11 @@ function Sidebar() {
                 onCreateNew={(type: ResourceType) => operations.createResource('Untitled', type, workspace.id)}
                 trigger="sidebar-create-resource"
               />
-              <button id="sidebar-create-resource">
-                <GoPlus />
-              </button>
+              {isMember && (
+                <button id="sidebar-create-resource">
+                  <GoPlus />
+                </button>
+              )}
             </div>
             <WorkspaceTree workspace={workspace} resources={resources} operations={operations} />
           </>
