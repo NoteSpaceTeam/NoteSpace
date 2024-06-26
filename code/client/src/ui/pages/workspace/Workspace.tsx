@@ -15,13 +15,8 @@ function Workspace() {
 
   useEffect(() => {
     const docs = getDocuments(resources);
-    console.log(docs);
     setRows(docs);
   }, [resources]);
-
-  useEffect(() => {
-    console.log('rows', rows);
-  }, [rows]);
 
   return (
     <div className="workspace">

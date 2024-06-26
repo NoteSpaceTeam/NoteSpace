@@ -18,9 +18,7 @@ function Recent() {
       try {
         startLoading();
         const documents = await http.get('/recent');
-        console.log(documents);
         setDocuments(documents);
-        console.log(documents[0].updatedAt, formatTimePassed(documents[0].updatedAt));
       } catch (e) {
         publishError(e as Error);
       } finally {

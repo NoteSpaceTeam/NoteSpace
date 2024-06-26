@@ -18,13 +18,14 @@ describe('FugueTree', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'L',
-      cursor: { line: 0, column: 0 },
+      line: 0,
+      styles: [],
     };
     const rootId = { sender: 'root', counter: 0 };
-    const { id, value, parent, side } = operation;
+    const { id, value, parent, side, line } = operation;
 
     // when
-    tree.addNode(id, value, parent, side, []);
+    tree.addNode(id, value, parent, side, line);
 
     // then
     const root = tree.getById(rootId);
@@ -36,16 +37,17 @@ describe('FugueTree', () => {
 
   test('should delete a node from the tree', () => {
     // given
-    const { id, value, parent, side }: InsertOperation = {
+    const { id, value, parent, side, line }: InsertOperation = {
       type: 'insert',
       id: { sender: 'A', counter: 0 },
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'L',
-      cursor: { line: 0, column: 0 },
+      line: 0,
+      styles: [],
     };
     // when
-    tree.addNode(id, value, parent, side);
+    tree.addNode(id, value, parent, side, line);
     tree.deleteNode(id);
 
     // then
@@ -82,9 +84,9 @@ describe('FugueTree', () => {
 
   test('should return the leftmost descendant of a node', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L');
-    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'L');
-    tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'L');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'L', 0);
+    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'L', 0);
+    tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'L', 0);
 
     // when
     const leftmostDescendant = tree.getLeftmostDescendant({
@@ -98,10 +100,10 @@ describe('FugueTree', () => {
 
   test('should traverse the tree in depth-first order', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R');
-    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'R');
-    tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'R');
-    tree.addNode({ sender: 'A', counter: 3 }, 'd', { sender: 'A', counter: 2 }, 'R');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R', 0);
+    tree.addNode({ sender: 'A', counter: 1 }, 'b', { sender: 'A', counter: 0 }, 'R', 0);
+    tree.addNode({ sender: 'A', counter: 2 }, 'c', { sender: 'A', counter: 1 }, 'R', 0);
+    tree.addNode({ sender: 'A', counter: 3 }, 'd', { sender: 'A', counter: 2 }, 'R', 0);
 
     // when
     const expectedValues = ['a', 'b', 'c', 'd'];
@@ -120,7 +122,7 @@ describe('FugueTree', () => {
 
   test('should update the inline style of a node', () => {
     // given
-    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R');
+    tree.addNode({ sender: 'A', counter: 0 }, 'a', { sender: 'root', counter: 0 }, 'R', 0);
 
     // when
     tree.updateInlineStyle({ sender: 'A', counter: 0 }, 'bold', true);

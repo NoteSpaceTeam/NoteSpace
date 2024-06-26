@@ -4,7 +4,7 @@ import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { SearchParams } from '@src/utils/searchParams';
-import { Commit } from '@notespace/shared/src/document/types/commits';
+import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
 
 export interface DocumentsRepository {
   /**
@@ -154,7 +154,7 @@ export interface UsersRepository {
 export interface CommitsRepository {
   saveCommit: (id: string, commit: Commit) => Promise<void>;
   getCommit: (id: string, commitId: string) => Promise<Commit>;
-  getCommits: (id: string) => Promise<Commit[]>;
+  getCommits: (id: string) => Promise<CommitMeta[]>;
   deleteCommits: (id: string) => Promise<void>;
 }
 

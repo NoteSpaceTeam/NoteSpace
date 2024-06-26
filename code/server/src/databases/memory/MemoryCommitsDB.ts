@@ -1,6 +1,6 @@
 import { NotFoundError } from '@domain/errors/errors';
 import { CommitsRepository } from '@databases/types';
-import { Commit } from '@notespace/shared/src/document/types/commits';
+import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
 
 export class MemoryCommitsDB implements CommitsRepository {
   private readonly commits: Record<string, Record<string, Commit>> = {};
@@ -12,9 +12,11 @@ export class MemoryCommitsDB implements CommitsRepository {
     return commit;
   }
 
-  async getCommits(id: string): Promise<Commit[]> {
+  async getCommits(id: string): Promise<CommitMeta[]> {
     if (!this.commits[id]) return [];
-    return Object.values(this.commits[id]).sort((a, b) => a.timestamp - b.timestamp);
+    return Object.values(this.commits[id])
+      .map(({ id, timestamp, author }) => ({ id, timestamp, author }))
+      .sort((a, b) => a.timestamp - b.timestamp);
   }
 
   async saveCommit(id: string, commit: Commit): Promise<void> {

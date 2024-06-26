@@ -7,7 +7,7 @@ export type InsertOperation = {
   value: string;
   parent: Id;
   side: "L" | "R";
-  styles?: InlineStyle[];
+  styles: InlineStyle[];
   line: number;
 };
 

@@ -1,7 +1,7 @@
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Databases } from '@databases/types';
 import { decodeFromBase64, encodeToBase64, getRandomId, validateId } from '@services/utils';
-import { Author, Commit, CommitData } from '@notespace/shared/src/document/types/commits';
+import { Author, Commit, CommitData, CommitMeta } from '@notespace/shared/src/document/types/commits';
 import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
 const COMMIT_ID_LENGTH = 8;
@@ -13,7 +13,7 @@ export class DocumentsService {
     this.databases = databases;
   }
 
-  async updateDocument(wid: string, id: string, operations: Operation[]) {
+  async applyOperations(wid: string, id: string, operations: Operation[]) {
     validateId(wid);
     validateId(id);
     if (!operations.length) throw new Error('No operations to update');
@@ -23,7 +23,7 @@ export class DocumentsService {
     await this.databases.resources.updateResource(id, { updatedAt: new Date().toISOString() });
   }
 
-  async commit(id: string, author: Author) {
+  async commit(id: string, author: Author): Promise<string> {
     validateId(id);
     // get document operations
     const resource = await this.getDocumentResource(id);
@@ -33,6 +33,7 @@ export class DocumentsService {
     const commitId = getRandomId(COMMIT_ID_LENGTH);
     const commit: Commit = { id: commitId, content, timestamp: Date.now(), author };
     await this.databases.commits.saveCommit(id, commit);
+    return commitId;
   }
 
   async rollback(id: string, commitId: string) {
@@ -73,7 +74,7 @@ export class DocumentsService {
     };
   }
 
-  async getCommits(id: string): Promise<Commit[]> {
+  async getCommits(id: string): Promise<CommitMeta[]> {
     validateId(id);
     // check if document exists
     await this.getDocumentResource(id);

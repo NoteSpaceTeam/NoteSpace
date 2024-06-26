@@ -99,7 +99,7 @@ export class Fugue {
    * @param operation
    */
   private addNode = ({ id, value, line, styles, parent, side }: InsertOperation) => {
-    this.tree.addNode(id, value, parent, side, styles, line);
+    this.tree.addNode(id, value, parent, side, line, styles);
   };
 
   /**

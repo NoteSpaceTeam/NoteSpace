@@ -35,7 +35,8 @@ describe('Fugue Operations', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
-      cursor: { line: 0, column: 0 },
+      line: 0,
+      styles: [],
     };
 
     // when
@@ -48,7 +49,6 @@ describe('Fugue Operations', () => {
     const deleteOperation: DeleteOperation = {
       type: 'delete',
       id: { sender: 'A', counter: 0 },
-      cursor: { line: 0, column: 0 },
     };
 
     // when
@@ -101,8 +101,8 @@ describe('Fugue Operations', () => {
     node1.rightChildren = [node2.id];
     const document: DocumentContent = {
       operations: [
-        { type: 'insert', ...node1, parent: root.id, styles: [], cursor: { line: 0, column: 0 } },
-        { type: 'insert', ...node2, parent: node1.id, styles: [], cursor: { line: 0, column: 1 } },
+        { type: 'insert', ...node1, parent: root.id, styles: [], line: 0 },
+        { type: 'insert', ...node2, parent: node1.id, styles: [], line: 0 },
       ],
     };
 

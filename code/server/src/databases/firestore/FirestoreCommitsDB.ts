@@ -1,6 +1,6 @@
 import db from '@src/firebaseConfig';
 import { CommitsRepository } from '@databases/types';
-import { Commit } from '@notespace/shared/src/document/types/commits';
+import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
 import { NotFoundError } from '@domain/errors/errors';
 
 export class FirestoreCommitsDB implements CommitsRepository {
@@ -21,13 +21,13 @@ export class FirestoreCommitsDB implements CommitsRepository {
     return { id: commitId, content, timestamp, author };
   }
 
-  async getCommits(id: string): Promise<Commit[]> {
+  async getCommits(id: string): Promise<CommitMeta[]> {
     const doc = db.collection('commits').doc(id);
     const snapshot = await doc.get();
     const data = snapshot.data();
     if (!data) return [];
     return Object.entries(data)
-      .map(([id, { content, timestamp, author }]) => ({ id, content, timestamp, author }))
+      .map(([id, { timestamp, author }]) => ({ id, timestamp, author }))
       .sort((a, b) => a.timestamp - b.timestamp);
   }
 

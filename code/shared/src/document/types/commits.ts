@@ -7,6 +7,8 @@ export type Commit = {
   author: Author;
 };
 
+export type CommitMeta = Omit<Commit, "content">;
+
 export type CommitData = Omit<Commit, "content"> & {
   content: Operation[];
 };

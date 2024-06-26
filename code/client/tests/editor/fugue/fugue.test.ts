@@ -42,6 +42,8 @@ describe('Fugue', () => {
       value: 'a',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      line: 0,
+      styles: [],
     };
 
     // when
@@ -88,6 +90,8 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      line: 0,
+      styles: [],
     };
     const deleteOperation: DeleteOperation = {
       type: 'delete',
@@ -126,6 +130,8 @@ describe('Fugue', () => {
       value: 'x',
       parent: { sender: 'root', counter: 0 },
       side: 'R',
+      line: 0,
+      styles: [],
     };
     const styleOperation: InlineStyleOperation = {
       type: 'inline-style',

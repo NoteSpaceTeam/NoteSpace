@@ -30,11 +30,11 @@ export class FugueTree<T> {
    * @param parent the id of the parent node
    * @param side the side of the parent node where this node is located
    * @param styles the styles of the node
-   * @param line
+   * @param line the line number of the node
    */
-  addNode(id: Id, value: T, parent: Id, side: 'L' | 'R', styles: InlineStyle[] | undefined, line: number) {
+  addNode(id: Id, value: T, parent: Id, side: 'L' | 'R', line: number, styles: InlineStyle[] = []) {
     // create node
-    const node: Node<T> = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
+    const node: Node<T> = treeNode(id, value, parent, side, 0, styles);
     if (value === '\n') {
       this._root.value.splice(line, 0, node);
     }

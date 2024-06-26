@@ -1,5 +1,6 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
 let services: Services;
 
@@ -34,5 +35,15 @@ describe('Workspace operations', () => {
     await services.workspaces.createWorkspace('test2', false);
     const workspaces = await services.workspaces.getWorkspaces();
     expect(workspaces.length).toEqual(2);
+  });
+
+  test('should search for a workspace by name', async () => {
+    await services.workspaces.createWorkspace('workspace', false);
+    await services.workspaces.createWorkspace('work', false);
+    const searchParams = { query: 'work', limit: 2, skip: 0 };
+    const workspaces: WorkspaceMeta[] = await services.workspaces.searchWorkspaces(searchParams);
+    const workspaceNames = workspaces.map(w => w.name);
+    expect(workspaceNames).toContain('workspace');
+    expect(workspaceNames).toContain('work');
   });
 });

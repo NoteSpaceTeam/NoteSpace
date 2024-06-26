@@ -16,8 +16,8 @@ function resourcesHandlers(
       name: req.user!.name,
       id: req.user!.id,
     };
-    await service.commit(id, author);
-    httpResponse.noContent(res).send();
+    const commitId = await service.commit(id, author);
+    httpResponse.created(res).send({ commitId });
   };
 
   const rollback = async (req: Request, res: Response) => {

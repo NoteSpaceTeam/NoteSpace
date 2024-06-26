@@ -1,6 +1,6 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { getRandomId } from '../../src/services/utils';
+import { createTestUserAndWorkspace } from '../utils';
 
 let services: Services;
 
@@ -10,36 +10,20 @@ beforeEach(() => {
 
 describe('Workspace members operations', () => {
   test('should add a member to a workspace', async () => {
-    const wid = await services.workspaces.createWorkspace('test', false);
-    const userId = getRandomId();
-    console.log('userId', userId, userId.length);
-    const userData = {
-      name: 'test',
-      email: 'test@test.com',
-    };
-    await services.users.createUser(userId, userData);
-    await services.workspaces.addWorkspaceMember(wid, userData.email);
+    const { wid, email } = await createTestUserAndWorkspace(services);
     const workspace = await services.workspaces.getWorkspace(wid);
-    expect(workspace.members).toContain(userData.email);
+    expect(workspace.members).toContain(email);
   });
 
   test('should remove a member from a workspace', async () => {
-    const wid = await services.workspaces.createWorkspace('test', false);
-    const userId = getRandomId();
-    const userData = {
-      name: 'test',
-      email: 'test@test.com',
-    };
+    const { wid, email } = await createTestUserAndWorkspace(services);
 
-    // add user to workspace
-    await services.users.createUser(userId, userData);
-    await services.workspaces.addWorkspaceMember(wid, userData.email);
     const workspace = await services.workspaces.getWorkspace(wid);
-    expect(workspace.members).toContain(userData.email);
+    expect(workspace.members).toContain(email);
 
     // remove user from workspace
-    await services.workspaces.removeWorkspaceMember(wid, userData.email);
+    await services.workspaces.removeWorkspaceMember(wid, email);
     const workspaceAfter = await services.workspaces.getWorkspace(wid);
-    expect(workspaceAfter.members).not.toContain(userData.email);
+    expect(workspaceAfter.members).not.toContain(email);
   });
 });

@@ -13,7 +13,7 @@ function onOperation(service: DocumentsService) {
     if (!id) throw new ForbiddenError('Not in a room');
 
     socket.broadcast.to(id).emit('operations', operations);
-    await service.updateDocument(wid, id, operations);
+    await service.applyOperations(wid, id, operations);
     socket.emit('ack');
   };
 }
