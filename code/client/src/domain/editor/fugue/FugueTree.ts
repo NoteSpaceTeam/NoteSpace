@@ -36,7 +36,7 @@ export class FugueTree<T> {
     // create node
     const node: Node<T> = treeNode(id, value, parent, side, 0, styles as InlineStyle[]);
     if (value === '\n') {
-      this._root.value.splice(line, 0, node); // TODO: check if this is correct
+      this._root.value.splice(line, 0, node);
     }
     this._addNode(node);
   }
@@ -85,7 +85,7 @@ export class FugueTree<T> {
     if (!node.isDeleted) node.isDeleted = true;
     if (node.value === '\n') {
       const idx = this._root.value.findIndex(n => n.id === id);
-      this._root.value.splice(idx, 1); // TODO: check if this is correct
+      this._root.value.splice(idx, 1);
     }
   }
 

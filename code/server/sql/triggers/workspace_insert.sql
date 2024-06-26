@@ -8,9 +8,4 @@ begin;
         return new;
     end;
     $$ language plpgsql;
-
-    create or replace trigger on_workspace_insert_trigger
-        after insert on workspace
-        for each row execute function add_root_resource();
-
 commit;

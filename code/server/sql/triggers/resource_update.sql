@@ -20,8 +20,4 @@ begin;
             return new;
         end;
     $$ language plpgsql;
-
-    create or replace trigger on_resource_update_trigger
-        after update on resource
-        for each row execute function on_child_updated();
 commit ;

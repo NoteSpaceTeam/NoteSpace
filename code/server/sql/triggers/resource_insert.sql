@@ -30,8 +30,4 @@ begin;
         end if;
     end;
     $$ language plpgsql;
-
-    create or replace trigger on_resource_insert_trigger
-        after insert on resource
-        for each row execute function on_new_resource_created();
 commit;

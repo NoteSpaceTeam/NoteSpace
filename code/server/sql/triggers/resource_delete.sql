@@ -12,9 +12,4 @@ begin;
             return old;
         end;
     $$ language plpgsql;
-
-    create or replace trigger on_resource_delete_trigger
-        after delete on resource
-        for each row execute function on_child_removed();
-
 commit;
