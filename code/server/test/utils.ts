@@ -1,6 +1,6 @@
 import { getRandomId } from '../src/services/utils';
 import { Services } from '../src/services/Services';
-import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { InsertOperation } from '@notespace/shared/src/document/types/operations';
 import { Author } from '@notespace/shared/src/document/types/commits';
 
@@ -35,4 +35,8 @@ export async function createTestCommit(services: Services) {
   const author: Author = { id: userId, name };
 
   return { wid, id, author, commitId, operation };
+}
+
+export function excludeRoot(wid: string, resources: Resource[]): Resource[] {
+  return resources.filter(r => r.id != wid);
 }
