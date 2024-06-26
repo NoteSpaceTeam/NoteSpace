@@ -1,4 +1,4 @@
-import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourcesRepository } from '@databases/types';
 import { NotFoundError } from '@domain/errors/errors';
 import { isEmpty } from 'lodash';
@@ -27,9 +27,14 @@ export class PostgresResourcesDB implements ResourcesRepository {
   }
 
   async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
+    const { updatedAt, ...rest } = resource;
+    const compatible = {
+      ...rest,
+      updated_at: updatedAt,
+    };
     const results = await sql`
         update resource
-        set ${sql(resource)}
+        set ${sql(compatible)}
         where id = ${id}
         returning id
     `;
@@ -43,5 +48,21 @@ export class PostgresResourcesDB implements ResourcesRepository {
         returning id
     `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
+  }
+
+  async getRecentDocuments(email: string): Promise<DocumentResource[]> {
+    const results = await sql`
+        select row_to_json(t) as resource
+        from (
+          select *, updated_at as "updatedAt", created_at as "createdAt"
+          from resource
+          where type = 'D' and workspace in (
+            select id from workspace where ${email} = any(members)
+          )
+          order by updated_at desc
+          limit 10
+        ) as t
+    `;
+    return results.map(r => r.resource);
   }
 }

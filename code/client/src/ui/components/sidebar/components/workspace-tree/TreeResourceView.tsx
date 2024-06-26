@@ -61,6 +61,7 @@ function TreeResourceView({
           onDelete={() => onDeleteResource!(resource.id)}
           onDuplicate={() => onDuplicateResource!(resource.parent, resource.name, resource.type)}
           onOpenInNewTab={resource.type === ResourceType.DOCUMENT ? () => onOpenInNewTab!(resource.id) : undefined}
+          enabled={isMember}
         >
           <div className="expand-icon">
             <button className={resource.children.length === 0 ? 'hide-button' : ''} onClick={handleToggle}>
@@ -70,6 +71,7 @@ function TreeResourceView({
           <CreateResourceMenu
             onCreateNew={(type: ResourceType) => onCreateResource!(resource.id, type)}
             trigger={'create-new-resource-' + resource.id}
+            enabled={isMember}
           />
           {resource.type === ResourceType.DOCUMENT ? (
             <div {...props} className="resource-name document-resource">

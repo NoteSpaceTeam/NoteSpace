@@ -1,5 +1,5 @@
 import { ResourcesRepository } from '@databases/types';
-import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Memory } from '@databases/memory/Memory';
 import { NotFoundError } from '@domain/errors/errors';
 import { v4 as uuid } from 'uuid';
@@ -71,5 +71,14 @@ export class MemoryResourcesDB implements ResourcesRepository {
       if (resource) return resource;
     }
     throw new NotFoundError(`Resource not found`);
+  }
+
+  async getRecentDocuments(email: string): Promise<DocumentResource[]> {
+    return Object.values(Memory.workspaces)
+      .filter(workspace => workspace.members.includes(email))
+      .flatMap(workspace => Object.values(workspace.resources))
+      .filter(resource => resource.type === ResourceType.DOCUMENT)
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .slice(0, 10) as DocumentResource[];
   }
 }

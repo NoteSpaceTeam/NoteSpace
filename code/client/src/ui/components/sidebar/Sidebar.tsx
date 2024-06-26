@@ -4,7 +4,6 @@ import { RiMenuFold2Line, RiMenuFoldLine, RiTeamFill } from 'react-icons/ri';
 import useWorkspace from '@/contexts/workspace/useWorkspace';
 import useSidebarState from '@ui/components/sidebar/hooks/useSidebarState';
 import WorkspaceTree from '@ui/components/sidebar/components/workspace-tree/WorkspaceTree';
-import { IoMdSettings } from 'react-icons/io';
 import { TiHome } from 'react-icons/ti';
 import { GoPlus } from 'react-icons/go';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
@@ -17,7 +16,7 @@ function Sidebar() {
   const { workspace, resources, operations, isMember } = useWorkspace();
   const { isLoggedIn } = useAuth();
 
-  if (!isLoaded) return null;
+  if (!isLoaded || !isLoggedIn) return null;
   return (
     <div className="sidebar" style={{ width }} onMouseLeave={handlers.handleMouseLeave}>
       <div onMouseDown={handlers.handleMouseDown} className="dragger" />
@@ -37,19 +36,13 @@ function Sidebar() {
           <TiHome />
           <Link to="/">Home</Link>
         </li>
-        {isLoggedIn && (
-          <li>
-            <RiTeamFill />
-            <Link to="/workspaces">Workspaces</Link>
-          </li>
-        )}
+        <li>
+          <RiTeamFill />
+          <Link to="/workspaces">Workspaces</Link>
+        </li>
         <li>
           <IoTime />
           <Link to="/recent">Recent</Link>
-        </li>
-        <li>
-          <IoMdSettings />
-          <Link to="/settings">Settings</Link>
         </li>
         <hr />
         {workspace && operations && resources && (
@@ -61,6 +54,7 @@ function Sidebar() {
               <CreateResourceMenu
                 onCreateNew={(type: ResourceType) => operations.createResource('Untitled', type, workspace.id)}
                 trigger="sidebar-create-resource"
+                enabled={isMember}
               />
               {isMember && (
                 <button id="sidebar-create-resource">

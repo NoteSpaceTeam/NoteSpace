@@ -1,6 +1,6 @@
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { Databases } from '@databases/types';
-import { decodeFromBase64, encodeToBase64, getRandomId } from '@services/utils';
+import { decodeFromBase64, encodeToBase64, getRandomId, validateId } from '@services/utils';
 import { Author, Commit, CommitData } from '@notespace/shared/src/document/types/commits';
 import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 
@@ -14,6 +14,9 @@ export class DocumentsService {
   }
 
   async updateDocument(wid: string, id: string, operations: Operation[]) {
+    validateId(wid);
+    validateId(id);
+    if (!operations.length) throw new Error('No operations to update');
     // update document operations
     await this.databases.documents.updateDocument(wid, id, operations, false);
     // update resource modified time
@@ -21,6 +24,7 @@ export class DocumentsService {
   }
 
   async commit(id: string, author: Author) {
+    validateId(id);
     // get document operations
     const resource = await this.getDocumentResource(id);
     const document = await this.databases.documents.getDocument(resource.workspace, id);
@@ -32,6 +36,8 @@ export class DocumentsService {
   }
 
   async rollback(id: string, commitId: string) {
+    validateId(id);
+    validateId(commitId);
     // get operations from commit
     const resource = await this.getDocumentResource(id);
     const commit = await this.databases.commits.getCommit(id, commitId);
@@ -42,6 +48,8 @@ export class DocumentsService {
   }
 
   async clone(id: string, commitId: string): Promise<DocumentResource> {
+    validateId(id);
+    validateId(commitId);
     // get operations from commit
     const resource = await this.getDocumentResource(id);
     const commit = await this.databases.commits.getCommit(id, commitId);
@@ -66,6 +74,7 @@ export class DocumentsService {
   }
 
   async getCommits(id: string): Promise<Commit[]> {
+    validateId(id);
     // check if document exists
     await this.getDocumentResource(id);
     // get all commits of a document
@@ -73,6 +82,8 @@ export class DocumentsService {
   }
 
   async getCommit(id: string, commitId: string): Promise<CommitData> {
+    validateId(id);
+    validateId(commitId);
     // check if document exists
     await this.getDocumentResource(id);
     // get commit of a document
@@ -81,6 +92,7 @@ export class DocumentsService {
   }
 
   private async getDocumentResource(id: string): Promise<DocumentResource> {
+    validateId(id);
     const resource = await this.databases.resources.getResource(id);
     if (resource.type !== ResourceType.DOCUMENT) throw new Error('Resource is not a document');
     return resource as DocumentResource;

@@ -25,7 +25,7 @@ export class FirestoreCommitsDB implements CommitsRepository {
     const doc = db.collection('commits').doc(id);
     const snapshot = await doc.get();
     const data = snapshot.data();
-    if (!data) throw new NotFoundError(`Commits not found`);
+    if (!data) return [];
     return Object.entries(data)
       .map(([id, { content, timestamp, author }]) => ({ id, content, timestamp, author }))
       .sort((a, b) => a.timestamp - b.timestamp);

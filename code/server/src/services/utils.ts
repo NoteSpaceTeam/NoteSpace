@@ -39,7 +39,7 @@ export function decodeFromBase64(base64String: string): any {
   return JSON.parse(jsonString);
 }
 
-export function getRandomId(length: number): string {
+export function getRandomId(length: number = 16): string {
   const randomBuffer = randomBytes(length);
   return randomBuffer.toString('hex');
 }

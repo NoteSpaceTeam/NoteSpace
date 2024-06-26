@@ -18,11 +18,6 @@ export class MemoryUsersDB implements UsersRepository {
     return user;
   }
 
-  async updateUser(id: string, newProps: Partial<UserData>): Promise<void> {
-    if (!Memory.users[id]) throw new NotFoundError(`User not found`);
-    Object.assign(Memory.users[id], newProps);
-  }
-
   async deleteUser(id: string): Promise<void> {
     if (!Memory.users[id]) throw new NotFoundError(`User not found`);
     delete Memory.users[id];

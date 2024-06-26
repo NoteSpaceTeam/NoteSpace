@@ -2,6 +2,7 @@ import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode, useEffect, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import ManageMembersDialog from '@ui/pages/workspace/components/ManageMembersDialog';
+import { useAuth } from '@/contexts/auth/useAuth';
 
 type WorkspaceContextMenuProps = {
   children: ReactNode;
@@ -21,11 +22,20 @@ function WorkspaceContextMenu({
   onRemoveMember,
 }: WorkspaceContextMenuProps) {
   const [members, setMembers] = useState<string[]>([]);
+  const [isMember, setIsMember] = useState(false);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    onGetMembers().then(setMembers);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    async function fetchMembers() {
+      const members = await onGetMembers();
+      setMembers(members);
+      setIsMember(members.includes(currentUser?.email || ''));
+    }
+    fetchMembers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
+  if (!isMember) return null;
   return (
     <PopupMenu item={children}>
       <button onClick={onRename}>

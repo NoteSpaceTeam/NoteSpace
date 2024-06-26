@@ -2,7 +2,6 @@ import PromiseRouter from 'express-promise-router';
 import { CookieOptions, Request, Response } from 'express';
 import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
-import { UserData } from '@notespace/shared/src/users/types';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 import admin from 'firebase-admin';
 import { UnauthorizedError } from '@domain/errors/errors';
@@ -49,13 +48,6 @@ function usersHandlers(service: UsersService) {
     httpResponse.ok(res).json(user);
   };
 
-  const updateUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { ...data } = req.body as UserData;
-    await service.updateUser(id, data);
-    httpResponse.noContent(res).send();
-  };
-
   const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     await service.deleteUser(id);
@@ -72,7 +64,6 @@ function usersHandlers(service: UsersService) {
   router.post('/logout', sessionLogout);
   router.get('/:id', getUser);
   router.get('/', getUsers);
-  router.put('/:id', enforceAuth, updateUser);
   router.delete('/:id', enforceAuth, deleteUser);
 
   return router;

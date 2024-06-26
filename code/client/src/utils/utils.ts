@@ -14,6 +14,7 @@ export function formatTime(time: number, unit: string) {
 }
 
 export function formatTimePassed(isoString: string): string {
+  if (!isoString) throw new Error('Invalid date');
   const date = new Date(isoString);
   const now = new Date();
 

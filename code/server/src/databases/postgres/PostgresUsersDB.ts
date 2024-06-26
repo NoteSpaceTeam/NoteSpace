@@ -15,16 +15,6 @@ export class PostgresUsersDB implements UsersRepository {
     return results[0];
   }
 
-  async updateUser(id: string, newProps: Partial<UserData>): Promise<void> {
-    const results = await sql`
-        update "user"
-        set ${sql(newProps)}
-        where id = ${id}
-        returning id
-    `;
-    if (isEmpty(results)) throw new NotFoundError('User not found');
-  }
-
   async deleteUser(id: string): Promise<void> {
     const results = await sql`
         delete from "user"

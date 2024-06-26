@@ -1,6 +1,6 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { getRandomUserId } from '../users/utils';
+import { getRandomId } from '../../src/services/utils';
 
 let services: Services;
 
@@ -11,7 +11,8 @@ beforeEach(() => {
 describe('Workspace members operations', () => {
   test('should add a member to a workspace', async () => {
     const wid = await services.workspaces.createWorkspace('test', false);
-    const userId = getRandomUserId();
+    const userId = getRandomId();
+    console.log('userId', userId, userId.length);
     const userData = {
       name: 'test',
       email: 'test@test.com',
@@ -24,7 +25,7 @@ describe('Workspace members operations', () => {
 
   test('should remove a member from a workspace', async () => {
     const wid = await services.workspaces.createWorkspace('test', false);
-    const userId = getRandomUserId();
+    const userId = getRandomId();
     const userData = {
       name: 'test',
       email: 'test@test.com',

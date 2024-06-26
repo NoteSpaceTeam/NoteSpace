@@ -1,7 +1,7 @@
 import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { getRandomUserId } from './utils';
 import { User } from '@notespace/shared/src/users/types';
+import { getRandomId } from '../../src/services/utils';
 
 let services: Services;
 
@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe('User operations', () => {
   test('should create a user', async () => {
-    const id = getRandomUserId();
+    const id = getRandomId();
     const userData = {
       name: 'test',
       email: 'test@test.com',
@@ -22,20 +22,8 @@ describe('User operations', () => {
     expect(user.email).toEqual('test@test.com');
   });
 
-  test('should update a user', async () => {
-    const id = getRandomUserId();
-    const userData = {
-      name: 'test',
-      email: 'test@test.com',
-    };
-    await services.users.createUser(id, userData);
-    await services.users.updateUser(id, { name: 'test2' });
-    const user = await services.users.getUser(id);
-    expect(user.name).toEqual('test2');
-  });
-
   test('should delete a user', async () => {
-    const id = getRandomUserId();
+    const id = getRandomId();
     const userData = {
       name: 'test',
       email: 'test@test.com',
@@ -46,12 +34,12 @@ describe('User operations', () => {
   });
 
   test('should get all users', async () => {
-    const id1 = getRandomUserId();
+    const id1 = getRandomId();
     const user1Data = {
       name: 'test1',
       email: 'test1@test.com',
     };
-    const id2 = getRandomUserId();
+    const id2 = getRandomId();
     const user2Data = {
       name: 'test2',
       email: 'test2@test.com',

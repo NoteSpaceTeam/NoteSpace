@@ -7,6 +7,7 @@ import usersHandlers from '@controllers/http/handlers/usersHandlers';
 import { Server } from 'socket.io';
 import { authMiddleware } from '@controllers/http/middlewares/authMiddlewares';
 import loggingMiddleware from '@controllers/http/middlewares/loggingMiddleware';
+import recentDocumentsHandler from '@controllers/http/handlers/recentDocumentsHandler';
 
 export default function (services: Services, io: Server) {
   if (!services) throw new Error('Services parameter is required');
@@ -19,6 +20,7 @@ export default function (services: Services, io: Server) {
 
   router.use('/users', usersHandlers(services.users));
   router.use('/workspaces', workspacesHandlers(services, io));
+  router.get('/recent', recentDocumentsHandler(services.resources));
   router.use(errorMiddleware);
 
   return router;

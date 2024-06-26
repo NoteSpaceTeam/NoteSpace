@@ -13,7 +13,11 @@ export function sortWorkspaces(workspaces: WorkspaceMeta[], column: string, asce
         comparison = a.isPrivate === b.isPrivate ? 0 : a.isPrivate ? 1 : -1;
         break;
       case 'Members':
-        comparison = a.members.length - b.members.length;
+        {
+          const membersA = Array.isArray(a.members) ? a.members.length : a.members;
+          const membersB = Array.isArray(b.members) ? b.members.length : b.members;
+          comparison = membersA - membersB;
+        }
         break;
       case 'Created':
         comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();

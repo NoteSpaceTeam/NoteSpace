@@ -1,4 +1,4 @@
-import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
+import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import DocumentView from '@ui/pages/workspace/components/DocumentView';
 import useWorkspace from '@/contexts/workspace/useWorkspace';
 import { useEffect, useState } from 'react';
@@ -11,11 +11,17 @@ import './Workspace.scss';
 function Workspace() {
   const { workspace, resources, operations } = useWorkspace();
   const [selected, setSelected] = useState<string[]>([]);
-  const [rows, setRows] = useState(getDocuments(resources));
+  const [rows, setRows] = useState<DocumentResource[]>([]);
 
   useEffect(() => {
-    setRows(getDocuments(resources));
+    const docs = getDocuments(resources);
+    console.log(docs);
+    setRows(docs);
   }, [resources]);
+
+  useEffect(() => {
+    console.log('rows', rows);
+  }, [rows]);
 
   return (
     <div className="workspace">

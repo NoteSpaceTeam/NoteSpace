@@ -1,6 +1,6 @@
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
 import { Operation } from '@notespace/shared/src/document/types/operations';
-import { ResourceType, Resource } from '@notespace/shared/src/workspace/types/resource';
+import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { User, UserData } from '@notespace/shared/src/users/types';
 import { SearchParams } from '@src/utils/searchParams';
@@ -69,6 +69,10 @@ export interface ResourcesRepository {
    * @param id
    */
   deleteResource: (id: string) => Promise<void>;
+  /** Get resources recently edited by a user
+   * @param email
+   */
+  getRecentDocuments: (email: string) => Promise<DocumentResource[]>;
 }
 
 export interface WorkspacesRepository {
@@ -136,12 +140,6 @@ export interface UsersRepository {
    * @param id
    */
   getUser: (id: string) => Promise<User>;
-  /**
-   * Update a user in the database
-   * @param id
-   * @param newProps
-   */
-  updateUser: (id: string, newProps: Partial<UserData>) => Promise<void>;
   /**
    * Delete a user from the database
    * @param id

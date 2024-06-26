@@ -30,6 +30,7 @@ export class WorkspacesService {
   }
 
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
+    if (email) validateEmail(email);
     return await this.databases.workspaces.getWorkspaces(email);
   }
 
@@ -44,11 +45,13 @@ export class WorkspacesService {
   }
 
   async addWorkspaceMember(wid: string, email: string) {
+    validateId(wid);
     validateEmail(email);
     await this.databases.workspaces.addWorkspaceMember(wid, email);
   }
 
   async removeWorkspaceMember(wid: string, email: string) {
+    validateId(wid);
     validateEmail(email);
     await this.databases.workspaces.removeWorkspaceMember(wid, email);
   }

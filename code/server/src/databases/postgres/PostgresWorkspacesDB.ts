@@ -18,19 +18,18 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   }
 
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
-    const condition = email ? `${email} = any(members)` : 'private = false';
-    return (
-      await sql`
-        select row_to_json(t) as workspace
-        from (
-          select id, name, private, count(members) as members
-          from workspace
-          where ${condition}
-          group by id
-          order by created_at desc
-        ) as t
-      `
-    ).map(r => r.workspace);
+    const condition = email ? sql`${email} = any(members)` : sql`private = false`;
+    const results = await sql`
+      select row_to_json(t) as workspace
+      from (
+        select id, name, private, created_at as "createdAt", count(members) as members
+        from workspace
+        where ${condition}
+        group by id
+        order by created_at desc
+      ) as t
+    `;
+    return results.map(r => r.workspace);
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
@@ -44,11 +43,11 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
       await sql`
           select row_to_json(t) as resources
           from (
-            select id, name, type, parent, children
+            select *, created_at as "createdAt", updated_at as "updatedAt"
             from resource
             where workspace = ${wid}
             group by id
-            order by created_at desc
+            order by "updatedAt" desc
           ) as t
       `
     ).map(r => r.resources);

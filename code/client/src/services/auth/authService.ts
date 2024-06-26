@@ -1,4 +1,4 @@
-import { User, UserData } from '@notespace/shared/src/users/types';
+import { User } from '@notespace/shared/src/users/types';
 import { HttpCommunication } from '@services/communication/http/httpCommunication';
 import { ErrorHandler } from '@/contexts/error/ErrorContext';
 
@@ -15,10 +15,6 @@ function authService(http: HttpCommunication, errorHandler: ErrorHandler) {
     return errorHandler(async () => await http.get(`/users/${id}`));
   }
 
-  async function updateUser(id: string, newProps: Partial<UserData>) {
-    return errorHandler(async () => await http.put(`/users/${id}`, { id, ...newProps }));
-  }
-
   async function deleteUser(id: string) {
     return errorHandler(async () => await http.delete(`/users/${id}`));
   }
@@ -27,7 +23,6 @@ function authService(http: HttpCommunication, errorHandler: ErrorHandler) {
     sessionLogin,
     sessionLogout,
     getUser,
-    updateUser,
     deleteUser,
   };
 }

@@ -1,30 +1,29 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Menu, PopoverPosition } from '@mui/material';
 import './PopupMenu.scss';
-import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 type PopupMenuProps = {
   item: ReactNode;
-  trigger?: string;
   children: ReactNode;
+  trigger?: string;
+  enabled?: boolean;
 };
 
-function PopupMenu({ item, trigger, children }: PopupMenuProps) {
+function PopupMenu({ item, trigger, children, enabled }: PopupMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [contextMenuPosition, setContextMenuPosition] = useState<PopoverPosition | null>(null);
-  const { isMember } = useWorkspace();
 
   const onOpen = useCallback(
     (event: MouseEvent | React.MouseEvent) => {
       event.preventDefault();
-      if (!isMember) return;
+      if (!enabled) return;
       setContextMenuPosition({
         left: event.clientX - 2,
         top: event.clientY - 4,
       });
       setAnchorEl(event.currentTarget as HTMLElement);
     },
-    [isMember]
+    [enabled]
   );
 
   const onClose = () => {

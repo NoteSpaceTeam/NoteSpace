@@ -27,10 +27,8 @@ function Home() {
         spinner
       ) : workspaces.length > 0 ? (
         workspaces.map(workspace => (
-          <div className="workspace">
-            <Link key={workspace.id} to={`/workspaces/${workspace.id}`}>
-              {workspace.name}
-            </Link>
+          <div className="workspace" key={workspace.id}>
+            <Link to={`/workspaces/${workspace.id}`}>{workspace.name}</Link>
           </div>
         ))
       ) : (

@@ -16,6 +16,7 @@ import Search from '@ui/pages/search/Search';
 import CommitHistory from '@ui/pages/document/components/commit-history/CommitHistory';
 import Commit from '@ui/pages/document/components/commit/Commit';
 import './App.scss';
+import Recent from '@ui/pages/recent/Recent';
 
 function App() {
   return (
@@ -52,6 +53,15 @@ function App() {
                       <>
                         <Sidebar />
                         <Profile />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/recent"
+                    element={
+                      <>
+                        <Sidebar />
+                        <Recent />
                       </>
                     }
                   />

@@ -6,11 +6,12 @@ import { BsFileEarmarkPlusFill } from 'react-icons/bs';
 type CreateResourceMenuProps = {
   onCreateNew: (type: ResourceType) => void;
   trigger: string;
+  enabled?: boolean;
 };
 
-function CreateResourceMenu({ onCreateNew, trigger }: CreateResourceMenuProps) {
+function CreateResourceMenu({ onCreateNew, trigger, enabled }: CreateResourceMenuProps) {
   return (
-    <PopupMenu item={<></>} trigger={trigger}>
+    <PopupMenu item={<></>} trigger={trigger} enabled={enabled}>
       <button onClick={() => onCreateNew(ResourceType.DOCUMENT)}>
         <BsFileEarmarkPlusFill />
         Document

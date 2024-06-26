@@ -9,11 +9,19 @@ type ResourceContextMenuProps = {
   onDelete: () => void;
   onDuplicate: () => void;
   onOpenInNewTab?: () => void;
+  enabled?: boolean;
 };
 
-function ResourceContextMenu({ children, onOpenInNewTab, onRename, onDelete, onDuplicate }: ResourceContextMenuProps) {
+function ResourceContextMenu({
+  children,
+  onOpenInNewTab,
+  onRename,
+  onDelete,
+  onDuplicate,
+  enabled,
+}: ResourceContextMenuProps) {
   return (
-    <PopupMenu item={children}>
+    <PopupMenu item={children} enabled={enabled}>
       {onOpenInNewTab && (
         <button onClick={onOpenInNewTab}>
           <HiOutlineExternalLink />
