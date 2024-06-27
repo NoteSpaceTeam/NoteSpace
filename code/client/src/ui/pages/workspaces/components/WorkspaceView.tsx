@@ -24,7 +24,6 @@ function WorkspaceView({
   onSelect,
   onDelete,
   onRename,
-  onGetMembers,
   onAddMember,
   onRemoveMember,
   toggleVisibility,
@@ -45,7 +44,7 @@ function WorkspaceView({
     <div className="table-row">
       <Checkbox checked={isSelected} onChange={onCheckboxSelected} onClick={e => e.stopPropagation()} />
       {component}
-      <p>{workspace.members}</p>
+      <p>{workspace.members.length}</p>
       <p>{formatDate(workspace.createdAt)}</p>
       <p>{workspace.isPrivate ? 'Private' : 'Public'}</p>
     </div>
@@ -54,12 +53,11 @@ function WorkspaceView({
     WorkspaceComponent
   ) : (
     <WorkspaceContextMenu
+      workspace={workspace}
       onRename={() => setIsEditing(true)}
       onDelete={onDelete}
-      onGetMembers={onGetMembers}
       onAddMember={onAddMember}
       onRemoveMember={onRemoveMember}
-      isPrivate={workspace.isPrivate}
       toggleVisibility={toggleVisibility}
     >
       <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>

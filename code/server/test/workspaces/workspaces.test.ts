@@ -25,7 +25,7 @@ describe('Workspace operations', () => {
 
   test('should update a workspace', async () => {
     const id = await services.workspaces.createWorkspace('test', false);
-    await services.workspaces.updateWorkspace(id, 'test2');
+    await services.workspaces.updateWorkspace(id, { name: 'test2' });
     const workspace = await services.workspaces.getWorkspace(id);
     expect(workspace.name).toEqual('test2');
   });

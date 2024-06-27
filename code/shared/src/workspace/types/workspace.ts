@@ -4,7 +4,7 @@ export type WorkspaceMeta = {
   name: string;
   id: string;
   createdAt: string;
-  members: number | string[];
+  members: string[];
   isPrivate: boolean;
 };
 

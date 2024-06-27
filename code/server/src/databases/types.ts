@@ -110,22 +110,22 @@ export interface WorkspacesRepository {
    */
   deleteWorkspace: (id: string) => Promise<void>;
   /**
-   * Add a member to a workspace
+   * Add a member to a workspace, returning the current list of members
    * @param wid
    * @param email
    */
-  addWorkspaceMember: (wid: string, email: string) => Promise<void>;
+  addWorkspaceMember: (wid: string, email: string) => Promise<string[]>;
   /**
-   * Remove a member from a workspace
+   * Remove a member from a workspace, returning the current list of members
    * @param wid
    * @param email
    */
-  removeWorkspaceMember: (wid: string, email: string) => Promise<void>;
+  removeWorkspaceMember: (wid: string, email: string) => Promise<string[]>;
   /**
    * Search workspaces by name
    * @param searchParams
    */
-  searchWorkspaces: (searchParams: SearchParams) => Promise<WorkspaceMeta[]>;
+  searchWorkspaces: (searchParams: SearchParams, email?: string) => Promise<WorkspaceMeta[]>;
 }
 
 export interface UsersRepository {
@@ -150,6 +150,10 @@ export interface UsersRepository {
    * Get all users from the database
    */
   getUsers: () => Promise<User[]>;
+  /**
+   * Get a user by email
+   */
+  getUserByEmail: (email: string) => Promise<User>;
 }
 
 export interface CommitsRepository {

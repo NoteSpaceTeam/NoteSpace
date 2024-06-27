@@ -14,6 +14,7 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
 
   async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
     const id = uuid();
+    const now = new Date().toISOString();
     const root: Resource = {
       id,
       name: 'root',
@@ -21,10 +22,9 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
       type: ResourceType.FOLDER,
       parent: '',
       children: [],
-      createdAt: '',
-      updatedAt: '',
+      createdAt: now,
+      updatedAt: now,
     };
-    const now = new Date().toISOString();
     Memory.workspaces[id] = { id, name, isPrivate, resources: { [id]: root }, createdAt: now, members: [] };
     return id;
   }
@@ -32,10 +32,7 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
     return Object.values(Memory.workspaces)
       .filter(workspace => (email ? workspace.members.includes(email) : !workspace.isPrivate))
-      .map(props => {
-        const workspace = omit(props, ['resources']);
-        return { ...workspace, members: workspace.members?.length || 0 };
-      });
+      .map(props => omit(props, ['resources']));
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
@@ -62,29 +59,27 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     delete Memory.workspaces[id];
   }
 
-  async addWorkspaceMember(wid: string, userId: string): Promise<void> {
+  async addWorkspaceMember(wid: string, userId: string): Promise<string[]> {
     const workspace = Memory.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
     Memory.workspaces[wid].members.push(userId);
+    return Memory.workspaces[wid].members;
   }
 
-  async removeWorkspaceMember(wid: string, userId: string): Promise<void> {
+  async removeWorkspaceMember(wid: string, userId: string): Promise<string[]> {
     const workspace = Memory.workspaces[wid];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
     Memory.workspaces[wid].members = Memory.workspaces[wid].members.filter(member => member !== userId);
+    return Memory.workspaces[wid].members;
   }
 
-  async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
+  async searchWorkspaces(searchParams: SearchParams, email?: string): Promise<WorkspaceMeta[]> {
     const { query, skip, limit } = searchParams;
     return Object.values(Memory.workspaces)
-      .filter(workspace => !workspace.isPrivate) // public workspaces
+      .filter(workspace => !workspace.isPrivate || workspace.members.includes(email || '')) // filter accessible workspaces
       .filter(workspace => (query ? workspace.name.toLowerCase().includes(query.toLowerCase()) : true)) // search by name
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // sort results by creation date (newest first)
       .slice(skip, skip + limit) // paginate results
-      .map(workspace => ({
-        // convert to WorkspaceMeta
-        ...omit(workspace, ['resources']),
-        members: workspace.members?.length || 0,
-      }));
+      .map(workspace => omit(workspace, ['resources'])); // convert to WorkspaceMeta
   }
 }

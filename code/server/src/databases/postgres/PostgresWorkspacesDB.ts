@@ -18,13 +18,12 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   }
 
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
-    const condition = email ? sql`${email} = any(members)` : sql`"isPrivate" = false`;
     const results = await sql`
       select row_to_json(t) as workspace
       from (
-        select *, count(members) as members
+        select *
         from workspace
-        where ${condition}
+        where ${email ? sql`${email} = any(members)` : sql`"isPrivate" = false`}
         group by id
         order by "createdAt" desc
       ) as t
@@ -75,32 +74,34 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
   }
 
-  async addWorkspaceMember(wid: string, email: string): Promise<void> {
-    const results = await sql`
+  async addWorkspaceMember(wid: string, email: string): Promise<string[]> {
+    const result = await sql`
       update workspace
       set members = array_append(members, ${email}::text)
       where id = ${wid} and not ${email} = any(members)
-      returning id
+      returning members
     `;
-    if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member already in workspace`);
+    if (isEmpty(result)) throw new NotFoundError(`Workspace not found`);
+    return result[0].members;
   }
 
-  async removeWorkspaceMember(wid: string, email: string): Promise<void> {
-    const results = await sql`
+  async removeWorkspaceMember(wid: string, email: string): Promise<string[]> {
+    const result = await sql`
       update workspace
       set members = array_remove(members, ${email}::text)
       where id = ${wid}
-      returning id
+      returning members
     `;
-    if (isEmpty(results)) throw new NotFoundError(`Workspace not found or member does not exist`);
+    if (isEmpty(result)) throw new NotFoundError(`Workspace not found`);
+    return result[0].members;
   }
 
-  async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
+  async searchWorkspaces(searchParams: SearchParams, email?: string): Promise<WorkspaceMeta[]> {
     const { query, skip, limit } = searchParams;
     return sql`
-        select *, array_length(members, 1) as members
+        select *
         from workspace
-        where "isPrivate" = false and name ilike ${'%' + query + '%'}
+        where ("isPrivate" = false or ${email || ''} = any(members)) and name ilike ${'%' + query + '%'}
         order by "createdAt" desc
         offset ${skip} limit ${limit}
     `;
