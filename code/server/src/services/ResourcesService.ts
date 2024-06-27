@@ -30,13 +30,13 @@ export class ResourcesService {
     } as DocumentResource;
   }
 
-  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
+  async updateResource(id: string, newProps: Partial<Resource>): Promise<void> {
     validateId(id);
-    if (resource.id) throw new Error('Cannot update resource id');
-    if (resource.type) throw new Error('Cannot update resource type');
-    if (resource.workspace) throw new Error('Cannot update resource workspace');
-    if (resource.createdAt) throw new Error('Cannot update resource creation date');
-    await this.databases.resources.updateResource(id, resource);
+    if (newProps.id) throw new Error('Cannot update resource id');
+    if (newProps.type) throw new Error('Cannot update resource type');
+    if (newProps.workspace) throw new Error('Cannot update resource workspace');
+    if (newProps.createdAt) throw new Error('Cannot update resource creation date');
+    await this.databases.resources.updateResource(id, newProps);
   }
 
   async deleteResource(id: string): Promise<void> {

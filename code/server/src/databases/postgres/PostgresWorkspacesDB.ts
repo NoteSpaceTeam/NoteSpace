@@ -9,7 +9,7 @@ import { SearchParams } from '@src/utils/searchParams';
 export class PostgresWorkspacesDB implements WorkspacesRepository {
   async createWorkspace(name: string, isPrivate: boolean): Promise<string> {
     const results = await sql`
-        insert into workspace (name, private) 
+        insert into workspace (name, "isPrivate") 
         values (${name}, ${isPrivate}) 
         returning id
     `;
@@ -18,11 +18,11 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   }
 
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
-    const condition = email ? sql`${email} = any(members)` : sql`private = false`;
+    const condition = email ? sql`${email} = any(members)` : sql`"isPrivate" = false`;
     const results = await sql`
       select row_to_json(t) as workspace
       from (
-        select id, name, private as "isPrivate", created_at as "createdAt", count(members) as members
+        select *, count(members) as members
         from workspace
         where ${condition}
         group by id
@@ -34,7 +34,7 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
 
   async getWorkspace(id: string): Promise<Workspace> {
     const results: Workspace[] = await sql`
-        select *, private as "isPrivate", created_at as "createdAt"
+        select *
         from workspace
         where id = ${id}
     `;
@@ -47,7 +47,7 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
       await sql`
           select row_to_json(t) as resources
           from (
-            select *, created_at as "createdAt", updated_at as "updatedAt"
+            select *
             from resource
             where workspace = ${wid}
             group by id
@@ -58,11 +58,9 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   }
 
   async updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
-    const { isPrivate, ...rest } = newProps;
-    const compatible = isPrivate ? { private: isPrivate, ...rest } : rest;
     const results = await sql`
         update workspace
-        set ${sql(compatible)}
+        set ${sql(newProps)}
         where id = ${id}
         returning id
     `;
@@ -100,10 +98,10 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
   async searchWorkspaces(searchParams: SearchParams): Promise<WorkspaceMeta[]> {
     const { query, skip, limit } = searchParams;
     return sql`
-        select id, name, created_at, array_length(members, 1), private
+        select *, array_length(members, 1) as members
         from workspace
-        where private = false and name ilike ${'%' + query + '%'}
-        order by created_at desc
+        where "isPrivate" = false and name ilike ${'%' + query + '%'}
+        order by "createdAt" desc
         offset ${skip} limit ${limit}
     `;
   }

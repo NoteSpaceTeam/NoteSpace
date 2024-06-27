@@ -11,7 +11,7 @@ export class PostgresUsersDB implements UsersRepository {
 
   async getUser(id: string): Promise<User> {
     const results: User[] = await sql`
-      select id, name, email, created_at as "createdAt"
+      select *
       from "user"
       where id = ${id}
     `;
@@ -29,9 +29,6 @@ export class PostgresUsersDB implements UsersRepository {
   }
 
   async getUsers(): Promise<User[]> {
-    return await sql`
-      select id, name, email, created_at as "createdAt"
-      from "user"
-    `;
+    return await sql`select * from "user"`;
   }
 }

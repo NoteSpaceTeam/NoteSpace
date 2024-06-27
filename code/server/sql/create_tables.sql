@@ -7,8 +7,8 @@ begin;
     create table if not exists workspace (
         id char(16) primary key default encode(gen_random_bytes(8), 'hex'),
         name text not null,
-        private boolean not null default false,
-        created_at timestamp not null default now(),
+        "isPrivate" boolean not null default false,
+        "createdAt" timestamp not null default now(),
         members text[] not null default '{}'::text[] -- references "user"(email)
     );
 
@@ -17,8 +17,8 @@ begin;
         workspace char(16) not null references workspace(id) on delete cascade,
         name text not null,
         type resource_type not null,
-        created_at timestamp not null default now(),
-        updated_at timestamp not null default now(),
+        "createdAt" timestamp not null default now(),
+        "updatedAt" timestamp not null default now(),
         parent char(16) default null references resource(id) on delete cascade,
         children char(16)[] not null default '{}'::char(16)[] -- references resource(id)
     );
@@ -27,7 +27,7 @@ begin;
         id char(28) primary key,
         name text not null,
         email text not null unique,
-        created_at timestamp not null default now()
+        "createdAt" timestamp not null default now()
     );
 
     -- Triggers

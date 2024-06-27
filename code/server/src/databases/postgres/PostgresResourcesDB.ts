@@ -21,21 +21,15 @@ export class PostgresResourcesDB implements ResourcesRepository {
   }
 
   async getResource(id: string): Promise<Resource> {
-    const results: Resource[] = await sql`
-      select *, updated_at as "updatedAt", created_at as "createdAt" 
-      from resource 
-      where id = ${id}
-    `;
+    const results: Resource[] = await sql`select *from resource where id = ${id}`;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }
 
-  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
-    const { updatedAt, ...rest } = resource;
-    const compatible = updatedAt ? { ...rest, updated_at: updatedAt } : rest;
+  async updateResource(id: string, newProps: Partial<Resource>): Promise<void> {
     const results = await sql`
         update resource
-        set ${sql(compatible)}
+        set ${sql(newProps)}
         where id = ${id}
         returning id
     `;
@@ -55,7 +49,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
     const results = await sql`
         select row_to_json(t) as resource
         from (
-          select *, updated_at as "updatedAt", created_at as "createdAt"
+          select *
           from resource
           where type = 'D' and workspace in (
             select id from workspace where ${email} = any(members)
