@@ -9,7 +9,7 @@ function onOperation(service: DocumentsService) {
   return async (socket: Socket, operations: Operation[]) => {
     if (!operations) throw new InvalidParameterError('Operations are required');
 
-    const { id, wid } = rooms.document.get(socket.id);
+    const { id, wid } = rooms.documents.get(socket.id);
     if (!id) throw new ForbiddenError('Not in a room');
 
     socket.broadcast.to(id).emit('operations', operations);

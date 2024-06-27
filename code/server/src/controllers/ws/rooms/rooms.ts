@@ -59,14 +59,14 @@ function isInWorkspaceRoom(socketId: string) {
 }
 
 export default {
-  document: {
+  documents: {
     join: joinDocument,
     leave: leaveDocument,
     get: getDocument,
     getRoom: getDocumentRoom,
     isInRoom: isInDocumentRoom,
   },
-  workspace: {
+  workspaces: {
     join: joinWorkspace,
     leave: leaveWorkspace,
     get: getWorkspace,

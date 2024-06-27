@@ -11,7 +11,7 @@ const cursorColorsMap = new Map<string, string>();
 
 function onCursorChange() {
   return (socket: Socket, range: any) => {
-    const documentId = rooms.document.get(socket.id)?.id;
+    const documentId = rooms.documents.get(socket.id)?.id;
     if (!documentId) return;
 
     if (!range) deleteCursor(socket, documentId);

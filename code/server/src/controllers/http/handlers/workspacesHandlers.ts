@@ -46,10 +46,9 @@ function workspacesHandlers(services: Services, io: Server) {
   const updateWorkspace = async (req: Request, res: Response) => {
     const { wid } = req.params;
     if (!wid) throw new InvalidParameterError('Workspace id is required');
-    const { name } = req.body as WorkspaceMeta;
-    if (!name) throw new InvalidParameterError('Workspace name is required');
-    await services.workspaces.updateWorkspace(wid, name);
-    io.emit('updatedWorkspace', { id: wid, name } as WorkspaceMeta);
+    const newProps = req.body as Partial<WorkspaceMeta>;
+    await services.workspaces.updateWorkspace(wid, newProps);
+    io.emit('updatedWorkspace', { id: wid, ...newProps } as WorkspaceMeta);
     httpResponse.noContent(res).send();
   };
 

@@ -25,13 +25,23 @@ export default function initSocketEvents(events: Record<string, SocketHandler>) 
     });
 
     socket.on('disconnect', reason => {
-      // check if the user is in a document room
-      const isInDocument = rooms.document.isInRoom(socket.id);
-      if (isInDocument) onLeaveDocument()(socket);
-      // check if the user is in a workspace room
-      const isInWorkspace = rooms.workspace.isInRoom(socket.id);
-      if (isInWorkspace) onLeaveWorkspace()(socket);
-      logger.logInfo('Client disconnected: ' + reason);
+      try {
+        // check if the user is in a workspace room
+        const isInWorkspace = rooms.workspaces.isInRoom(socket.id);
+        if (isInWorkspace) {
+          // check if the user is in a document room
+          const isInDocument = rooms.documents.isInRoom(socket.id);
+          if (isInDocument) {
+            onLeaveDocument()(socket);
+          }
+          // leave the workspace room
+          onLeaveWorkspace()(socket);
+        }
+      } catch (e: any) {
+        logger.logError(e);
+      } finally {
+        logger.logInfo('Client disconnected: ' + reason);
+      }
     });
   };
 }

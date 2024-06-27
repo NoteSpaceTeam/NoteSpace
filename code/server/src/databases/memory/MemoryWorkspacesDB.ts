@@ -50,17 +50,15 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
     return workspace.resources;
   }
 
-  async updateWorkspace(id: string, name: string): Promise<void> {
+  async updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
     const workspace = Memory.workspaces[id];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-
-    Object.assign(workspace, { name });
+    Object.assign(workspace, newProps);
   }
 
   async deleteWorkspace(id: string): Promise<void> {
     const workspace = Memory.workspaces[id];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
-
     delete Memory.workspaces[id];
   }
 

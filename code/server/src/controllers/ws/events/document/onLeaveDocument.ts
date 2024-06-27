@@ -5,11 +5,11 @@ import { getUserFromSocket } from '@controllers/ws/utils';
 
 function onLeaveDocument() {
   return function (socket: Socket) {
-    const documentId = rooms.document.get(socket.id)?.id;
+    const documentId = rooms.documents.get(socket.id)?.id;
     if (!documentId) return;
 
     // leave the document room
-    rooms.document.leave(socket);
+    rooms.documents.leave(socket);
 
     // delete cursor
     deleteCursor(socket, documentId);

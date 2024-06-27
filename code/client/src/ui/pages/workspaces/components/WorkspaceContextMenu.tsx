@@ -1,8 +1,8 @@
 import PopupMenu from '@ui/components/popup-menu/PopupMenu';
 import { ReactNode, useEffect, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import ManageMembersDialog from '@ui/pages/workspace/components/ManageMembersDialog';
 import { useAuth } from '@/contexts/auth/useAuth';
+import ManageWorkspaceDialog from '@ui/pages/workspace/components/ManageWorkspaceDialog';
 
 type WorkspaceContextMenuProps = {
   children: ReactNode;
@@ -11,6 +11,8 @@ type WorkspaceContextMenuProps = {
   onGetMembers: () => Promise<string[]>;
   onAddMember: (email: string) => Promise<void>;
   onRemoveMember: (email: string) => Promise<void>;
+  isPrivate: boolean;
+  toggleVisibility: () => Promise<void>;
 };
 
 function WorkspaceContextMenu({
@@ -20,6 +22,8 @@ function WorkspaceContextMenu({
   onGetMembers,
   onAddMember,
   onRemoveMember,
+  isPrivate,
+  toggleVisibility,
 }: WorkspaceContextMenuProps) {
   const [members, setMembers] = useState<string[]>([]);
   const [isMember, setIsMember] = useState(false);
@@ -41,7 +45,13 @@ function WorkspaceContextMenu({
         <MdEdit />
         Rename
       </button>
-      <ManageMembersDialog members={members} onAddMember={onAddMember} onRemoveMember={onRemoveMember} />
+      <ManageWorkspaceDialog
+        members={members}
+        onAddMember={onAddMember}
+        onRemoveMember={onRemoveMember}
+        isPrivate={isPrivate}
+        toggleVisibility={toggleVisibility}
+      />
       <button onClick={onDelete}>
         <MdDelete />
         Delete

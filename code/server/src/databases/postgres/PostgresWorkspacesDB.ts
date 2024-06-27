@@ -57,10 +57,12 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     ).map(r => r.resources);
   }
 
-  async updateWorkspace(id: string, name: string): Promise<void> {
+  async updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>): Promise<void> {
+    const { isPrivate, ...rest } = newProps;
+    const compatible = isPrivate ? { private: isPrivate, ...rest } : rest;
     const results = await sql`
         update workspace
-        set name = ${name} 
+        set ${sql(compatible)}
         where id = ${id}
         returning id
     `;

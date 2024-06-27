@@ -15,7 +15,7 @@ function onJoinWorkspace(service: WorkspacesService) {
     if (!user || !members.includes(user.email)) return;
 
     // join the workspace room
-    rooms.workspace.join(socket, id, user);
+    rooms.workspaces.join(socket, id, user);
   };
 }
 

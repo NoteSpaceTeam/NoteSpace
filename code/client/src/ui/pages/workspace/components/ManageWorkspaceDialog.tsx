@@ -1,25 +1,34 @@
 import Dialog from '@ui/components/dialog/Dialog';
-import { FaUsers } from 'react-icons/fa6';
 import { RxCross1 } from 'react-icons/rx';
+import { MdManageAccounts } from 'react-icons/md';
 import './ManageMembersDialog.scss';
 
-type ManageMembersDialog = {
+type ManageWorkspaceDialogProps = {
   members: string[];
   onAddMember: (email: string) => void;
   onRemoveMember: (email: string) => void;
+  isPrivate: boolean;
+  toggleVisibility: () => void;
 };
 
-function ManageMembersDialog({ members, onAddMember, onRemoveMember }: ManageMembersDialog) {
+function ManageWorkspaceDialog({
+  members,
+  onAddMember,
+  onRemoveMember,
+  isPrivate,
+  toggleVisibility,
+}: ManageWorkspaceDialogProps) {
   return (
     <Dialog
-      title="Manage Members"
+      title="Manage Workspace"
       fields={[{ name: 'Add new member', label: 'User email' }]}
       onSubmit={values => {
         onAddMember(values['Add new member']);
       }}
       submitText="Add Member"
       extraContent={
-        <div className="manage-members-dialog">
+        <div className="manage-workspace-dialog">
+          <button onClick={toggleVisibility}>Make {isPrivate ? 'Public' : 'Private'}</button>
           <h4>Current Members</h4>
           <ul>
             {members?.map(member => (
@@ -38,11 +47,11 @@ function ManageMembersDialog({ members, onAddMember, onRemoveMember }: ManageMem
       }
     >
       <>
-        <FaUsers />
-        Members
+        <MdManageAccounts />
+        Manage
       </>
     </Dialog>
   );
 }
 
-export default ManageMembersDialog;
+export default ManageWorkspaceDialog;

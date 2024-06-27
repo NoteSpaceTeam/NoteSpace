@@ -10,7 +10,11 @@ export class PostgresUsersDB implements UsersRepository {
   }
 
   async getUser(id: string): Promise<User> {
-    const results: User[] = await sql`select * from "user" where id = ${id}`;
+    const results: User[] = await sql`
+      select id, name, email, created_at as "createdAt"
+      from "user"
+      where id = ${id}
+    `;
     if (isEmpty(results)) throw new NotFoundError('User not found');
     return results[0];
   }
@@ -25,6 +29,9 @@ export class PostgresUsersDB implements UsersRepository {
   }
 
   async getUsers(): Promise<User[]> {
-    return await sql`select * from "user"`;
+    return await sql`
+      select id, name, email, created_at as "createdAt"
+      from "user"
+    `;
   }
 }

@@ -17,10 +17,13 @@ export class WorkspacesService {
     return id;
   }
 
-  async updateWorkspace(id: string, name: string) {
+  async updateWorkspace(id: string, newProps: Partial<WorkspaceMeta>) {
     validateId(id);
-    validateName(name);
-    await this.databases.workspaces.updateWorkspace(id, name);
+    if (newProps.name) validateName(newProps.name);
+    if (newProps.id) throw new Error('Cannot update workspace id');
+    if (newProps.createdAt) throw new Error('Cannot update workspace createdAt');
+    if (newProps.members) throw new Error('Cannot update workspace members');
+    await this.databases.workspaces.updateWorkspace(id, newProps);
   }
 
   async deleteWorkspace(id: string) {

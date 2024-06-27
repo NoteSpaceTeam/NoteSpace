@@ -1,7 +1,15 @@
-.manage-members-dialog {
+.manage-workspace-dialog {
   ul {
     padding: 0;
     margin: 0;
+
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      color: black;
+      font-size: larger;
+    }
   }
 
   li {
@@ -10,5 +18,9 @@
     justify-content: space-between;
     align-items: center;
     list-style: none;
+  }
+
+  > button {
+    margin: auto;
   }
 }

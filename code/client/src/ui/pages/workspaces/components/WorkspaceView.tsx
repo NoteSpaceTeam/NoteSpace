@@ -15,6 +15,7 @@ type WorkspacePreviewProps = {
   onGetMembers: () => Promise<string[]>;
   onAddMember: (email: string) => Promise<void>;
   onRemoveMember: (email: string) => Promise<void>;
+  toggleVisibility: () => Promise<void>;
 };
 
 function WorkspaceView({
@@ -26,6 +27,7 @@ function WorkspaceView({
   onGetMembers,
   onAddMember,
   onRemoveMember,
+  toggleVisibility,
 }: WorkspacePreviewProps) {
   const { component, isEditing, setIsEditing } = useEditing(workspace.name, onRename);
   const [isSelected, setSelected] = useState(selected);
@@ -57,6 +59,8 @@ function WorkspaceView({
       onGetMembers={onGetMembers}
       onAddMember={onAddMember}
       onRemoveMember={onRemoveMember}
+      isPrivate={workspace.isPrivate}
+      toggleVisibility={toggleVisibility}
     >
       <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>
     </WorkspaceContextMenu>

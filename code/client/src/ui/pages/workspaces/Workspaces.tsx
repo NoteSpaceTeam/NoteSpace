@@ -58,6 +58,7 @@ function Workspaces() {
             onGetMembers={() => operations.getWorkspaceMembers(workspace.id)}
             onAddMember={email => operations.addWorkspaceMember(workspace.id, email)}
             onRemoveMember={email => operations.removeWorkspaceMember(workspace.id, email)}
+            toggleVisibility={() => operations.updateWorkspace(workspace.id, { isPrivate: !workspace.isPrivate })}
           />
         ))}
       </DataTable>

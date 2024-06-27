@@ -101,9 +101,9 @@ export interface WorkspacesRepository {
   /**
    * Update a workspace in the database
    * @param id
-   * @param name
+   * @param newProps
    */
-  updateWorkspace: (id: string, name: string) => Promise<void>;
+  updateWorkspace: (id: string, newProps: Partial<WorkspaceMeta>) => Promise<void>;
   /**
    * Delete a workspace from the database
    * @param id
