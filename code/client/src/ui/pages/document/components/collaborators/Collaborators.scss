@@ -1,0 +1,23 @@
+.collaborators {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  > div {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 1vh;
+    margin: 1vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    a {
+      text-decoration: none !important;
+      color: white;
+    }
+  }
+}

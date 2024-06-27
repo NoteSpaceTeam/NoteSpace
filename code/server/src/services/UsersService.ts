@@ -1,5 +1,5 @@
 import { Databases } from '@databases/types';
-import { User, UserData } from '@notespace/shared/src/users/types';
+import { User } from '@notespace/shared/src/users/types';
 import { validateId } from '@services/utils';
 
 export class UsersService {
@@ -9,9 +9,9 @@ export class UsersService {
     this.databases = databases;
   }
 
-  async createUser(id: string, data: UserData): Promise<void> {
+  async createUser(id: string, name: string, email: string): Promise<void> {
     validateId(id);
-    await this.databases.users.createUser(id, data);
+    await this.databases.users.createUser(id, name, email);
   }
 
   async getUser(id: string): Promise<User> {

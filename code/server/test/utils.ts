@@ -6,9 +6,9 @@ import { Author } from '@notespace/shared/src/document/types/commits';
 
 export async function createTestUserAndWorkspace(services: Services) {
   const userId = getRandomId();
-  const name = 'testUser';
-  const email = 'testUser@test.com';
-  await services.users.createUser(userId, { email, name });
+  const name = 'test';
+  const email = `test${userId}@test.com`;
+  await services.users.createUser(userId, name, email);
   const wid = await services.workspaces.createWorkspace('test', false);
   await services.workspaces.addWorkspaceMember(wid, email);
   return { wid, email, name, userId };
@@ -30,10 +30,9 @@ export async function createTestCommit(services: Services) {
   };
   await services.documents.applyOperations(wid, id, [operation]);
 
-  // commit changes
+  // create commit
   const commitId = await services.documents.commit(id, { id: userId, name });
   const author: Author = { id: userId, name };
-
   return { wid, id, author, commitId, operation };
 }
 

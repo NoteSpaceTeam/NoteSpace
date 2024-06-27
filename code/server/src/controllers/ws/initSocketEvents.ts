@@ -1,7 +1,9 @@
 import { SocketHandler } from '@controllers/ws/types';
 import { Socket } from 'socket.io';
-
 import { ControllersLogger } from '@src/utils/logging';
+import rooms from '@controllers/ws/rooms/rooms';
+import onLeaveDocument from '@controllers/ws/events/document/onLeaveDocument';
+import onLeaveWorkspace from '@controllers/ws/events/workspace/onLeaveWorkspace';
 
 const logger = ControllersLogger('ws');
 
@@ -23,6 +25,12 @@ export default function initSocketEvents(events: Record<string, SocketHandler>) 
     });
 
     socket.on('disconnect', reason => {
+      // check if the user is in a document room
+      const isInDocument = rooms.document.isInRoom(socket.id);
+      if (isInDocument) onLeaveDocument()(socket);
+      // check if the user is in a workspace room
+      const isInWorkspace = rooms.workspace.isInRoom(socket.id);
+      if (isInWorkspace) onLeaveWorkspace()(socket);
       logger.logInfo('Client disconnected: ' + reason);
     });
   };

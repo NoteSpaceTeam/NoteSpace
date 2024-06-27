@@ -1,12 +1,12 @@
 import { UsersRepository } from '@databases/types';
-import { User, UserData } from '@notespace/shared/src/users/types';
+import { User } from '@notespace/shared/src/users/types';
 import sql from '@databases/postgres/config';
 import { isEmpty } from 'lodash';
 import { NotFoundError } from '@domain/errors/errors';
 
 export class PostgresUsersDB implements UsersRepository {
-  async createUser(id: string, data: UserData): Promise<void> {
-    await sql`insert into "user" ${sql({ id, ...data })}`;
+  async createUser(id: string, name: string, email: string): Promise<void> {
+    await sql`insert into "user" ${sql({ id, name, email })}`;
   }
 
   async getUser(id: string): Promise<User> {

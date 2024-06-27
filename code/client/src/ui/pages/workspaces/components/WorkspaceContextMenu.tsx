@@ -35,9 +35,8 @@ function WorkspaceContextMenu({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
-  if (!isMember) return null;
   return (
-    <PopupMenu item={children}>
+    <PopupMenu item={children} enabled={isMember}>
       <button onClick={onRename}>
         <MdEdit />
         Rename

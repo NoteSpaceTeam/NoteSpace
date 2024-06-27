@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
-import { LoggedUser } from '@notespace/shared/src/users/types';
+import { UserData } from '@notespace/shared/src/users/types';
 import { ErrorLogger } from '@src/utils/logging';
 import admin from 'firebase-admin';
 
@@ -8,7 +8,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
-      user?: LoggedUser;
+      user?: UserData;
     }
   }
 }
@@ -36,7 +36,7 @@ export async function enforceAuth(req: Request, res: Response, next: NextFunctio
   next();
 }
 
-async function verifySessionCookie(sessionCookie: string): Promise<LoggedUser> {
+async function verifySessionCookie(sessionCookie: string): Promise<UserData> {
   const idToken = await admin.auth().verifySessionCookie(sessionCookie, true);
   const { uid, displayName, email } = await admin.auth().getUser(idToken.uid);
   return { id: uid, email: email!, name: displayName! };

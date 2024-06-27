@@ -1,13 +1,13 @@
 export type UserData = {
+  id: string;
   name: string;
   email: string;
 };
 
 export type User = UserData & {
-  id: string;
   createdAt: string;
 };
 
-export type LoggedUser = UserData & {
-  id: string;
+export type Collaborator = UserData & {
+  color: string;
 };

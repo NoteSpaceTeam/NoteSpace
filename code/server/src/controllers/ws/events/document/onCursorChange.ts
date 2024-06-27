@@ -25,22 +25,27 @@ export function deleteCursor(socket: Socket, documentId: string) {
 }
 
 function updateCursor(socket: Socket, data: CursorData, documentId: string) {
-  const color = getColor(socket);
+  const color = getCursorColor(socket.id);
   const socketData = { ...data, id: socket.id, color };
 
   socket.broadcast.to(documentId).emit('cursorChange', socketData);
 }
 
-function getColor(socket: Socket) {
-  if (!cursorColorsMap.has(socket.id)) {
+export function getCursorColor(socketId: string) {
+  if (!cursorColorsMap.has(socketId)) {
     const randomColor = getRandomColor();
-    cursorColorsMap.set(socket.id, randomColor);
+    cursorColorsMap.set(socketId, randomColor);
   }
-  return cursorColorsMap.get(socket.id);
+  return cursorColorsMap.get(socketId);
 }
 
-function getRandomColor() {
-  return 'hsl(' + Math.random() * 360 + ', 100%, 80%)';
+function getRandomColor(): string {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
 export default onCursorChange;

@@ -21,17 +21,18 @@ export class PostgresResourcesDB implements ResourcesRepository {
   }
 
   async getResource(id: string): Promise<Resource> {
-    const results: Resource[] = await sql`select *from resource where id = ${id}`;
+    const results: Resource[] = await sql`
+      select *, updated_at as "updatedAt", created_at as "createdAt" 
+      from resource 
+      where id = ${id}
+    `;
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
     return results[0];
   }
 
   async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
     const { updatedAt, ...rest } = resource;
-    const compatible = {
-      ...rest,
-      updated_at: updatedAt,
-    };
+    const compatible = updatedAt ? { ...rest, updated_at: updatedAt } : rest;
     const results = await sql`
         update resource
         set ${sql(compatible)}
@@ -59,7 +60,7 @@ export class PostgresResourcesDB implements ResourcesRepository {
           where type = 'D' and workspace in (
             select id from workspace where ${email} = any(members)
           )
-          order by updated_at desc
+          order by "updatedAt" desc
           limit 10
         ) as t
     `;

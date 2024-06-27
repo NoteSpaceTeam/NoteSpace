@@ -22,18 +22,22 @@ export class PostgresWorkspacesDB implements WorkspacesRepository {
     const results = await sql`
       select row_to_json(t) as workspace
       from (
-        select id, name, private, created_at as "createdAt", count(members) as members
+        select id, name, private as "isPrivate", created_at as "createdAt", count(members) as members
         from workspace
         where ${condition}
         group by id
-        order by created_at desc
+        order by "createdAt" desc
       ) as t
     `;
     return results.map(r => r.workspace);
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
-    const results: Workspace[] = await sql`select * from workspace where id = ${id}`;
+    const results: Workspace[] = await sql`
+        select *, private as "isPrivate", created_at as "createdAt"
+        from workspace
+        where id = ${id}
+    `;
     if (isEmpty(results)) throw new NotFoundError(`Workspace not found`);
     return results[0];
   }

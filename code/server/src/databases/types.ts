@@ -2,7 +2,7 @@ import { DocumentContent } from '@notespace/shared/src/workspace/types/document'
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { User, UserData } from '@notespace/shared/src/users/types';
+import { User } from '@notespace/shared/src/users/types';
 import { SearchParams } from '@src/utils/searchParams';
 import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
 
@@ -132,9 +132,10 @@ export interface UsersRepository {
   /**
    * Create a user in the database
    * @param id
-   * @param data
+   * @param name
+   * @param email
    */
-  createUser: (id: string, data: UserData) => Promise<void>;
+  createUser: (id: string, name: string, email: string) => Promise<void>;
   /**
    * Get a user from the database
    * @param id

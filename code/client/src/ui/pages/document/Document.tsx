@@ -8,6 +8,7 @@ import useDocumentService from '@services/resource/useResourcesService';
 import useConnectors from '@domain/editor/connectors/useConnectors';
 import FloatingButtons from '@ui/pages/document/components/floating-buttons/FloatingButtons';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
+import Collaborators from '@ui/pages/document/components/collaborators/Collaborators';
 import './Document.scss';
 
 function Document() {
@@ -43,15 +44,14 @@ function Document() {
       setLoaded(true);
     }
     fetchDocument();
-    return () => {
-      socket.emit('leaveDocument');
-    };
+    return () => socket.emit('leaveDocument');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!loaded) return null;
   return (
     <div className="document">
+      <Collaborators />
       <Editor title={title} fugue={fugue} connectors={connectors} />
       <FloatingButtons />
     </div>

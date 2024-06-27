@@ -2,7 +2,8 @@ import { InvalidParameterError } from '@domain/errors/errors';
 import { randomBytes } from 'crypto';
 
 const MIN_NAME_LENGTH = 2;
-const MIN_ID_LENGTH = 16;
+const MIN_ID_LENGTH = 8;
+const DEFAULT_ID_LENGTH = 16;
 
 export function validateName(name: string) {
   if (name.length < MIN_NAME_LENGTH) {
@@ -39,7 +40,8 @@ export function decodeFromBase64(base64String: string): any {
   return JSON.parse(jsonString);
 }
 
-export function getRandomId(length: number = 16): string {
-  const randomBuffer = randomBytes(length);
-  return randomBuffer.toString('hex');
+export function getRandomId(length: number = DEFAULT_ID_LENGTH): string {
+  const byteLength = Math.ceil(length / 2); // each byte corresponds to 2 hex characters
+  const randomBuffer = randomBytes(byteLength);
+  return randomBuffer.toString('hex').slice(0, length);
 }

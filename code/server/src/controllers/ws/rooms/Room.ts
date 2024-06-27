@@ -1,39 +1,54 @@
+import { UserData } from '@notespace/shared/src/users/types';
+
+type Client = {
+  socketId: string;
+  user: UserData;
+};
+
 /**
  * Room class
- * A room serves to isolate users from each other
- * A user can join a room and leave it
- * Users can only receive messages broadcast to the room they are in
+ * A room serves to isolate clients from each other
+ * A client can join a room and leave it
+ * Clients can only receive messages broadcast to the room they are in
  */
 class Room {
   private readonly roomId: string;
-  private users: string[] = [];
+  private clients: Client[] = [];
 
   constructor(roomId: string) {
     this.roomId = roomId;
   }
 
   /**
-   * Add a user to the room
-   * @param userId
+   * Add a client to the room
+   * @param socketId
+   * @param user
    */
-  join(userId: string) {
-    this.users.push(userId);
+  join(socketId: string, user: UserData) {
+    this.clients.push({ socketId, user });
   }
 
   /**
-   * Remove a user from the room
-   * @param userId
+   * Remove a client from the room
+   * @param socketId
    */
-  leave(userId: string) {
-    this.users = this.users.filter(id => id !== userId);
+  leave(socketId: string) {
+    this.clients = this.clients.filter(u => u.socketId !== socketId);
   }
 
   /**
-   * Check if a user is in the room
-   * @param userId
+   * Check if a client is in the room
+   * @param socketId
    */
-  has(userId: string) {
-    return this.users.includes(userId);
+  has(socketId: string) {
+    return this.clients.some(u => u.socketId === socketId);
+  }
+
+  /**
+   * Get the clients in the room
+   */
+  getClients() {
+    return this.clients;
   }
 
   get id() {

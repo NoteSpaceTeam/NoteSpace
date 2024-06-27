@@ -5,6 +5,7 @@ import { DocumentResource } from '@notespace/shared/src/workspace/types/resource
 import { Checkbox } from '@mui/material';
 import { formatDate, formatTimePassed } from '@/utils/utils';
 import { useEffect, useState } from 'react';
+import useWorkspace from '@/contexts/workspace/useWorkspace';
 
 type DocumentViewProps = {
   document: DocumentResource;
@@ -19,6 +20,7 @@ function DocumentView({ document, onSelect, onDelete, onRename, onDuplicate, sel
   const { wid } = useParams();
   const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', onRename);
   const [isSelected, setSelected] = useState(selected);
+  const { isMember } = useWorkspace();
 
   useEffect(() => {
     setSelected(selected);
@@ -43,6 +45,7 @@ function DocumentView({ document, onSelect, onDelete, onRename, onDuplicate, sel
       onOpenInNewTab={() => window.open(`/workspaces/${wid}/${document.id}`, '_blank')}
       onDuplicate={onDuplicate}
       onDelete={onDelete}
+      enabled={isMember}
     >
       {isEditing ? DocumentComponent : <Link to={`/workspaces/${wid}/${document.id}`}>{DocumentComponent}</Link>}
     </ResourceContextMenu>

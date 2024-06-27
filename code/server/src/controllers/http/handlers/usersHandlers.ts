@@ -31,8 +31,7 @@ function usersHandlers(service: UsersService) {
     } catch (e) {
       // user not found, continue
       const user = await admin.auth().getUser(uid);
-      const userData = { name: user.displayName!, email: user.email! };
-      await service.createUser(uid, userData);
+      await service.createUser(uid, user.displayName!, user.email!);
       httpResponse.created(res).send();
     }
   };
