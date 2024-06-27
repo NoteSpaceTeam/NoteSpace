@@ -21,7 +21,7 @@ function workspacesHandlers(services: Services, io: Server) {
       id,
       name,
       createdAt: new Date().toISOString(),
-      members: 1,
+      members: [req.user!.email],
       isPrivate,
     };
     io.emit('createdWorkspace', workspace);
@@ -48,7 +48,7 @@ function workspacesHandlers(services: Services, io: Server) {
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     const newProps = req.body as Partial<WorkspaceMeta>;
     await services.workspaces.updateWorkspace(wid, newProps);
-    io.emit('updatedWorkspace', { id: wid, ...newProps } as WorkspaceMeta);
+    io.emit('updatedWorkspace', { id: wid, ...newProps });
     httpResponse.noContent(res).send();
   };
 
@@ -65,7 +65,8 @@ function workspacesHandlers(services: Services, io: Server) {
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     const { email } = req.body;
     if (!email) throw new InvalidParameterError('Email is required');
-    await services.workspaces.addWorkspaceMember(wid, email);
+    const members = await services.workspaces.addWorkspaceMember(wid, email);
+    io.emit('updatedWorkspace', { id: wid, members });
     httpResponse.noContent(res).send();
   };
 
@@ -74,14 +75,15 @@ function workspacesHandlers(services: Services, io: Server) {
     if (!wid) throw new InvalidParameterError('Workspace id is required');
     const { email } = req.body;
     if (!email) throw new InvalidParameterError('Email is required');
-    await services.workspaces.removeWorkspaceMember(wid, email);
+    const members = await services.workspaces.removeWorkspaceMember(wid, email);
+    io.emit('updatedWorkspace', { id: wid, members });
     httpResponse.noContent(res).send();
   };
 
   const searchWorkspaces = async (req: Request, res: Response) => {
     const { query, skip, limit } = req.query;
     const searchParams: SearchParams = getSearchParams({ query, skip, limit });
-    const workspaces = await services.workspaces.searchWorkspaces(searchParams);
+    const workspaces = await services.workspaces.searchWorkspaces(searchParams, req.user?.email);
     httpResponse.ok(res).json(workspaces);
   };
 

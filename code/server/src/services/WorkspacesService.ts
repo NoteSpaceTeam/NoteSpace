@@ -47,21 +47,23 @@ export class WorkspacesService {
     return await this.databases.workspaces.getResources(wid);
   }
 
-  async addWorkspaceMember(wid: string, email: string) {
+  async addWorkspaceMember(wid: string, email: string): Promise<string[]> {
     validateId(wid);
     validateEmail(email);
-    await this.databases.workspaces.addWorkspaceMember(wid, email);
+    await this.databases.users.getUserByEmail(email); // ensure user exists
+    return await this.databases.workspaces.addWorkspaceMember(wid, email);
   }
 
-  async removeWorkspaceMember(wid: string, email: string) {
+  async removeWorkspaceMember(wid: string, email: string): Promise<string[]> {
     validateId(wid);
     validateEmail(email);
-    await this.databases.workspaces.removeWorkspaceMember(wid, email);
+    await this.databases.users.getUserByEmail(email); // ensure user exists
+    return await this.databases.workspaces.removeWorkspaceMember(wid, email);
   }
 
-  async searchWorkspaces(searchParams: SearchParams) {
+  async searchWorkspaces(searchParams: SearchParams, email?: string) {
     validatePositiveNumber(searchParams.skip);
     validatePositiveNumber(searchParams.limit);
-    return await this.databases.workspaces.searchWorkspaces(searchParams);
+    return await this.databases.workspaces.searchWorkspaces(searchParams, email);
   }
 }

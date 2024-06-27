@@ -2,20 +2,19 @@ import Dialog from '@ui/components/dialog/Dialog';
 import { RxCross1 } from 'react-icons/rx';
 import { MdManageAccounts } from 'react-icons/md';
 import './ManageMembersDialog.scss';
+import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 
 type ManageWorkspaceDialogProps = {
-  members: string[];
+  workspace: WorkspaceMeta;
   onAddMember: (email: string) => void;
   onRemoveMember: (email: string) => void;
-  isPrivate: boolean;
   toggleVisibility: () => void;
 };
 
 function ManageWorkspaceDialog({
-  members,
+  workspace,
   onAddMember,
   onRemoveMember,
-  isPrivate,
   toggleVisibility,
 }: ManageWorkspaceDialogProps) {
   return (
@@ -28,13 +27,13 @@ function ManageWorkspaceDialog({
       submitText="Add Member"
       extraContent={
         <div className="manage-workspace-dialog">
-          <button onClick={toggleVisibility}>Make {isPrivate ? 'Public' : 'Private'}</button>
+          <button onClick={toggleVisibility}>Make {workspace.isPrivate ? 'Public' : 'Private'}</button>
           <h4>Current Members</h4>
           <ul>
-            {members?.map(member => (
+            {workspace.members?.map((member: string) => (
               <li key={member}>
                 <p>{member}</p>
-                {members.length > 1 && (
+                {workspace.members.length > 1 && (
                   <button onClick={() => onRemoveMember(member)}>
                     <RxCross1 />
                   </button>

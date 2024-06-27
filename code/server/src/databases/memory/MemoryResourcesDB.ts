@@ -15,6 +15,7 @@ export class MemoryResourcesDB implements ResourcesRepository {
 
     // create resource
     const id = uuid();
+    const now = new Date().toISOString();
     workspace.resources[id] = {
       id,
       name,
@@ -22,8 +23,8 @@ export class MemoryResourcesDB implements ResourcesRepository {
       type,
       parent: parent || wid,
       children: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
 
     // update parent
