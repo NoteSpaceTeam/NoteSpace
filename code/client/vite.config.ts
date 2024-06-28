@@ -5,14 +5,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { config } from 'dotenv';
-// import { VitePWA } from 'vite-plugin-pwa';
 
 config();
 
 export default defineConfig({
   publicDir: './public',
   server: {
-    port: Number.parseInt(process.env.CLIENT_PORT) || 5173,
+    port: Number.parseInt(process.env.VITE_PORT) || 5173,
   },
   plugins: [tsconfigPaths(), react() /*VitePWA(pwaConfig)*/],
   build: {
