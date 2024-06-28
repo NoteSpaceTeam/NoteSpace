@@ -5,7 +5,7 @@ import { ServerOptions } from 'socket.io';
 config();
 
 const PORT = parseInt(process.env.PORT || '8080');
-const ORIGIN = 'http://localhost:5173';
+const ORIGIN = process.env.ORIGIN?.split(',') || ['http://localhost:5173'];
 
 const SERVER_OPTIONS: Partial<ServerOptions> = {
   cors: {
