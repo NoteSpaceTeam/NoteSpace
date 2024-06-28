@@ -5,6 +5,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { config } from 'dotenv';
+import {VitePWA} from "vite-plugin-pwa";
+import pwaConfig from "./src/pwa/pwa-config";
 
 // Load environment variables from .env file
 config();
@@ -14,26 +16,11 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.VITE_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), react()],
-  build: {
-    // Enable sourcemaps if needed
-    // sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: (id: string) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react';
-            if (id.includes('slate')) return 'slate';
-            return 'vendor';
-          }
-          if (id.includes('src')) return 'app';
-        },
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-      },
-    },
-  },
+  plugins: [
+    tsconfigPaths(),
+    react(),
+    VitePWA(pwaConfig)
+  ],
   test: {
     globals: true,
     alias: {
