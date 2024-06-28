@@ -4,7 +4,7 @@ services:
     container_name: notespace-postgres-db
     build:
       context: .
-      dockerfile: docker/Dockerfile-db
+      dockerfile: ./docker/Dockerfile-db
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=notespace
