@@ -2,15 +2,15 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext", "WebWorker"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ES2022",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -32,5 +32,5 @@
     }
   },
   "include": ["src", "tests"],
-  "exclude": ["vite.config.ts"]
+  "exclude": ["node_modules", "vite.config.ts"]
 }

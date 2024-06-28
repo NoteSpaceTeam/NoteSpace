@@ -11,4 +11,4 @@ export const NotFoundError = error('NotFoundError');
 export const InvalidParameterError = error('InvalidParameterError');
 export const UnauthorizedError = error('UnauthorizedError');
 export const ForbiddenError = error('ForbiddenError');
-export const ConflictError = error('ConflictError');
+//export const ConflictError = error('ConflictError');

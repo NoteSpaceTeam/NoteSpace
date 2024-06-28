@@ -7,7 +7,7 @@ import { MarkdownConnector } from '@domain/editor/connectors/markdown/types';
  * @param editor
  * @param connector
  */
-export function withMarkdown(editor: Editor, connector: MarkdownConnector) {
+function withMarkdown(editor: Editor, connector: MarkdownConnector) {
   const { deleteBackward, insertText, isInline, delete: deleteOperation } = editor;
   const editorOperations = operations(editor, connector);
 

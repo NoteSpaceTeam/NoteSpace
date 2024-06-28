@@ -10,7 +10,7 @@ export type CursorData = {
   styles: InlineStyle[];
 };
 
-export function useCursors(connector: ServiceConnector) {
+function useCursors(connector: ServiceConnector) {
   const [cursors, setCursors] = useState<CursorData[]>([]);
 
   const onCursorChange = (cursor: CursorData) => {

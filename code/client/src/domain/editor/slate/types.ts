@@ -3,7 +3,7 @@ import { type ReactEditor } from 'slate-react';
 import { type BlockStyle, InlineStyle } from '@notespace/shared/src/document/types/styles';
 import { CursorData } from '@ui/pages/document/components/editor/hooks/useCursors';
 
-export interface CustomFormat {
+interface CustomFormat {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
@@ -16,7 +16,7 @@ export interface CustomText extends CustomFormat {
   cursor?: CursorData;
 }
 
-export interface CustomElement {
+interface CustomElement {
   type: BlockStyle | InlineStyle;
   children: Descendant[];
 }

@@ -9,7 +9,7 @@ export function formatDate(isoString: string) {
   });
 }
 
-export function formatTime(time: number, unit: string) {
+function formatTime(time: number, unit: string) {
   return `${time} ${unit}${time === 1 ? '' : 's'} ago`;
 }
 

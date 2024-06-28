@@ -27,7 +27,7 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-export function AuthProvider({ children }: AuthProviderProps) {
+function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { publishError } = useError();

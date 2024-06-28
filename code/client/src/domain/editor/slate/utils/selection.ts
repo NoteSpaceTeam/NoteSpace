@@ -1,6 +1,6 @@
 import { Editor, Node, Path, Point, Range, Text } from 'slate';
-import { Cursor, emptyCursor, emptySelection, Selection } from '@domain/editor/cursor';
-import { first, isEqual } from 'lodash';
+import { Cursor, emptySelection, Selection } from '@domain/editor/cursor';
+import { first } from 'lodash';
 
 /**
  * Checks if the current selection is active
@@ -39,7 +39,7 @@ const pointsToSelection = (editor: Editor, start: Point, end: Point): Selection 
  * @param editor
  * @param point
  */
-export function pointToCursor(editor: Editor, point: Point): Cursor {
+function pointToCursor(editor: Editor, point: Point): Cursor {
   const line = point.path[0];
   const cursor: Cursor = { line, column: point.offset };
   if (point.path[1] === 0) return cursor;
@@ -71,14 +71,4 @@ export function getSelectionByRange(editor: Editor, range: Range, offset: number
   selection.start.column += offset;
   selection.end.column += offset;
   return selection;
-}
-
-/**
- * Checks if the selection is empty
- * @param selection
- */
-export function isSelectionEmpty(selection: Selection): boolean {
-  const { start, end } = selection;
-  const startCursor = emptyCursor();
-  return isEqual(startCursor, start) && isEqual(start, end);
 }

@@ -17,7 +17,7 @@ export type WorkspaceOperations = {
   moveResource: (id: string, parent: string) => Promise<void>;
 };
 
-export type WorkspaceContextType = {
+type WorkspaceContextType = {
   workspace?: WorkspaceMeta;
   resources?: Resources;
   operations?: WorkspaceOperations;

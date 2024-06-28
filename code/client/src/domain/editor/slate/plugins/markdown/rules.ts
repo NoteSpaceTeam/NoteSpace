@@ -13,13 +13,13 @@ export enum RuleType {
   Inline = 'inline',
 }
 
-export type Rule = {
+type Rule = {
   type: RuleType;
   triggers: RegExp[];
   apply: ApplyFunction;
 };
 
-export type ApplyFunction = (handler: ApplyBlockStyle | ApplyInlineStyle) => (editor: Editor, range: Range) => void;
+type ApplyFunction = (handler: ApplyBlockStyle | ApplyInlineStyle) => (editor: Editor, range: Range) => void;
 
 export function blockRules(style: BlockStyle, ...triggerCharacters: string[]): Rule {
   const triggers = triggerCharacters.map(trigger => new RegExp(`^(${escapeRegExp(trigger)})$`));

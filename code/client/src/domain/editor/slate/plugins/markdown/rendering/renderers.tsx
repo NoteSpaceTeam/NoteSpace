@@ -4,7 +4,7 @@ import Selection from '@ui/pages/document/components/cursor/Selection';
 import Cursor from '@ui/pages/document/components/cursor/Cursor';
 import { Range } from 'slate';
 import { type BlockStyle, BlockStyles } from '@notespace/shared/src/document/types/styles';
-import CheckListItem from '@domain/editor/slate/plugins/markdown/rendering/components/elements/CheckListItem';
+import { CheckListItem } from '@domain/editor/slate/plugins/markdown/rendering/components/components';
 import { isStatefulBlock } from '@domain/editor/slate/utils/slate';
 
 /**

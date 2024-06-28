@@ -1,7 +1,7 @@
 import { Resource } from '@notespace/shared/src/workspace/types/resource';
 import { User } from '@notespace/shared/src/users/types';
 
-export interface WorkspaceStorage {
+interface WorkspaceStorage {
   id: string;
   name: string;
   isPrivate: boolean;

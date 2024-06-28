@@ -6,7 +6,7 @@ const ERROR_TIMEOUT = 5000;
 
 export type ErrorHandler = <T>(fn: () => T) => Promise<T>;
 
-export type ErrorContextType = {
+type ErrorContextType = {
   publishError: (error: Error) => void;
   errorHandler: ErrorHandler;
 };

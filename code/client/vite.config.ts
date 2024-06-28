@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { config } from 'dotenv';
 
+// Load environment variables from .env file
 config();
 
 export default defineConfig({
@@ -13,16 +14,19 @@ export default defineConfig({
   server: {
     port: Number.parseInt(process.env.VITE_PORT) || 5173,
   },
-  plugins: [tsconfigPaths(), react() /*VitePWA(pwaConfig)*/],
+  plugins: [tsconfigPaths(), react()],
   build: {
-    //sourcemap: true,
+    // Enable sourcemaps if needed
+    // sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: (id: string) => {
-          //if(id.includes('node_modules')) return 'vendor';
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react';
+            if (id.includes('slate')) return 'slate';
+            return 'vendor';
+          }
           if (id.includes('src')) return 'app';
-          if (id.includes('slate')) return 'slate';
-          if (id.includes('react')) return 'react';
         },
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name].js',
