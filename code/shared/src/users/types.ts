@@ -10,4 +10,5 @@ export type User = UserData & {
 
 export type Collaborator = UserData & {
   color: string;
+  socketId: string;
 };

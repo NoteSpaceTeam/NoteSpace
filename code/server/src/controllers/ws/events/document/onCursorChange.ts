@@ -36,7 +36,7 @@ export function getCursorColor(socketId: string) {
     const randomColor = getRandomColor();
     cursorColorsMap.set(socketId, randomColor);
   }
-  return cursorColorsMap.get(socketId);
+  return cursorColorsMap.get(socketId)!;
 }
 
 function getRandomColor(): string {

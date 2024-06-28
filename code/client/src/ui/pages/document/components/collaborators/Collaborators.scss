@@ -3,17 +3,17 @@
   top: 0;
   right: 0;
 
-  > div {
-    width: 4vh;
-    height: 4vh;
+  > button {
+    width: 5vh;
+    height: 5vh;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    padding: 1vh;
+    padding: 3vh;
     margin: 1vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 3vh;
 
     a {
       text-decoration: none !important;

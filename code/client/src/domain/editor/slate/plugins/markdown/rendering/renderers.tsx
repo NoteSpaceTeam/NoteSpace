@@ -53,9 +53,9 @@ export const getLeafRenderer = ({ attributes, leaf, children }: RenderLeafProps)
     children = renderer(children);
   }
   if (leaf.cursor) {
-    const { color, range, styles } = leaf.cursor;
+    const { color, range, styles, id } = leaf.cursor;
     children = Range.isCollapsed(range!) ? (
-      <Cursor color={color} styles={styles} children={children} />
+      <Cursor id={id} color={color} styles={styles} children={children} />
     ) : (
       <Selection color={color} children={children} />
     );

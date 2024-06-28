@@ -18,10 +18,15 @@ function Sidebar() {
 
   if (!isLoaded || !isLoggedIn) return null;
   return (
-    <div className="sidebar" style={{ width }} onMouseLeave={handlers.handleMouseLeave}>
+    <div
+      className="sidebar"
+      style={{ width }}
+      onMouseEnter={handlers.handleMouseEnter}
+      onMouseLeave={handlers.handleMouseLeave}
+    >
       <div onMouseDown={handlers.handleMouseDown} className="dragger" />
       <div className="sidebar-header">
-        <button onMouseEnter={handlers.handleMouseEnter} onClick={handlers.handleClick}>
+        <button onClick={handlers.handleClick}>
           {isLocked ? (
             <RiMenuFoldLine className="icon" />
           ) : isOpen ? (

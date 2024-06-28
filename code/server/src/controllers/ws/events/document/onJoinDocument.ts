@@ -3,6 +3,7 @@ import rooms from '@controllers/ws/rooms/rooms';
 import { InvalidParameterError } from '@domain/errors/errors';
 import { getUserFromSocket } from '@controllers/ws/utils';
 import { getCursorColor } from '@controllers/ws/events/document/onCursorChange';
+import { Collaborator } from '@notespace/shared/src/users/types';
 
 function onJoinDocument() {
   return function (socket: Socket, documentId: string) {
@@ -16,18 +17,20 @@ function onJoinDocument() {
     rooms.documents.join(socket, documentId, user);
 
     // broadcast to all clients in the document
-    socket.in(documentId).emit('joinedDocument', [{ ...user, color: getCursorColor(socket.id) }]);
+    const collaborator: Collaborator = { ...user, color: getCursorColor(socket.id), socketId: socket.id };
+    socket.in(documentId).emit('joinedDocument', [collaborator]);
 
     // send the clients that are already in the document to the new client
     const room = rooms.documents.getRoom(documentId)!;
-    const users = room
+    const collaborators: Collaborator[] = room
       .getClients()
       .map(client => ({
         ...client.user,
         color: getCursorColor(client.socketId),
+        socketId: client.socketId,
       }))
       .filter(u => u.id !== user.id);
-    socket.emit('joinedDocument', users);
+    socket.emit('joinedDocument', collaborators);
   };
 }
 
