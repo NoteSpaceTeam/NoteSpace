@@ -28,4 +28,6 @@ export default function errorMiddleware(error: Error, req: Request, res: Respons
   const message = response.statusCode === 500 ? 'Internal server error' : error.message;
   response.send({ error: message });
   ErrorLogger.logError(error.message);
+  console.log('name', error.name);
+  console.error(error);
 }
