@@ -1,6 +1,6 @@
 import TreeResourceView from '@ui/components/sidebar/components/workspace-tree/TreeResourceView';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { getTree } from '@domain/workspaces/tree/utils';
+import { traverseWorkspaceTree } from '@domain/workspaces/tree/utils';
 import { ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { DragEvent, useState } from 'react';
 import { Resources, WorkspaceOperations } from '@/contexts/workspace/WorkspaceContext';
@@ -49,7 +49,7 @@ function WorkspaceTree({ workspace, resources, operations }: WorkspaceTreeProps)
     <div className="workspace-tree">
       <ul>
         {resources[workspace.id] &&
-          getTree(workspace.id, resources).children.map(node => (
+          traverseWorkspaceTree(workspace.id, resources).children.map(node => (
             <li key={node.node.id}>
               <TreeResourceView
                 workspace={workspace.id}

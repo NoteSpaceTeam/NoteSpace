@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, createContext, useEffect, useCallback } from 'react';
 import ErrorComponent from '@ui/components/error/Error';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const ERROR_TIMEOUT = 5000;
 
@@ -39,7 +40,7 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
   return (
     <ErrorContext.Provider value={{ publishError: setError, errorHandler }}>
       {error && <ErrorComponent error={error} />}
-      {children}
+      <ErrorBoundary FallbackComponent={ErrorComponent}>{children}</ErrorBoundary>
     </ErrorContext.Provider>
   );
 }
