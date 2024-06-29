@@ -1,32 +1,32 @@
-# NoteSpace - Final Project
+# NoteSpace - BSc's Final Project
 
 ### Instituto Superior de Engenharia de Lisboa
 #### Summer Semester 2023/2024
 
 ---
 
-### **An all-in-one document editing platform for your dream project**
-_NoteSpace_ is a **collaborative document editing platform** designed to facilitate seamless creation, editing, and sharing
-of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others in real time**,
-ensuring efficient teamwork and project management.
+## **The All-in-One Document Sharing Platform**
+_NoteSpace_ is a **collaborative document editing platform** designed to facilitate seamless creation, editing, and sharing of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others effortlessly**, ensuring efficient teamwork and project management.
 
-### **Platform support**
-_NoteSpace_ is **available across multiple platforms**, including Desktop, Web, and Mobile, allowing you to work on your dream projects, even on the go, thanks to its easy and convenient interface.
+## Key Features
 
-### **Offline mode**
-Because **every idea matters**, _NoteSpace_ supports **offline mode**. This way, even with no connection you can still be productive.
+### Real-Time Collaboration
+Experience the power of real-time collaboration. Edit documents simultaneously with your team and see changes as they happen.
 
-### **Control, everytime**
-**Because mistakes happen**, in _NoteSpace_ you have control of when, how and what you publish, giving you total control of your work. Also, with our **version control system**, we ensure that users can track, restore or even fork changes made. This allows for more custom approaches, and to work without the fear of losing important information due to mistakes.
+### Markdown Support
+Easily format your documents with Markdown. Whether you’re writing plain text, adding headers, lists, or other elements, Markdown makes your documents look professional and well-structured with minimal effort.
+
+### Version Control
+Take advantage of our robust version control system to save, track, and restore document versions. Never lose important changes, compare different versions, and revert to previous states with ease.
 
 ---
 
 ## Technologies
-## Frontend
 
+### Frontend
 ![](https://skillicons.dev/icons?i=typescript,react,vite,vitest,scss,mui)
 
-## Backend
+### Backend
 ![](https://skillicons.dev/icons?i=typescript,nodejs,express,firebase,postgresql,docker)
 
 ## Developers
