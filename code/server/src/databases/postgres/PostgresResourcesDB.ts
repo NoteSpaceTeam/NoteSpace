@@ -45,19 +45,19 @@ export class PostgresResourcesDB implements ResourcesRepository {
     if (isEmpty(results)) throw new NotFoundError('Resource not found');
   }
 
-  async getRecentDocuments(email: string): Promise<DocumentResource[]> {
+  async getRecentDocuments(userId: string): Promise<DocumentResource[]> {
     const results = await sql`
-        select row_to_json(t) as resource
-        from (
-          select *
-          from resource
-          where type = 'D' and workspace in (
-            select id from workspace where ${email} = any(members)
-          )
-          order by "updatedAt" desc
-          limit 10
-        ) as t
-    `;
+    select row_to_json(t) as resource
+    from (
+      select *
+      from resource
+      where type = 'D' and workspace in (
+        select workspace_id from workspace_member where user_id = ${userId}
+      )
+      order by "updatedAt" desc
+      limit 10
+    ) as t
+  `;
     return results.map(r => r.resource);
   }
 }

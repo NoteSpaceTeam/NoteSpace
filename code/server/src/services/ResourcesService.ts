@@ -51,6 +51,7 @@ export class ResourcesService {
 
   async getRecentDocuments(email: string): Promise<DocumentResource[]> {
     validateEmail(email);
-    return this.databases.resources.getRecentDocuments(email);
+    const user = await this.databases.users.getUserByEmail(email);
+    return this.databases.resources.getRecentDocuments(user.id);
   }
 }

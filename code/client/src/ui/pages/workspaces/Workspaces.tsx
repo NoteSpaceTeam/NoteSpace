@@ -6,6 +6,7 @@ import { MdDelete } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import { sortWorkspaces } from '@domain/workspaces/utils';
 import { useCommunication } from '@/contexts/communication/useCommunication';
+import useAuthRedirect from '@ui/hooks/useAuthRedirect';
 import './Workspaces.scss';
 
 function Workspaces() {
@@ -13,6 +14,8 @@ function Workspaces() {
   const [selected, setSelected] = useState<string[]>([]);
   const [rows, setRows] = useState(workspaces);
   const { socket } = useCommunication();
+
+  useAuthRedirect();
 
   useEffect(() => {
     socket.connect();
@@ -25,7 +28,7 @@ function Workspaces() {
 
   return (
     <div className="workspaces">
-      <h2>Workspaces</h2>
+      <h2>My Workspaces</h2>
       <DataTable
         columns={['Name', 'Members', 'Created', 'Privacy']}
         hasSelected={selected.length > 0}

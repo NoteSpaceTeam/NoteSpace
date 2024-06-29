@@ -1,11 +1,10 @@
-import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
-import { createTestUserAndWorkspace } from '../utils';
+import { createTestUserAndWorkspace, testServices } from '../utils';
 
 let services: Services;
 
 beforeEach(() => {
-  services = new Services(new TestDatabases());
+  services = testServices();
 });
 
 describe('Workspace members operations', () => {

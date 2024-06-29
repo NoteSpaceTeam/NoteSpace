@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { formatTimePassed } from '@/utils/utils';
 import { useCommunication } from '@/contexts/communication/useCommunication';
 import useError from '@/contexts/error/useError';
+import useAuthRedirect from '@ui/hooks/useAuthRedirect';
 import './Recent.scss';
 
 function Recent() {
@@ -12,6 +13,8 @@ function Recent() {
   const { http } = useCommunication();
   const { publishError } = useError();
   const { loading, startLoading, stopLoading, spinner } = useLoading();
+
+  useAuthRedirect();
 
   useEffect(() => {
     async function fetchRecentDocuments() {

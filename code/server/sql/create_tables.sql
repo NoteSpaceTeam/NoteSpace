@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS workspace (
     id CHAR(16) PRIMARY KEY DEFAULT encode(gen_random_bytes(8), 'hex'),
     name TEXT NOT NULL,
     "isPrivate" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
-    members TEXT[] NOT NULL DEFAULT '{}'::TEXT[] -- references "user"(email)
+    "createdAt" TIMESTAMP NOT NULL DEFAULT now()
 );
 
 -- Create resource table
@@ -24,7 +23,7 @@ CREATE TABLE IF NOT EXISTS resource (
     "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
     "updatedAt" TIMESTAMP NOT NULL DEFAULT now(),
     parent CHAR(16) DEFAULT NULL REFERENCES resource(id) ON DELETE CASCADE,
-    children CHAR(16)[] NOT NULL DEFAULT '{}'::CHAR(16)[] -- references resource(id)
+    children CHAR(16)[] NOT NULL DEFAULT '{}'::CHAR(16)[]
 );
 
 -- Create user table
@@ -35,7 +34,14 @@ CREATE TABLE IF NOT EXISTS "user" (
     "createdAt" TIMESTAMP NOT NULL DEFAULT now()
 );
 
--- Trigger functions
+CREATE TABLE IF NOT EXISTS workspace_member (
+    wid CHAR(16) NOT NULL REFERENCES workspace(id) ON DELETE CASCADE,
+    uid CHAR(28) NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    PRIMARY KEY (wid, uid)
+);
+
+
+-- Triggers
 
 -- Resource is deleted -> Remove self from parent's children array
     create or replace function on_child_removed() returns trigger as $$

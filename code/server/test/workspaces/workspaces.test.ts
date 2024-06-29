@@ -1,11 +1,11 @@
-import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
 import { WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
+import { testServices } from '../utils';
 
 let services: Services;
 
 beforeEach(() => {
-  services = new Services(new TestDatabases());
+  services = testServices();
 });
 
 describe('Workspace operations', () => {

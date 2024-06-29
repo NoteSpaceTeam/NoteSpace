@@ -1,13 +1,12 @@
-import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
 import { DocumentResource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { InsertOperation } from '@notespace/shared/src/document/types/operations';
-import { createTestUserAndWorkspace } from '../utils';
+import { createTestUserAndWorkspace, testServices } from '../utils';
 
 let services: Services;
 
 beforeEach(() => {
-  services = new Services(new TestDatabases());
+  services = testServices();
 });
 
 describe('Document operations', () => {

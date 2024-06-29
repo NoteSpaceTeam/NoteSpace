@@ -1,13 +1,12 @@
-import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
 import { DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { DeleteOperation } from '@notespace/shared/src/document/types/operations';
-import { createTestCommit } from '../utils';
+import { createTestCommit, testServices } from '../utils';
 
 let services: Services;
 
 beforeEach(() => {
-  services = new Services(new TestDatabases());
+  services = testServices();
 });
 
 describe('Commit operations', () => {

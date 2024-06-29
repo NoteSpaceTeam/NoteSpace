@@ -8,9 +8,8 @@ export type WorkspaceMeta = {
   isPrivate: boolean;
 };
 
-export type Workspace = Omit<WorkspaceMeta, "members"> & {
+export type Workspace = WorkspaceMeta & {
   resources: Resource[];
-  members: string[];
 };
 
 export interface WorkspaceInputModel {

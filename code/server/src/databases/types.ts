@@ -69,10 +69,11 @@ export interface ResourcesRepository {
    * @param id
    */
   deleteResource: (id: string) => Promise<void>;
-  /** Get resources recently edited by a user
-   * @param email
+  /**
+   * Get resources recently edited by a user
+   * @param userId
    */
-  getRecentDocuments: (email: string) => Promise<DocumentResource[]>;
+  getRecentDocuments: (userId: string) => Promise<DocumentResource[]>;
 }
 
 export interface WorkspacesRepository {
@@ -112,9 +113,9 @@ export interface WorkspacesRepository {
   /**
    * Add a member to a workspace, returning the current list of members
    * @param wid
-   * @param email
+   * @param userId
    */
-  addWorkspaceMember: (wid: string, email: string) => Promise<string[]>;
+  addWorkspaceMember: (wid: string, userId: string) => Promise<string[]>;
   /**
    * Remove a member from a workspace, returning the current list of members
    * @param wid

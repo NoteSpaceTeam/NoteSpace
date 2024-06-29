@@ -3,6 +3,11 @@ import { Services } from '../src/services/Services';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { InsertOperation } from '@notespace/shared/src/document/types/operations';
 import { Author } from '@notespace/shared/src/document/types/commits';
+import { TestDatabases } from '../src/databases/TestDatabases';
+
+export function testServices(): Services {
+  return new Services(new TestDatabases());
+}
 
 export async function createTestUserAndWorkspace(services: Services) {
   const userId = getRandomId();

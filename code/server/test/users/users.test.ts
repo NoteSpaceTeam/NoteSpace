@@ -1,12 +1,12 @@
-import { TestDatabases } from '../../src/databases/TestDatabases';
 import { Services } from '../../src/services/Services';
 import { User } from '@notespace/shared/src/users/types';
 import { getRandomId } from '../../src/services/utils';
+import { testServices } from '../utils';
 
 let services: Services;
 
 beforeEach(() => {
-  services = new Services(new TestDatabases());
+  services = testServices();
 });
 
 describe('User operations', () => {

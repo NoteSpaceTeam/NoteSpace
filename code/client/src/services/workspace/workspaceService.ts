@@ -26,13 +26,17 @@ function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
   }
 
   async function addWorkspaceMember(id: string, email: string): Promise<void> {
-    validateEmail(email);
-    return errorHandler(async () => await http.post(`/workspaces/${id}/members`, { email }));
+    return errorHandler(async () => {
+      validateEmail(email);
+      await http.post(`/workspaces/${id}/members`, { email });
+    });
   }
 
   async function removeWorkspaceMember(id: string, email: string): Promise<void> {
-    validateEmail(email);
-    return errorHandler(async () => await http.delete(`/workspaces/${id}/members`, { email }));
+    return errorHandler(async () => {
+      validateEmail(email);
+      await http.delete(`/workspaces/${id}/members`, { email });
+    });
   }
 
   async function getWorkspaces() {

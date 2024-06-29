@@ -74,9 +74,9 @@ export class MemoryResourcesDB implements ResourcesRepository {
     throw new NotFoundError(`Resource not found`);
   }
 
-  async getRecentDocuments(email: string): Promise<DocumentResource[]> {
+  async getRecentDocuments(userId: string): Promise<DocumentResource[]> {
     return Object.values(Memory.workspaces)
-      .filter(workspace => workspace.members.includes(email))
+      .filter(workspace => workspace.members.includes(userId))
       .flatMap(workspace => Object.values(workspace.resources))
       .filter(resource => resource.type === ResourceType.DOCUMENT)
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())

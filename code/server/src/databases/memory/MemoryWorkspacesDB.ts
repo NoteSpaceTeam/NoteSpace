@@ -32,14 +32,17 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
     return Object.values(Memory.workspaces)
       .filter(workspace => (email ? workspace.members.includes(email) : !workspace.isPrivate))
-      .map(props => omit(props, ['resources']));
+      .map(props => {
+        const w = omit(props, ['resources']);
+        return { ...w, members: w.members?.map(id => Memory.users[id].email) || [] };
+      });
   }
 
   async getWorkspace(id: string): Promise<Workspace> {
     const workspace = Memory.workspaces[id];
     if (!workspace) throw new NotFoundError(`Workspace not found`);
     const resources = Object.values(workspace.resources);
-    return { ...workspace, resources };
+    return { ...workspace, resources, members: workspace.members.map(id => Memory.users[id].email) };
   }
 
   async getResources(wid: string): Promise<Resource[]> {
@@ -80,6 +83,10 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
       .filter(workspace => (query ? workspace.name.toLowerCase().includes(query.toLowerCase()) : true)) // search by name
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // sort results by creation date (newest first)
       .slice(skip, skip + limit) // paginate results
-      .map(workspace => omit(workspace, ['resources'])); // convert to WorkspaceMeta
+      .map(workspace => {
+        // convert to WorkspaceMeta
+        const w = omit(workspace, ['resources']);
+        return { ...w, members: w.members?.map(id => Memory.users[id].email) || [] };
+      });
   }
 }
