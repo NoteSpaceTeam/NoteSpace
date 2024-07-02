@@ -1,4 +1,4 @@
-import { InvalidParameterError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@src/errors';
 
 const DEFAULT_QUERY = '';
 const DEFAULT_SKIP = 0;

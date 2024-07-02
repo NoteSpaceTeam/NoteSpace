@@ -4,7 +4,7 @@ import { UsersService } from '@services/UsersService';
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 import admin from 'firebase-admin';
-import { UnauthorizedError } from '@domain/errors/errors';
+import { UnauthorizedError } from '@src/errors';
 
 function usersHandlers(service: UsersService) {
   const sessionLogin = async (req: Request, res: Response) => {

@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import Room from '@controllers/ws/rooms/Room';
 import { getRoom, joinRoom, leaveRoom } from '@controllers/ws/rooms/operations';
-import { ForbiddenError } from '@domain/errors/errors';
+import { ForbiddenError } from '@src/errors';
 import { UserData } from '@notespace/shared/src/users/types';
 
 /**

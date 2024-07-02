@@ -1,6 +1,6 @@
 import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { ResourcesRepository } from '@databases/types';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';
 

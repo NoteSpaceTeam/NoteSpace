@@ -1,4 +1,4 @@
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { CommitsRepository } from '@databases/types';
 import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
 

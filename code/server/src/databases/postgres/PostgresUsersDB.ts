@@ -2,7 +2,7 @@ import { UsersRepository } from '@databases/types';
 import { User } from '@notespace/shared/src/users/types';
 import sql from '@databases/postgres/config';
 import { isEmpty } from 'lodash';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 
 export class PostgresUsersDB implements UsersRepository {
   async createUser(id: string, name: string, email: string): Promise<void> {

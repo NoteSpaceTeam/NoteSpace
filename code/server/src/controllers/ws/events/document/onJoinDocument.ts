@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import rooms from '@controllers/ws/rooms/rooms';
-import { InvalidParameterError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@src/errors';
 import { getUserFromSocket } from '@controllers/ws/utils';
 import { getCursorColor } from '@controllers/ws/events/document/onCursorChange';
 import { Collaborator } from '@notespace/shared/src/users/types';

@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 import { WorkspaceInputModel, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
 import { Services } from '@services/Services';
 import { Server } from 'socket.io';
-import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
+import { ForbiddenError, InvalidParameterError } from '@src/errors';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 import { getSearchParams, SearchParams } from '@src/utils/searchParams';
 import commitsHandlers from '@controllers/http/handlers/commitsHandlers';

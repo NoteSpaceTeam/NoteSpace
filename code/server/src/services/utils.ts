@@ -1,4 +1,4 @@
-import { InvalidParameterError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@src/errors';
 import { randomBytes } from 'crypto';
 
 const MIN_NAME_LENGTH = 2;

@@ -28,7 +28,7 @@ export class Fugue {
   }
 
   applyOperations(operations: Operation[], override: boolean = false) {
-    if (override) this.tree.clear(); // clear the tree if operations will override the current state
+    if (override) this.tree.clear();
     for (const operation of operations) {
       switch (operation.type) {
         case 'insert':

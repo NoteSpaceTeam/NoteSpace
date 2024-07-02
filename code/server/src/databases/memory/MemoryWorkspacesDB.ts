@@ -4,7 +4,7 @@ import { Memory } from '@databases/memory/Memory';
 import { v4 as uuid } from 'uuid';
 import { Resource, ResourceType } from '@notespace/shared/src/workspace/types/resource';
 import { omit } from 'lodash';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { SearchParams } from '@src/utils/searchParams';
 
 export class MemoryWorkspacesDB implements WorkspacesRepository {

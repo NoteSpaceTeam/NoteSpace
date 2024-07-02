@@ -1,7 +1,7 @@
 import { ResourcesRepository } from '@databases/types';
 import { ResourceType, Resource, DocumentResource } from '@notespace/shared/src/workspace/types/resource';
 import { Memory } from '@databases/memory/Memory';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { v4 as uuid } from 'uuid';
 
 export class MemoryResourcesDB implements ResourcesRepository {

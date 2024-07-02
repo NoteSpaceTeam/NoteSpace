@@ -1,4 +1,4 @@
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { DocumentsRepository } from '@databases/types';
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';

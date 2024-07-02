@@ -1,5 +1,5 @@
 import rooms from '@controllers/ws/rooms/rooms';
-import { InvalidParameterError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@src/errors';
 import { WorkspacesService } from '@services/WorkspacesService';
 import { Socket } from 'socket.io';
 import { getUserFromSocket } from '@controllers/ws/utils';

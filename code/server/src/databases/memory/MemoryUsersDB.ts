@@ -1,7 +1,7 @@
 import { UsersRepository } from '@databases/types';
 import { User } from '@notespace/shared/src/users/types';
 import { Memory } from '@databases/memory/Memory';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 
 export class MemoryUsersDB implements UsersRepository {
   async createUser(id: string, name: string, email: string): Promise<void> {

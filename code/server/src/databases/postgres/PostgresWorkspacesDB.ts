@@ -1,5 +1,5 @@
 import { Workspace, WorkspaceMeta } from '@notespace/shared/src/workspace/types/workspace';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { WorkspacesRepository } from '@databases/types';
 import { isEmpty } from 'lodash';
 import sql from '@databases/postgres/config';

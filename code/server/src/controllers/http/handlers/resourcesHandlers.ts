@@ -3,7 +3,7 @@ import { ResourceInputModel, Resource } from '@notespace/shared/src/workspace/ty
 import { httpResponse } from '@controllers/http/utils/httpResponse';
 import { NextFunction, Request, Response } from 'express';
 import { ResourcesService } from '@services/ResourcesService';
-import { InvalidParameterError } from '@domain/errors/errors';
+import { InvalidParameterError } from '@src/errors';
 import { Server } from 'socket.io';
 import { enforceAuth } from '@controllers/http/middlewares/authMiddlewares';
 

@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 
-import { ForbiddenError, InvalidParameterError } from '@domain/errors/errors';
+import { ForbiddenError, InvalidParameterError } from '@src/errors';
 import { DocumentsService } from '@services/DocumentsService';
 import rooms from '@controllers/ws/rooms/rooms';
 

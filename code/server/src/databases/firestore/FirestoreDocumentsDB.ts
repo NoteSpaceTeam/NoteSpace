@@ -1,5 +1,5 @@
 import { DocumentContent } from '@notespace/shared/src/workspace/types/document';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 import { Operation } from '@notespace/shared/src/document/types/operations';
 import { firestore } from 'firebase-admin';
 import FieldValue = firestore.FieldValue;

@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS workspace_member (
 
 -- Triggers
 
--- Resource is deleted -> Remove self from parent's children array
+    -- Resource is deleted -> Remove self from parent's children array
     create or replace function on_child_removed() returns trigger as $$
         begin
             --- Check if parent resource exists
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS workspace_member (
         end;
     $$ language plpgsql;
 
--- Resource is updated -> Update new and old parent's children array
+    -- Resource is updated -> Update new and old parent's children array
     create or replace function on_child_updated() returns trigger as $$
         begin
             if new.parent = old.parent then
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS workspace_member (
         end;
     $$ language plpgsql;
 
--- NEW RESOURCE IS CREATED -> UPDATE SELF'S PARENT ID AND APPEND SELF TO PARENT'S CHILDREN ARRAY
+    -- New resource is created -> Update self's parent id and append self to parent's children array
     create or replace function on_new_resource_created() returns trigger as $$
         begin
             --- parent_id is null
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS workspace_member (
         end;
     $$ language plpgsql;
 
--- Add root resource to resource table when a workspace is created
+    -- Add root resource to resource table when a workspace is created
     create or replace function add_root_resource() returns trigger as $$
         begin
             insert into resource (id, workspace, name, type)

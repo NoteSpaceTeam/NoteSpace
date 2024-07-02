@@ -1,7 +1,7 @@
 import db from '@src/firebaseConfig';
 import { CommitsRepository } from '@databases/types';
 import { Commit, CommitMeta } from '@notespace/shared/src/document/types/commits';
-import { NotFoundError } from '@domain/errors/errors';
+import { NotFoundError } from '@src/errors';
 
 export class FirestoreCommitsDB implements CommitsRepository {
   async saveCommit(id: string, commit: Commit): Promise<void> {
