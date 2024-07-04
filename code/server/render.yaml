@@ -1,0 +1,13 @@
+services:
+  - name: postgres-db
+    type: web
+    env: docker
+    plan: standard
+    dockerCommand: docker-compose up
+    envVars:
+      - key: POSTGRES_USER
+        value: admin
+      - key: POSTGRES_PASSWORD
+        value: notespace
+      - key: POSTGRES_DB
+        value: notespace
