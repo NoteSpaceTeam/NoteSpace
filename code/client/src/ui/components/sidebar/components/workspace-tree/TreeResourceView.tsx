@@ -37,7 +37,7 @@ function TreeResourceView({
 }: TreeResourceViewProps) {
   const { isMember } = useWorkspace();
   const [isOpen, setIsOpen] = useState(true);
-  const { component, isEditing, setIsEditing } = useEditing(resource.name || 'Untitled', (name: string) =>
+  const { component, isEditing, setIsEditing } = useEditing(resource.name || 'Untitled', isMember, (name: string) =>
     onRenameResource!(resource.id, name)
   );
 

@@ -18,9 +18,9 @@ type DocumentViewProps = {
 
 function DocumentView({ document, onSelect, onDelete, onRename, onDuplicate, selected }: DocumentViewProps) {
   const { wid } = useParams();
-  const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', onRename);
-  const [isSelected, setSelected] = useState(selected);
   const { isMember } = useWorkspace();
+  const { component, isEditing, setIsEditing } = useEditing(document.name || 'Untitled', isMember, onRename);
+  const [isSelected, setSelected] = useState(selected);
 
   useEffect(() => {
     setSelected(selected);

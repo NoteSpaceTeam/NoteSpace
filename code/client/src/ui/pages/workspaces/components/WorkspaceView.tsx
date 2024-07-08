@@ -28,7 +28,7 @@ function WorkspaceView({
   onRemoveMember,
   toggleVisibility,
 }: WorkspacePreviewProps) {
-  const { component, isEditing, setIsEditing } = useEditing(workspace.name, onRename);
+  const { component, isEditing, setIsEditing } = useEditing(workspace.name, true, onRename);
   const [isSelected, setSelected] = useState(selected);
 
   useEffect(() => {
@@ -49,9 +49,7 @@ function WorkspaceView({
       <p>{workspace.isPrivate ? 'Private' : 'Public'}</p>
     </div>
   );
-  return isEditing ? (
-    WorkspaceComponent
-  ) : (
+  return (
     <WorkspaceContextMenu
       workspace={workspace}
       onRename={() => setIsEditing(true)}
@@ -60,7 +58,7 @@ function WorkspaceView({
       onRemoveMember={onRemoveMember}
       toggleVisibility={toggleVisibility}
     >
-      <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>
+      {isEditing ? WorkspaceComponent : <Link to={`/workspaces/${workspace.id}`}>{WorkspaceComponent}</Link>}
     </WorkspaceContextMenu>
   );
 }
