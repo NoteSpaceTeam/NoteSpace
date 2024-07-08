@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Checkbox } from '@mui/material';
 import { GoSortAsc, GoSortDesc } from 'react-icons/go';
 import './DataTable.scss';
+import { useAuth } from '@/contexts/auth/useAuth';
 
 type DataTableProps = {
   columns: string[];
@@ -25,6 +26,7 @@ function DataTable({
   const [selectedAll, setSelectedAll] = useState(false);
   const [sortColumn, setSortColumn] = useState('');
   const [ascending, setAscending] = useState(true);
+  const { isLoggedIn } = useAuth();
 
   function onSelectAllRows() {
     setSelectedAll(!selectedAll);
@@ -33,7 +35,7 @@ function DataTable({
 
   return (
     <div className="table">
-      {hasSelected ? deleteButton : createButton}
+      {isLoggedIn && (hasSelected ? deleteButton : createButton)}
       <div className="table-content">
         <div className="table-header">
           <Checkbox checked={selectedAll} onChange={onSelectAllRows} />
