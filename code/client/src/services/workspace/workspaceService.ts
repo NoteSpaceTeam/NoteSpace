@@ -13,7 +13,7 @@ function workspaceService(http: HttpCommunication, errorHandler: ErrorHandler) {
     return errorHandler(async () => await http.get('/workspaces'));
   }
 
-  async function createWorkspace(workspace: WorkspaceInputModel): Promise<string> {
+  async function createWorkspace(workspace: WorkspaceInputModel): Promise<WorkspaceMeta> {
     return errorHandler(async () => await http.post('/workspaces', workspace));
   }
 

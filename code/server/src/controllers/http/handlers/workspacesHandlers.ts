@@ -24,8 +24,7 @@ function workspacesHandlers(services: Services, io: Server) {
       members: [req.user!.email],
       isPrivate,
     };
-    io.emit('createdWorkspace', workspace);
-    httpResponse.created(res).json({ id });
+    httpResponse.created(res).json(workspace);
   };
 
   const getWorkspaces = async (req: Request, res: Response) => {

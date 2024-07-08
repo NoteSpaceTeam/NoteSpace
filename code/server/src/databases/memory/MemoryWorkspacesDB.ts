@@ -30,8 +30,9 @@ export class MemoryWorkspacesDB implements WorkspacesRepository {
   }
 
   async getWorkspaces(email?: string): Promise<WorkspaceMeta[]> {
+    const userId = email ? Object.values(Memory.users).find(user => user.email === email)?.id : undefined;
     return Object.values(Memory.workspaces)
-      .filter(workspace => (email ? workspace.members.includes(email) : !workspace.isPrivate))
+      .filter(workspace => (userId ? workspace.members.includes(userId) : !workspace.isPrivate))
       .map(props => {
         const w = omit(props, ['resources']);
         return { ...w, members: w.members?.map(id => Memory.users[id].email) || [] };

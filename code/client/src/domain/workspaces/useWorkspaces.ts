@@ -9,10 +9,6 @@ function useWorkspaces() {
   const service = useWorkspaceService();
   const [workspaces, setWorkspaces] = useState<WorkspaceMeta[]>([]);
 
-  function onCreateWorkspace(workspace: WorkspaceMeta) {
-    setWorkspaces([...workspaces, workspace]);
-  }
-
   function onDeleteWorkspace(id: string) {
     setWorkspaces(workspaces.filter(workspace => workspace.id !== id));
   }
@@ -29,7 +25,8 @@ function useWorkspaces() {
   }
 
   async function createWorkspace(workspace: WorkspaceInputModel) {
-    return await service.createWorkspace(workspace);
+    const workspaceCreated = await service.createWorkspace(workspace);
+    setWorkspaces([...workspaces, workspaceCreated]);
   }
 
   async function deleteWorkspace(id: string) {
@@ -54,7 +51,6 @@ function useWorkspaces() {
   }
 
   useSocketListeners(socket, {
-    createdWorkspace: onCreateWorkspace,
     deletedWorkspace: onDeleteWorkspace,
     updatedWorkspace: onUpdateWorkspace,
   });
