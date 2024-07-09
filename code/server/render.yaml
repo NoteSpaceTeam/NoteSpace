@@ -1,6 +1,6 @@
 services:
   - name: postgres-db
-    type: web
+    type: worker
     env: docker
     plan: standard
     dockerCommand: docker-compose up

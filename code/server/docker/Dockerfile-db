@@ -1,15 +1,8 @@
 FROM postgres
 
-USER postgres
-WORKDIR /app
-
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-ENV POSTGRES_DB=${POSTGRES_DB}
-
 COPY sql/create_tables.sql /docker-entrypoint-initdb.d/1_create-schema.sql
 
-COPY --chown=postgres:postgres ./docker/scripts/wait-for-postgres.sh ./bin/wait-for-postgres.sh
-RUN chmod +x ./bin/wait-for-postgres.sh
+COPY --chown=postgres:postgres ./docker/scripts/wait-for-postgres.sh /usr/local/bin/wait-for-postgres.sh
+RUN chmod +x /usr/local/bin/wait-for-postgres.sh
 
 EXPOSE 5432
