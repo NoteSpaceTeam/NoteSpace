@@ -5,19 +5,24 @@
 
 ---
 
-## **The All-in-One Document Sharing Platform**
-_NoteSpace_ is a **collaborative document editing platform** designed to facilitate seamless creation, editing, and sharing of documents in real-time. With _NoteSpace_, you can **organize your projects in a multitude of ways and collaborate with others effortlessly**, ensuring efficient teamwork and project management.
+**NoteSpace** is a collaborative web platform that bridges the gap between real-time editors and version control systems. It combines Google Docs synchronous editing with GitHub inspired workspace organization, sharing, and version control. Users can collaborate on markdown-based documents in real time, organize them into workspaces and folders, track changes through commits, and share or clone public workspaces.
+
+https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
 
 ## Key Features
 
 ### Real-Time Collaboration
-Experience the power of real-time collaboration. Edit documents simultaneously with your team and see changes as they happen.
+
+Edit the same document with multiple people at once. Changes sync instantly, even with concurrent edits, while keeping everyone in a consistent state.
+
+### Workspace Management
+Organize notes and documents into workspaces and folders, with workspace-based access control for shared collaboration.
 
 ### Markdown Support
-Easily format your documents with Markdown. Whether you’re writing plain text, adding headers, lists, or other elements, Markdown makes your documents look professional and well-structured with minimal effort.
+Write using markdown with live rendering. Supports common formatting for fast, clean note-taking and technical documentation, such as headers, list items, and more.
 
 ### Version Control
-Take advantage of our robust version control system to save, track, and restore document versions. Never lose important changes, compare different versions, and revert to previous states with ease.
+Track changes, view past versions, and revert when needed using the built-in version control system.
 
 ---
 
