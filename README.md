@@ -5,21 +5,20 @@
 
 ---
 
-**NoteSpace** is a collaborative web platform that bridges the gap between real-time editors and version control systems. It combines Google Docs synchronous editing with GitHub inspired workspace organization, sharing, and version control. Users can collaborate on markdown-based documents in real time, organize them into workspaces and folders, track changes through commits, and share or clone public workspaces.
+**NoteSpace** is a collaborative web platform that combines real-time collaboration with version control systems. It combines Google Docs' synchronous editing with GitHub's workspace organization, sharing, and version control. Users can collaborate on markdown-based documents in real time, organize them into workspaces and folders, track changes through commits, and share or clone public workspaces.
 
 https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
 
 ## Key Features
 
 ### Real-Time Collaboration
-
-Edit the same document with multiple people at once. Changes sync instantly, even with concurrent edits, while keeping everyone in a consistent state.
+Edit the same document with multiple people at once. Changes sync instantly, even with concurrent edits, while keeping everyone in a consistent state, using the Fugue CRDT algorithm.
 
 ### Workspace Management
 Organize notes and documents into workspaces and folders, with workspace-based access control for shared collaboration.
 
 ### Markdown Support
-Write using markdown with live rendering. Supports common formatting for fast, clean note-taking and technical documentation, such as headers, list items, and more.
+Write using markdown with live rendering. Supports standard formatting for fast, clean note-taking and technical documentation, such as headers, list items, and more.
 
 ### Version Control
 Track changes, view past versions, and revert when needed using the built-in version control system.
