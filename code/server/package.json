@@ -14,7 +14,7 @@
     "format": "prettier --write . && eslint . --ext .ts"
   },
   "dependencies": {
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "file:../shared",
     "@types/socket.io": "^3.0.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

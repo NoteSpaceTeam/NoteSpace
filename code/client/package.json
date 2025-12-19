@@ -22,7 +22,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.18",
-    "@notespace/shared": "file:..\\shared",
+    "@notespace/shared": "file:../shared",
     "dotenv": "^16.4.5",
     "eslint-plugin-playwright": "^1.6.0",
     "firebase": "^10.12.2",
