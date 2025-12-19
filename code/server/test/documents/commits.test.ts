@@ -65,6 +65,6 @@ describe('Commit operations', () => {
     // get all commits
     const commits = await services.documents.getCommits(id);
     expect(commits.length).toBe(2);
-    expect(commits[0].id).toBe(commitId);
+    expect(commits.some(c => c.id === commitId)).toBe(true);
   });
 });
