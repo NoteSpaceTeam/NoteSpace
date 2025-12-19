@@ -9,7 +9,7 @@
 
 https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
 
-## Key Features
+## Overview
 
 ### Real-Time Collaboration
 Edit the same document with multiple people at once. Changes sync instantly, even with concurrent edits, while keeping everyone in a consistent state, using the Fugue CRDT algorithm.
