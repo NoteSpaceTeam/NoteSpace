@@ -1,6 +1,6 @@
 <div align="center">
 
-# Notespace
+# NoteSpace
 
 **Multi-platform Web Application for Real-Time Document Collaboration & Sharing**
 
@@ -19,13 +19,13 @@ https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
 ## Overview
 
 ### Real-Time Collaboration
-Edit the same document with multiple people simultaneously, with changes syncing instantly even during concurrent edits, while keeping everyone in a consistent state using CRDTs.
+Edit documents simultaneously with instant and automatic conflict resolution using CRDTs.
 
 ### Workspace Management
-Organize documents into workspaces and folders with a file-system structure and workspace-based access control.
+Organize documents into workspaces and folders with a file-system hierarchy and workspace-based access control.
 
 ### Markdown Support
-Write documents using Markdown with live rendering. Supports standard formatting for fast, clean note-taking and technical documentation, such as headers, list items, and more.
+Write documents using Markdown with live rendering. Supports standard formatting such as headers, list items, inline styles, and more.
 
 ### Version Control
 Track changes, view past versions, and revert when needed using the built-in version control system.
@@ -54,4 +54,5 @@ Track changes, view past versions, and revert when needed using the built-in ver
 
 <br/>
 
+> [!NOTE]
 > For more details, see the full project report [here](./docs/reports/final_report.pdf).
