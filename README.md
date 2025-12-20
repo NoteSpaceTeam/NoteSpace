@@ -12,7 +12,7 @@
 
 ---
 
-**NoteSpace** is a web platform for collaborative editing of markdown documents within workspaces with a custom version control system.
+**NoteSpace** is a web platform for real-time collaborative editing of Markdown documents within workspaces, featuring a custom version control system.
 
 https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
 
@@ -43,10 +43,10 @@ Track changes, view past versions, and revert when needed using the built-in ver
 ## About
 ### BSc's Final Project
 #### Instituto Superior de Engenharia de Lisboa (ISEL)
-##### Summer Semester, 2023/2024
+#### Summer Semester, 2023/2024
 
 **Developers:**
-- [Ricardo Costa](https://github.com/R1c4rdCo5t4)
+- [Ricardo Costa](https://github.com/rcosta358)
 - [Guilherme Ferreira](https://github.com/GuilhermeF03)
 
 **Supervisors:**
