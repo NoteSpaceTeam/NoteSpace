@@ -51,3 +51,7 @@ Track changes, view past versions, and revert when needed using the built-in ver
 
 **Supervisors:**
 - [Paulo Pereira](https://github.com/palbp)
+
+<br/>
+
+> For more details, see the full project report [here](./docs/reports/final_report.pdf).
