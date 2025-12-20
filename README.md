@@ -1,6 +1,6 @@
 <div align="center">
 
-# NoteSpace
+![](https://github.com/NoteSpaceTeam/.github/raw/main/profile/banner-notespace.png)
 
 **Multi-platform Web Application for Real-Time Document Collaboration & Sharing**
 
