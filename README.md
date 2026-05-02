@@ -14,7 +14,7 @@
 
 **NoteSpace** is a web platform for real-time collaborative editing of Markdown documents within workspaces, featuring a custom version control system.
 
-https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30
+![demo](https://github.com/user-attachments/assets/69e5a22a-5f9b-4df7-9259-e08b17472e30)
 
 ## Overview
 
